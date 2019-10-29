@@ -79,9 +79,15 @@ void CoreEntity::renderForEditGui()
 
 }
 
-void CoreEntity::renderSelected()
+void CoreEntity::renderSelected(int entselradius, int entorient)
 {
-	
+	gle::colorub(0, 40, 0);
+	vec es(entselradius);
+    vec eo = o;
+    eo.sub(es);
+    es.mul(2);
+    
+	boxs3D(eo, es, 1);
 }
 
 
@@ -117,7 +123,8 @@ void CoreEntity::renderMoveShadow(int entselradius, int size)
 
 void from_json(const nlohmann::json& document,  entities::classes::CoreEntity* entity_ptr)
 {
-	document.get_to(entity_ptr->name);
+	std::string name;
+	document.get_to(name);
 }
 
 void to_json(nlohmann::json& document, const entities::classes::CoreEntity* entity_ptr)
@@ -128,7 +135,7 @@ void to_json(nlohmann::json& document, const entities::classes::CoreEntity* enti
 	}
 	else
 	{
-		document = nlohmann::json {nullptr};
+		document = "";
 	}
 }
 } // classes
