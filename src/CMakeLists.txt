@@ -69,7 +69,7 @@ include_directories(
 #The engine, server and shared sub projects
 add_subdirectory(enet)
 
-list(APPEND fileList
+list(APPEND fileListEngine
     engine/aa.cpp
     engine/animmodel.h
     engine/bih.cpp
@@ -137,7 +137,9 @@ list(APPEND fileList
     engine/world.cpp
     engine/world.h
     engine/worldio.cpp
+)
 
+list(APPEND fileListShared
     shared/command.h
     shared/crypto.cpp
     shared/cube.h
@@ -155,7 +157,33 @@ list(APPEND fileList
     shared/tools.cpp
     shared/tools.h
     shared/zip.cpp
+)
 
+list(APPEND fileListGame
+    game/entities.cpp
+    game/game.cpp
+    game/game.h
+    game/render.cpp
+    game/server.cpp
+    game/commands.cpp
+)
+
+list(APPEND fileListGameEntities
+    game/entities/basemapmodel.cpp
+    game/entities/basemapmodel.h
+    game/entities/door.cpp
+    game/entities/door.h
+    game/entities/dynamiclight.cpp
+    game/entities/dynamiclight.h
+    game/entities/basemonster.cpp
+    game/entities/basemonster.h
+    game/entities/playerstart.cpp
+    game/entities/playerstart.h
+    game/entities/player.cpp
+    game/entities/player.h
+)
+
+list(APPEND fileListSharedEntities
     shared/entities/animinfo.h
     shared/entities/attributes.h
     shared/entities/attributes.cpp
@@ -169,30 +197,25 @@ list(APPEND fileList
     shared/entities/basephysicalentity.h
     shared/entities/entityfactory.h
     shared/entities/entityfactory.cpp
-
-    game/entities.cpp
-    game/game.cpp
-    game/game.h
-    game/render.cpp
-    game/server.cpp
-    game/commands.cpp
-
-    game/entities/basemapmodel.cpp
-    game/entities/basemapmodel.h
-    game/entities/door.cpp
-    game/entities/door.h
-    game/entities/dynamiclight.cpp
-    game/entities/dynamiclight.h
-	game/entities/basemonster.cpp
-	game/entities/basemonster.h
-    game/entities/playerstart.cpp
-    game/entities/playerstart.h
-    game/entities/player.cpp
-    game/entities/player.h
 )
 
-# --- BINDINGS
-foreach(input_file ${fileList})
+list(APPEND listOfFileList
+    fileListEngine
+    fileListShared
+    fileListGame
+    fileListSharedEntities
+    fileListGameEntities
+)
+
+list(APPEND fileList
+    ${fileListEngine}
+    ${fileListShared}
+    ${fileListGame}
+    ${fileListSharedEntities}
+    ${fileListGameEntities}
+)
+
+function(GenerateBindingFor input_file ide_folder)
     if(${input_file} MATCHES "\.cpp$")
         execute_process(
             COMMAND ${PYTHON} ${CMAKE_CURRENT_LIST_DIR}/binding/index.py cmake_output ${input_file}
@@ -219,64 +242,59 @@ foreach(input_file ${fileList})
         )
 
         list(APPEND generatedFileList ${output_file_target})
+        set(generatedFileList ${generatedFileList} PARENT_SCOPE)
+
+        source_group(${ide_folder} FILES ${output_file_target})
     endif()
+endfunction()
+
+source_group("Sources\\Engine" FILES ${fileListEngine})
+source_group("Sources\\Shared" FILES ${fileListShared})
+source_group("Sources\\Game" FILES ${fileListGame})
+source_group("Sources\\Entities\\Shared" FILES ${fileListSharedEntities})
+source_group("Sources\\Entities\\Game" FILES ${fileListGameEntities})
+
+# --- BINDINGS
+foreach(input_file ${fileListEngine})
+    GenerateBindingFor(${input_file} "Generated\\\\Engine")
 endforeach()
 
-# add_subdirectory(binding)
-# add_library(binding STATIC
-#     ${generatedFileList}
-# )
-# set_target_properties(binding PROPERTIES LINKER_LANGUAGE CXX)
-# target_include_directories(binding
-#     PRIVATE
-#         .
-#         shared
-#         game
-#         engine
-# 		${CMAKE_SOURCE_DIR}
-# 		${SDL2_INCLUDE_DIRS}
-# 		${SDL2_MIXER_INCLUDE_DIRS}
-# 		${SDL2_IMAGE_INCLUDE_DIRS}
-# 		${FREETYPE_INCLUDE_DIRS}
-# 		${ZLIB_INCLUDE_DIRS}
-# 		${OPENGL_INCLUDE_DIRS}        
-# )
-# target_link_libraries(binding
-# enet
-# )
-# if (APPLE)
-#     target_link_options(binding PUBLIC
-#         SHELL:-Wl,-all_load $<TARGET_FILE:binding>
-#     )
-# elseif(UNIX)
-#     target_link_options(binding PUBLIC
-#         SHELL:-Wl,--whole-archive $<TARGET_FILE:binding> -Wl,--no-whole-archive
-#     )
-# elseif(WIN32)
-#     target_link_options(binding PUBLIC
-#         /WHOLEARCHIVE:$<TARGET_FILE:binding>
-#     )
-# endif()
-# --- BINDINGS
+foreach(input_file ${fileListShared})
+    GenerateBindingFor(${input_file} "Generated\\\\Shared")
+endforeach()
+
+foreach(input_file ${fileListGame})
+    GenerateBindingFor(${input_file} "Generated\\\\Game")
+endforeach()
+
+foreach(input_file ${fileListSharedEntities})
+    GenerateBindingFor(${input_file} "Generated\\\\Entities\\\\Shared")
+endforeach()
+
+foreach(input_file ${fileListGameEntities})
+    GenerateBindingFor(${input_file} "Generated\\\\Entities\\\\Game")
+endforeach()
 
 
 #Everything ready, now define the executables
 if (APPLE)
-    add_executable(Polyhedron MACOSX_BUNDLE
-        ${generatedFileList}
-        ${fileList}
-
+    list(APPEND fileListXCode
         xcode/English.lproj/InfoPlist.strings
-        xcode/English.lproj/MainMenu.nib
-        xcode/English.lproj/MainMenu.nib/designable.nib
-        xcode/English.lproj/MainMenu.nib/keyedobjects.nib
+        xcode/English.lproj/MainMenu.xib
         xcode/Launcher.h
         xcode/Launcher.m
         xcode/Maps.icns
         xcode/main.m
         xcode/tesseract.icns
-        xcode/tesseract.plist    
+        xcode/Polyhedron.plist    
     )
+    add_executable(Polyhedron MACOSX_BUNDLE
+        ${generatedFileList}
+        ${fileList}
+        ${fileListXCode}
+    )
+
+    source_group("XCode Files" FILES ${fileListXCode})
 else()
     add_executable(Polyhedron
         ${generatedFileList}
@@ -336,19 +354,19 @@ endif()
 #Apple specific stuff
 if (APPLE)
     set_property(TARGET Polyhedron PROPERTY MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_LIST_DIR}/xcode/tesseract.plist.in)
-    set_target_properties(Polyhedron PROPERTIES RESOURCE "${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.nib")
+    set_target_properties(Polyhedron PROPERTIES RESOURCE "${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib")
     target_compile_features(Polyhedron PUBLIC cxx_std_14)
 
-    set_source_files_properties(
-        ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.nib/designable.nib
-        PROPERTIES
-        MACOSX_PACKAGE_LOCATION Resources/MainMenu.nib
-    )
+    # set_source_files_properties(
+    #     ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.nib/designable.nib
+    #     PROPERTIES
+    #     MACOSX_PACKAGE_LOCATION Resources/MainMenu.nib
+    # )
 
-    set_source_files_properties(
-        ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.nib/keyedobjects.nib
-        PROPERTIES
-        MACOSX_PACKAGE_LOCATION Resources/MainMenu.nib
-    )
+    # set_source_files_properties(
+    #     ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.nib/keyedobjects.nib
+    #     PROPERTIES
+    #     MACOSX_PACKAGE_LOCATION Resources/MainMenu.nib
+    # )
 endif()
 
