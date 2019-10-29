@@ -69,7 +69,7 @@ namespace entities {
             
             virtual void renderForEdit();
             virtual void renderForEditGui();
-            virtual void renderSelected();
+            virtual void renderSelected(int entselradius, int entorient);
 			void renderHighlight(int entselradius, int entorient, float thickness);
 			void renderMoveShadow(int entselradius, int size);
         public:
