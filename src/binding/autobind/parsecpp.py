@@ -24,35 +24,48 @@ PROJECT_ROOT = os.path.dirname(os.getcwd())
 
 class CppParser:
 
-    def __init__(self, buildfolder, file, skipComments = False):
+    def __init__(self, buildfolder, file):
         self.file = os.path.abspath(file)
-        self.flags = CompileFlagsFor(buildfolder, file)
-        if skipComments is False:
-            self.flags.append("-DSCRIPTBIND_RUN")
-            self.flags.append("-fparse-all-comments")
+        self.buildfolder = buildfolder
         self.tree = {}
         self.model = None
         self.translation_unit = None
         self.hierarchy_cache = {}
-        # print (f"Flags for {file} => {self.flags}")
 
-    def start(self, skipFunctionBodies = False):
+        foundLibClang = False
         for cpath in libclang_paths:
             if os.path.exists(cpath):
+                # print(f"Using libclang: {cpath}")
                 cindex.Config.set_library_file(cpath)
+                foundLibClang = True
                 break
-        
-        index = cindex.Index.create()
-        if skipFunctionBodies is False:
-            self.translation_unit = index.parse(self.file, self.flags)
-        else:
-            self.translation_unit = index.parse(self.file, self.flags, None, cindex.TranslationUnit.PARSE_SKIP_FUNCTION_BODIES | cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
-        self.model = CxxNode(self.translation_unit.cursor)
 
-        if self.translation_unit.diagnostics:
-            print ("---- DIAG ----", file=sys.stderr)
-            for diag in self.translation_unit.diagnostics:
-                print (diag, file=sys.stderr)        
+        if foundLibClang == False:
+            raise RuntimeError(f"LibClang shared lib not found! Searched in {libclang_paths}")        
+
+    def start(self, outputFile, skipFunctionBodies = False):
+        self.flags = [
+            "-DSCRIPTBIND_RUN",
+            "-fparse-all-comments",
+        ] + CompileFlagsFor(self.file, self.buildfolder)
+
+        print (f"scriptbind {self.file} {' '.join(self.flags)}")
+
+        os.chdir(os.path.dirname(self.file))
+        index = cindex.Index.create()
+        try:
+            if skipFunctionBodies is False:
+                self.translation_unit = index.parse(self.file, self.flags)
+            else:
+                self.translation_unit = index.parse(self.file, self.flags, None, cindex.TranslationUnit.PARSE_SKIP_FUNCTION_BODIES | cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
+            self.model = CxxNode(self.translation_unit.cursor)
+
+            if self.translation_unit.diagnostics:
+                for diag in self.translation_unit.diagnostics:
+                    print (diag, file=sys.stderr)        
+        except cindex.TranslationUnitLoadError:
+            print(f"Error: LibClang was unable to parse {self.file}", file=sys.stderr)
+            pass
 
     def cursor_class_inherits_from(self, cursor):
         collected_classes = []

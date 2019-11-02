@@ -199,14 +199,6 @@ list(APPEND fileListSharedEntities
     shared/entities/entityfactory.cpp
 )
 
-list(APPEND listOfFileList
-    fileListEngine
-    fileListShared
-    fileListGame
-    fileListSharedEntities
-    fileListGameEntities
-)
-
 list(APPEND fileList
     ${fileListEngine}
     ${fileListShared}
@@ -230,7 +222,7 @@ function(GenerateBindingFor input_file ide_folder)
         add_custom_command(
             OUTPUT ${output_file_target}
             WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-            COMMAND ${PYTHON} ${CMAKE_CURRENT_LIST_DIR}/binding/index.py gen ${input_file} ${output_file_target}
+            COMMAND ${PYTHON} ${CMAKE_CURRENT_LIST_DIR}/binding/index.py gen ${CMAKE_CURRENT_BINARY_DIR} ${input_file} ${output_file_target}
             COMMENT "Preprocessing ${input_file}"
             DEPENDS ${input_file}
         )
@@ -245,6 +237,35 @@ function(GenerateBindingFor input_file ide_folder)
         set(generatedFileList ${generatedFileList} PARENT_SCOPE)
 
         source_group(${ide_folder} FILES ${output_file_target})
+    endif()
+endfunction()
+
+
+function(StoreCompileFlagsFor input_file)
+    if(${input_file} MATCHES "\.cpp$")
+        execute_process(
+            COMMAND ${PYTHON} ${CMAKE_CURRENT_LIST_DIR}/binding/index.py cmake_output ${input_file}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+            OUTPUT_VARIABLE input_file_target
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        get_filename_component(output_file_target ${CMAKE_CURRENT_BINARY_DIR}/${input_file_target} ABSOLUTE)
+        get_filename_component(output_file_target ${CMAKE_CURRENT_BINARY_DIR}/${input_file_target} ABSOLUTE)
+
+        get_source_file_property(input_file_loc ${input_file} LOCATION)
+        get_source_file_property(input_file_cxxflags ${input_file_loc} ABSTRACT)
+        message("${input_file} >>> ${input_file_cxxflags}")
+        get_target_property(target_cxxflags Polyhedron INCLUDE_DIRECTORIES)
+        message("target >>> ${target_cxxflags}")
+
+        add_custom_command(
+            OUTPUT ${output_file_target}_cxxflags
+            WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+            COMMAND ${PYTHON} ${CMAKE_CURRENT_LIST_DIR}/binding/index.py setflags ${output_file_target} \"${input_file_cxxflags}\"
+            COMMENT "Set CXXFLAGS ${input_file} \"${input_file_cxxflags}\""
+            DEPENDS ${input_file}
+            VERBATIM
+        )
     endif()
 endfunction()
 
@@ -369,4 +390,3 @@ if (APPLE)
     #     MACOSX_PACKAGE_LOCATION Resources/MainMenu.nib
     # )
 endif()
-

@@ -1,9 +1,10 @@
 from autobind.fileiterator import ForEachTranslationUnitInDirectory
-from autobind.compileflags import CompileFlagsFor, ForEachCompileFile
+from autobind.compileflags import CompileFlagsFor
 from autobind.parsecpp import CppParser 
 from autobind.generator import CubeScriptBinding, JsonSerializer
 import sys
 import os
+import json
 
 CompileCommandsFolder = "build"
 
@@ -43,41 +44,34 @@ def file_write_data(file, data):
 
 
 def debug_dump(file):
-    parser = CppParser(CompileCommandsFolder, file)
+    parser = CppParser(file)
     parser.start()
     parser.tree_generate()
     parser.dump_tree()
 
 def debug_cppmodel(file):
-    parser = CppParser(CompileCommandsFolder, file)
+    parser = CppParser(file)
     parser.start()
     parser.cppmodel_generate()
     parser.dump_cppmodel()
 
-def generate_code(file, outputfile):
-    parser = CppParser(CompileCommandsFolder, file)
-    parser.start()
+def generate_code(buildFolder, file, outputfile):
+    parser = CppParser(buildFolder, file)
+    parser.start(outputfile)
     parser.cppmodel_generate()
-    fileMid = CubeScriptBinding.GenerateWithoutMacros(parser.cppmodel())
 
-    token_in = "// >>>>>>>>>> SCRIPTBIND >>>>>>>>>>>>>> //"
-    token_out = "// <<<<<<<<<< SCRIPTBIND <<<<<<<<<<<<<< //"
-    fileTop = file_get_contents_upto(file, token_in)
-    fileBottom = file_get_contents_from(file, token_out)
-    fileSerializer = JsonSerializer.Generate(parser.cppmodel())
+    generatedCubeScript = CubeScriptBinding.GenerateWithoutMacros(parser.cppmodel())
+    generatedJsonSerializer = JsonSerializer.Generate(parser.cppmodel())
 
-    if (fileTop and fileTop != "\n") or (fileSerializer and fileSerializer != "\n"):
-        # if fileMid:
-        #     file_write_data(file, fileTop + "\n\n" + token_in + "\n#if 0\n#include \"" + outputfile + "\"\n#endif\n" + token_out + "\n" + fileBottom)
-        # else:
-        #     file_write_data(file, fileTop + "\n\n" + token_in + "\n" + token_out + "\n" + fileBottom)
-
-        file_write_data(outputfile, fileMid + "\n\n" + fileSerializer)
-    # else:
-    #     file_write_data(outputfile, "// >>>>>>>>>> SCRIPTBIND >>>>>>>>>>>>>> //\n// #error |{}|\n// >>>>>>>>>> SCRIPTBIND >>>>>>>>>>>>>> //\n".format(fileTop))
+    if (generatedCubeScript and generatedCubeScript != "\n") or (generatedJsonSerializer and generatedJsonSerializer != "\n"):
+        file_write_data(outputfile, generatedCubeScript + "\n\n" + generatedJsonSerializer)
+        print ("ok")
+    else:
+        file_write_data(outputfile, "")
+        print ("ok empty")
 
 def find_deps(file, commonRoot):
-    parser = CppParser(CompileCommandsFolder, file, skipComments = True)
+    parser = CppParser(file, skipComments = True)
     parser.start(skipFunctionBodies = True)
     parser.cppmodel_find_includes(commonRoot)
     # parser.dump_code()
@@ -114,6 +108,13 @@ def output_sources():
         bindfilelist.append(calculate_output(file))
     print(";".join(bindfilelist))
 
+def store_includes(folder, flags):
+    storeFile = os.path.abspath(os.path.join(folder, "include_dir_def.json"))
+    includeStruct = flags
+    print (f"Storing to {storeFile} flags {includeStruct}")
+    with open(storeFile, "w+") as file:
+        json.dump(includeStruct, file)
+
 def usage():
     print("Usage: {} (dump|cppmodel|gen) <file> | (binding|input|ouput)".format(sys.argv[0]), file=sys.stderr)
     print("    Command used: {}".format(" ".join(sys.argv)), file=sys.stderr)
@@ -124,9 +125,9 @@ if __name__ == "__main__":
     #     print ("{}\n\t{}".format(file, " ".join(flags)))
 
     args = sys.argv[1:]
-    if len(args) == 3:
+    if len(args) == 4:
         if args[0] == "gen":
-            generate_code(args[1], args[2])
+            generate_code(args[1], args[2], args[3])
         else:
             usage()
     elif len(args) == 2:
@@ -151,5 +152,7 @@ if __name__ == "__main__":
             output_sources()
         else:
             usage()
+    elif args[0] == "default_includes":
+        store_includes(args[1], list(args[2:]))
     else:
         usage()

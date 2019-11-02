@@ -684,6 +684,7 @@ bool save_world(const char *mname, bool nolms)
 
     // Generate JSON Entity filename.
     defformatcubestr(jsonname, "media/map/%s.json", mname);
+    path(jsonname);
 
     // Save JSON to file.
     // TODO: Use the streams that the engine provides instead.
