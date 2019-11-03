@@ -278,9 +278,7 @@ void clearlightcache(int id)
 {
     if(id >= 0)
     {
-        const auto light = dynamic_cast<entities::classes::BaseEntity *>(entities::getents()[id]);
-        if (!light)
-			return;
+        const auto light = entities::getents()[id];
         
 		int radius = light->attr1;
         if(radius <= 0) return;

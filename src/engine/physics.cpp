@@ -176,7 +176,7 @@ static float disttoent(octaentities *oc, const vec &o, const vec &ray, float rad
     return dist;
 }
 
-static float disttooutsideent(const vec &o, const vec &ray, float radius, int mode, entities::classes::BasePhysicalEntity *t)
+static float disttooutsideent(const vec &o, const vec &ray, float radius, int mode, entities::classes::CoreEntity *t)
 {
     vec eo, es;
     int orient;
@@ -184,7 +184,7 @@ static float disttooutsideent(const vec &o, const vec &ray, float radius, int mo
     const auto &ents = entities::getents();
     loopv(outsideents)
     {
-        auto e = dynamic_cast<entities::classes::BaseEntity *>(ents[outsideents[i]]);
+        auto e = ents[outsideents[i]];
         if (!e)
 			continue;
 			

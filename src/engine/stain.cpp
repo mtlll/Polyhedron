@@ -689,8 +689,7 @@ struct stainrenderer
         const auto &ents = entities::getents();
         loopv(oe.mapmodels)
         {
-            auto e = dynamic_cast<entities::classes::BaseEntity *>(ents[oe.mapmodels[i]]);
-            if (!e) continue;
+            auto e = ents[oe.mapmodels[i]];
             
 			model *m = loadmapmodel(e->model_idx);
             if(!m) continue;

@@ -3016,9 +3016,9 @@ void initenvmaps()
     const auto &ents = entities::getents();
     loopv(ents)
     {
-        const auto ent = dynamic_cast<const entities::classes::BaseEntity *>(ents[i]);
-        if (!ent) continue;
+        const auto ent = ents[i];
 		if(ent->et_type != ET_ENVMAP) continue;
+		
         envmap &em = envmaps.add();
 		em.radius = ent->attr1 ? clamp(int(ent->attr1), 0, 10000) : envmapradius;
 		em.size = ent->attr2 ? clamp(int(ent->attr2), 4, 9) : 0;

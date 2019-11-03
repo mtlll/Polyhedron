@@ -6,9 +6,6 @@ namespace entities
 {
     namespace classes
     {
-
-        // The base entity class for any model. (This could be a tree, or even doors and other interactive items.)
-        // NOTE: Never change its type, it is MAPMODEL for a reason.
         class BaseMapModel : public BaseDynamicEntity {
 			ENTITY_FACTORY_IMPL(BaseMapModel);
         public:
@@ -22,6 +19,7 @@ namespace entities
             virtual void onAttributeSet(const std::string &key, const std::string &value);
             virtual void onAnimate(int &anim, int &basetime);
 
+            virtual bool getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const;
         public:
             void preloadMapModel(const std::string &filename);
 
@@ -31,11 +29,6 @@ namespace entities
         private:
             DONTSERIALIZE mapmodelinfo mmi;
             std::string filename;
-
-        public:
-        //
-        // Entity Factory functions.
-        //
         };
 		
     } // classes
