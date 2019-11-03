@@ -34,7 +34,8 @@ def CompileFlagsFor(file, buildFolder):
                         flags.append(c) 
             return NormalizeCompileFlags(buildFolder, flags)
 
-    return NormalizeCompileFlags(buildFolder, cached_flags)
+    raise RuntimeError(f"Missing entry for {file} in compile_commands.json in {buildFolder}! Perhaps you have to regenerate the compile_commands.json?")
+
 
 def NormalizeCompileFlags(buildFolder, flags):
     oldworkdir = os.getcwd()

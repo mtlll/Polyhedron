@@ -67,6 +67,7 @@ namespace entities {
             
             void setName(const std::string &str = "coreentity");
             
+            virtual bool getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const;
             virtual void renderForEdit();
             virtual void renderForEditGui();
             virtual void renderSelected(int entselradius, int entorient);

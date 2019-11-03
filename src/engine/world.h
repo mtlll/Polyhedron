@@ -65,3 +65,5 @@ ET* getentitybytype(int searchStartIndex = 0)
 
 	return nullptr;
 }
+
+entities::classes::CoreEntity *new_game_entity(bool local, const vec &o, int &idx, const char *strclass = "");

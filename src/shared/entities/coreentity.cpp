@@ -69,6 +69,18 @@ void CoreEntity::loadFromJson(const nlohmann::json& document) {
 	fromJsonImpl(document);
 }
 
+bool CoreEntity::getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const
+{
+	if (et_type == ET_EMPTY)
+	{
+		return false;
+	}
+	
+	minbb = ivec(vec(o).sub(entselradius));
+	maxbb = ivec(vec(o).add(entselradius+1));
+	return true;
+}
+
 void CoreEntity::renderForEdit()
 {
 

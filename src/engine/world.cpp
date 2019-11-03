@@ -42,7 +42,8 @@ static inline void decalboundbox(const entities::classes::CoreEntity *e, DecalSl
 
 bool getentboundingbox(const entities::classes::CoreEntity *e, ivec &o, ivec &r)
 {
-	switch(e->et_type)
+	return e->getBoundingBox(entselradius, o, r);
+	/*switch(e->et_type)
     {
         case ET_EMPTY:
             return false;
@@ -74,7 +75,7 @@ bool getentboundingbox(const entities::classes::CoreEntity *e, ivec &o, ivec &r)
 			r = ivec(vec(e->o).add(entselradius+1));
             break;
     }
-    return true;
+    return true;*/
 }
 
 enum
@@ -160,8 +161,7 @@ void modifyoctaentity(int flags, int id, entities::classes::CoreEntity *e, cube 
                     oe.bbmin.add(oe.size);
                     loopvj(oe.decals)
                     {
-                        auto e = dynamic_cast<entities::classes::BaseEntity *>(ents[oe.decals[j]]);
-                        if (!e) continue;
+                        auto e = ents[oe.decals[j]];
                         ivec eo, er;
                         if(getentboundingbox(e, eo, er))
                         {
@@ -210,8 +210,7 @@ void modifyoctaentity(int flags, int id, entities::classes::CoreEntity *e, cube 
 						oe.bbmin.add(oe.size);
 						loopvj(oe.mapmodels)
 						{
-							auto e = dynamic_cast<entities::classes::BaseEntity *>(ents[oe.mapmodels[j]]);
-							if (!e) continue;
+							auto e = ents[oe.mapmodels[j]];
 							
 							ivec eo, er;
 							if(getentboundingbox(e, eo, er))
@@ -446,7 +445,7 @@ undoblock *newundoent()
     {
         e->i = entgroup[i];
         assert(ents.length() > entgroup[i]);
-        e->e = dynamic_cast<entities::classes::BaseEntity*>(ents[entgroup[i]]);
+        e->e = ents[entgroup[i]];
         e++;
     }
     return u;
@@ -489,7 +488,7 @@ void attachentity(entities::classes::CoreEntity *e)
     float closedist = 1e10f;
     loopv(ents)
     {
-        auto a = dynamic_cast<entities::classes::BaseEntity *>(ents[i]);
+        auto a = ents[i];
         if (!a) continue;
         
         if(a->attached) continue;
@@ -511,8 +510,8 @@ void attachentity(entities::classes::CoreEntity *e)
         }
     }
     if(closedist>attachradius) return;
-    e->attached = dynamic_cast<entities::classes::BaseEntity *>(ents[closest]);
-    ents[closest]->attached = dynamic_cast<entities::classes::BaseEntity *>(e);
+    e->attached = ents[closest];
+    ents[closest]->attached = e;
 }
 
 void attachentities()
@@ -580,7 +579,7 @@ void pasteundoent(int idx,  entities::classes::CoreEntity* ue)
 		ents.add(ne)->et_type = ET_EMPTY;
 	}
     int efocus = -1;
-    entedit(idx, e = dynamic_cast<entities::classes::BaseEntity*>(ue));
+    entedit(idx, e = ue);
 }
 
 void pasteundoents(undoblock *u)
@@ -1125,10 +1124,21 @@ entities::classes::CoreEntity *newentity(bool local, const vec &o, int type, int
     if(local)
     {
         idx = -1;
-        for(int i = keepents; i < ents.length(); i++) if(ents[i]->et_type == ET_EMPTY) { idx = i; break; }
-        if(idx < 0 && ents.length() >= MAXENTS) { conoutf("too many entities"); return NULL; }
+        for(int i = keepents; i < ents.length(); i++)
+        {
+			if(ents[i]->et_type == ET_EMPTY)
+			{
+				idx = i; break;
+			}
+		}
+        if(idx < 0 && ents.length() >= MAXENTS)
+        {
+			conoutf("too many entities");
+			return NULL;
+		}
     } else {
-        while(ents.length() < idx) {
+        while(ents.length() < idx)
+        {
             ents.add(entities::newgameentity(""))->et_type = ET_EMPTY;
         }
     }
@@ -1146,8 +1156,16 @@ entities::classes::CoreEntity *newentity(bool local, const vec &o, int type, int
     e->reserved = 0;
 	e->name = "tesseract_ent_" + std::to_string(idx);
 
-    if(ents.inrange(idx)) { entities::deletegameentity(ents[idx]); ents[idx] = e; }
-    else { idx = ents.length(); ents.add(e); }
+    if(ents.inrange(idx))
+    {
+		entities::deletegameentity(ents[idx]);
+		ents[idx] = e;
+	}
+    else
+    {
+		idx = ents.length();
+		ents.add(e);
+	}
 	return e;
 }
 
@@ -1175,7 +1193,7 @@ SCRIPTEXPORT void newent(char *what, int *a1, int *a2, int *a3, int *a4, int *a5
 // WatIs: Game entity creation.
 #include "../game/game.h"
 
-entities::classes::CoreEntity *new_game_entity(bool local, const vec &o, int &idx, char *strclass = nullptr)
+entities::classes::CoreEntity *new_game_entity(bool local, const vec &o, int &idx, const char *strclass)
 {
     // Retreive the list of entities.
     auto &ents = entities::getents();
@@ -1226,6 +1244,16 @@ entities::classes::CoreEntity *new_game_entity(bool local, const vec &o, int &id
 		idx = ents.length();
         ents.add(ent);
 	}
+	
+	auto new_et_type = ent->et_type;
+	auto new_ent_type = ent->ent_type;
+	auto new_game_type = ent->game_type;
+
+	enttoggle(idx);
+	makeundoent();
+	entedit(idx, e->et_type = new_et_type; e->ent_type = new_ent_type; e->game_type = new_game_type);
+	commitchanges();
+	
     return ent;
 }
 

@@ -1435,17 +1435,13 @@ void updateparticles()
         // note: order matters in this case as particles of the same type are drawn in the reverse order that they are added
         loopv(entgroup)
         {
-            auto e = dynamic_cast<entities::classes::BaseEntity *>(ents[entgroup[i]]);
-            if (!e)
-				continue;
+            auto e = ents[entgroup[i]];
 				
 			particle_textcopy(e->o, entname(e), PART_TEXT, 1, 0xFF4B19, 2.0f);
         }
         loopv(ents)
         {
-            auto e = dynamic_cast<entities::classes::BaseEntity *>(ents[i]);
-            if (!e)
-				continue;
+            auto e = ents[i];
 			if(e->et_type == ET_EMPTY)
 				continue;
 				

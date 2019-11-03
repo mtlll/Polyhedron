@@ -2,7 +2,7 @@
 
 #include "engine.h"
 #include "ents.h"
-#include "shared/entities/baseentity.h"
+#include "shared/entities/decalentity.h"
 
 
 using namespace entities;
@@ -426,7 +426,7 @@ struct vacollect : verthash
             octaentities *oe = extdecals[i];
             loopvj(oe->decals)
             {
-                auto e = dynamic_cast<entities::classes::BaseEntity *>(ents[oe->decals[j]]);
+                auto e = dynamic_cast<entities::classes::DecalEntity *>(ents[oe->decals[j]]);
                 if (!e)
 					continue;
 					
@@ -444,7 +444,7 @@ struct vacollect : verthash
             octaentities *oe = extdecals[i];
             loopvj(oe->decals)
             {
-                auto e = dynamic_cast<entities::classes::BaseEntity *>(ents[oe->decals[j]]);
+                auto e = dynamic_cast<entities::classes::DecalEntity *>(ents[oe->decals[j]]);
                 if (!e)
 					continue;
 

@@ -195,6 +195,8 @@ list(APPEND fileListSharedEntities
     shared/entities/basedynamicentity.h
     shared/entities/basephysicalentity.cpp
     shared/entities/basephysicalentity.h
+    shared/entities/decalentity.h
+    shared/entities/decalentity.cpp
     shared/entities/entityfactory.h
     shared/entities/entityfactory.cpp
 )

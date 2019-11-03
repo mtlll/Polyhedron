@@ -4,6 +4,20 @@
 #include "basemapmodel.h"
 #include "shared/entities/entityfactory.h"
 
+namespace {
+	static inline void transformbb(const entities::classes::CoreEntity *e, vec &center, vec &radius)
+	{
+		if(e->attr5 > 0) { float scale = e->attr5/100.0f; center.mul(scale); radius.mul(scale); }
+		rotatebb(center, radius, e->attr2, e->attr3, e->attr4);
+	}
+
+	static inline void mmboundbox(const entities::classes::CoreEntity *e, model *m, vec &center, vec &radius)
+	{
+		m->boundbox(center, radius);
+		transformbb(e, center, radius);
+	}
+}
+
 namespace entities {
 namespace classes {
 
@@ -35,6 +49,24 @@ void BaseMapModel::think() {
 void BaseMapModel::render() {
 
 }
+
+bool BaseMapModel::getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const
+{
+    if(model *m = loadmapmodel(model_idx))
+    {
+        vec center, radius;
+        mmboundbox(this, m, center, radius);
+        center.add(o);
+        radius.max(entselradius);
+        minbb = ivec(vec(center).sub(radius));
+        maxbb = ivec(vec(center).add(radius).add(1));
+
+        return true;
+    }
+
+    return false;
+}
+
 
 void BaseMapModel::onAttributeSet(const std::string &key, const std::string &value) {
     if (key == "model" && filename != value) {

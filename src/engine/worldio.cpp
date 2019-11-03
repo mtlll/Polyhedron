@@ -31,7 +31,7 @@ SCRIPTEXPORT void fixmapname(char *name)
     validmapname(name, name, NULL, "");
 }
 
-static void fixent(entities::classes::BasePhysicalEntity *e, int version)
+static void fixent(entities::classes::CoreEntity *e, int version)
 {
     if(version <= 0)
     {
@@ -835,10 +835,10 @@ bool load_world(const char *mname, const char *cname)        // Does not support
                 conoutf(CON_WARN, "Parsing %s: Missing 'class' entry, falling back to default class: '%s'", jsonname, classname.c_str());
             }
 
-            entities::classes::CoreEntity *ent = entities::newgameentity(classname.c_str());
+            vec pos;
+            int index = -1;
+            entities::classes::CoreEntity *ent = new_game_entity(true, pos, index, classname.c_str());
 			ent->loadFromJson(element);
-			
-			ents.add(ent);
 		}
 	}
     catch (json::type_error& e)	{

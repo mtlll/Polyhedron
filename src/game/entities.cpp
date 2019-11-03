@@ -93,15 +93,15 @@ namespace entities
 
 	// Returns the entity class respectively according to its registered name.
 	entities::classes::CoreEntity *newgameentity(const char *strclass) {
-			auto e = entities::EntityFactory::constructEntity(std::string(strclass));
+		auto e = entities::EntityFactory::constructEntity(std::string(strclass));
 
-			if (e) {
-				conoutf("Returned %s", strclass);
-			} else {
-				conoutf("Failed to create %s", strclass);
-			}
+		if (e) {
+			conoutf("Returned %s", strclass);
+		} else {
+			conoutf("Failed to create %s", strclass);
+		}
 
-			return e;
+		return e;
 	}
 	// Deletes the entity class in specific.
 	void deletegameentity(entities::classes::CoreEntity *e) {
