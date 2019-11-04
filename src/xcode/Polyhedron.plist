@@ -4,51 +4,14 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>dmo</string>
-			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>Maps.icns</string>
-			<key>CFBundleTypeName</key>
-			<string>Tesseract demo</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>ogz</string>
-			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>Maps.icns</string>
-			<key>CFBundleTypeName</key>
-			<string>Tesseract map</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
-		</dict>
-	</array>
 	<key>CFBundleExecutable</key>
-	<string>tesseract</string>
+	<string>Polyhedron</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>help</string>
-	<key>CFBundleHelpBookName</key>
-	<string>Tesseract help</string>
 	<key>CFBundleIconFile</key>
-	<string>tesseract</string>
+	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.dot3labs.tesseract</string>
+	<string>com.pag.polyhedron</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -61,10 +24,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>TesseractServer</string>
+			<string>PolyhedronServer</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>tesseract</string>
+				<string>polyhedron</string>
 			</array>
 		</dict>
 	</array>
@@ -73,9 +36,9 @@
 	<key>LSMinimumSystemVersionByArchitecture</key>
 	<dict>
 		<key>i386</key>
-		<string>10.5.0</string>
+		<string>10.10.0</string>
 		<key>x86_64</key>
-		<string>10.6.0</string>
+		<string>10.10.0</string>
 	</dict>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>

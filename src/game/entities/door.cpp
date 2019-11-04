@@ -29,7 +29,7 @@ Door::Door() :  entities::classes::BaseMapModel("world/door") {
 }
 
 void Door::preload() {
-
+	BaseMapModel::preload();
 }
 void Door::think() {
 
