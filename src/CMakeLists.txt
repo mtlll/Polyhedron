@@ -306,10 +306,9 @@ if (APPLE)
         xcode/English.lproj/MainMenu.xib
         xcode/Launcher.h
         xcode/Launcher.m
-        xcode/Maps.icns
         xcode/main.m
-        xcode/tesseract.icns
         xcode/Polyhedron.plist    
+        xcode/Polyhedron.xcassets
     )
     add_executable(Polyhedron MACOSX_BUNDLE
         ${generatedFileList}
