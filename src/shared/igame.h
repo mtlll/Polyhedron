@@ -2,13 +2,7 @@
 
 namespace entities
 {
-    // Predefined.
-    namespace classes {
-        class BaseEntity;
-    }
-
     extern void editent(int i, bool local);
-    extern const char *entnameinfo(entities::classes::CoreEntity *e);
     extern const char *entname(int i);
     extern float dropheight(entities::classes::CoreEntity *e);
     extern void fixentity(entities::classes::CoreEntity *e);
@@ -16,7 +10,7 @@ namespace entities
     extern bool mayattach(entities::classes::CoreEntity *e);
     extern bool attachent(entities::classes::CoreEntity *e, entities::classes::CoreEntity *a);
     extern bool printent(entities::classes::CoreEntity *e, char *buf, int len);
-    extern entities::classes::CoreEntity *newgameentity(const char *strclass);
+//    extern entities::classes::CoreEntity *newgameentity(const char *strclass);
     extern void deletegameentity(entities::classes::CoreEntity *e);
     extern void clearents();
     extern vector<entities::classes::CoreEntity *> &getents();

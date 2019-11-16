@@ -12,7 +12,7 @@ DynamicLight::DynamicLight() : BasePhysicalEntity() {
     et_type = ET_GAMESPECIFIC;
     game_type = GAMEENTITY;
 
-    setName("DynamicLight");
+    setAttribute("name", "DynamicLight");
 }
 
 

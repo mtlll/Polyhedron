@@ -2527,6 +2527,7 @@ SCRIPTEXPORT void looptexmru(ident *id, CommandTypes::Expression body)
     }
     loopend(id, stack);
 }
+
 SCRIPTEXPORT void numvslots()
 {
     intret(vslots.length());

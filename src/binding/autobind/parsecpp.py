@@ -9,6 +9,7 @@ from .cppmodel.CxxFunction import CxxFunction
 from .cppmodel.CxxClass import CxxClass
 from .cppmodel.CxxVariable import CxxVariable
 from .cppmodel.CxxInclude import CxxInclude
+from .cppmodel.PhuiElement import PhuiElement
 
 
 libclang_paths = [
@@ -137,12 +138,13 @@ class CppParser:
                     if (cursor.kind in [cindex.CursorKind.FIELD_DECL]):
                         first_child = next(cursor.get_children(), None)
                         if not first_child is None:
-                            if first_child.kind == cindex.CursorKind.ANNOTATE_ATTR and first_child.spelling.startswith(DONTSERIALIZE_ANNOTATION):
-                                print(">>> class {} DONTSERIALIZE field({}) {}".format(parent.sourceObject.spelling, cursor.kind, cursor.spelling), file=sys.stderr)                            
-                            else:
-                                print(">>> class {} field({}) {}".format(parent.sourceObject.spelling, cursor.kind, cursor.spelling), file=sys.stderr)
-                                return CxxVariable(cursor, parent)
-                pass
+                            if first_child.kind == cindex.CursorKind.ANNOTATE_ATTR:
+                                if first_child.spelling.startswith(DONTSERIALIZE_ANNOTATION):
+                                    print(">>> class {} DONTSERIALIZE field({}) {}".format(parent.sourceObject.spelling, cursor.kind, cursor.spelling), file=sys.stderr)
+                                    return None
+                        print(">>> class {} field({}) {}".format(parent.sourceObject.spelling, cursor.kind, cursor.spelling), file=sys.stderr)
+                        return CxxVariable(cursor, parent)
+
             return None
 
         def iterate(tree, node, file):
@@ -154,6 +156,7 @@ class CppParser:
                     iterate(tree_node, c, file)
 
         iterate(self.model, self.translation_unit.cursor, self.file)
+
 
     def cppmodel_find_includes(self, commonRootDir):
         commonRoot = os.path.abspath(commonRootDir)

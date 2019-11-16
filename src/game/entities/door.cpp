@@ -11,7 +11,7 @@ namespace classes {
 
 Door::Door() :  entities::classes::BaseMapModel("world/door") {
     // Reset.
-    setName("Door");
+    setAttribute("name", "Door");
 
     // Setup the door its states.
     state = CS_ALIVE;
