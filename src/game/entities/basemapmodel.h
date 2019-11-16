@@ -16,7 +16,6 @@ namespace entities
             virtual void think();
             virtual void render();
 
-            virtual void onAttributeSet(const std::string &key, const std::string &value);
             virtual void onAnimate(int &anim, int &basetime);
 
             virtual bool getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const;
@@ -28,7 +27,7 @@ namespace entities
 
         private:
             DONTSERIALIZE mapmodelinfo mmi;
-            std::string filename;
+            PHUI_INPUT("Model") std::string modelname;
         };
 		
     } // classes

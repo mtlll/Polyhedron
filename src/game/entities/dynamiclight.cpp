@@ -33,6 +33,11 @@ void DynamicLight::setState(DYNAMIC_LIGHT_STATE &_lightState) {
     lightState = _lightState;
 }
 
+
+void DynamicLight::on(const Event& event)
+{
+}
+
 } // classes
 } // entities
 

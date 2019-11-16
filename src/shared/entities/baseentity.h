@@ -25,7 +25,6 @@ namespace entities
             // OnEvent callbacks.
             //
             // Can be used to call functions given on which key changed into what value.
-            virtual void onAttributeSet(const std::string &key, const std::string &value);
             // otherEnt = the entity which has triggered you.
             virtual bool onTrigger(const CoreEntity *otherEnt, const vec &dir);
             // otherEnt = the entity which has touched you.

@@ -13,11 +13,14 @@ void BaseEntity::renderForEditGui() {}
 //
 // OnEvent callbacks.
 //
-void BaseEntity::onAttributeSet(const std::string &key, const std::string &value) {}
 bool BaseEntity::onTrigger(const entities::classes::CoreEntity *otherEnt, const vec &dir) { return false; }
 bool BaseEntity::onTouch(const entities::classes::CoreEntity *otherEnt, const vec &dir) { return false; }
 bool BaseEntity::onUse(CoreEntity *otherEnt, const vec &dir) { return false; }
 
+
+void BaseEntity::on(const Event& event)
+{
+}
 
 } // classes
 } // entities

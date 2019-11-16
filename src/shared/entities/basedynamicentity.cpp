@@ -21,6 +21,11 @@ vec BaseDynamicEntity::abovehead() {
     return vec(o).addz(aboveeye+4);
 }
 
+
+void BaseDynamicEntity::on(const Event& event)
+{
+}
+
 } // classes
 } // entities
 
