@@ -406,7 +406,12 @@ model *loadmodel(const char *name, int i, bool msg)
 	if(mm) m = *mm;
 	else
 	{
-		if(!name[0] || loadingmodel || failedmodels.find(name, NULL)) return NULL;
+		if(
+			!name[0] ||	
+			loadingmodel ||
+			failedmodels.find(name, NULL)
+		)
+			return NULL;
 		if(msg)
 		{
 			defformatcubestr(filename, "media/model/%s", name);
@@ -440,10 +445,10 @@ mapmodelinfo loadmodelinfo(const char *name, entities::classes::CoreEntity *ent)
 
 	// Load in the model.
 	mmi.m = loadmodel(name, -1, true);
-	if (mmi.m != NULL) {
-		copycubestr(mmi.name, name, strlen(name));
-		ent->setAttribute("model", mmi.name);
-	}
+//	if (mmi.m != NULL) {
+//		copycubestr(mmi.name, name, strlen(name));
+//		ent->setAttribute("modelname", mmi.name);
+//	}
 
 	return mmi;
 }

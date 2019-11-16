@@ -41,6 +41,9 @@ bool BasePhysicalEntity::crouched() const {
     return fabs(eyeheight - maxheight*CROUCHHEIGHT) < 1e-4f;
 }
 
+void BasePhysicalEntity::on(const Event& event)
+{
+}
 
 } // classes
 } // entities

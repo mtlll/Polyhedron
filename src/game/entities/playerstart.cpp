@@ -25,6 +25,11 @@ void PlayerStart::reset() {
 
 }
 
+
+void PlayerStart::on(const Event& event)
+{
+}
+
 } // classes
 } // entities
 

@@ -63,6 +63,11 @@ bool Door::onTouch(const entities::classes::CoreEntity *otherEnt, const vec &dir
 }
 
 
+void Door::on(const Event& event)
+{
+}
+
+
 } // classes
 } // entities
 

@@ -1,3 +1,4 @@
+
 #include "decalentity.h"
 #include "engine/texture.h"
 #include "engine/engine.h"
@@ -21,7 +22,13 @@ bool DecalEntity::getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) con
 		radius.max(entselradius);
 		minbb = ivec(vec(center).sub(radius));
 		maxbb = ivec(vec(center).add(radius).add(1));
+		return true;
 	}
+	return false;
+}
+
+void DecalEntity::on(const Event& event)
+{
 }
 
 

@@ -186,6 +186,7 @@ def GenerateAttributeSetter(cxxClass):
     body = "\n\t".join(output)
     return f"""void {templateValues['className']}::setAttributeImpl(const std::string &key, const entities::attribute_T &value)
 {{
+\tEntityEventAttributeChanged changedEvent(key);
 \t{body}
 }}
 """
@@ -209,6 +210,7 @@ def GenerateAttributeSetterVariable(cxxVar, hasElse):
         {{
 			{cxxVar} = std::visit(AttributeVisitCoercer<decltype({cxxVar})>(), value);
         }}
+        onImpl(changedEvent);
 	}}""")
 
     return output

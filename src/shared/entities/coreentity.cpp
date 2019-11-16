@@ -39,11 +39,6 @@ void entities::classes::CoreEntity::clearspawned()
     flags &= ~entities::EntityFlags::EF_SPAWNED;
 }
 
-void entities::classes::CoreEntity::onSelected(bool selected)
-{
-	this->selected = selected;
-}
-
 void entities::classes::CoreEntity::saveToJsonImpl(nlohmann::json& document)
 {
 	document[classname] = {};
@@ -147,6 +142,51 @@ void entities::classes::CoreEntity::renderMoveShadow(int entselradius, int size)
 	(a = eo).x = eo.x - fmod(eo.x, size); (b = es).x = a.x + size; boxs3D(a, b, 1);
 	(a = eo).y = eo.y - fmod(eo.y, size); (b = es).y = a.x + size; boxs3D(a, b, 1);
 	(a = eo).z = eo.z - fmod(eo.z, size); (b = es).z = a.x + size; boxs3D(a, b, 1);
+}
+
+void entities::classes::CoreEntity::onImpl(const Event& event)
+{
+	on(event);
+}
+
+void entities::classes::CoreEntity::on(const Event& event)
+{
+	switch(event.type)
+	{
+		case EntityEventType::AttributeChanged:
+		break;
+		case EntityEventType::Hover:
+		break;
+		case EntityEventType::Selected:
+			selected = true;
+		break;
+		case EntityEventType::Deselected:
+			selected = false;
+		break;
+		case EntityEventType::Touched:
+		break;
+		case EntityEventType::Tick:
+		break;
+		case EntityEventType::Use:
+		break;
+		case EntityEventType::Trigger:
+		break;
+		case EntityEventType::Precache:
+		break;
+
+		default:
+		case EntityEventType::None:
+		case EntityEventType::Count:
+		break;
+	}
+}
+
+void entities::send_entity_event(classes::CoreEntity* entity, const Event& event)
+{
+	if (entity)
+	{
+		entity->onImpl(event);
+	}
 }
 
 void entities::classes::from_json(const nlohmann::json& document,  entities::classes::CoreEntity* entity_ptr)

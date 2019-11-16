@@ -27,6 +27,69 @@ namespace entities {
 	inline int& operator&= (EntityEditorState& a, EntityEditorState b) { return ((int&)a &= (int)b); }
 	inline int& operator^= (EntityEditorState& a, EntityEditorState b) { return ((int&)a ^= (int)b); }
 
+
+	enum class EntityEventType
+	{
+		None,
+		Tick,
+		AttributeChanged,
+		Selected,
+		Deselected,
+		Hover,
+		Touched,
+		Use,
+		Trigger,
+		Precache,
+		
+		Count
+	};
+	
+	struct Event
+	{
+		Event(EntityEventType type)
+			: type(type)
+		{}
+		const EntityEventType type = EntityEventType::None;
+	};
+
+	template <EntityEventType E>
+	struct EntityEvent : public Event
+	{
+		EntityEvent()
+			: Event(E)
+		{}
+	};
+	
+	template <EntityEventType E, typename T>
+	struct EntityEventData : public EntityEvent<E>
+	{
+		EntityEventData(const T& payload)
+			: EntityEvent<E>()
+			, payload(payload)
+		{}
+		
+		const T& payload = {};
+	};
+	
+	struct EntityEventAttributeChanged : public EntityEventData<EntityEventType::AttributeChanged, std::string>
+	{
+		EntityEventAttributeChanged(const std::string& key)
+			: EntityEventData<EntityEventType::AttributeChanged, std::string>(key)
+		{}
+	};
+	
+	struct EntityEventSelected : public EntityEvent<EntityEventType::Selected>
+	{
+	};
+
+	struct EntityEventDeselected : public EntityEvent<EntityEventType::Deselected>
+	{
+	};
+
+	struct EntityEventPrecache : public EntityEvent<EntityEventType::Precache>
+	{
+	};
+
     namespace classes {
 
         class CoreEntity
@@ -57,9 +120,7 @@ namespace entities {
             void setspawned(bool val);
             void setspawned();
             void clearspawned();
-            
-            virtual void onSelected(bool selected);
-                        
+                                    
             virtual bool getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const;
             virtual void renderForEdit();
             virtual void renderForEditGui();
@@ -78,6 +139,9 @@ namespace entities {
 		void from_json(const nlohmann::json& document,  entities::classes::CoreEntity& entity_t);
 		void to_json(nlohmann::json& document, const entities::classes::CoreEntity& entity_t);
     } // classes
+    
+	void send_entity_event(classes::CoreEntity* entity, const Event& event);
+	
 } // entities
 
 //void coreentity_attributes();

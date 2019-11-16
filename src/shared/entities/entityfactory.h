@@ -97,6 +97,10 @@ namespace entities {
 			attributeValue = getAttributeImpl(key);\
 		}\
 		return attributeValue;\
+	}\
+	void entities::classes::LOCALNAME::onImpl(const Event& event) {\
+		on(event);\
+		DERIVED::onImpl(event);\
 	}
 
 #define ENTITY_FACTORY_IMPL(LOCALNAME) \
@@ -114,4 +118,6 @@ namespace entities {
 	void setAttributeImpl(const std::string &key, const attribute_T &value);\
 	attribute_T getAttributeImpl(const std::string &key) const;\
 	static const attributeList_T attributes();\
+	virtual void onImpl(const Event& event);\
+	void on(const Event& event);\
     virtual ~LOCALNAME() = default;

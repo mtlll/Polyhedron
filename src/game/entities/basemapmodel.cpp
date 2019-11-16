@@ -23,7 +23,7 @@ namespace classes {
 
 BaseMapModel::BaseMapModel()
 {
-	et_type = MAPMODEL;
+	et_type = ET_MAPMODEL;
     ent_type = ENT_INANIMATE;
     game_type = GAMEENTITY;
     physstate = PHYS_FALL;
@@ -32,14 +32,14 @@ BaseMapModel::BaseMapModel()
     setAttribute("name", "model");
 }
 
-BaseMapModel::BaseMapModel(const std::string &filename) : BaseMapModel() {
-	this->filename = filename;
-	preloadMapModel(filename);
+BaseMapModel::BaseMapModel(const std::string &modelname) : BaseMapModel() {
+	this->modelname = modelname;
+	preloadMapModel(modelname);
 }
 
 
 void BaseMapModel::preload() {
-	preloadMapModel(filename);
+	preloadMapModel(modelname);
 }
 
 void BaseMapModel::think() {
@@ -67,33 +67,67 @@ bool BaseMapModel::getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) co
     return false;
 }
 
-
-void BaseMapModel::onAttributeSet(const std::string &key, const std::string &value) {
-    if (key == "model" && filename != value) {
-		filename = value;
-        preload();
-    }
-}
-
 void BaseMapModel::onAnimate(int &anim, int &basetime) {
     conoutf("OnAnimate: %i %i", anim, basetime);
 }
 
-void BaseMapModel::preloadMapModel(const std::string &filename) {
+void BaseMapModel::preloadMapModel(const std::string &modelname) {
     // In case this is the first time, a filename will be supplied for sure.
-    if (!filename.empty()) {
+    if (!modelname.empty()) {
         mmi = mapmodels.add();
-        mmi.m = loadmodel(filename.c_str(), -1, true);
-        mmi.collide = loadmodel(filename.c_str(), -1, true);
-        copycubestr(mmi.name, filename.c_str());
+        mmi.m = loadmodel(modelname.c_str(), -1, true);
+        if (mmi.m)
+        {
+			mmi.collide = loadmodel(modelname.c_str(), -1, true);
+			copycubestr(mmi.name, modelname.c_str());
 
-        // Copy into mmi.
-//		mmi = loadmodelinfo(filename.c_str(), this);
-		//mapmodels.add();
-        model_idx = mapmodels.length() + 1;
+			model_idx = mapmodels.length() + 1;
+        }
+        else
+        {
+			conoutf("BaseMapModel::preloadMapModel: couldn't load model: %s\n", modelname.c_str());
+		}
     } else {
         preloadMapModel("world/box");
     }
+}
+
+
+void BaseMapModel::on(const Event& event)
+{
+	switch(event.type)
+	{
+		case EntityEventType::AttributeChanged:
+		{
+			const EntityEventAttributeChanged& attrChangeEvent = static_cast<const EntityEventAttributeChanged&>(event);
+			
+			if (attrChangeEvent.payload == "modelname")
+			{
+				preload();
+			}
+		} break;
+		case EntityEventType::Hover:
+		break;
+		case EntityEventType::Selected:
+		break;
+		case EntityEventType::Deselected:
+		break;
+		case EntityEventType::Touched:
+		break;
+		case EntityEventType::Tick:
+		break;
+		case EntityEventType::Use:
+		break;
+		case EntityEventType::Trigger:
+		break;
+		case EntityEventType::Precache:
+		break;
+
+		default:
+		case EntityEventType::None:
+		case EntityEventType::Count:
+		break;
+	}
 }
 
 } // classes

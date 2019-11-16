@@ -65,18 +65,14 @@ namespace entities
 		{
 			if (getents().inrange(i) && getents()[i] != nullptr) {
 				// Let's go at it!
-				entities::classes::BaseEntity *e = dynamic_cast<entities::classes::BaseEntity*>(entities::getents()[i]);
-				if (!e)
-					continue;
-				// Ensure that they don't get preloaded in preload, should be done in the constructor of ET_MAPMODEL entities.
-				//if (e->et_type != ET_MAPMODEL)
-				e->preload();
+				auto entity = entities::getents()[i];
+				entities::send_entity_event(entity, entities::EntityEventPrecache());
 			 }
 		}
 
 		// Specifically load in the client player model.
 		if (game::player1 != nullptr) {
-			game::player1->preload();
+			entities::send_entity_event(game::player1, entities::EntityEventPrecache());
 		}
 	}
 
@@ -174,14 +170,14 @@ namespace entities
 			if (edit_entity >= 0 && edit_entity < ents.length())
 			{
 				entities::classes::CoreEntity *oldSelected = ents[edit_entity];
-				oldSelected->onSelected(false);
+				entities::send_entity_event(oldSelected, entities::EntityEventDeselected());
 
 				conoutf("ent deselected %i (%s)", i, oldSelected->name.c_str());
 			}
 			if (i >= 0 && i < ents.length())
 			{
 				entities::classes::CoreEntity *newSelected = ents[i];
-				newSelected->onSelected(true);
+				entities::send_entity_event(newSelected, entities::EntityEventSelected());
 
 				conoutf("ent selected %i (%s)", i, newSelected->name.c_str());
 			}

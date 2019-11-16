@@ -66,7 +66,7 @@ void Player::render() {
 		// Calculate the position.
 		vec pos = o;
 		pos.z -= eyeheight;
-		rendermodel("player/male", ANIM_JUMP, pos, yaw, pitch, 0, MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED);
+		rendermodel("actors/player/male", ANIM_JUMP, pos, yaw, pitch, 0, MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED);
 	}
 }
 
@@ -106,6 +106,11 @@ void Player::respawn() {
 	}
 }
 
+
+
+void Player::on(const Event& event)
+{
+}
 // Link entity class to the factory.
 
 } // classes
