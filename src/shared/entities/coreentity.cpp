@@ -5,45 +5,53 @@
 #include "baseentity.h"
 #include "coreentity.h"
 #include "entityfactory.h"
+#include <vector>
+#include <string>
+#include <variant>
 
 extern void boxs3D(const vec &o, vec s, int g);
 extern void boxs(int orient, vec o, const vec &s);
 extern void boxs(int orient, vec o, const vec &s, float size);
 
-namespace entities {
-namespace classes {
+ADD_ENTITY_TO_FACTORY(CoreEntity, "core_entity");
 
-//
-// Spawned set get clear functions.
-//
-bool CoreEntity::spawned() const {
+
+bool entities::classes::CoreEntity::spawned() const
+{
     return (flags&entities::EntityFlags::EF_SPAWNED) != 0;
 }
-void CoreEntity::setspawned(bool val) {
+
+void entities::classes::CoreEntity::setspawned(bool val)
+{
     if(val)
         flags |= entities::EntityFlags::EF_SPAWNED;
     else
         flags &= ~entities::EntityFlags::EF_SPAWNED;
 }
-void CoreEntity::setspawned() {
+
+void entities::classes::CoreEntity::setspawned()
+{
     flags |= entities::EntityFlags::EF_SPAWNED;
 }
-void CoreEntity::clearspawned() {
+
+void entities::classes::CoreEntity::clearspawned()
+{
     flags &= ~entities::EntityFlags::EF_SPAWNED;
 }
 
-void CoreEntity::setName(const std::string &str) {
-    name = str;
+void entities::classes::CoreEntity::onSelected(bool selected)
+{
+	this->selected = selected;
 }
 
-void CoreEntity::saveToJsonImpl(nlohmann::json& document)
+void entities::classes::CoreEntity::saveToJsonImpl(nlohmann::json& document)
 {
 	document[classname] = {};
 	to_json(document[classname], *this);
 }
 
 
-void CoreEntity::saveToJson(nlohmann::json& document)
+void entities::classes::CoreEntity::saveToJson(nlohmann::json& document)
 {
 	document = {
 		{"class", currentClassname()},
@@ -55,13 +63,13 @@ void CoreEntity::saveToJson(nlohmann::json& document)
 	saveToJsonImpl(document);
 }
 
-//NOTE: Only CoreEntity needs to implement this
-void CoreEntity::fromJsonImpl(const nlohmann::json& document)
+void entities::classes::CoreEntity::fromJsonImpl(const nlohmann::json& document)
 {
 	document.at(classname).get_to(*this);
 }
 
-void CoreEntity::loadFromJson(const nlohmann::json& document) {
+void entities::classes::CoreEntity::loadFromJson(const nlohmann::json& document)
+{
 	document.at("et_type").get_to(et_type);
 	document.at("ent_type").get_to(ent_type);
 	document.at("game_type").get_to(game_type);
@@ -69,7 +77,17 @@ void CoreEntity::loadFromJson(const nlohmann::json& document) {
 	fromJsonImpl(document);
 }
 
-bool CoreEntity::getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const
+void entities::classes::CoreEntity::setAttribute(const std::string &key, const entities::attribute_T &value)
+{
+	setAttributeImpl(key, value);
+}
+
+entities::attribute_T entities::classes::CoreEntity::getAttribute(const std::string &key) const
+{
+	return getAttributeImpl(key);
+}
+
+bool entities::classes::CoreEntity::getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const
 {
 	if (et_type == ET_EMPTY)
 	{
@@ -81,17 +99,17 @@ bool CoreEntity::getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) cons
 	return true;
 }
 
-void CoreEntity::renderForEdit()
+void entities::classes::CoreEntity::renderForEdit()
 {
 
 }
 
-void CoreEntity::renderForEditGui()
+void entities::classes::CoreEntity::renderForEditGui()
 {
 
 }
 
-void CoreEntity::renderSelected(int entselradius, int entorient)
+void entities::classes::CoreEntity::renderSelected(int entselradius, int entorient)
 {
 	gle::colorub(0, 40, 0);
 	vec es(entselradius);
@@ -103,7 +121,7 @@ void CoreEntity::renderSelected(int entselradius, int entorient)
 }
 
 
-void CoreEntity::renderHighlight(int entselradius, int entorient, float thickness)
+void entities::classes::CoreEntity::renderHighlight(int entselradius, int entorient, float thickness)
 {
 	gle::colorub(0, 40, 0);
 	vec es(entselradius);
@@ -117,7 +135,7 @@ void CoreEntity::renderHighlight(int entselradius, int entorient, float thicknes
 	boxs(entorient, eo, es, thickness);
 }
 
-void CoreEntity::renderMoveShadow(int entselradius, int size)
+void entities::classes::CoreEntity::renderMoveShadow(int entselradius, int size)
 {
 	vec es(entselradius);
     vec eo = o;
@@ -131,15 +149,13 @@ void CoreEntity::renderMoveShadow(int entselradius, int size)
 	(a = eo).z = eo.z - fmod(eo.z, size); (b = es).z = a.x + size; boxs3D(a, b, 1);
 }
 
-
-
-void from_json(const nlohmann::json& document,  entities::classes::CoreEntity* entity_ptr)
+void entities::classes::from_json(const nlohmann::json& document,  entities::classes::CoreEntity* entity_ptr)
 {
 	std::string name;
 	document.get_to(name);
 }
 
-void to_json(nlohmann::json& document, const entities::classes::CoreEntity* entity_ptr)
+void entities::classes::to_json(nlohmann::json& document, const entities::classes::CoreEntity* entity_ptr)
 {
 	if (entity_ptr)
 	{
@@ -150,7 +166,6 @@ void to_json(nlohmann::json& document, const entities::classes::CoreEntity* enti
 		document = "";
 	}
 }
-} // classes
-} // entities
 
-ADD_ENTITY_TO_FACTORY(CoreEntity, "core_entity");
+
+

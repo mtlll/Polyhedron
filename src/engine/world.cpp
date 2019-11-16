@@ -3,6 +3,7 @@
 #include "../shared/ents.h"
 #include "../game/entities/player.h"
 #include "../game/entities/playerstart.h"
+#include "../game/game.h"
 #include <cassert>
 
 VARR(mapversion, 1, MAPVERSION, 0);
@@ -379,16 +380,9 @@ void findents(int low, int high, bool notspawned, const vec &pos, const vec &rad
     if(c->children && 1<<scale >= octaentsize) findents(c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale, bo, br, low, high, notspawned, pos, invradius, found);
 }
 
-char *entname(entities::classes::CoreEntity *e)
+const char *entname(entities::classes::CoreEntity *e)
 {
-    static std::string fullentname;
-	std::string classname = e->classname;
-	std::string name = e->name;
-    if(!name.empty())
-    {
-        fullentname = classname + ":" + name;
-    }
-    return (char*)fullentname.c_str();
+    return e->name.c_str();
 }
 
 extern selinfo sel;
@@ -569,14 +563,14 @@ undoblock *copyundoents(undoblock *u)
     return c;
 }
 
-void pasteundoent(int idx,  entities::classes::CoreEntity* ue)
+void pasteundoent(int idx, entities::classes::CoreEntity* ue)
 {
     if(idx < 0 || idx >= MAXENTS) return;
     auto &ents = entities::getents();
     while(ents.length() < idx)
     {
-		auto ne = entities::newgameentity("");
-		ents.add(ne)->et_type = ET_EMPTY;
+		auto ne = new_game_entity(true, ue->o, idx, "core_entity");
+		ents.add(ne);
 	}
     int efocus = -1;
     entedit(idx, e = ue);
@@ -881,8 +875,53 @@ void renderentradius(entities::classes::CoreEntity *e, bool color)
     }
 }
 
+static void renderenticosahedron(const vec &eo, vec es)
+{
+	static const float x_factor = .525731112119133606f;
+	static const float z_factor = .850650808352039932;
+	vec es2 = es;
+	es2.mul(0.5f);
+	static const vec esx_factor(es2.x * x_factor, es2.y * x_factor, es2.z * x_factor);
+	static const vec esz_factor(es2.x * z_factor, es2.y * z_factor, es2.z * z_factor);
+	static const vec vertices[12] = {
+		{-esx_factor.x, 0.0f, esz_factor.z}, {esx_factor.x, 0.0f, esz_factor.z}, {-esx_factor.x, 0.0f, -esz_factor.z}, {esx_factor.x, 0.0f, -esz_factor.z},
+		{0.0f, esz_factor.y, esx_factor.z}, {0.0f, esz_factor.y, -esx_factor.z}, {0.0f, -esz_factor.y, esx_factor.z}, {0.0f, -esz_factor.y, -esx_factor.z},
+		{esz_factor.x, esx_factor.y, 0.0f}, {-esz_factor.x, esx_factor.y, 0.0f}, {esz_factor.x, -esx_factor.y, 0.0f}, {-esz_factor.x, -esx_factor.y, 0.0f}
+	};
+//	static const vec vertices[12] = {
+//		{-x_factor, 0.0f, z_factor}, {x_factor, 0.0f, z_factor}, {-x_factor, 0.0f, -z_factor}, {x_factor, 0.0f, -z_factor},
+//		{0.0f, z_factor, x_factor}, {0.0f, z_factor, -x_factor}, {0.0f, -z_factor, x_factor}, {0.0f, -z_factor, -x_factor},
+//		{z_factor, x_factor, 0.0f}, {-z_factor, x_factor, 0.0f}, {z_factor, -x_factor, 0.0f}, {-z_factor, -x_factor, 0.0f}
+//	};
+	static int indices[20][3] = {
+		{0,4,1}, {0,9,4}, {9,5,4}, {4,5,8}, {4,8,1},
+		{8,10,1}, {8,3,10}, {5,3,8}, {5,2,3}, {2,7,3},
+		{7,10,3}, {7,6,10}, {7,11,6}, {11,0,6}, {0,1,6},
+		{6,1,10}, {9,0,11}, {9,11,2}, {9,2,5}, {7,2,11}
+	};
+	
+	for (auto tri : indices)
+	{
+		vec p0(vertices[tri[0]]);
+		vec p1(vertices[tri[1]]);
+		vec p2(vertices[tri[2]]);
+		p0.add(eo);
+		p1.add(eo);
+		p2.add(eo);
+		p0.add(es2);
+		p1.add(es2);
+		p2.add(es2);
+		gle::attrib(p0); gle::attrib(p1);
+		gle::attrib(p1); gle::attrib(p2);
+		gle::attrib(p2); gle::attrib(p0);
+	}
+}
+
 static void renderentbox(const vec &eo, vec es)
 {
+	renderenticosahedron(eo, es);
+	return;
+	
     es.add(eo);
 
     // bottom quad
@@ -913,7 +952,7 @@ void renderentselection(const vec &o, const vec &ray, bool entmoving)
     {
         gle::colorub(0, 40, 0);
         gle::defvertex();
-        gle::begin(GL_LINES, entgroup.length()*24);
+        gle::begin(GL_LINES, entgroup.length()*20*6);
         loopv(entgroup) entfocus(entgroup[i],
             entselectionbox(e, eo, es);
             renderentbox(eo, es);
@@ -1115,83 +1154,97 @@ SCRIPTEXPORT void attachent()
 }
 
 static int keepents = 0;
-
-entities::classes::CoreEntity *newentity(bool local, const vec &o, int type, int v1, int v2, int v3, int v4, int v5, int &idx, bool fix = true)
-{
-    auto &ents = entities::getents();
-
-    // If local, we ensure it is not out of bounds, if it is, we return NULL and warn our player.
-    if(local)
-    {
-        idx = -1;
-        for(int i = keepents; i < ents.length(); i++)
-        {
+//
+//entities::classes::CoreEntity *newentity(bool local, const vec &o, int type, int v1, int v2, int v3, int v4, int v5, int &idx, bool fix = true)
+//{
+//    auto &ents = entities::getents();
+//
+//    // If local, we ensure it is not out of bounds, if it is, we return NULL and warn our player.
+//    if(local)
+//    {
+//        idx = -1;
+//        for(int i = keepents; i < ents.length(); i++)
+//        {
+//			if(ents[i]->et_type == ET_EMPTY)
+//			{
+//				idx = i; break;
+//			}
+//		}
+//        if(idx < 0 && ents.length() >= MAXENTS)
+//        {
+//			conoutf("too many entities");
+//			return NULL;
+//		}
+//    } else {
+//        while(ents.length() < idx)
+//        {
+//            ents.add(entities::newgameentity(""))->et_type = ET_EMPTY;
+//        }
+//    }
+//
+//    auto e = entities::newgameentity("");
+//    e->o = o;
+//    e->attr1 = v1;
+//    e->attr2 = v2;
+//    e->attr3 = v3;
+//    e->attr4 = v4;
+//    e->attr5 = v5;
+//    e->et_type = type;
+//    e->ent_type = ENT_INANIMATE;
+//    e->game_type = type;
+//    e->reserved = 0;
+//	e->name = "tesseract_ent_" + std::to_string(idx);
+//
+//    if(ents.inrange(idx))
+//    {
+//		entities::deletegameentity(ents[idx]);
+//		ents[idx] = e;
+//	}
+//    else
+//    {
+//		idx = ents.length();
+//		ents.add(e);
+//	}
+//	return e;
+//}
+//
+//void newentity(int type, int a1, int a2, int a3, int a4, int a5, bool fix = true)
+//{
+//    int idx;
+//    auto t = newentity(true, player->o, type, a1, a2, a3, a4, a5, idx, fix);
+//    if(!t) return;
+//    dropentity(t);
+//    t->et_type = ET_EMPTY;
+//    enttoggle(idx);
+//    makeundoent();
+//    entedit(idx, e->et_type = type);
+//    commitchanges();
+//}
+//
+//SCRIPTEXPORT void newent(char *what, int *a1, int *a2, int *a3, int *a4, int *a5)
+//{
+//    if(noentedit()) return;
+//    int type = findtype(what);
+//    if(type != ET_EMPTY)
+//        newentity(type, *a1, *a2, *a3, *a4, *a5);
+//}
+namespace {
+	void find_next_entity_index(int &idx)
+	{
+		auto &ents = entities::getents();
+		idx = -1;
+		
+		for (int i = keepents; i < ents.length(); i++)
+		{
 			if(ents[i]->et_type == ET_EMPTY)
 			{
-				idx = i; break;
+				conoutf("idx = %i", idx);
+				idx = i;
+				break;
 			}
 		}
-        if(idx < 0 && ents.length() >= MAXENTS)
-        {
-			conoutf("too many entities");
-			return NULL;
-		}
-    } else {
-        while(ents.length() < idx)
-        {
-            ents.add(entities::newgameentity(""))->et_type = ET_EMPTY;
-        }
-    }
-
-    auto e = entities::newgameentity("");
-    e->o = o;
-    e->attr1 = v1;
-    e->attr2 = v2;
-    e->attr3 = v3;
-    e->attr4 = v4;
-    e->attr5 = v5;
-    e->et_type = type;
-    e->ent_type = ENT_INANIMATE;
-    e->game_type = type;
-    e->reserved = 0;
-	e->name = "tesseract_ent_" + std::to_string(idx);
-
-    if(ents.inrange(idx))
-    {
-		entities::deletegameentity(ents[idx]);
-		ents[idx] = e;
 	}
-    else
-    {
-		idx = ents.length();
-		ents.add(e);
-	}
-	return e;
 }
-
-void newentity(int type, int a1, int a2, int a3, int a4, int a5, bool fix = true)
-{
-    int idx;
-    auto t = newentity(true, player->o, type, a1, a2, a3, a4, a5, idx, fix);
-    if(!t) return;
-    dropentity(t);
-    t->et_type = ET_EMPTY;
-    enttoggle(idx);
-    makeundoent();
-    entedit(idx, e->et_type = type);
-    commitchanges();
-}
-
-SCRIPTEXPORT void newent(char *what, int *a1, int *a2, int *a3, int *a4, int *a5)
-{
-    if(noentedit()) return;
-    int type = findtype(what);
-    if(type != ET_EMPTY)
-        newentity(type, *a1, *a2, *a3, *a4, *a5);
-}
-
-// WatIs: Game entity creation.
-#include "../game/game.h"
 
 entities::classes::CoreEntity *new_game_entity(bool local, const vec &o, int &idx, const char *strclass)
 {
@@ -1199,101 +1252,78 @@ entities::classes::CoreEntity *new_game_entity(bool local, const vec &o, int &id
     auto &ents = entities::getents();
 
     // If local, we ensure it is not out of bounds, if it is, we return NULL and warn our player.
-    if(local)
+    if (local)
     {
-        idx = -1;
-        for(int i = keepents; i < ents.length(); i++)
-        {
-            if(ents[i]->et_type == ET_EMPTY)
-            {
-                conoutf("idx = %i", idx);
-                idx = i;
-                break;
-            }
-        }
-        if(idx < 0 && ents.length() >= MAXENTS)
+		find_next_entity_index(idx);
+        
+        if (idx < 0 && ents.length() >= MAXENTS)
         {
             conoutf("too many entities"); return nullptr;
         }
-    } else {
-        while(ents.length() < idx) {
-//            ents.add(entities::newgameentity(strclass))->et_type = ET_EMPTY;
-			ents.add(entities::newgameentity(""))->et_type = ET_EMPTY;
+    }
+    else
+    {
+        if (ents.length() < idx)
+        {
+			vec mapcenter;
+			mapcenter.x = mapcenter.y = mapcenter.z = 0.5f*worldsize;
+			mapcenter.z += 1;
+			mapcenter.x += idx * 2.5f;
+			ents.add(new_game_entity(false, mapcenter, idx, "core_entity"));
         }
     }
 
-	// Allocate the entity according to its class.
-    entities::classes::CoreEntity *ent = entities::newgameentity(strclass);
+    entities::classes::CoreEntity *ent = entities::EntityFactory::constructEntity(std::string(strclass));
 
-	// Set origin.
     ent->o = o;
-
-	// Set entity type, it is now aware that it is a game specific entity. (Thus based on class name.)
     ent->et_type = ET_GAMESPECIFIC;
-
-	// Set internal engine entity type, ENT_PLAYER, ENT_INANIMATE, ENT_AI etc.
     ent->ent_type = ENT_INANIMATE;
-
-	// This one is a bit of a....
     ent->game_type = GAMEENTITY;
 
-	if(ents.inrange(idx)) {
+	if (ents.inrange(idx))
+	{
 		entities::deletegameentity(ents[idx]);
         ents[idx] = ent;
-	} else {
+	}
+	else
+	{
 		idx = ents.length();
         ents.add(ent);
 	}
-	
-	auto new_et_type = ent->et_type;
-	auto new_ent_type = ent->ent_type;
-	auto new_game_type = ent->game_type;
 
 	enttoggle(idx);
 	makeundoent();
-	entedit(idx, e->et_type = new_et_type; e->ent_type = new_ent_type; e->game_type = new_game_type);
+	entedit(idx, ;);
 	commitchanges();
 	
     return ent;
 }
 
-// Start of new game entity.
-void new_game_entity(char *strclass, char *a1, char *a2, char *a3, char *a4, char *a5, char *a6, char *a7, char *a8, bool fix = true)
+entities::classes::CoreEntity *new_game_entity(entities::classes::CoreEntity *copy)
 {
-    int idx;
-    entities::classes::CoreEntity *t = new_game_entity(true, player->o, idx, strclass);
-    if(!t) return;
-    dropentity(t);
-    //t->et_type = ET_EMPTY; // Why would we want this here if we set e->type later
-    int new_et_type = t->et_type;
-    int new_ent_type = t->ent_type;
-    int new_game_type = t->game_type;
-    t->et_type = new_et_type;
-    t->ent_type = new_ent_type;
-    t->game_type = new_game_type;
-
-    // Copy string attributes.
-	t->name = std::string(strclass) + "_" + std::to_string(idx);
-
-    enttoggle(idx);
-    makeundoent();
-    entedit(idx, e->et_type = new_et_type; e->ent_type = new_ent_type; e->game_type = new_game_type);
-    commitchanges();
+	int idx = -1;
+	find_next_entity_index(idx);
+	auto ent = new_game_entity(true, copy->o, idx, copy->currentClassname().c_str());
+	
+	nlohmann::json data {};
+	copy->saveToJson(data);
+	ent->loadFromJson(data);
+	
+	return ent;
 }
 
-SCRIPTEXPORT void newgent(char *what, char *a1, char *a2, char *a3, char *a4, char *a5, char *a6, char *a7, char *a8)
+SCRIPTEXPORT void newgent(char *classname)
 {
-    // TODO: Determine what "what" is, and use this as the entity type?
-    // From there on, we modify newentity(the one in world.cpp, which was name colliding with newgameentity before I renamed it.)
-    // Newentity will then pass the WHAT, over to newgameentity.
-    //
-    // From there on, we heavily need to modify the code. After all, this entity system is rather shitty.
-    // Maybe first fix name confusions, gameent and gameentity... wow...
-    //
-    // TODO: Explain more here.
-    new_game_entity(what, a1, a2, a3, a4, a5, a6, a7, a8);
+	int idx = 0;
+	int surface_axis = dimension(sel.orient);
+	int dc = dimcoord(sel.orient);
+    vec selected_center(sel.o);
+	selected_center.add(vec(sel.s).mul(sel.grid * 0.5f));
+	vec on_surface(0,0,0);
+	on_surface[surface_axis] = (sel.grid * 0.5f + entselradius) * (dc ? 1.f : -1.f);
+	selected_center.add(on_surface);
+    new_game_entity(true, selected_center, idx, classname);
 }
-// WatIs: End of new game entity.
 
 int entcopygrid;
 vector<entities::classes::CoreEntity*> entcopybuf;
@@ -1318,7 +1348,7 @@ SCRIPTEXPORT void entpaste()
         const auto c = entcopybuf[i];
         vec o = vec(c->o).mul(m).add(vec(sel.o));
         int idx;
-        entities::classes::CoreEntity *e = newentity(true, o, ET_EMPTY, c->attr1, c->attr2, c->attr3, c->attr4, c->attr5, idx);
+        entities::classes::CoreEntity *e = new_game_entity(c);
         if(!e) continue;
         entadd(idx);
         keepents = max(keepents, idx+1);
@@ -1335,50 +1365,26 @@ SCRIPTEXPORT void entreplace()
     if(entgroup.length() || enthover >= 0)
     {
         groupedit({
-            e->et_type = c->et_type;
-            e->ent_type = c->ent_type;
-            e->game_type = c->game_type;
-            e->attr1 = c->attr1;
-            e->attr2 = c->attr2;
-            e->attr3 = c->attr3;
-            e->attr4 = c->attr4;
-            e->attr5 = c->attr5;
-            e->model_idx = c->model_idx;
-            e->name = c->name;
+			nlohmann::json data {};
+			c->saveToJson(data);
+			e->loadFromJson(data);
         });
     }
     else
     {
-        newentity(c->et_type, c->attr1, c->attr2, c->attr3, c->attr4, c->attr5, false);
+        new_game_entity(c);
     }
 }
 
+/* Used by F3 map model menu, replaceents, enttypeselect*/
 SCRIPTEXPORT void entset(char *what, int *a1, int *a2, int *a3, int *a4, int *a5)
 {
-    if(noentedit()) return;
-    int type = findtype(what);
-    if(type != ET_EMPTY)
-        groupedit(e->et_type=type;
-                  e->attr1=*a1;
-                  e->attr2=*a2;
-                  e->attr3=*a3;
-                  e->attr4=*a4;
-                  e->attr5=*a5);
+    assert(false);
 }
 
 void printent(entities::classes::CoreEntity *e, char *buf, int len)
 {
-    switch(e->et_type)
-    {
-        case ET_PARTICLES:
-            if(printparticles(e, buf, len)) return;
-            break;
-
-        default:
-            if(e->et_type >= ET_GAMESPECIFIC && entities::printent(e, buf, len)) return;
-            break;
-    }
-    nformatcubestr(buf, len, "%s %d %d %d %d %d", entities::entname(e->et_type), e->attr1, e->attr2, e->attr3, e->attr4, e->attr5);
+	nformatcubestr(buf, len, "%s", e->name.c_str());
 }
 
 SCRIPTEXPORT void nearestent()
@@ -1820,39 +1826,7 @@ SCRIPTEXPORT void mapname()
 
 void mpeditent(int i, const vec &o, int type, int attr1, int attr2, int attr3, int attr4, int attr5, bool local)
 {
-    if(i < 0 || i >= MAXENTS) return;
-    auto &ents = entities::getents();
-    if(ents.length()<=i)
-    {
-        entities::classes::CoreEntity *e = newentity(local, o, type, attr1, attr2, attr3, attr4, attr5, i);
-        if(!e) return;
-        addentityedit(i);
-        attachentity(e);
-    }
-    else
-    {
-        entities::classes::CoreEntity *e = ents[i];
-        removeentityedit(i);
-        int old_et_type = e->et_type;
-        int old_ent_type = e->ent_type;
-        int old_game_type = e->game_type;
-        if(old_et_type!=type) detachentity(e);
-        e->et_type = type;
-        e->ent_type = old_ent_type;
-        e->game_type = old_game_type;
-        e->o = o;
-        e->attr1 = attr1; e->attr2 = attr2; e->attr3 = attr3; e->attr4 = attr4; e->attr5 = attr5;
-        if (e->et_type == ET_MAPMODEL)
-            e->model_idx = attr1;
-        else
-            e->model_idx = -1;
-
-        addentityedit(i);
-        if(old_et_type!=type) attachentity(e);
-    }
-    entities::editent(i, local);
-    clearshadowcache();
-    commitchanges();
+    assert(false);
 }
 
 int getworldsize() { return worldsize; }

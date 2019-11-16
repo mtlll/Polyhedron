@@ -1495,7 +1495,8 @@ static bool compileblocksub(vector<uint> &code, const char *&p, int prevargs)
             case ID_VAR: code.add(CODE_IVAR|(id->index<<8)); goto done;
             case ID_FVAR: code.add(CODE_FVAR|(id->index<<8)); goto done;
             case ID_SVAR: code.add(CODE_SVARM|(id->index<<8)); goto done;
-            case ID_ALIAS: code.add((id->index < MAXARGS ? CODE_LOOKUPMARG : CODE_LOOKUPM)|(id->index<<8)); goto done;
+            case ID_ALIAS:
+				code.add((id->index < MAXARGS ? CODE_LOOKUPMARG : CODE_LOOKUPM)|(id->index<<8)); goto done;
             }
             compilestr(code, lookup, true);
             code.add(CODE_LOOKUPMU);

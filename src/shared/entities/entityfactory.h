@@ -2,55 +2,60 @@
 #include <string>
 #include <map>
 #include <functional>
+#include <string>
+#include <variant>
+
+
+typedef unsigned int uint;
+struct ident;
+namespace CommandTypes
+{
+    typedef uint* Expression;
+}
 
 namespace entities {
+
+	typedef std::variant<std::string, float, int, bool> attribute_T;
+	typedef std::vector< std::vector< attribute_T > > attributeList_T;
+
+	template <typename TargetType>
+	struct AttributeVisitCoercer
+	{
+		TargetType operator()(const std::string& value) const;
+		TargetType operator()(float value) const;
+		TargetType operator()(int value) const;
+		TargetType operator()(bool value) const;
+	};
 
 	namespace classes
 	{
 		class CoreEntity;
 	}
 
-    //
-    // EntityFactory class used to manage entities. Entities are linked to it by the macro:
-    // Example: ADD_ENTITY_TO_FACTORY(BaseDynamicEntity, "base_dynamic_entity");
-    //
-    // Always place this at the bottom of your entityname.cpp file and it'll automatically
-    // register itself as a possible entity to spawn in your maps.
-    //
     class EntityFactory
     {
     private:
-        // List of our factory functions.
-        //static std::map<std::string, std::function<entities::classes::CoreEntity*()> > factoryList;
         typedef std::function<entities::classes::CoreEntity*()> EntityFactoryConstructor;
-        
-        // Factory functions storage
-        static std::map<std::string, EntityFactoryConstructor>& getFactories();
+        typedef std::function<attributeList_T()> EntityFactoryAttribute;
 
-    public:        
+	public:
+        static std::map<std::string, EntityFactoryConstructor>& getConstructors();
+        static std::map<std::string, EntityFactoryAttribute>& getAttributors();
+        
         template<class ET>
         static entities::classes::CoreEntity* constructor()
         {
 			return static_cast<entities::classes::CoreEntity*>(new ET);
 		}
 
-        static void addEntityFactory(const std::string &classname, EntityFactoryConstructor constructor);
+        static void addEntityFactory(const std::string &classname, EntityFactoryConstructor constructor, EntityFactoryAttribute attributor);
+
         static entities::classes::CoreEntity* constructEntity(const std::string &classname);
+		static attributeList_T attributes(const std::string &classname);
     };
 }
 
 
-//
-// Use ADD_ENTITY_TO_FACTORY at the bottom of your entityname.cpp file to hook it up to a
-// string name. For example: ADD_ENTITY_TO_FACTORY(GarageDoor, "door_garage");
-//
-// LOCALNAME: The class name in the C++ code.
-// CLASSNAME: The string class name used by map editing.
-//
-// From here on it'll be spawnable by the NewEntity function.
-//
-
-// Removed the const from the classname string so we can actually set its value (Otherwise it'd always be core_entity).
 #define ADD_ENTITY_TO_FACTORY(LOCALNAME, CLASSNAME) \
     const std::string entities::classes::LOCALNAME::classname = CLASSNAME;\
 	std::string entities::classes::LOCALNAME::currentClassname() { return CLASSNAME; }\
@@ -63,9 +68,10 @@ namespace entities {
 	public:\
 		LOCALNAME##Intializer()\
 		{\
-            entities::EntityFactory::addEntityFactory(CLASSNAME, &entities::classes::LOCALNAME::Construct);\
+            entities::EntityFactory::addEntityFactory(CLASSNAME, &entities::classes::LOCALNAME::Construct, &entities::classes::LOCALNAME::attributes);\
 		}\
     } LOCALNAME##IntializerInstance;
+
 
 #define ADD_ENTITY_TO_FACTORY_SERIALIZED(LOCALNAME, CLASSNAME, DERIVED) \
 	ADD_ENTITY_TO_FACTORY(LOCALNAME, CLASSNAME) \
@@ -80,16 +86,19 @@ namespace entities {
 	void entities::classes::LOCALNAME::saveToJsonImpl(nlohmann::json& document) {\
 		DERIVED::saveToJsonImpl(document);\
 		document[CLASSNAME] = nlohmann::json{*this};\
+	}\
+	void entities::classes::LOCALNAME::setAttribute(const std::string &key, const entities::attribute_T &value) {\
+		DERIVED::setAttribute(key, value);\
+		setAttributeImpl(key, value);\
+	}\
+	entities::attribute_T entities::classes::LOCALNAME::getAttribute(const std::string &key) const {\
+		entities::attribute_T attributeValue = DERIVED::getAttribute(key);\
+		if (std::holds_alternative<std::string>(attributeValue) && std::get<std::string>(attributeValue).empty()) {\
+			attributeValue = getAttributeImpl(key);\
+		}\
+		return attributeValue;\
 	}
 
-//
-// Prepares a class capable of being spawned by the entity factory by adding the
-// required members and functions. NOTE: Always ensure you add this at the top
-// of your class, per example:
-//
-// class BoringTree : public ModelEntity {
-// ENTITY_FACTORY_IMPL(ModelEntity);
-//
 #define ENTITY_FACTORY_IMPL(LOCALNAME) \
 	public:\
 	friend class LOCALNAME##Intializer;\
@@ -99,5 +108,10 @@ namespace entities {
 	virtual std::string currentClassname();\
 	static CoreEntity *Construct();\
 	virtual void fromJsonImpl(const nlohmann::json& document);\
-    virtual void saveToJsonImpl(nlohmann::json& document); \
+    virtual void saveToJsonImpl(nlohmann::json& document);\
+	virtual void setAttribute(const std::string &key, const attribute_T &value);\
+	virtual attribute_T getAttribute(const std::string &key) const;\
+	void setAttributeImpl(const std::string &key, const attribute_T &value);\
+	attribute_T getAttributeImpl(const std::string &key) const;\
+	static const attributeList_T attributes();\
     virtual ~LOCALNAME() = default;

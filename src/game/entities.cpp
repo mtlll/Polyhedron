@@ -91,23 +91,8 @@ namespace entities
 
 	void setspawn(int i, bool on) { if(entities::getents().inrange(i) && entities::getents()[i] != nullptr) entities::getents()[i]->setspawned(on); }
 
-	// Returns the entity class respectively according to its registered name.
-	entities::classes::CoreEntity *newgameentity(const char *strclass) {
-		auto e = entities::EntityFactory::constructEntity(std::string(strclass));
-
-		if (e) {
-			conoutf("Returned %s", strclass);
-		} else {
-			conoutf("Failed to create %s", strclass);
-		}
-
-		return e;
-	}
-	// Deletes the entity class in specific.
-	void deletegameentity(entities::classes::CoreEntity *e) {
-		if (!e)
-			return;
-
+	void deletegameentity(entities::classes::CoreEntity *e)
+	{
 		delete e;
 	}
 
@@ -166,32 +151,43 @@ namespace entities
 		return false;
 	}
 
-	const char *entnameinfo(entities::classes::CoreEntity *e) {
-		std::string str;
-		str = e->currentClassname() + ":" + e->name;
-		// TODO: List attributes here? Maybe...
-		return str.c_str();
-	}
 	const char *entname(int i)
 	{
-		static const char * const entnames[MAXENTTYPES] =
+		auto& ents = getents();
+		
+		if (i >= 0 && i < ents.length())
 		{
-			"none?", "light", "mapmodel", "playerstart", "envmap", "particles", "sound", "spotlight", "decal",
-			"teleport", "teledest", "jumppad",
-			"flag", "gameentity"
-		};
-		return i>=0 && size_t(i)<sizeof(entnames)/sizeof(entnames[0]) ? entnames[i] : "";
+			entities::classes::CoreEntity *ent = ents[i];
+			return ent->name.c_str();
+		}
+
+		return "";
 	}
 
 	void editent(int i, bool local)
 	{
-//        entities::classes::CoreEntity *e = ents[i];
 		extern int edit_entity;
-		edit_entity = i;
-		//conoutf("%i", i);
+		auto& ents = getents();
 
-		//e.flags = 0;
-		//if(local) addmsg(N_EDITENT, "rii3ii5", i, (int)(e.o.x*DMF), (int)(e.o.y*DMF), (int)(e.o.z*DMF), e.et_type, e.attr1, e.attr2, e.attr3, e.attr4, e.attr5);
+		if (edit_entity != i)
+		{
+			if (edit_entity >= 0 && edit_entity < ents.length())
+			{
+				entities::classes::CoreEntity *oldSelected = ents[edit_entity];
+				oldSelected->onSelected(false);
+
+				conoutf("ent deselected %i (%s)", i, oldSelected->name.c_str());
+			}
+			if (i >= 0 && i < ents.length())
+			{
+				entities::classes::CoreEntity *newSelected = ents[i];
+				newSelected->onSelected(true);
+
+				conoutf("ent selected %i (%s)", i, newSelected->name.c_str());
+			}
+			
+			edit_entity = i;
+		}
 	}
 
 	float dropheight(entities::classes::CoreEntity *e)

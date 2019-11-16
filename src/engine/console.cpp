@@ -442,6 +442,8 @@ struct hline
 
     void run()
     {
+		printf("console executing: %s\n", buf);
+
         if(flags&CF_EXECUTE && buf[0]=='/') execute(buf+1);
         else if(action)
         {

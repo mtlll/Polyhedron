@@ -818,6 +818,14 @@ bool load_world(const char *mname, const char *cname)        // Does not support
     // Define the path to our JSON file.
     defformatcubestr(jsonname, "media/map/%s.json", mname);
 
+    renderprogress(0, "loading slots...");
+    loadvslots(f, hdr.numvslots);
+
+    renderprogress(0, "loading octree...");
+    bool failed = false;
+    worldroot = loadchildren(f, ivec(0, 0, 0), hdr.worldsize>>1, failed);
+    if(failed) conoutf(CON_ERROR, "garbage in map");
+
     // Get a reference to the entities array.
     auto &ents = entities::getents();
 
@@ -852,14 +860,6 @@ bool load_world(const char *mname, const char *cname)        // Does not support
         // TODO: What to do here?
         //f->seek((hdr.numents-MAXENTS)*(samegame ? sizeof(entities::classes::CoreEntity) + einfosize : eif), SEEK_CUR);
     }
-
-    renderprogress(0, "loading slots...");
-    loadvslots(f, hdr.numvslots);
-
-    renderprogress(0, "loading octree...");
-    bool failed = false;
-    worldroot = loadchildren(f, ivec(0, 0, 0), hdr.worldsize>>1, failed);
-    if(failed) conoutf(CON_ERROR, "garbage in map");
 
     renderprogress(0, "validating...");
     validatec(worldroot, hdr.worldsize>>1);

@@ -68,13 +68,18 @@ struct tagval : identval
 {
     int type;
 
-    void setint(int val) { type = VAL_INT; i = val; }
+    void setint(int val) {
+    type = VAL_INT; i = val;
+	}
     void setfloat(float val) { type = VAL_FLOAT; f = val; }
     void setnumber(double val) { i = int(val); if(val == i) type = VAL_INT; else { type = VAL_FLOAT; f = val; } }
     void setstr(char *val) { type = VAL_STR; s = val; }
     void setnull() { type = VAL_NULL; i = 0; }
     void setcode(const uint *val) { type = VAL_CODE; code = val; }
-    void setmacro(const uint *val) { type = VAL_MACRO; code = val; }
+    void setmacro(const uint *val) {
+    type = VAL_MACRO; code = val;
+    
+	}
     void setcstr(const char *val) { type = VAL_CSTR; cstr = val; }
     void setident(ident *val) { type = VAL_IDENT; id = val; }
 

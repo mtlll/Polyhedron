@@ -16,7 +16,8 @@ Player::Player() : BaseDynamicEntity() {
 	conoutf("%s", "Preloading player entity");
 	preloadmodel("player/male");
 	// Reset.
-	setName("Player");
+
+	setAttribute("name", "Player");
 //preloadmodel("player/female");
 	// Camera.
 	camera = new entities::classes::BasePhysicalEntity();
@@ -90,7 +91,7 @@ bool Player::onTouch(const entities::classes::CoreEntity *otherEnt, const vec &d
 }
 
 void Player::reset() {
-	setName("PlayerStart");
+    setAttribute("name", "PlayerStart");
 
 	setspawned(false);
 }

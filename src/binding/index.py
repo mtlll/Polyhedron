@@ -43,32 +43,34 @@ def file_write_data(file, data):
             handle.write(data)
 
 
-def debug_dump(file):
-    parser = CppParser(file)
-    parser.start()
+def debug_dump(buildFolder, file, outputfile):
+    parser = CppParser(buildFolder, file)
+    parser.start(outputfile)
     parser.tree_generate()
     parser.dump_tree()
 
-def debug_cppmodel(file):
-    parser = CppParser(file)
-    parser.start()
+def debug_cppmodel(buildFolder, file, outputfile):
+    parser = CppParser(buildFolder, file)
+    parser.start(outputfile)
     parser.cppmodel_generate()
     parser.dump_cppmodel()
 
 def generate_code(buildFolder, file, outputfile):
+    outputFileAbs = os.path.abspath(outputfile)
+
     parser = CppParser(buildFolder, file)
-    parser.start(outputfile)
+    parser.start(outputFileAbs)
     parser.cppmodel_generate()
 
     generatedCubeScript = CubeScriptBinding.GenerateWithoutMacros(parser.cppmodel())
     generatedJsonSerializer = JsonSerializer.Generate(parser.cppmodel())
 
     if (generatedCubeScript and generatedCubeScript != "\n") or (generatedJsonSerializer and generatedJsonSerializer != "\n"):
-        file_write_data(outputfile, generatedCubeScript + "\n\n" + generatedJsonSerializer)
-        print ("ok")
+        file_write_data(outputFileAbs, generatedCubeScript + "\n\n" + generatedJsonSerializer)
+        print (f"ok {outputFileAbs}")
     else:
-        file_write_data(outputfile, "")
-        print ("ok empty")
+        file_write_data(outputFileAbs, "")
+        print (f"ok empty {outputFileAbs}")
 
 def find_deps(file, commonRoot):
     parser = CppParser(file, skipComments = True)
@@ -128,14 +130,14 @@ if __name__ == "__main__":
     if len(args) == 4:
         if args[0] == "gen":
             generate_code(args[1], args[2], args[3])
+        elif args[0] == "dump":
+            debug_dump(args[1], args[1], args[3])
+        elif args[0] == "cppmodel":
+            debug_cppmodel(args[1], args[2], args[3])
         else:
             usage()
-    elif len(args) == 2:
-        if args[0] == "dump":
-            debug_dump(args[1])
-        elif args[0] == "cppmodel":
-            debug_cppmodel(args[1])
-        elif args[0] == "deps":
+    elif len(args) == 2:        
+        if args[0] == "deps":
             find_deps(args[1], "..")
         elif args[0] == "genlist":
             print(args[1])

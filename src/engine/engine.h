@@ -383,7 +383,7 @@ extern bool debugaa();
 extern void cleanupaa();
 
 // ents
-extern char *entname(entities::classes::CoreEntity *e);
+extern const char *entname(entities::classes::CoreEntity *e);
 extern bool haveselent();
 extern undoblock *copyundoents(undoblock *u);
 extern void pasteundoent(int idx, entities::classes::CoreEntity *ue);

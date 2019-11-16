@@ -1,4 +1,7 @@
 from clang import cindex
+import sys
+
+PHUI_ANNOTATION = "phui;"
 
 class CxxNode():
     
@@ -11,7 +14,17 @@ class CxxNode():
         if not self.parent is None:
             self.parent.addchild(self)
 
-        pass
+        first_child = next(self.sourceObject.get_children(), None)
+        if not first_child is None:
+            if first_child.kind == cindex.CursorKind.ANNOTATE_ATTR:
+                if first_child.spelling.startswith(PHUI_ANNOTATION):
+                    self.handle_phui_field(first_child)
+        
+    def handle_phui_field(self, annotation_cursor):
+        from .PhuiElement import PhuiElement
+
+        annotation_data = annotation_cursor.spelling.split(";")
+        PhuiElement(annotation_cursor, self, annotation_data)
 
     def addchild(self, node):
         node.parent = self
@@ -25,12 +38,12 @@ class CxxNode():
             node.parent = None
         pass
     
-    def forEachChild(self, depthFirst = False):
+    def forEachChild(self, depthFirst = False, noDepth = False):
         for child in self.children:
-            if depthFirst:
+            if not noDepth and depthFirst:
                 yield from child.forEachChild(depthFirst)
             yield child
-            if not depthFirst:
+            if not noDepth and not depthFirst:
                 yield from child.forEachChild(depthFirst)
 
     def dump(self, level = 0):
