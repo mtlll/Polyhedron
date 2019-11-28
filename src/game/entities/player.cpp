@@ -14,7 +14,7 @@ Player::Player() : BaseDynamicEntity() {
 	physstate = PHYS_FALL;
 	// Load in our player entity model.
 	conoutf("%s", "Preloading player entity");
-	preloadmodel("player/male");
+	preloadmodel("actors/player/female");
 	// Reset.
 	setName("Player");
 //preloadmodel("player/female");
@@ -29,7 +29,7 @@ Player::Player() : BaseDynamicEntity() {
 void Player::preload() {
 	// Load in our player entity model.
 	conoutf("%s", "Preloading player entity");
-	preloadmodel("player/male");
+	preloadmodel("actors/player/female");
 
 	state = CS_ALIVE;
 	et_type = ET_GAMESPECIFIC;
@@ -65,7 +65,7 @@ void Player::render() {
 		// Calculate the position.
 		vec pos = o;
 		pos.z -= eyeheight;
-		rendermodel("player/male", ANIM_JUMP, pos, yaw, pitch, 0, MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED);
+		rendermodel("actors/player/female", ANIM_JUMP, pos, yaw, pitch, 0, MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED);
 	}
 }
 
@@ -90,8 +90,7 @@ bool Player::onTouch(const entities::classes::CoreEntity *otherEnt, const vec &d
 }
 
 void Player::reset() {
-	setName("PlayerStart");
-
+	setName("Player");
 	setspawned(false);
 }
 

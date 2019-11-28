@@ -816,7 +816,7 @@ bool load_world(const char *mname, const char *cname)        // Does not support
     renderprogress(0, "loading entities...");
 
     // Define the path to our JSON file.
-    defformatcubestr(jsonname, "media/map/%s.json", mname);
+    /*defformatcubestr(jsonname, "media/map/%s.json", mname);
 
     // Get a reference to the entities array.
     auto &ents = entities::getents();
@@ -845,7 +845,7 @@ bool load_world(const char *mname, const char *cname)        // Does not support
         conoutf(CON_ERROR, "Unable to load entity json for map %s: %sent", mname, e.what());
 		return false;
 	}
-	
+	*/
     if(hdr.numents > MAXENTS)
     {
         conoutf(CON_WARN, "warning: map has %d entities", hdr.numents);

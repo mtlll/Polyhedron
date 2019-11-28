@@ -156,7 +156,6 @@ SCRIPTEXPORT void cancelsel()
     entcancel();
 }
 
-
 void toggleedit(bool force)
 {
     if (!player || mainmenu == 1)
@@ -183,6 +182,7 @@ void toggleedit(bool force)
         player->editstate = player->state;
         player->state = CS_EDITING;
     }
+
     cancelsel();
     stoppaintblendmap();
     keyrepeat(editmode, KR_EDITMODE);

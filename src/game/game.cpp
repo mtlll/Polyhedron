@@ -139,6 +139,7 @@ namespace game
     void suicide(entities::classes::CoreEntity *d) {
 
     }
+
     void newmap(int size) {
         // Copy into mapname and reset maptime.
         maptime = 0;
@@ -152,6 +153,7 @@ namespace game
         // Find our playerspawn.
         findplayerspawn(player1);
     }
+
     void loadingmap(const char *name) {
 
     }
@@ -202,7 +204,7 @@ namespace game
     }
 
     void renderplayerpreview(int model, int team, int weap) {
-
+        //renderclient(player1, "actors/male", NULL, 1, 1, 4, 0, 0, 1.0f, false, 1);
     }
 
     bool canjump()
@@ -326,14 +328,16 @@ namespace game
         conoutf(CON_WARN, "game::parseoption is empty");
     }
 
-    bool allowedittoggle() { 
-        if (!player1 || getident("mainmenutoggled") != NULL)
+    bool allowedittoggle() {
+        if (!player1 || mainmenu == 1)
         {
             conoutf(CON_ERROR, "[%s:%i] %s", __FILE__, __LINE__, "Can't enter edit mode while in the mainmenu.");
             return false;
         }
+
         return true; 
     }
+
     void edittoggled(bool on) {
         conoutf(CON_INFO, "Editor toggled - %s", (on == 0 ? "Off" : "On"));
     }
