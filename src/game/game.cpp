@@ -1,7 +1,8 @@
 #include "game.h"
 #include "entities.h"
-#include "entities/playerstart.h"
 #include "entities/player.h"
+#include "entities/playerstart.h"
+#include "engine/engine.h"
 #include "engine/scriptexport.h"
 
 
@@ -324,14 +325,26 @@ namespace game
     void parseoptions(vector<const char *> &args) {
         conoutf(CON_WARN, "game::parseoption is empty");
     }
+
+    bool allowedittoggle() { 
+        if (!player1 || getident("mainmenutoggled") != NULL)
+        {
+            conoutf(CON_ERROR, "[%s:%i] %s", __FILE__, __LINE__, "Can't enter edit mode while in the mainmenu.");
+            return false;
+        }
+        return true; 
+    }
+    void edittoggled(bool on) {
+        conoutf(CON_INFO, "Editor toggled - %b", on);
+    }
+
+
     void connectattempt(const char *name, const char *password, const ENetAddress &address) {
         // Will need this to even join a game.
         //copycubestr(connectpass, password);
     }
     void connectfail() {}
     void parsepacketclient(int chan, packetbuf &p) {}
-    bool allowedittoggle() { return true; }
-    void edittoggled(bool on) {}
     void writeclientinfo(stream *f) {}
     void toserver(char *text) {}
     bool ispaused() { return false; }

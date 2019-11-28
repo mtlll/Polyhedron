@@ -14,7 +14,7 @@ option(SCHIZOMANIA_BUILD_CLIENT "Build the game client" ON)
 option(SCHIZOMANIA_BUILD_SERVER "Build the game server" OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -27,8 +27,8 @@ if (APPLE)
     list(INSERT CMAKE_FIND_LIBRARY_SUFFIXES 0 ".dylib" )
 
     set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
-    set(CMAKE_XCODE_ATTRIBUTE_CLANG_LANGUAGE_STANDARD "c++14")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++14")
+    set(CMAKE_XCODE_ATTRIBUTE_CLANG_LANGUAGE_STANDARD "c++17")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++17")
 endif()
 
 #Libraries
@@ -343,12 +343,10 @@ target_include_directories(Polyhedron
 if (APPLE)
     target_link_libraries(Polyhedron
         enet
-
         ${COCOA}
         ${COREFOUNDATION}
         ${AUDIOTOOLBOX}
         ${COREAUDIO}
-
         ${SDL2_LIBRARIES}
         ${SDL2_MAIN_LIBRARIES}
 		${SDL2_MIXER_LIBRARIES}
@@ -364,6 +362,7 @@ if (APPLE)
 else()
     target_link_libraries(Polyhedron
         enet
+        rt
         ${SDL2_LIBRARIES}
 		${SDL2_MIXER_LIBRARIES}
 		${SDL2_IMAGE_LIBRARIES}

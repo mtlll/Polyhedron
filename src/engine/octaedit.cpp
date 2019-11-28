@@ -159,6 +159,12 @@ SCRIPTEXPORT void cancelsel()
 
 void toggleedit(bool force)
 {
+    if (!player || mainmenu == 1)
+    {
+        conoutf(CON_ERROR, "[%s:%i] %s", __FILE__, __LINE__, "Can't enter edit mode while in the mainmenu.");
+        return;
+    }
+
     if(!force)
     {
         if(!isconnected()) return;
