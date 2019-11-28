@@ -140,6 +140,25 @@ list(APPEND fileListEngine
 )
 
 list(APPEND fileListShared
+    shared/utils/network.cpp
+    shared/utils/cubectype.h
+    shared/utils/cubestr.h 
+    shared/utils/cubestr.cpp
+    shared/utils/databuf.h
+    shared/utils/endianness.h 
+    shared/utils/hashbase.h
+    shared/utils/hashset.h
+    shared/utils/hashtable.h
+    shared/utils/hthash.h
+    shared/utils/network.h
+    shared/utils/network.cpp
+    shared/utils/queue.h 
+    shared/utils/rndnumbers.h 
+    shared/utils/stream.h
+    shared/utils/streambuf.h
+    shared/utils/ucharbuf.h 
+    shared/utils/vector.h 
+ 
     shared/command.h
     shared/crypto.cpp
     shared/cube.h

@@ -54,7 +54,7 @@ void fatal(const char *s, ...)    // failure exit
 		{
 			if(SDL_WasInit(SDL_INIT_VIDEO))
 			{
-#ifndef NDEBUG
+#ifndef DEBUG
 		SDL_ShowCursor(SDL_FALSE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
 #else
 		SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
@@ -405,7 +405,7 @@ void inputgrab(bool on)
 {
 	if(on)
 	{
-#ifndef NDEBUG
+#ifndef DEBUG
 		SDL_ShowCursor(SDL_FALSE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
 #else
 		SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
@@ -427,7 +427,7 @@ void inputgrab(bool on)
 	}
 	else
 	{
-#ifndef NDEBUG
+#ifndef DEBUG
 		SDL_ShowCursor(SDL_FALSE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
 #else
 		SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
@@ -461,7 +461,7 @@ void setfullscreen(bool enable)
 	}
 }
 
-#ifdef _NDEBUG
+#ifndef DEBUG
 VARF(fullscreen, 0, 0, 1, setfullscreen(fullscreen!=0));
 #else
 VARF(fullscreen, 0, 1, 1, setfullscreen(fullscreen!=0));
@@ -559,7 +559,7 @@ void setupscreen()
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
-	screen = SDL_CreateWindow("SchizoMania", winx, winy, winw, winh, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags);
+	screen = SDL_CreateWindow("SchizoMania - 'Chapter A' - Polyhedron 0.0.1", winx, winy, winw, winh, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags);
 	if(!screen) fatal("failed to create OpenGL window: %s", SDL_GetError());
 
 	SDL_SetWindowMinimumSize(screen, SCR_MINW, SCR_MINH);
@@ -1124,7 +1124,7 @@ int main(int argc, char **argv)
 
     // Setup the basic OpenGL Screen, fullscreen, etc.
     setupscreen();
-#ifndef NDEBUG
+#ifndef DEBUG
 		SDL_ShowCursor(SDL_FALSE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
 #else
 		SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)

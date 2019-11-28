@@ -1,5 +1,6 @@
 #include "game.h"
 #include "server.h"
+#include "../shared/tools.h"
 
 // This file only servers as an empty basic server implementation.
 namespace server

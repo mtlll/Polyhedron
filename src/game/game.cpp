@@ -335,7 +335,7 @@ namespace game
         return true; 
     }
     void edittoggled(bool on) {
-        conoutf(CON_INFO, "Editor toggled - %b", on);
+        conoutf(CON_INFO, "Editor toggled - %s", (on == 0 ? "Off" : "On"));
     }
 
 

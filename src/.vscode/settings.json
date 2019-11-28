@@ -121,9 +121,10 @@
         }
     ],
     "cmake.configureOnOpen": true,
-    
+    "cmake.buildArgs": [],
     "C_Cpp.updateChannel": "Default",
     "files.autoSave": "afterDelay",
     "gitlens.blame.dateFormat": "${date}",
-    "gitlens.insiders": false
+    "gitlens.insiders": false,
+    "cmake.debugConfig": "-g3 -DDEBUG"
 }

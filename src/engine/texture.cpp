@@ -1,6 +1,7 @@
 // texture.cpp: texture slot management
-
+#include "cube.h"
 #include "engine.h"
+#include "shared/tools.h"
 #include "shared/entities/basephysicalentity.h"
 
 #ifdef __APPLE__
