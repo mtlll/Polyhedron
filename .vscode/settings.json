@@ -1,0 +1,9 @@
+{
+    "cmake.buildDirectory": "${workspaceFolder}/src/build",
+    "cmake.configureOnOpen": true,
+    "cmake.generator": "Ninja",
+    "cmake.installPrefix": "/build/",
+    "cmake.platform": "Unix",
+    "cmake.sourceDirectory": "${workspaceFolder}/src",
+    "cmake.toolset": "Ninja"
+}

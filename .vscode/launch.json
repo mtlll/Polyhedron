@@ -24,11 +24,7 @@
             "cwd": "${workspaceFolder}/..",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "/usr/bin/gdb",
-            "sourceFileMap": {
-                "${workspaceFolder}/src": "${workspaceFolder}/src"
-            }
+            "MIMode": "gdb"
         }
     ]
 }

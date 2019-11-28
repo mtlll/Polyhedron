@@ -56,7 +56,7 @@
     "workbench.colorTheme": "Tokyo Night Storm",
     "vsicons.dontShowNewVersionMessage": true,
     "workbench.sideBar.location": "left",
-    "javascript.suggestionActions.enabled": false,
+    "javascript.suggestionActions.enabled": true,
     "git.alwaysShowStagedChangesResourceGroup": true,
     "git.showPushSuccessNotification": true,
     "gitlens.views.repositories.showBranchComparison": "branch",
@@ -64,7 +64,7 @@
     "gitlens.views.compare.enabled": true,
     "gitlens.views.repositories.enabled": true,
     "gitlens.views.fileHistory.enabled": true,
-    "git.autofetch": true,
+    "git.autofetch": false,
     "gitlens.gitCommands.closeOnFocusOut": true,
     "peacock.favoriteColors": [
         {
@@ -122,8 +122,8 @@
     ],
     "cmake.configureOnOpen": true,
     
-    "C_Cpp.updateChannel": "Insiders",
+    "C_Cpp.updateChannel": "Default",
     "files.autoSave": "afterDelay",
     "gitlens.blame.dateFormat": "${date}",
-    "gitlens.insiders": true
+    "gitlens.insiders": false
 }
