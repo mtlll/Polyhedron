@@ -71,7 +71,7 @@ namespace game
     extern bool allowmove(entities::classes::BasePhysicalEntity *d);
     extern entities::classes::CoreEntity *iterdynents(int i);
     extern int numdynents();
-    extern void RenderGameEntities();
+    extern void renderentities();
     extern void renderavatar();
     extern void renderplayerpreview(int model, int color, int team, int weap);
     extern int numanims();

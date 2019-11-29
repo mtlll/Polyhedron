@@ -1232,7 +1232,7 @@ int main(int argc, char **argv)
 	
 
 	// Somehow another init script.
-	if(initscript) execute(initscript);
+	if(initscript) execfile(initscript, true);
 
 	// Initmumble, reset fpshistory, grab user inpt
 	initmumble();

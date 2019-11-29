@@ -61,8 +61,10 @@ enum
 	NUMANIMS
 };
 //extern void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch, float roll, int flags, entities::classes::BaseDynamicEntity *d, modelattach *a, int basetime, int basetime2, float size, const vec4 &color);
-void Player::render() {
-	if (isthirdperson()) {
+void Player::render()
+{
+	if (isthirdperson() && state != CS_EDITING)
+	{
 		// Calculate the position.
 		vec pos = o;
 		pos.z -= eyeheight;
@@ -90,18 +92,21 @@ bool Player::onTouch(const entities::classes::CoreEntity *otherEnt, const vec &d
     }
 }
 
-void Player::reset() {
-    setAttribute("name", "PlayerStart");
-
-	setspawned(false);
+void Player::reset()
+{
+	on(EntityEventClearSpawn());
 }
 
-void Player::respawn() {
-	setspawned(true);
+void Player::respawn()
+{
+	on(EntityEventSpawn());
 
-	if(editmode) {
+	if (editmode)
+	{
 		state = CS_EDITING;
-	} else {
+	}
+	else
+	{
 		state = CS_ALIVE;
 	}
 }

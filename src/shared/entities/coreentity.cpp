@@ -1,8 +1,10 @@
 #include "cube.h"
 #include "ents.h"
 #include "game.h"
+#include "engine.h"
 #include "ents.h"
 #include "baseentity.h"
+#include "shared/entities/basephysicalentity.h"
 #include "coreentity.h"
 #include "entityfactory.h"
 #include <vector>
@@ -12,32 +14,10 @@
 extern void boxs3D(const vec &o, vec s, int g);
 extern void boxs(int orient, vec o, const vec &s);
 extern void boxs(int orient, vec o, const vec &s, float size);
+extern int entselradius;
+extern int worldsize;
 
 ADD_ENTITY_TO_FACTORY(CoreEntity, "core_entity");
-
-
-bool entities::classes::CoreEntity::spawned() const
-{
-    return (flags&entities::EntityFlags::EF_SPAWNED) != 0;
-}
-
-void entities::classes::CoreEntity::setspawned(bool val)
-{
-    if(val)
-        flags |= entities::EntityFlags::EF_SPAWNED;
-    else
-        flags &= ~entities::EntityFlags::EF_SPAWNED;
-}
-
-void entities::classes::CoreEntity::setspawned()
-{
-    flags |= entities::EntityFlags::EF_SPAWNED;
-}
-
-void entities::classes::CoreEntity::clearspawned()
-{
-    flags &= ~entities::EntityFlags::EF_SPAWNED;
-}
 
 void entities::classes::CoreEntity::saveToJsonImpl(nlohmann::json& document)
 {
@@ -70,6 +50,8 @@ void entities::classes::CoreEntity::loadFromJson(const nlohmann::json& document)
 	document.at("game_type").get_to(game_type);
 
 	fromJsonImpl(document);
+	
+	on(EntityEventPrecache());
 }
 
 void entities::classes::CoreEntity::setAttribute(const std::string &key, const entities::attribute_T &value)
@@ -82,16 +64,72 @@ entities::attribute_T entities::classes::CoreEntity::getAttribute(const std::str
 	return getAttributeImpl(key);
 }
 
-bool entities::classes::CoreEntity::getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const
+bool entities::classes::CoreEntity::getBoundingBox(int entselradius, vec &minbb, vec &maxbb) const
 {
+	minbb = vec(o).sub(entselradius);
+	maxbb = vec(o).add(entselradius+1);
+
 	if (et_type == ET_EMPTY)
 	{
 		return false;
 	}
 	
-	minbb = ivec(vec(o).sub(entselradius));
-	maxbb = ivec(vec(o).add(entselradius+1));
 	return true;
+}
+
+void entities::classes::CoreEntity::render()
+{
+	if (editmode)
+	{
+		ldrnotextureshader->set();
+		vec bbmin;
+		vec bbmax;
+		getBoundingBox(entselradius, bbmin, bbmax);
+		
+		vec es;
+		vec eo;
+		eo.x = bbmin.x;
+		eo.y = bbmin.y;
+		eo.z = bbmin.z;
+		es.x = bbmax.x - bbmin.x;
+		es.y = bbmax.y - bbmin.y;
+		es.z = bbmax.z - bbmin.z;
+		
+		if (selected)
+		{
+			gle::colorub(0, 40, 0);
+			gle::defvertex();
+			gle::begin(GL_LINES, 20*6);
+			
+			boxs3D(eo, es, 1);
+			xtraverts += gle::end();
+		}
+		
+		if (hovered)
+		{
+			gle::colorub(40, 40, 0);
+			
+			boxs3D(eo, es, 1);
+
+			gle::colorub(200,0,0);
+			auto cameraEnt = dynamic_cast<CoreEntity*>(camera1);
+			if (cameraEnt)
+			{
+				float cameraRelativeTickness = clamp(0.015f*cameraEnt->o.dist(o)*tan(fovy*0.5f*RAD), 0.1f, 1.0f);
+				boxs(hover_orientation, eo, es);//, cameraRelativeTickness);
+			}
+		}
+		
+		if (moving)
+		{
+			vec a, b;
+
+			gle::colorub(180, 80, 80);
+			(a = eo).x = eo.x - fmod(eo.x, worldsize); (b = es).x = a.x + worldsize; boxs3D(a, b, 1);
+			(a = eo).y = eo.y - fmod(eo.y, worldsize); (b = es).y = a.x + worldsize; boxs3D(a, b, 1);
+			(a = eo).z = eo.z - fmod(eo.z, worldsize); (b = es).z = a.x + worldsize; boxs3D(a, b, 1);
+		}
+	}
 }
 
 void entities::classes::CoreEntity::renderForEdit()
@@ -106,42 +144,18 @@ void entities::classes::CoreEntity::renderForEditGui()
 
 void entities::classes::CoreEntity::renderSelected(int entselradius, int entorient)
 {
-	gle::colorub(0, 40, 0);
-	vec es(entselradius);
-    vec eo = o;
-    eo.sub(es);
-    es.mul(2);
-    
-	boxs3D(eo, es, 1);
+
 }
 
 
 void entities::classes::CoreEntity::renderHighlight(int entselradius, int entorient, float thickness)
 {
-	gle::colorub(0, 40, 0);
-	vec es(entselradius);
-    vec eo = o;
-    eo.sub(es);
-    es.mul(2);
-    
-	boxs3D(eo, es, 1);
 
-	gle::colorub(200,0,0);
-	boxs(entorient, eo, es, thickness);
 }
 
 void entities::classes::CoreEntity::renderMoveShadow(int entselradius, int size)
 {
-	vec es(entselradius);
-    vec eo = o;
-    eo.sub(es);
-    es.mul(2);
 
-	vec a, b;
-	gle::colorub(20, 20, 20);
-	(a = eo).x = eo.x - fmod(eo.x, size); (b = es).x = a.x + size; boxs3D(a, b, 1);
-	(a = eo).y = eo.y - fmod(eo.y, size); (b = es).y = a.x + size; boxs3D(a, b, 1);
-	(a = eo).z = eo.z - fmod(eo.z, size); (b = es).z = a.x + size; boxs3D(a, b, 1);
 }
 
 void entities::classes::CoreEntity::onImpl(const Event& event)
@@ -149,29 +163,60 @@ void entities::classes::CoreEntity::onImpl(const Event& event)
 	on(event);
 }
 
+void entities::classes::CoreEntity::renderImpl()
+{
+	render();
+}
+
 void entities::classes::CoreEntity::on(const Event& event)
 {
+	if (event.type != EntityEventType::HoverStart)
+	{
+		conoutf("EntityEvent: %s", EntityEventTypeToStringMap.at(event.type).c_str());
+	}
+	
 	switch(event.type)
 	{
 		case EntityEventType::AttributeChanged:
 		break;
-		case EntityEventType::Hover:
-		break;
-		case EntityEventType::Selected:
+		case EntityEventType::SelectStart:
 			selected = true;
 		break;
-		case EntityEventType::Deselected:
+		case EntityEventType::SelectStop:
 			selected = false;
-		break;
-		case EntityEventType::Touched:
 		break;
 		case EntityEventType::Tick:
 		break;
 		case EntityEventType::Use:
 		break;
+		case EntityEventType::HoverStart:{
+			hovered = true;
+			auto hoverEventData = static_cast<const EntityEventData<EntityEventType::HoverStart, int>&>(event);
+			hover_orientation = hoverEventData.payload;
+			conoutf("EntityEvent: %s %d", EntityEventTypeToStringMap.at(event.type).c_str(), hover_orientation);
+		} break;
+		case EntityEventType::HoverStop:
+			hovered = false;
+		break;
+		case EntityEventType::MoveStart:
+			moving = true;
+		break;
+		case EntityEventType::MoveStop:
+			moving = false;
+		break;
+		case EntityEventType::TouchStart:
+		break;
+		case EntityEventType::TouchStop:
+		break;
 		case EntityEventType::Trigger:
 		break;
 		case EntityEventType::Precache:
+		break;
+		case EntityEventType::Spawn:
+			spawned = true;
+		break;
+		case EntityEventType::ClearSpawn:
+			spawned = false;
 		break;
 
 		default:
@@ -186,6 +231,19 @@ void entities::send_entity_event(classes::CoreEntity* entity, const Event& event
 	if (entity)
 	{
 		entity->onImpl(event);
+	}
+}
+
+void entities::send_entity_event(int entity_id, const Event& event)
+{
+	auto& ents = entities::getents();
+	if (ents.inrange(entity_id))
+	{
+		send_entity_event(ents[entity_id], event);
+	}
+	else
+	{
+		conoutf("Unable send_entity_event failed: no such entity: %d", entity_id);
 	}
 }
 

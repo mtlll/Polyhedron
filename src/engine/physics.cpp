@@ -567,7 +567,7 @@ const vector<entities::classes::BasePhysicalEntity*> &checkdynentcache(int x, in
     int numdyns = game::numdynents(), dsize = 1<<dynentsize, dx = x<<dynentsize, dy = y<<dynentsize;
     loopi(numdyns)
     {
-        entities::classes::BasePhysicalEntity *d = (entities::classes::BaseDynamicEntity*)game::iterdynents(i);
+        auto d = dynamic_cast<entities::classes::BaseDynamicEntity*>(game::iterdynents(i));
         if (!d)
             continue;
 

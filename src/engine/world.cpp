@@ -1,9 +1,12 @@
 // world.cpp: core map management stuff
 #include "engine.h"
-#include "../shared/ents.h"
-#include "../game/entities/player.h"
-#include "../game/entities/playerstart.h"
-#include "../game/game.h"
+#include "shared/ents.h"
+#include "shared/entities/coreentity.h"
+#include "game/entities/player.h"
+#include "game/entities/playerstart.h"
+#include "shared/entities/decalentity.h"
+#include "game/entities/basemapmodel.h"
+#include "game/game.h"
 #include <cassert>
 
 VARR(mapversion, 1, MAPVERSION, 0);
@@ -43,40 +46,12 @@ static inline void decalboundbox(const entities::classes::CoreEntity *e, DecalSl
 
 bool getentboundingbox(const entities::classes::CoreEntity *e, ivec &o, ivec &r)
 {
-	return e->getBoundingBox(entselradius, o, r);
-	/*switch(e->et_type)
-    {
-        case ET_EMPTY:
-            return false;
-        case ET_DECAL:
-            {
-				DecalSlot &s = lookupdecalslot(e->attr1, false);
-                vec center, radius;
-                decalboundbox(e, s, center, radius);
-				center.add(e->o);
-                radius.max(entselradius);
-                o = ivec(vec(center).sub(radius));
-                r = ivec(vec(center).add(radius).add(1));
-                break;
-            }
-        case ET_MAPMODEL:
-			if(model *m = loadmapmodel(e->model_idx))
-            {
-                vec center, radius;
-                mmboundbox(e, m, center, radius);
-				center.add(e->o);
-                radius.max(entselradius);
-                o = ivec(vec(center).sub(radius));
-                r = ivec(vec(center).add(radius).add(1));
-                break;
-            }
-        // invisible mapmodels use entselradius
-        default:
-			o = ivec(vec(e->o).sub(entselradius));
-			r = ivec(vec(e->o).add(entselradius+1));
-            break;
-    }
-    return true;*/
+	vec fo;
+	vec fr;
+	auto result = e->getBoundingBox(entselradius, fo, fr);
+	o = ivec(fo);
+	r = ivec(fr);
+	return result;
 }
 
 enum
@@ -93,153 +68,135 @@ void modifyoctaentity(int flags, int id, entities::classes::CoreEntity *e, cube 
         ivec o(i, cor, size);
         vtxarray *va = c[i].ext && c[i].ext->va ? c[i].ext->va : lastva;
         if(c[i].children != NULL && size > leafsize)
+        {
             modifyoctaentity(flags, id, e, c[i].children, o, size>>1, bo, br, leafsize, va);
+		}
         else if(flags&MODOE_ADD)
         {
-            if(!c[i].ext || !c[i].ext->ents) ext(c[i]).ents = new octaentities(o, size);
-            octaentities &oe = *c[i].ext->ents;
-			switch(e->et_type)
+            if(!c[i].ext || !c[i].ext->ents)
             {
-                case ET_DECAL:
-                    if(va)
-                    {
-                        va->bbmin.x = -1;
-                        if(oe.decals.empty()) va->decals.add(&oe);
-                    }
-                    oe.decals.add(id);
-                    oe.bbmin.min(bo).max(oe.o);
-                    oe.bbmax.max(br).min(ivec(oe.o).add(oe.size));
-                    break;
-                // WatIsDeze: Testing for map models.
-//                case ET_MAPMODEL:
-//                    if(loadmapmodel(e->attr1))
-//                    {
-//                        if(va)
-//                        {
-//                            va->bbmin.x = -1;
-//                            if(oe.mapmodels.empty()) va->mapmodels.add(&oe);
-//                        }
-//                        oe.mapmodels.add(id);
-//                        oe.bbmin.min(bo).max(oe.o);
-//                        oe.bbmax.max(br).min(ivec(oe.o).add(oe.size));
-//                        break;
-//                    }
-                    case ET_MAPMODEL:
-					if(loadmapmodel(e->model_idx))
-                        {
-                            if(va)
-                            {
-                                va->bbmin.x = -1;
-                                if(oe.mapmodels.empty()) va->mapmodels.add(&oe);
-                            }
-                            oe.mapmodels.add(id);
-                            oe.bbmin.min(bo).max(oe.o);
-                            oe.bbmax.max(br).min(ivec(oe.o).add(oe.size));
-                            break;
-                        }
-
-                    // invisible mapmodel
-                default:
-                    oe.other.add(id);
-                    break;
-            }
-
+				ext(c[i]).ents = new octaentities(o, size);
+			}
+            octaentities &oe = *c[i].ext->ents;
+            
+            auto e_decal = dynamic_cast<entities::classes::DecalEntity*>(e);
+            auto e_mapmodel = dynamic_cast<entities::classes::BaseMapModel*>(e);
+            
+            if (e_decal)
+            {
+				if(va)
+				{
+					va->bbmin.x = -1;
+					if(oe.decals.empty()) va->decals.add(&oe);
+				}
+				oe.decals.add(id);
+				oe.bbmin.min(bo).max(oe.o);
+				oe.bbmax.max(br).min(ivec(oe.o).add(oe.size));
+			}
+			else if (e_mapmodel)
+			{
+				if(loadmapmodel(e->model_idx))
+				{
+					if(va)
+					{
+						va->bbmin.x = -1;
+						if(oe.mapmodels.empty()) va->mapmodels.add(&oe);
+					}
+					oe.mapmodels.add(id);
+					oe.bbmin.min(bo).max(oe.o);
+					oe.bbmax.max(br).min(ivec(oe.o).add(oe.size));
+					break;
+				}
+			}
+			else
+			{
+				oe.other.add(id);
+			}
         }
         else if(c[i].ext && c[i].ext->ents)
         {
             octaentities &oe = *c[i].ext->ents;
 			const auto& ents = entities::getents();
-			switch(e->et_type)
-            {
-                case ET_DECAL: {
-                    oe.decals.removeobj(id);
-                    if(va)
-                    {
-                        va->bbmin.x = -1;
-                        if(oe.decals.empty()) va->decals.removeobj(&oe);
-                    }
-                    oe.bbmin = oe.bbmax = oe.o;
-                    oe.bbmin.add(oe.size);
-                    loopvj(oe.decals)
-                    {
-                        auto e = ents[oe.decals[j]];
-                        ivec eo, er;
-                        if(getentboundingbox(e, eo, er))
-                        {
-                            oe.bbmin.min(eo);
-                            oe.bbmax.max(er);
-                        }
-                    }
-                    oe.bbmin.max(oe.o);
-                    oe.bbmax.min(ivec(oe.o).add(oe.size));
-				} break;
-//                case ET_MAPMODEL:
-//                    if(loadmapmodel(e->attr1))
-//                    {
-//                        oe.mapmodels.removeobj(id);
-//                        if(va)
-//                        {
-//                            va->bbmin.x = -1;
-//                            if(oe.mapmodels.empty()) va->mapmodels.removeobj(&oe);
-//                        }
-//                        oe.bbmin = oe.bbmax = oe.o;
-//                        oe.bbmin.add(oe.size);
-//                        loopvj(oe.mapmodels)
-//                        {
-//                            entities::classes::CoreEntity *e = entities::getents()[oe.mapmodels[j]];
-//                            ivec eo, er;
-//                            if(getentboundingbox(e, eo, er))
-//                            {
-//                                oe.bbmin.min(eo);
-//                                oe.bbmax.max(er);
-//                            }
-//                        }
-//                        oe.bbmin.max(oe.o);
-//                        oe.bbmax.min(ivec(oe.o).add(oe.size));
-//                        break;
-//                    }
-				case ET_MAPMODEL:
-					if(loadmapmodel(e->model_idx))
+			
+            auto e_decal = dynamic_cast<entities::classes::DecalEntity*>(e);
+            auto e_mapmodel = dynamic_cast<entities::classes::BaseMapModel*>(e);
+
+			if (e_decal)
+			{
+				oe.decals.removeobj(id);
+				if(va)
+				{
+					va->bbmin.x = -1;
+					if(oe.decals.empty()) va->decals.removeobj(&oe);
+				}
+				oe.bbmin = oe.bbmax = oe.o;
+				oe.bbmin.add(oe.size);
+				loopvj(oe.decals)
+				{
+					auto e = ents[oe.decals[j]];
+					ivec eo, er;
+					if(getentboundingbox(e, eo, er))
 					{
-						oe.mapmodels.removeobj(id);
-						if(va)
-						{
-							va->bbmin.x = -1;
-							if(oe.mapmodels.empty()) va->mapmodels.removeobj(&oe);
-						}
-						oe.bbmin = oe.bbmax = oe.o;
-						oe.bbmin.add(oe.size);
-						loopvj(oe.mapmodels)
-						{
-							auto e = ents[oe.mapmodels[j]];
-							
-							ivec eo, er;
-							if(getentboundingbox(e, eo, er))
-							{
-								oe.bbmin.min(eo);
-								oe.bbmax.max(er);
-							}
-						}
-						oe.bbmin.max(oe.o);
-						oe.bbmax.min(ivec(oe.o).add(oe.size));
-						break;
+						oe.bbmin.min(eo);
+						oe.bbmax.max(er);
 					}
-                    // invisible mapmodel
-                default:
-                    oe.other.removeobj(id);
-                    break;
-            }
+				}
+				oe.bbmin.max(oe.o);
+				oe.bbmax.min(ivec(oe.o).add(oe.size));
+			}
+			else if (e_mapmodel)
+			{
+				if(loadmapmodel(e_mapmodel->model_idx))
+				{
+					oe.mapmodels.removeobj(id);
+					if(va)
+					{
+						va->bbmin.x = -1;
+						if(oe.mapmodels.empty()) va->mapmodels.removeobj(&oe);
+					}
+					oe.bbmin = oe.bbmax = oe.o;
+					oe.bbmin.add(oe.size);
+					loopvj(oe.mapmodels)
+					{
+						entities::classes::CoreEntity *e = entities::getents()[oe.mapmodels[j]];
+						ivec eo, er;
+						if(getentboundingbox(e, eo, er))
+						{
+							oe.bbmin.min(eo);
+							oe.bbmax.max(er);
+						}
+					}
+					oe.bbmin.max(oe.o);
+					oe.bbmax.min(ivec(oe.o).add(oe.size));
+				}
+			}
+			else
+			{
+				oe.other.removeobj(id);
+			}
+
             if(oe.mapmodels.empty() && oe.decals.empty() && oe.other.empty())
+            {
                 freeoctaentities(c[i]);
+			}
         }
-        if(c[i].ext && c[i].ext->ents) c[i].ext->ents->query = NULL;
+        if(c[i].ext && c[i].ext->ents)
+        {
+			c[i].ext->ents->query = NULL;
+		}
         if(va && va!=lastva)
         {
             if(lastva)
             {
-                if(va->bbmin.x < 0) lastva->bbmin.x = -1;
+                if(va->bbmin.x < 0)
+                {
+					lastva->bbmin.x = -1;
+				}
             }
-            else if(flags&MODOE_UPDATEBB) updatevabb(va);
+            else if(flags&MODOE_UPDATEBB)
+            {
+				updatevabb(va);
+			}
         }
     }
 }
@@ -249,7 +206,20 @@ int spotlights = 0, volumetriclights = 0, nospeclights = 0;
 
 static bool modifyoctaent(int flags, int id, entities::classes::CoreEntity *e)
 {
-	if(flags&MODOE_ADD ? e->flags&entities::EntityFlags::EF_OCTA : !(e->flags&entities::EntityFlags::EF_OCTA)) return false;
+	if(flags&MODOE_ADD)
+	{
+		if (e->flags&entities::EntityFlags::EF_OCTA)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		if (!(e->flags&entities::EntityFlags::EF_OCTA))
+		{
+			return false;
+		}
+	}
 
     ivec o, r;
     if(!getentboundingbox(e, o, r)) return false;
@@ -338,7 +308,7 @@ static inline void findents(octaentities &oe, int low, int high, bool notspawned
         if (ents.inrange(id)) {
             auto e = ents[id];
             // TODO: Fix this, et_type? and ent_type?
-			if(e->et_type >= low && e->et_type <= high && (e->spawned() || notspawned) && vec(e->o).sub(pos).mul(invradius).squaredlen() <= 1) found.add(id);
+			if(e->et_type >= low && e->et_type <= high && (e->spawned || notspawned) && vec(e->o).sub(pos).mul(invradius).squaredlen() <= 1) found.add(id);
         }
     }
 }
@@ -391,7 +361,14 @@ int entlooplevel = 0;
 int efocus = -1, enthover = -1, entorient = -1, oldhover = -1;
 bool undonext = true;
 
-VARF(entediting, 0, 0, 1, { if(!entediting) { entcancel(); efocus = enthover = -1; } });
+VARF(entediting, 0, 0, 1, {
+	if(!entediting)
+	{
+		entities::send_entity_event(enthover, entities::EntityEventHoverStop());
+		entcancel();
+		efocus = enthover = -1;
+	}
+});
 
 bool noentedit()
 {
@@ -418,6 +395,10 @@ bool haveselent()
 
 SCRIPTEXPORT void entcancel()
 {
+    loopv(entgroup)
+    {
+        entities::send_entity_event(entgroup[i], entities::EntityEventSelectStop());
+    }
     entgroup.shrink(0);
 }
 
@@ -425,6 +406,7 @@ void entadd(int id)
 {
     undonext = true;
     entgroup.add(id);
+	entities::send_entity_event(id, entities::EntityEventSelectStart());
 }
 
 undoblock *newundoent()
@@ -558,8 +540,14 @@ undoblock *copyundoents(undoblock *u)
     loopi(u->numents)
         entadd(e[i].i);
     undoblock *c = newundoent();
-    loopi(u->numents) if(e[i].e->et_type==ET_EMPTY)
-        entgroup.removeobj(e[i].i);
+    loopi(u->numents)
+    {
+		if(e[i].e->et_type==ET_EMPTY)
+		{
+			entities::send_entity_event(e[i].i, entities::EntityEventSelectStop());
+			entgroup.removeobj(e[i].i);
+		}
+	}
     return c;
 }
 
@@ -607,6 +595,19 @@ SCRIPTEXPORT void entrotate(int *cw)
 
 void entselectionbox(const entities::classes::CoreEntity *e, vec &eo, vec &es)
 {
+	vec bbmin;
+	vec bbmax;
+	e->getBoundingBox(entselradius, bbmin, bbmax);
+	
+	eo.x = bbmin.x;
+	eo.y = bbmin.y;
+	eo.z = bbmin.z;
+	es.x = bbmax.x - bbmin.x;
+	es.y = bbmax.y - bbmin.y;
+	es.z = bbmax.z - bbmin.z;
+	
+	return;
+
     model *m = NULL;
     const char *mname = entities::entmodel(e);
     if(mname && (m = loadmodel(mname)))
@@ -945,42 +946,44 @@ static void renderentbox(const vec &eo, vec es)
 
 void renderentselection(const vec &o, const vec &ray, bool entmoving)
 {
+	extern int xtraverts;
+	
     if(noentedit() || (entgroup.empty() && enthover < 0)) return;
     vec eo, es;
 
     if(entgroup.length())
     {
-        gle::colorub(0, 40, 0);
-        gle::defvertex();
-        gle::begin(GL_LINES, entgroup.length()*20*6);
-        loopv(entgroup) entfocus(entgroup[i],
-            entselectionbox(e, eo, es);
-            renderentbox(eo, es);
-        );
-        xtraverts += gle::end();
+//        gle::colorub(0, 0, 40);
+//        gle::defvertex();
+//        gle::begin(GL_LINES, entgroup.length()*20*6);
+//        loopv(entgroup) entfocus(entgroup[i],
+//            entselectionbox(e, eo, es);
+//            renderentbox(eo, es);
+//        );
+//        xtraverts += gle::end();
     }
 
     if(enthover >= 0 && enthover < entities::getents().length())
     {
-		auto highlighted_ent = entities::getents()[enthover];
-		float cameraRelativeTickness = clamp(0.015f*camera1->o.dist(highlighted_ent->o)*tan(fovy*0.5f*RAD), 0.1f, 1.0f);
-		highlighted_ent->renderHighlight(entselradius, entorient, cameraRelativeTickness);
-
-        if(entmoving && entmovingshadow==1)
-        {
-			highlighted_ent->renderMoveShadow(entselradius, worldsize);
-        }
+//		auto highlighted_ent = entities::getents()[enthover];
+//		float cameraRelativeTickness = clamp(0.015f*camera1->o.dist(highlighted_ent->o)*tan(fovy*0.5f*RAD), 0.1f, 1.0f);
+//		highlighted_ent->renderHighlight(entselradius, entorient, cameraRelativeTickness);
+//
+//        if(entmoving && entmovingshadow==1)
+//        {
+//			highlighted_ent->renderMoveShadow(entselradius, worldsize);
+//        }
     }
 
     if(showentradius)
     {
-        glDepthFunc(GL_GREATER);
-        gle::colorf(0.25f, 0.25f, 0.25f);
-        loopv(entgroup) entfocus(entgroup[i], renderentradius(e, false));
-        if(enthover>=0) entfocus(enthover, renderentradius(e, false));
-        glDepthFunc(GL_LESS);
-        loopv(entgroup) entfocus(entgroup[i], renderentradius(e, true));
-        if(enthover>=0) entfocus(enthover, renderentradius(e, true));
+//        glDepthFunc(GL_GREATER);
+//        gle::colorf(0.25f, 0.25f, 0.25f);
+//        loopv(entgroup) entfocus(entgroup[i], renderentradius(e, false));
+//        if(enthover>=0) entfocus(enthover, renderentradius(e, false));
+//        glDepthFunc(GL_LESS);
+//        loopv(entgroup) entfocus(entgroup[i], renderentradius(e, true));
+//        if(enthover>=0) entfocus(enthover, renderentradius(e, true));
     }
 }
 
@@ -989,19 +992,44 @@ bool enttoggle(int id)
     undonext = true;
     int i = entgroup.find(id);
     if(i < 0)
+    {
         entadd(id);
+	}
     else
+    {
+		entities::send_entity_event(i, entities::EntityEventSelectStop());
         entgroup.remove(i);
+	}
     return i < 0;
 }
 
 bool hoveringonent(int ent, int orient)
 {
     if(noentedit()) return false;
+    auto oldOrient = entorient;
     entorient = orient;
-    if((efocus = enthover = ent) >= 0)
+    if(ent >= 0)
+    {
+		if (enthover != ent)
+		{
+			entities::send_entity_event(ent, entities::EntityEventHoverStart(entorient));
+			if (enthover >= 0)
+			{
+				entities::send_entity_event(enthover, entities::EntityEventHoverStop());
+			}
+		}
+		else if (oldOrient != entorient)
+		{
+			entities::send_entity_event(ent, entities::EntityEventHoverStart(entorient));
+		}
+		efocus = enthover = ent;
         return true;
-    efocus   = entgroup.empty() ? -1 : entgroup.last();
+	}
+    efocus = entgroup.empty() ? -1 : entgroup.last();
+    if (enthover >= 0)
+    {
+		entities::send_entity_event(enthover, entities::EntityEventHoverStop());
+	}
     enthover = -1;
     return false;
 }
@@ -1276,9 +1304,6 @@ entities::classes::CoreEntity *new_game_entity(bool local, const vec &o, int &id
     entities::classes::CoreEntity *ent = entities::EntityFactory::constructEntity(std::string(strclass));
 
     ent->o = o;
-    ent->et_type = ET_GAMESPECIFIC;
-    ent->ent_type = ENT_INANIMATE;
-    ent->game_type = GAMEENTITY;
 
 	if (ents.inrange(idx))
 	{
@@ -1293,15 +1318,17 @@ entities::classes::CoreEntity *new_game_entity(bool local, const vec &o, int &id
 
 	enttoggle(idx);
 	makeundoent();
-	entedit(idx, ;);
+	removeentityedit(idx);
+	addentityedit(idx);
+	entities::editent(idx, true);
+	clearshadowcache();
 	commitchanges();
 	
     return ent;
 }
 
-entities::classes::CoreEntity *new_game_entity(entities::classes::CoreEntity *copy)
+entities::classes::CoreEntity *new_game_entity(int &idx, entities::classes::CoreEntity *copy)
 {
-	int idx = -1;
 	find_next_entity_index(idx);
 	auto ent = new_game_entity(true, copy->o, idx, copy->currentClassname().c_str());
 	
@@ -1347,9 +1374,10 @@ SCRIPTEXPORT void entpaste()
     {
         const auto c = entcopybuf[i];
         vec o = vec(c->o).mul(m).add(vec(sel.o));
-        int idx;
-        entities::classes::CoreEntity *e = new_game_entity(c);
+        int idx = -1;
+        entities::classes::CoreEntity *e = new_game_entity(idx, c);
         if(!e) continue;
+        e->o = o;
         entadd(idx);
         keepents = max(keepents, idx+1);
     }
@@ -1372,7 +1400,8 @@ SCRIPTEXPORT void entreplace()
     }
     else
     {
-        new_game_entity(c);
+        int idx = -1;
+        new_game_entity(idx, c);
     }
 }
 

@@ -5,20 +5,16 @@
 
 namespace game
 {
-    __attribute__((optimize("O0"))) void RenderGameEntities()
+    void renderentities()
     {
-        loopv(entities::getents()) {
-            entities::classes::BaseEntity *ent = dynamic_cast<entities::classes::BaseEntity*>(entities::getents()[i]);
-            //if (ent->et_type != ET_PLAYERSTART && ent->et_type != ET_EMPTY && ent->et_type != ET_LIGHT && ent->et_type != ET_SPOTLIGHT && ent->et_type != ET_SOUND)
-
-            // Ensure we only render player entities if it isn't our own player 1 entity. (Otherwise we'd render it double.)
-            if (ent != nullptr && (ent != game::player1))
-                ent->render();
+		auto& ents = entities::getents();
+		
+        for (int i = 0; ents.inrange(i); ++i)
+        {
+			auto& entity = ents[i];
+			
+			entity->renderImpl();
         }
-
-        // Render our client player.
-        if (game::player1 != nullptr)
-            game::player1->render();
     }
 
     VARP(hudgun, 0, 1, 1);

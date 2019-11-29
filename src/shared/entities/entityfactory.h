@@ -80,12 +80,12 @@ namespace entities {
 		extern void to_json(nlohmann::json&, const LOCALNAME&);\
 	} }\
 	void entities::classes::LOCALNAME::fromJsonImpl(const nlohmann::json& document) {\
-		DERIVED::fromJsonImpl(document);\
 		document.at(CLASSNAME).get_to(*this);\
+		DERIVED::fromJsonImpl(document);\
 	}\
 	void entities::classes::LOCALNAME::saveToJsonImpl(nlohmann::json& document) {\
 		DERIVED::saveToJsonImpl(document);\
-		document[CLASSNAME] = nlohmann::json{*this};\
+		document[CLASSNAME] = *this;\
 	}\
 	void entities::classes::LOCALNAME::setAttribute(const std::string &key, const entities::attribute_T &value) {\
 		DERIVED::setAttribute(key, value);\
@@ -101,6 +101,10 @@ namespace entities {
 	void entities::classes::LOCALNAME::onImpl(const Event& event) {\
 		on(event);\
 		DERIVED::onImpl(event);\
+	}\
+	void entities::classes::LOCALNAME::renderImpl() {\
+		DERIVED::renderImpl();\
+		render();\
 	}
 
 #define ENTITY_FACTORY_IMPL(LOCALNAME) \
@@ -120,4 +124,6 @@ namespace entities {
 	static const attributeList_T attributes();\
 	virtual void onImpl(const Event& event);\
 	void on(const Event& event);\
+	virtual void renderImpl();\
+	void render();\
     virtual ~LOCALNAME() = default;

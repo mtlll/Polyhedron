@@ -10,7 +10,6 @@ namespace entities {
 
             void preload();
             void think();
-            void render();
 
             bool onTrigger(const entities::classes::CoreEntity *otherEnt, const vec &dir);
             bool onTouch(const entities::classes::CoreEntity *otherEnt, const vec &dir);

@@ -55,7 +55,12 @@ namespace entities
 
 	const char *entmodel(const entities::classes::CoreEntity *e)
 	{
-		return nullptr;
+		auto modelEnt = dynamic_cast<const entities::classes::BaseMapModel*>(e);
+		if (modelEnt)
+		{
+			return modelEnt->getModelName().c_str();
+		}
+		return "";
 	}
 
 	void preloadentities()
@@ -76,16 +81,30 @@ namespace entities
 		}
 	}
 
-	void resetspawns() {
+	void resetspawns()
+	{
 		loopv(entities::getents())
-			if (entities::getents().inrange(i) && entities::getents()[i] != nullptr)
-				entities::getents()[i]->clearspawned();
+			if (entities::getents().inrange(i))
+				entities::send_entity_event(i, EntityEventClearSpawn());
 
 		if (game::player1 != nullptr)
-			game::player1->clearspawned();
+			entities::send_entity_event(game::player1, EntityEventClearSpawn());
 	}
 
-	void setspawn(int i, bool on) { if(entities::getents().inrange(i) && entities::getents()[i] != nullptr) entities::getents()[i]->setspawned(on); }
+	void setspawn(int i, bool on)
+	{
+		if(entities::getents().inrange(i))
+		{
+			if (on)
+			{
+				entities::send_entity_event(i, EntityEventSpawn());
+			}
+			else
+			{
+				entities::send_entity_event(i, EntityEventClearSpawn());
+			}
+		}
+	}
 
 	void deletegameentity(entities::classes::CoreEntity *e)
 	{
@@ -163,27 +182,8 @@ namespace entities
 	void editent(int i, bool local)
 	{
 		extern int edit_entity;
-		auto& ents = getents();
-
-		if (edit_entity != i)
-		{
-			if (edit_entity >= 0 && edit_entity < ents.length())
-			{
-				entities::classes::CoreEntity *oldSelected = ents[edit_entity];
-				entities::send_entity_event(oldSelected, entities::EntityEventDeselected());
-
-				conoutf("ent deselected %i (%s)", i, oldSelected->name.c_str());
-			}
-			if (i >= 0 && i < ents.length())
-			{
-				entities::classes::CoreEntity *newSelected = ents[i];
-				entities::send_entity_event(newSelected, entities::EntityEventSelected());
-
-				conoutf("ent selected %i (%s)", i, newSelected->name.c_str());
-			}
 			
-			edit_entity = i;
-		}
+		edit_entity = i;
 	}
 
 	float dropheight(entities::classes::CoreEntity *e)

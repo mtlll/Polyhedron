@@ -14,13 +14,13 @@ namespace entities
 
             virtual void preload();
             virtual void think();
-            virtual void render();
 
             virtual void onAnimate(int &anim, int &basetime);
 
-            virtual bool getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const;
+            virtual bool getBoundingBox(int entselradius, vec &minbb, vec &maxbb) const;
         public:
             void preloadMapModel(const std::string &filename);
+            const std::string& getModelName() const;
 
         private:
             void loadModelAttributes();

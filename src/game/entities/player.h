@@ -19,7 +19,6 @@ namespace entities {
 			//
             void preload();
             void think();
-            void render();
 
 			//
 			// Entity functions.
