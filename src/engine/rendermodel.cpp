@@ -1,5 +1,7 @@
 #include "engine.h"
 #include "ents.h"
+#include "game/entities/basemapmodel.h"
+#include "shared/entities/basedynamicentity.h"
 
 VAR(oqdynent, 0, 1, 1);
 VAR(animationinterpolationtime, 0, 200, 1000);
@@ -496,7 +498,7 @@ struct batchedmodel
 		int visible;
 		int culled;
 	};
-	entities::classes::BaseDynamicEntity *d;
+	entities::classes::BaseMapModel *d;
 	int next;
 };
 struct modelbatch
@@ -584,7 +586,7 @@ static inline void disablecullmodelquery()
 	endbb();
 }
 
-static inline int cullmodel(model *m, const vec &center, float radius, int flags, entities::classes::BaseDynamicEntity *d = NULL)
+static inline int cullmodel(model *m, const vec &center, float radius, int flags, entities::classes::BaseMapModel *d = NULL)
 {
 	if(flags&MDL_CULL_DIST && center.dist(camera1->o)/radius>maxmodelradiusdistance) return MDL_CULL_DIST;
 	if(flags&MDL_CULL_VFC && isfoggedsphere(radius, center)) return MDL_CULL_VFC;
@@ -903,7 +905,7 @@ void clearbatchedmapmodels()
 void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, float roll, int flags, int basetime, float size)
 {
 	// WatIsDeze: TODO: Remove.
-	conoutf("rendermapmodel: %d (%.2f/%.2f/%.2f) %s", idx, o.x, o.y, o.z, mapmodels.inrange(idx) ? "found" : "not found");
+//	conoutf("rendermapmodel: %d (%.2f/%.2f/%.2f) %s", idx, o.x, o.y, o.z, mapmodels.inrange(idx) ? "found" : "not found");
 
 	if(!mapmodels.inrange(idx)) return;
 	mapmodelinfo &mmi = mapmodels[idx];
@@ -949,7 +951,7 @@ void rendermapmodel(int idx, int anim, const vec &o, float yaw, float pitch, flo
 	addbatchedmodel(m, b, batchedmodels.length()-1);
 }
 
-void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch, float roll, int flags, entities::classes::BaseDynamicEntity *d, modelattach *a, int basetime, int basetime2, float size, const vec4 &color)
+void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch, float roll, int flags, entities::classes::BaseMapModel *d, modelattach *a, int basetime, int basetime2, float size, const vec4 &color)
 {
 	model *m = loadmodel(mdl);
 	if(!m) return;
@@ -957,9 +959,10 @@ void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch
 	vec center, bbradius;
 	m->boundbox(center, bbradius);
 	float radius = bbradius.magnitude();
+	entities::classes::BaseDynamicEntity *dynent = dynamic_cast<entities::classes::BaseDynamicEntity*>(d);
 	if(d)
 	{
-		if(d->ragdoll)
+		if(dynent->ragdoll)
 		{
 			if(anim&ANIM_RAGDOLL && d->ragdoll->millis >= basetime)
 			{

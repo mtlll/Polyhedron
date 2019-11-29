@@ -244,6 +244,8 @@ namespace game
     // This function should be used to render HUD View stuff etc.
     void rendergame(bool mainpass) {
         // This function should be used to render HUD View stuff etc.
+        
+        game::renderentities();
     }
 
     const char *defaultcrosshair(int index) {

@@ -6,7 +6,7 @@
 namespace entities {
 namespace classes {
 
-bool DecalEntity::getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const
+bool DecalEntity::getBoundingBox(int entselradius, vec &minbb, vec &maxbb) const
 {
 	if (CoreEntity::getBoundingBox(entselradius, minbb, maxbb))
 	{
@@ -20,8 +20,8 @@ bool DecalEntity::getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) con
 		
 		center.add(o);
 		radius.max(entselradius);
-		minbb = ivec(vec(center).sub(radius));
-		maxbb = ivec(vec(center).add(radius).add(1));
+		minbb = vec(center).sub(radius);
+		maxbb = vec(center).add(radius).add(1);
 		return true;
 	}
 	return false;
@@ -31,6 +31,9 @@ void DecalEntity::on(const Event& event)
 {
 }
 
+void DecalEntity::render()
+{
+}
 
 } // classes
 } // entities

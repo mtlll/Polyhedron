@@ -26,6 +26,10 @@ void BaseDynamicEntity::on(const Event& event)
 {
 }
 
+void BaseDynamicEntity::render()
+{
+}
+
 } // classes
 } // entities
 

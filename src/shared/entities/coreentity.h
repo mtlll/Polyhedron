@@ -5,6 +5,7 @@
 #include "entityfactory.h"
 #include "engine/scriptexport.h"
 #include <nlohmann/json.hpp>
+#include <map>
 
 namespace json_utils
 {
@@ -33,15 +34,41 @@ namespace entities {
 		None,
 		Tick,
 		AttributeChanged,
-		Selected,
-		Deselected,
-		Hover,
-		Touched,
+		SelectStart,
+		SelectStop,
+		MoveStart,
+		MoveStop,
+		HoverStart,
+		HoverStop,
+		TouchStart,
+		TouchStop,
 		Use,
 		Trigger,
 		Precache,
+		Spawn,
+		ClearSpawn,
 		
 		Count
+	};
+	
+	static const std::map<EntityEventType, std::string> EntityEventTypeToStringMap = {
+		{EntityEventType::None, "None"},
+		{EntityEventType::Tick, "Tick"},
+		{EntityEventType::AttributeChanged, "AttributeChanged"},
+		{EntityEventType::SelectStart, "SelectStart"},
+		{EntityEventType::SelectStop, "SelectStop"},
+		{EntityEventType::MoveStart, "MoveStart"},
+		{EntityEventType::MoveStop, "MoveStop"},
+		{EntityEventType::HoverStart, "HoverStart"},
+		{EntityEventType::HoverStop, "HoverStop"},
+		{EntityEventType::TouchStart, "TouchStart"},
+		{EntityEventType::TouchStop, "TouchStop"},
+		{EntityEventType::Use, "Use"},
+		{EntityEventType::Trigger, "Trigger"},
+		{EntityEventType::Precache, "Precache"},
+		{EntityEventType::Spawn, "Spawn"},
+		{EntityEventType::ClearSpawn, "ClearSpawn"},
+		{EntityEventType::Count, "Count"}
 	};
 	
 	struct Event
@@ -68,7 +95,7 @@ namespace entities {
 			, payload(payload)
 		{}
 		
-		const T& payload = {};
+		const T payload;
 	};
 	
 	struct EntityEventAttributeChanged : public EntityEventData<EntityEventType::AttributeChanged, std::string>
@@ -78,15 +105,50 @@ namespace entities {
 		{}
 	};
 	
-	struct EntityEventSelected : public EntityEvent<EntityEventType::Selected>
+	struct EntityEventSelectStart : public EntityEvent<EntityEventType::SelectStart>
 	{
 	};
 
-	struct EntityEventDeselected : public EntityEvent<EntityEventType::Deselected>
+	struct EntityEventSelectStop : public EntityEvent<EntityEventType::SelectStop>
+	{
+	};
+
+	struct EntityEventMoveStart : public EntityEvent<EntityEventType::MoveStart>
+	{
+	};
+
+	struct EntityEventMoveStop : public EntityEvent<EntityEventType::MoveStop>
+	{
+	};
+
+	struct EntityEventTouchStart : public EntityEvent<EntityEventType::TouchStart>
+	{
+	};
+
+	struct EntityEventTouchStop : public EntityEvent<EntityEventType::TouchStop>
+	{
+	};
+
+	struct EntityEventHoverStart : public EntityEventData<EntityEventType::HoverStart, int>
+	{
+		EntityEventHoverStart(int orient)
+			: EntityEventData<EntityEventType::HoverStart, int>(orient)
+		{}
+	};
+
+	struct EntityEventHoverStop : public EntityEvent<EntityEventType::HoverStop>
 	{
 	};
 
 	struct EntityEventPrecache : public EntityEvent<EntityEventType::Precache>
+	{
+	};
+
+	struct EntityEventSpawn : public EntityEvent<EntityEventType::Spawn>
+	{
+	};
+
+	struct EntityEventClearSpawn : public EntityEvent<EntityEventType::ClearSpawn>
 	{
 	};
 
@@ -106,22 +168,22 @@ namespace entities {
             int attr3 = 0;
             int attr4 = 0;
             int attr5 = 0;
-            DONTSERIALIZE uchar et_type = ET_EMPTY;       // These are for the ET(Engine Type) values.
+            DONTSERIALIZE uchar et_type = ET_GAMESPECIFIC;       // These are for the ET(Engine Type) values.
             DONTSERIALIZE uchar ent_type = ENT_INANIMATE; // These are for ENT_(DynEnt/PhysEnt Type) values.
             DONTSERIALIZE uchar game_type = GAMEENTITY;   // the internal game entity type values.
             uchar reserved = 0;
             short model_idx = 0;
             DONTSERIALIZE bool selected = false;
+            DONTSERIALIZE bool hovered = false;
+            DONTSERIALIZE bool moving = false;
+            DONTSERIALIZE bool spawned = false;
+			int flags = 0;
+            DONTSERIALIZE int hover_orientation = 1;
+            DONTSERIALIZE float hover_thickness = 3.f;
 
-            int flags = EntityFlags::EF_NOFLAG;
             CoreEntity *attached = nullptr;
-
-            bool spawned() const;
-            void setspawned(bool val);
-            void setspawned();
-            void clearspawned();
-                                    
-            virtual bool getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const;
+			
+            virtual bool getBoundingBox(int entselradius, vec &minbb, vec &maxbb) const;
             virtual void renderForEdit();
             virtual void renderForEditGui();
             virtual void renderSelected(int entselradius, int entorient);
@@ -141,7 +203,8 @@ namespace entities {
     } // classes
     
 	void send_entity_event(classes::CoreEntity* entity, const Event& event);
-	
+	void send_entity_event(int entity_id, const Event& event);
+
 } // entities
 
 //void coreentity_attributes();

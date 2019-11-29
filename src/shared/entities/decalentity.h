@@ -12,7 +12,7 @@ namespace entities
             ENTITY_FACTORY_IMPL(DecalEntity);
         public:
 
-            virtual bool getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const;
+            virtual bool getBoundingBox(int entselradius, vec &minbb, vec &maxbb) const;
         };
     } // classes
 } // entities

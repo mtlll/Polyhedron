@@ -45,6 +45,10 @@ void BasePhysicalEntity::on(const Event& event)
 {
 }
 
+void BasePhysicalEntity::render()
+{
+}
+
 } // classes
 } // entities
 

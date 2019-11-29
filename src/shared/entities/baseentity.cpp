@@ -6,9 +6,7 @@ namespace classes {
 void BaseEntity::preload() {}
 void BaseEntity::think() {}
 void BaseEntity::render() {}
-void BaseEntity::renderGui() {}
-void BaseEntity::renderForEdit() {}
-void BaseEntity::renderForEditGui() {}
+
 
 //
 // OnEvent callbacks.

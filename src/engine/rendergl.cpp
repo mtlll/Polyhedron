@@ -2487,6 +2487,7 @@ void gl_drawview()
             glDepthMask(GL_FALSE);
             renderblendbrush();
             rendereditcursor();
+            game::rendergame(false);
             glDepthMask(GL_TRUE);
         }
     }

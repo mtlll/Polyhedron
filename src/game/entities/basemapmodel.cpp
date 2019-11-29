@@ -46,11 +46,12 @@ void BaseMapModel::think() {
 
 }
 
-void BaseMapModel::render() {
-
+void BaseMapModel::render()
+{
+	rendermodel(modelname.c_str(), 0, o, yaw, pitch, 0, MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED);
 }
 
-bool BaseMapModel::getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const
+bool BaseMapModel::getBoundingBox(int entselradius, vec &minbb, vec &maxbb) const
 {
     if(model *m = loadmapmodel(model_idx))
     {
@@ -58,13 +59,13 @@ bool BaseMapModel::getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) co
         mmboundbox(this, m, center, radius);
         center.add(o);
         radius.max(entselradius);
-        minbb = ivec(vec(center).sub(radius));
-        maxbb = ivec(vec(center).add(radius).add(1));
+        minbb = vec(center).sub(radius);
+        maxbb = vec(center).add(radius).add(1);
 
         return true;
     }
 
-    return false;
+    return BaseDynamicEntity::getBoundingBox(entselradius, minbb, maxbb);
 }
 
 void BaseMapModel::onAnimate(int &anim, int &basetime) {
@@ -93,6 +94,11 @@ void BaseMapModel::preloadMapModel(const std::string &modelname) {
 }
 
 
+const std::string& BaseMapModel::getModelName() const
+{
+	return modelname;
+}
+
 void BaseMapModel::on(const Event& event)
 {
 	switch(event.type)
@@ -106,13 +112,17 @@ void BaseMapModel::on(const Event& event)
 				preload();
 			}
 		} break;
-		case EntityEventType::Hover:
+		case EntityEventType::HoverStart:
 		break;
-		case EntityEventType::Selected:
+		case EntityEventType::HoverStop:
 		break;
-		case EntityEventType::Deselected:
+		case EntityEventType::SelectStart:
 		break;
-		case EntityEventType::Touched:
+		case EntityEventType::SelectStop:
+		break;
+		case EntityEventType::TouchStart:
+		break;
+		case EntityEventType::TouchStop:
 		break;
 		case EntityEventType::Tick:
 		break;
@@ -121,6 +131,7 @@ void BaseMapModel::on(const Event& event)
 		case EntityEventType::Trigger:
 		break;
 		case EntityEventType::Precache:
+			preload();
 		break;
 
 		default:

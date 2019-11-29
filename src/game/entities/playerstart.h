@@ -10,7 +10,6 @@ namespace entities {
 
             void preload();
             void think();
-            void render();
 
             void reset();
 

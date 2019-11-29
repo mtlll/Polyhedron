@@ -85,7 +85,11 @@ def GenerateFromJsonVariable(cxxVar, jsonRootVar, instanceVar):
     if templateValues["variableType"] in CUSTOM_FROMJSON_VARGENERATORS:
         output = output + CUSTOM_FROMJSON_VARGENERATORS[templateValues["variableType"]](templateValues)
     else:
-        output.append(f"if (document.find(\"{templateValues['variableName']}\") != document.end()) {jsonRootVar}.at(\"{templateValues['variableName']}\").get_to({instanceVar}.{templateValues['variableName']});")
+        output.append(f"""if (document.find(\"{templateValues['variableName']}\") != document.end()) 
+\t{{
+\t\t{jsonRootVar}.at(\"{templateValues['variableName']}\").get_to({instanceVar}.{templateValues['variableName']});
+\t}}
+""")
     return output
 
 
