@@ -24,7 +24,7 @@ void DynamicLight::think() {
 
 }
 
-void DynamicLight::render() {
+void DynamicLight::render(game::RenderPass pass) {
 }
 
 // TODO: Add other optional arguments, so all can be done in 1 command. Kindly using other method functions such as fade time or flicker style, or even interval speeds.

@@ -284,14 +284,29 @@ static const int mmprefixlen = strlen(mmprefix);    // Strlen... C++-ify this.
 SCRIPTEXPORT void mapmodel(char *name)
 {
 	// Returns a reference to the added mapmodel info in the list.
-	mapmodelinfo &mmi = mapmodels.add();
+	auto path = "model/" + std::string(mmprefix) + name;
+	if (true || fileexists(path.c_str(), "a"))
+	{
+		mapmodelinfo &mmi = loadmodelinfo(path.c_str());
+		
+		// Setup the name.
+		if(name[0])
+		{
+			formatcubestr(mmi.name, "%s%s", mmprefix, name);
+		}
+		else
+		{
+			mmi.name[0] = '\0';
+		}
 
-	// Setup the name.
-	if(name[0]) formatcubestr(mmi.name, "%s%s", mmprefix, name);
-	else mmi.name[0] = '\0';
-
-	// Set all to NULL.
-	mmi.m = mmi.collide = NULL;
+		// Set all to NULL.
+		mmi.m = mmi.collide = NULL;
+		conoutf(CON_INFO, "mapmodel prepared: %s", name);
+	}
+	else
+	{
+		conoutf(CON_WARN, "No such mapmodel: %s", name);
+	}
 }
 
 SCRIPTEXPORT void mmodel(char *name)
@@ -439,18 +454,15 @@ model *loadmodel(const char *name, int i, bool msg)
 	return m;
 }
 
-mapmodelinfo loadmodelinfo(const char *name, entities::classes::CoreEntity *ent) {
-	mapmodelinfo &mmi = mapmodels.add();
-
+mapmodelinfo& loadmodelinfo(const char *name)
+{
 	// Preload first.
 	preloadmodel(name);
 
+	mapmodelinfo &mmi = mapmodels.add();
+
 	// Load in the model.
 	mmi.m = loadmodel(name, -1, true);
-//	if (mmi.m != NULL) {
-//		copycubestr(mmi.name, name, strlen(name));
-//		ent->setAttribute("modelname", mmi.name);
-//	}
 
 	return mmi;
 }

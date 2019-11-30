@@ -117,10 +117,18 @@ VARF(dragging, 0, 0, 1,
 int moving = 0;
 SCRIPTEXPORT_AS(moving) void moving_scriptimpl(int *n)
 {
+	extern int enthover;
+	
     if(*n >= 0)
     {
-        if(!*n || (moving<=1 && !pointinsel(sel, vec(cur).add(1)))) moving = 0;
-        else if(!moving) moving = 1;
+        if(!*n || (moving<=1 && !pointinsel(sel, vec(cur).add(1))))
+        {
+			moving = 0;
+		}
+        else if(!moving)
+        {
+			moving = 1;
+		}
     }
     intret(moving);
 }
@@ -144,6 +152,8 @@ namespace hmap { void cancel(); }
 
 SCRIPTEXPORT void cubecancel()
 {
+	extern int enthover;
+	
     havesel = false;
     moving = dragging = hmapedit = passthroughsel = 0;
     forcenextundo();

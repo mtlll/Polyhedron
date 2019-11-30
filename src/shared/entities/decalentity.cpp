@@ -31,7 +31,7 @@ void DecalEntity::on(const Event& event)
 {
 }
 
-void DecalEntity::render()
+void DecalEntity::render(game::RenderPass pass)
 {
 }
 

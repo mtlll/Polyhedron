@@ -17,7 +17,7 @@ void PlayerStart::think() {
 
 }
 
-void PlayerStart::render() {
+void PlayerStart::render(game::RenderPass pass) {
 
 }
 

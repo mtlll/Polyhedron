@@ -34,9 +34,9 @@ void Door::preload() {
 void Door::think() {
 
 }
-void Door::render() {
+void Door::render(game::RenderPass pass) {
     // Ensure it renders.
-    BaseMapModel::render();
+    BaseMapModel::render(pass);
 }
 
 void Door::onAnimate(int &anim, int &basetime) {

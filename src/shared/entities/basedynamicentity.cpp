@@ -26,7 +26,7 @@ void BaseDynamicEntity::on(const Event& event)
 {
 }
 
-void BaseDynamicEntity::render()
+void BaseDynamicEntity::render(game::RenderPass pass)
 {
 }
 

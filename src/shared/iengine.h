@@ -458,7 +458,7 @@ extern void setbbfrommodel(entities::classes::BasePhysicalEntity *d, const std::
 extern const char *mapmodelname(int i);
 extern model *loadmodel(const char *name, int i = -1, bool msg = false);
 extern void preloadmodel(const char *name);
-extern mapmodelinfo loadmodelinfo(const char *name, entities::classes::CoreEntity *ent);
+extern mapmodelinfo& loadmodelinfo(const char *name);
 extern void flushpreloadedmodels(bool msg = true);
 extern bool matchanim(const char *name, const char *pattern);
 

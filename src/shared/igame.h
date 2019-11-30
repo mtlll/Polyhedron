@@ -20,6 +20,13 @@ namespace entities
 
 namespace game
 {
+	enum class RenderPass {
+		Main,
+		Lights,
+		Edit,
+		Gui
+	};
+
     extern void parseoptions(vector<const char *> &args);
 
     extern void gamedisconnect(bool cleanup);
@@ -71,7 +78,7 @@ namespace game
     extern bool allowmove(entities::classes::BasePhysicalEntity *d);
     extern entities::classes::CoreEntity *iterdynents(int i);
     extern int numdynents();
-    extern void renderentities();
+    extern void renderentities(RenderPass pass);
     extern void renderavatar();
     extern void renderplayerpreview(int model, int color, int team, int weap);
     extern int numanims();

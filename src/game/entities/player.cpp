@@ -61,14 +61,17 @@ enum
 	NUMANIMS
 };
 //extern void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch, float roll, int flags, entities::classes::BaseDynamicEntity *d, modelattach *a, int basetime, int basetime2, float size, const vec4 &color);
-void Player::render()
+void Player::render(game::RenderPass pass)
 {
-	if (isthirdperson() && state != CS_EDITING)
+	if (pass == game::RenderPass::Main)
 	{
-		// Calculate the position.
-		vec pos = o;
-		pos.z -= eyeheight;
-		rendermodel("actors/player/male", ANIM_JUMP, pos, yaw, pitch, 0, MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED);
+		if (isthirdperson() && state != CS_EDITING)
+		{
+			// Calculate the position.
+			vec pos = o;
+			pos.z -= eyeheight;
+			rendermodel("actors/player/male", ANIM_JUMP, pos, yaw, pitch, 0, MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED);
+		}
 	}
 }
 

@@ -27,7 +27,7 @@ namespace game
     extern void updateentities();
 
     // Render functions.
-    extern void rendergame(bool mainpass);
+    extern void rendergame(RenderPass pass);
     extern void renderobjects();
 
     // HUD functions.

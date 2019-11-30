@@ -45,7 +45,7 @@ void BasePhysicalEntity::on(const Event& event)
 {
 }
 
-void BasePhysicalEntity::render()
+void BasePhysicalEntity::render(game::RenderPass pass)
 {
 }
 

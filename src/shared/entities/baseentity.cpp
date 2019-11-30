@@ -5,7 +5,7 @@ namespace classes {
 
 void BaseEntity::preload() {}
 void BaseEntity::think() {}
-void BaseEntity::render() {}
+void BaseEntity::render(game::RenderPass pass) {}
 
 
 //
