@@ -102,9 +102,9 @@ namespace entities {
 		on(event);\
 		DERIVED::onImpl(event);\
 	}\
-	void entities::classes::LOCALNAME::renderImpl() {\
-		DERIVED::renderImpl();\
-		render();\
+	void entities::classes::LOCALNAME::renderImpl(game::RenderPass pass) {\
+		DERIVED::renderImpl(pass);\
+		render(pass);\
 	}
 
 #define ENTITY_FACTORY_IMPL(LOCALNAME) \
@@ -124,6 +124,6 @@ namespace entities {
 	static const attributeList_T attributes();\
 	virtual void onImpl(const Event& event);\
 	void on(const Event& event);\
-	virtual void renderImpl();\
-	void render();\
+	virtual void renderImpl(game::RenderPass pass);\
+	void render(game::RenderPass pass);\
     virtual ~LOCALNAME() = default;

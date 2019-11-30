@@ -77,9 +77,9 @@ bool entities::classes::CoreEntity::getBoundingBox(int entselradius, vec &minbb,
 	return true;
 }
 
-void entities::classes::CoreEntity::render()
+void entities::classes::CoreEntity::render(game::RenderPass pass)
 {
-	if (editmode)
+	if (pass == game::RenderPass::Edit)
 	{
 		ldrnotextureshader->set();
 		vec bbmin;
@@ -102,6 +102,7 @@ void entities::classes::CoreEntity::render()
 			gle::begin(GL_LINES, 20*6);
 			
 			boxs3D(eo, es, 1);
+			
 			xtraverts += gle::end();
 		}
 		
@@ -163,9 +164,9 @@ void entities::classes::CoreEntity::onImpl(const Event& event)
 	on(event);
 }
 
-void entities::classes::CoreEntity::renderImpl()
+void entities::classes::CoreEntity::renderImpl(game::RenderPass pass)
 {
-	render();
+	render(pass);
 }
 
 void entities::classes::CoreEntity::on(const Event& event)
@@ -197,6 +198,10 @@ void entities::classes::CoreEntity::on(const Event& event)
 		} break;
 		case EntityEventType::HoverStop:
 			hovered = false;
+			if (moving)
+			{
+				entities::send_entity_event(this, entities::EntityEventMoveStop());
+			}
 		break;
 		case EntityEventType::MoveStart:
 			moving = true;

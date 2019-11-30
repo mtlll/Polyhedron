@@ -2,6 +2,7 @@
 #include "entities.h"
 #include "entities/playerstart.h"
 #include "entities/player.h"
+#include "entities/dynamiclight.h"
 #include "engine/scriptexport.h"
 
 
@@ -242,10 +243,10 @@ namespace game
     }
 
     // This function should be used to render HUD View stuff etc.
-    void rendergame(bool mainpass) {
+    void rendergame(RenderPass pass) {
         // This function should be used to render HUD View stuff etc.
         
-        game::renderentities();
+        game::renderentities(pass);
     }
 
     const char *defaultcrosshair(int index) {
@@ -292,10 +293,10 @@ namespace game
         loopv(ents)
         {
             // Let's go at it!
-            auto e = dynamic_cast<entities::classes::BaseEntity *>(ents[i]);
-            if (!e || e->et_type != ET_LIGHT) continue;
+            auto e = dynamic_cast<entities::classes::DynamicLight *>(ents[i]);
+            if (!e) continue;
             
-            e->render();
+            e->render(game::RenderPass::Lights);
         }
     }
 

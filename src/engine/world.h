@@ -67,3 +67,7 @@ ET* getentitybytype(int searchStartIndex = 0)
 }
 
 entities::classes::CoreEntity *new_game_entity(bool local, const vec &o, int &idx, const char *strclass = "");
+
+inline void transformbb(const entities::classes::CoreEntity *e, vec &center, vec &radius);
+inline void mmboundbox(const entities::classes::CoreEntity *e, model *m, vec &center, vec &radius);
+inline void mmcollisionbox(const entities::classes::CoreEntity *e, model *m, vec &center, vec &radius);

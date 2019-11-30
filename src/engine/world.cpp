@@ -18,19 +18,19 @@ VARNR(emptymap, _emptymap, 1, 0, 0);
 VAR(octaentsize, 0, 64, 1024);
 VAR(entselradius, 0, 2, 10);
 
-static inline void transformbb(const entities::classes::CoreEntity *e, vec &center, vec &radius)
+inline void transformbb(const entities::classes::CoreEntity *e, vec &center, vec &radius)
 {
 	if(e->attr5 > 0) { float scale = e->attr5/100.0f; center.mul(scale); radius.mul(scale); }
 	rotatebb(center, radius, e->attr2, e->attr3, e->attr4);
 }
 
-static inline void mmboundbox(const entities::classes::CoreEntity *e, model *m, vec &center, vec &radius)
+inline void mmboundbox(const entities::classes::CoreEntity *e, model *m, vec &center, vec &radius)
 {
     m->boundbox(center, radius);
     transformbb(e, center, radius);
 }
 
-static inline void mmcollisionbox(const entities::classes::CoreEntity *e, model *m, vec &center, vec &radius)
+inline void mmcollisionbox(const entities::classes::CoreEntity *e, model *m, vec &center, vec &radius)
 {
     m->collisionbox(center, radius);
     transformbb(e, center, radius);
@@ -1040,26 +1040,54 @@ SCRIPTEXPORT_AS(entadd) void entadd_scriptimpl()
 {
     if(enthover >= 0 && !noentedit())
     {
-        if(entgroup.find(enthover) < 0) entadd(enthover);
+        if(entgroup.find(enthover) < 0)
+        {
+			entadd(enthover);
+			entities::send_entity_event(enthover, entities::EntityEventMoveStart());
+		}
         if(entmoving > 1) entmoving = 1;
     }
 }
 
 SCRIPTEXPORT_AS(enttoggle) void enttoggle_scriptimpl()
 {
-    if(enthover < 0 || noentedit() || !enttoggle(enthover)) { entmoving = 0; intret(0); }
-    else { if(entmoving > 1) entmoving = 1; intret(1); }
+    if(enthover < 0 || noentedit() || !enttoggle(enthover))
+    {
+		entmoving = 0; intret(0);
+	}
+    else
+    {
+		if(entmoving > 1)
+		{
+			entmoving = 1; intret(1);
+		}
+	}
 }
 
 SCRIPTEXPORT_AS(entmoving) void entmoving_scriptimpl(CommandTypes::Boolean n)
 {
     if(*n >= 0)
     {
-        if(!*n || enthover < 0 || noentedit()) entmoving = 0;
+		auto hasNoEntover = enthover < 0;
+        if(!*n || hasNoEntover || noentedit())
+        {
+			entmoving = 0;
+			if (!hasNoEntover)
+			{
+				entities::send_entity_event(enthover, entities::EntityEventMoveStop());
+			}
+		}
         else
         {
-            if(entgroup.find(enthover) < 0) { entadd(enthover); entmoving = 1; }
-            else if(!entmoving) entmoving = 1;
+            if(entgroup.find(enthover) < 0)
+            {
+				entadd(enthover); entmoving = 1;
+			}
+            else if(!entmoving)
+            {
+				entmoving = 1;
+			}
+			entities::send_entity_event(enthover, entities::EntityEventMoveStart());
         }
     }
     intret(entmoving);

@@ -172,7 +172,7 @@ namespace entities {
             DONTSERIALIZE uchar ent_type = ENT_INANIMATE; // These are for ENT_(DynEnt/PhysEnt Type) values.
             DONTSERIALIZE uchar game_type = GAMEENTITY;   // the internal game entity type values.
             uchar reserved = 0;
-            short model_idx = 0;
+            short model_idx = -1;
             DONTSERIALIZE bool selected = false;
             DONTSERIALIZE bool hovered = false;
             DONTSERIALIZE bool moving = false;

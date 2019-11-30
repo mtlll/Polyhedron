@@ -4523,7 +4523,7 @@ void workinoq()
     if(drawtex) return;
 
     // Todo:: REMOVE?
-    game::rendergame(true);
+//    game::rendergame(true);
 
     if(shouldworkinoq())
     {
@@ -4847,6 +4847,8 @@ void rendergbuffer(bool depthclear)
     renderdecals();
     GLERROR;
     rendermapmodels();
+    GLERROR;
+    game::rendergame(game::RenderPass::Main);
     GLERROR;
 
     if(drawtex == DRAWTEX_MINIMAP)

@@ -5,7 +5,7 @@
 
 namespace game
 {
-    void renderentities()
+    void renderentities(RenderPass pass)
     {
 		auto& ents = entities::getents();
 		
@@ -13,7 +13,7 @@ namespace game
         {
 			auto& entity = ents[i];
 			
-			entity->renderImpl();
+			entity->renderImpl(pass);
         }
     }
 
