@@ -246,7 +246,7 @@ VARP(aoblur, 0, 4, 7);
 VARP(aoiter, 0, 0, 4);
 VARFP(aoreduce, 0, 1, 2, cleanupao());
 VARF(aoreducedepth, 0, 1, 2, cleanupao());
-VARFP(aofloatdepth, 0, 1, 2, initwarning("AO setup", INIT_LOAD, CHANGE_SHADERS));
+VARFP(aofloatdepth, 0, 1, 2, InitWarning("AO setup", CHANGE_SHADERS));
 VARFP(aoprec, 0, 1, 1, cleanupao());
 VAR(aodepthformat, 1, 0, 0);
 VARF(aonoise, 0, 5, 8, cleanupao());
@@ -447,16 +447,16 @@ void doscale(GLuint outfbo)
     endtimer(scaletimer);
 }
 
-VARFP(glineardepth, 0, 0, 3, initwarning("g-buffer setup", INIT_LOAD, CHANGE_SHADERS));
+VARFP(glineardepth, 0, 0, 3, InitWarning("g-buffer setup", CHANGE_SHADERS));
 VAR(gdepthformat, 1, 0, 0);
-VARF(gstencil, 0, 0, 1, initwarning("g-buffer setup", INIT_LOAD, CHANGE_SHADERS));
-VARF(gdepthstencil, 0, 2, 2, initwarning("g-buffer setup", INIT_LOAD, CHANGE_SHADERS));
+VARF(gstencil, 0, 0, 1, InitWarning("g-buffer setup", CHANGE_SHADERS));
+VARF(gdepthstencil, 0, 2, 2, InitWarning("g-buffer setup", CHANGE_SHADERS));
 VAR(ghasstencil, 1, 0, 0);
-VARFP(msaa, 0, 0, 16, initwarning("MSAA setup", INIT_LOAD, CHANGE_SHADERS));
-VARF(msaadepthstencil, 0, 2, 2, initwarning("MSAA setup", INIT_LOAD, CHANGE_SHADERS));
-VARF(msaastencil, 0, 0, 1, initwarning("MSAA setup", INIT_LOAD, CHANGE_SHADERS));
+VARFP(msaa, 0, 0, 16, InitWarning("g-buffer setup", CHANGE_SHADERS));
+VARF(msaadepthstencil, 0, 2, 2, InitWarning("g-buffer setup", CHANGE_SHADERS));
+VARF(msaastencil, 0, 0, 1, InitWarning("g-buffer setup", CHANGE_SHADERS));
 VARF(msaaedgedetect, 0, 1, 1, cleanupgbuffer());
-VARFP(msaalineardepth, -1, -1, 3, initwarning("MSAA setup", INIT_LOAD, CHANGE_SHADERS));
+VARFP(msaalineardepth, -1, -1, 3, InitWarning("g-buffer setup", CHANGE_SHADERS));
 VARFP(msaatonemap, 0, 0, 1, cleanupgbuffer());
 VARF(msaatonemapblit, 0, 0, 1, cleanupgbuffer());
 VAR(msaamaxsamples, 1, 0, 0);
@@ -465,7 +465,7 @@ VAR(msaamaxcolortexsamples, 1, 0, 0);
 VAR(msaaminsamples, 1, 0, 0);
 VAR(msaasamples, 1, 0, 0);
 VAR(msaalight, 1, 0, 0);
-VARF(msaapreserve, -1, 0, 1, initwarning("MSAA setup", INIT_LOAD, CHANGE_SHADERS));
+VARF(msaapreserve, -1, 0, 1, InitWarning("MSAA setup", CHANGE_SHADERS));
 
 void checkmsaasamples()
 {
@@ -531,7 +531,7 @@ void initgbuffer()
     initao();
 }
 
-VARF(forcepacknorm, 0, 0, 1, initwarning("g-buffer setup", INIT_LOAD, CHANGE_SHADERS));
+VARF(forcepacknorm, 0, 0, 1, InitWarning("g-buffer setup", CHANGE_SHADERS, true));
 
 bool usepacknorm() { return forcepacknorm || msaasamples || !useavatarmask(); }
 SCRIPTEXPORT_AS(usepacknorm) void usepacknorm_scriptimpl()
@@ -951,13 +951,13 @@ FVAR(hdraccumscale, 0, 0.98f, 1);
 VAR(hdraccummillis, 1, 33, 1000);
 VAR(hdrreduce, 0, 2, 2);
 VARFP(hdrprec, 0, 2, 3, cleanupgbuffer());
-FVARFP(hdrgamma, 1e-3f, 2, 1e3f, initwarning("HDR setup", INIT_LOAD, CHANGE_SHADERS));
+FVARFP(hdrgamma, 1e-3f, 2, 1e3f, InitWarning("HDR setup", CHANGE_SHADERS));
 FVARR(hdrbright, 1e-4f, 1.0f, 1e4f);
 FVAR(hdrsaturate, 1e-3f, 0.8f, 1e3f);
 VARFP(gscale, 25, 100, 100, cleanupgbuffer());
 VARFP(gscalecubic, 0, 0, 1, cleanupgbuffer());
 VARFP(gscalenearest, 0, 0, 1, cleanupgbuffer());
-FVARFP(gscalecubicsoft, 0, 0, 1, initwarning("scaling setup", INIT_LOAD, CHANGE_SHADERS));
+FVARFP(gscalecubicsoft, 0, 0, 1, InitWarning("scaling setup", CHANGE_SHADERS));
 
 float ldrscale = 1.0f, ldrscaleb = 1.0f/255;
 
@@ -2373,7 +2373,7 @@ bool useradiancehints()
 
 FVAR(avatarshadowdist, 0, 12, 100);
 FVAR(avatarshadowbias, 0, 8, 100);
-VARF(avatarshadowstencil, 0, 1, 2, initwarning("g-buffer setup", INIT_LOAD, CHANGE_SHADERS));
+VARF(avatarshadowstencil, 0, 1, 2, InitWarning("g-buffer setup", CHANGE_SHADERS));
 
 int avatarmask = 0;
 

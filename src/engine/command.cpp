@@ -411,7 +411,7 @@ template<class T> static inline ident *newident(const T &name, int flags)
     {
         if(checknumber(name))
         {
-            debugcode("number %.*s is not a valid identifier name", cubestrlen(name), cubestrptr(name));
+            debugcode("Number %.*s is not a valid identifier name", cubestrlen(name), cubestrptr(name));
             return dummyident;
         }
         id = addident(ident(ID_ALIAS, newcubestr(name), flags));
@@ -471,7 +471,7 @@ void resetvar(char *name)
 {
     ident *id = idents.access(name);
     if(!id) return;
-    if(id->flags&IDF_READONLY) debugcode("variable %s is read-only", id->name);
+    if(id->flags&IDF_READONLY) debugcode("Variable %s is read-only", id->name);
     else clearoverride(*id);
 }
 
@@ -520,14 +520,14 @@ static void setalias(const char *name, tagval &v)
                 setsvarchecked(id, v.getstr());
                 break;
             default:
-                debugcode("cannot redefine builtin %s with an alias", id->name);
+                debugcode("Cannot redefine builtin %s with an alias", id->name);
                 break;
         }
         freearg(v);
     }
     else if(checknumber(name))
     {
-        debugcode("cannot alias number %s", name);
+        debugcode("Cannot alias number %s", name);
         freearg(v);
     }
     else
@@ -3171,9 +3171,9 @@ bool validateblock(const char *s)
 #ifndef STANDALONE
 void writecfg(const char *name)
 {
-    stream *f = openutf8file(path(name && name[0] ? name : game::savedconfig(), true), "w");
+    stream *f = openutf8file(path(name && name[0] ? name : game::SavedCfg(), true), "w");
     if(!f) return;
-    f->printf("// automatically written on exit, DO NOT MODIFY\n// delete this file to have %s overwrite these settings\n// modify settings in game, or put settings in %s to override anything\n\n", game::defaultconfig(), game::autoexec());
+    f->printf("// automatically written on exit, DO NOT MODIFY\n// delete this file to have %s overwrite these settings\n// modify settings in game, or put settings in %s to override anything\n\n", game::DefaultCfg(), game::AutoExecCfg());
     game::writeclientinfo(f);
     f->printf("\n");
     writecrosshairs(f);

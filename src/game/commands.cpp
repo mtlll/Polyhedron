@@ -1,8 +1,8 @@
-#include "game.h"
 #include "engine/scriptexport.h"
 
-#include "entities.h"
-#include "entities/player.h"
+#include "game/game.h"
+#include "game/entities.h"
+#include "game/entities/player.h"
 
 // This file its soul purpose is to have all CubeScript COMMAND definitions located in a single file.
 //---------------------------------------------------------------------------------------------//
@@ -86,4 +86,11 @@ namespace game {
         player1->o.add(dir.mul(-32));
         player1->resetinterp();
     }
+
+    // Mike these are temporary placeholders to prevent the option menus from failing.
+    VARP(blood, 0, 1, 1);
+    VARP(ragdoll, 0, 1, 1);
+    VARP(ragdolllmillis, 0, 1, 1);
+    SCRIPTEXPORT void isspectator() { intret(0); }
+
 }

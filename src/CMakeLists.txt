@@ -179,12 +179,15 @@ list(APPEND fileListShared
 )
 
 list(APPEND fileListGame
+    game/commands.cpp
+    game/commands.h
     game/entities.cpp
+    game/entities.h
     game/game.cpp
     game/game.h
     game/render.cpp
-    game/server.cpp
-    game/commands.cpp
+    game/server/server.cpp
+    game/server/server.h
 )
 
 list(APPEND fileListGameEntities

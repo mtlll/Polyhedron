@@ -1388,8 +1388,8 @@ FVAR(thirdpersonup, -25, 0, 25);
 FVAR(thirdpersonside, -25, 0, 25);
 */
 VAR(thirdperson, 0, 1, 2);
-FVAR(thirdpersondistance, 0, 10, 25);
-FVAR(thirdpersonup, -25, 0, 25);
+FVAR(thirdpersondistance, 0, 18, 25);
+FVAR(thirdpersonup, -25, 8, 25);
 FVAR(thirdpersonside, -25, 0, 25);
 
 entities::classes::BasePhysicalEntity *camera1 = NULL;
@@ -2078,7 +2078,7 @@ void drawminimap()
     }
 
     GLERROR;
-    renderprogress(0, "generating mini-map...", !renderedframe);
+    renderprogress(0, "Generating mini-map...", !renderedframe);
 
     drawtex = DRAWTEX_MINIMAP;
 

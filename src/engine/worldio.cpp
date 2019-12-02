@@ -639,27 +639,27 @@ bool save_world(const char *mname, bool nolms)
         switch(id.type)
         {
             case ID_VAR:
-                if(dbgvars) conoutf(CON_DEBUG, "wrote var %s: %d", id.name, *id.storage.i);
+                if(dbgvars) conoutf(CON_DEBUG, "Wrote var %s: %d", id.name, *id.storage.i);
                 f->putlil<int>(*id.storage.i);
                 break;
 
             case ID_FVAR:
-                if(dbgvars) conoutf(CON_DEBUG, "wrote fvar %s: %f", id.name, *id.storage.f);
+                if(dbgvars) conoutf(CON_DEBUG, "Wrote fvar %s: %f", id.name, *id.storage.f);
                 f->putlil<float>(*id.storage.f);
                 break;
 
             case ID_SVAR:
-                if(dbgvars) conoutf(CON_DEBUG, "wrote svar %s: %s", id.name, *id.storage.s);
+                if(dbgvars) conoutf(CON_DEBUG, "Wrote svar %s: %s", id.name, *id.storage.s);
                 f->putlil<ushort>(strlen(*id.storage.s));
                 f->write(*id.storage.s, strlen(*id.storage.s));
                 break;
         }
     });
 
-    if(dbgvars) conoutf(CON_DEBUG, "wrote %d vars", hdr.numvars);
+    if(dbgvars) conoutf(CON_DEBUG, "Wrote %d vars", hdr.numvars);
 
-    f->putchar((int)strlen(game::gameident()));
-    f->write(game::gameident(), (int)strlen(game::gameident())+1);
+    f->putchar((int)strlen(game::GameIdent()));
+    f->write(game::GameIdent(), (int)strlen(game::GameIdent())+1);
     //f->putlil<ushort>(entities::extraentinfosize());
     vector<char> extras;
     game::writegamedata(extras);
@@ -693,17 +693,17 @@ bool save_world(const char *mname, bool nolms)
 
     savevslots(f, numvslots);
 
-    renderprogress(0, "saving octree...");
+    renderprogress(0, "Saving Octree...");
     savec(worldroot, ivec(0, 0, 0), worldsize>>1, f, nolms);
 
     if(!nolms)
     {
-        if(getnumviewcells()>0) { renderprogress(0, "saving pvs..."); savepvs(f); }
+        if(getnumviewcells()>0) { renderprogress(0, "Saving pvs..."); savepvs(f); }
     }
-    if(shouldsaveblendmap()) { renderprogress(0, "saving blendmap..."); saveblendmap(f); }
+    if(shouldsaveblendmap()) { renderprogress(0, "Saving Blendmap..."); saveblendmap(f); }
 
     delete f;
-    conoutf("wrote map file %s", ogzname);
+    conoutf("Wrote map file %s", ogzname);
     return true;
 }
 
@@ -803,7 +803,7 @@ bool load_world(const char *mname, const char *cname)        // Does not support
     int len = f->getchar();
     if(len >= 0) f->read(gametype, len+1);
     gametype[max(len, 0)] = '\0';
-    if(strcmp(gametype, game::gameident())!=0)
+    if(strcmp(gametype, game::GameIdent())!=0)
     {
         samegame = false;
         conoutf(CON_WARN, "WARNING: loading map from %s game, ignoring entities except for lights/mapmodels", gametype);
@@ -813,7 +813,7 @@ bool load_world(const char *mname, const char *cname)        // Does not support
     ushort nummru = f->getlil<ushort>();
     loopi(nummru) texmru.add(f->getlil<ushort>());
 
-    renderprogress(0, "loading entities...");
+    renderprogress(0, "Loading entities...");
 
     // Define the path to our JSON file.
     /*defformatcubestr(jsonname, "media/map/%s.json", mname);
@@ -853,15 +853,15 @@ bool load_world(const char *mname, const char *cname)        // Does not support
         //f->seek((hdr.numents-MAXENTS)*(samegame ? sizeof(entities::classes::CoreEntity) + einfosize : eif), SEEK_CUR);
     }
 
-    renderprogress(0, "loading slots...");
+    renderprogress(0, "Loading Slots...");
     loadvslots(f, hdr.numvslots);
 
-    renderprogress(0, "loading octree...");
+    renderprogress(0, "Loading Octree...");
     bool failed = false;
     worldroot = loadchildren(f, ivec(0, 0, 0), hdr.worldsize>>1, failed);
-    if(failed) conoutf(CON_ERROR, "garbage in map");
+    if(failed) conoutf(CON_ERROR, "Garbage in map");
 
-    renderprogress(0, "validating...");
+    renderprogress(0, "Validating...");
     validatec(worldroot, hdr.worldsize>>1);
 
     if(!failed)
@@ -886,7 +886,7 @@ bool load_world(const char *mname, const char *cname)        // Does not support
     mapcrc = f->getcrc();
     delete f;
 
-    conoutf("read map %s (%.1f seconds)", ogzname, (SDL_GetTicks()-loadingstart)/1000.0f);
+    conoutf("Read map %s (%.1f seconds)", ogzname, (SDL_GetTicks()-loadingstart)/1000.0f);
 
     clearmainmenu();
 
@@ -905,7 +905,7 @@ bool load_world(const char *mname, const char *cname)        // Does not support
     attachentities();
     allchanged(true);
 
-    renderbackground("loading...", mapshot, mname, game::getmapinfo());
+    renderbackground("Loading...", mapshot, mname, game::getmapinfo());
 
     if(maptitle[0] && strcmp(maptitle, "Untitled Map by Unknown")) conoutf(CON_ECHO, "%s", maptitle);
 

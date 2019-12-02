@@ -401,7 +401,7 @@ VARF(entediting, 0, 0, 1, { if(!entediting) { entcancel(); efocus = enthover = -
 
 bool noentedit()
 {
-    if(!editmode) { conoutf(CON_ERROR, "operation only allowed in edit mode"); return true; }
+    if(!editmode) { conoutf(CON_ERROR, "Operation only allowed in edit mode"); return true; }
     return !entediting;
 }
 
@@ -426,7 +426,7 @@ SCRIPTEXPORT void entcancel()
 {
     entgroup.shrink(0);
 }
-
+SCRIPTEXPORT_AS(enteditv)
 void entadd(int id)
 {
     undonext = true;
@@ -874,8 +874,9 @@ void renderentradius(entities::classes::CoreEntity *e, bool color)
         default:
             if(e->et_type>=ET_GAMESPECIFIC)
             {
-                if(color) gle::colorf(0, 1, 1);
-                entities::entradius(e, color);
+                if(color) gle::colorf(1, 0, 0);
+                //entities::entradius(e, color);
+                e->renderSelected(entselradius, entorient);
             }
             break;
     }

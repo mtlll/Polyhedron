@@ -761,8 +761,8 @@ SCRIPTEXPORT_AS(clearservers) void clearservers_scriptimpl(int *full)
 
 void writeservercfg()
 {
-    if(!game::savedservers()) return;
-    stream *f = openutf8file(path(game::savedservers(), true), "w");
+    if(!game::SavedServersCfg()) return;
+    stream *f = openutf8file(path(game::SavedServersCfg(), true), "w");
     if(!f) return;
     int kept = 0;
     loopv(servers)

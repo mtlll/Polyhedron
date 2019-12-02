@@ -85,15 +85,12 @@ int curtime = 0, lastmillis = 1, elapsedtime = 0, totalmillis = 1;
 entities::classes::Player *player = NULL;
 
 int initing = NOT_INITING;
+extern int initreset;
 
-bool initwarning(const char *desc, int level, int type)
+bool InitWarning(const char *desc, int type, int mustInitReload)
 {
-	if(initing < level)
-	{
-		addchange(desc, type);
-		return true;
-	}
-	return false;
+	addchange(desc, type);
+	return mustInitReload;
 }
 
 #define SCR_MINW 320
@@ -102,8 +99,8 @@ bool initwarning(const char *desc, int level, int type)
 #define SCR_MAXH 10000
 #define SCR_DEFAULTW 1024
 #define SCR_DEFAULTH 768
-VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, initwarning("screen resolution"));
-VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, initwarning("screen resolution"));
+VARFN(screenw, scr_w, SCR_MINW, -1, SCR_MAXW, InitWarning("screen resolution"));
+VARFN(screenh, scr_h, SCR_MINH, -1, SCR_MAXH, InitWarning("screen resolution"));
 
 void writeinitcfg()
 {
@@ -405,11 +402,6 @@ void inputgrab(bool on)
 {
 	if(on)
 	{
-#ifndef DEBUG
-		SDL_ShowCursor(SDL_FALSE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
-#else
-		SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
-#endif
 		if(canrelativemouse && userelativemouse)
 		{
 			if(SDL_SetRelativeMouseMode(SDL_TRUE) >= 0)
@@ -423,12 +415,17 @@ void inputgrab(bool on)
 				canrelativemouse = false;
 				relativemouse = false;
 			}
+			#ifndef DEBUG
+					SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
+			#else
+					SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
+			#endif
 		}
 	}
 	else
 	{
 #ifndef DEBUG
-		SDL_ShowCursor(SDL_FALSE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
+		SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
 #else
 		SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
 #endif
@@ -447,7 +444,7 @@ bool initwindowpos = false;
 void setfullscreen(bool enable)
 {
 	if(!screen) return;
-	//initwarning(enable ? "fullscreen" : "windowed");
+	//InitWarning(enable ? "fullscreen" : "windowed");
 	SDL_SetWindowFullscreen(screen, enable ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 	if(!enable)
 	{
@@ -480,7 +477,7 @@ SCRIPTEXPORT void screenres(int w, int h)
 	}
 	else
 	{
-		initwarning("screen resolution");
+		InitWarning("Screen Resolution", CHANGE_GFX, true);
 	}
 }
 
@@ -537,7 +534,7 @@ void setupscreen()
 	curvsync = -1;
 
 	SDL_Rect desktop;
-	if(SDL_GetDisplayBounds(0, &desktop) < 0) fatal("failed querying desktop bounds: %s", SDL_GetError());
+	if(SDL_GetDisplayBounds(0, &desktop) < 0) fatal("Failed querying desktop bounds: %s", SDL_GetError());
 	desktopw = desktop.w;
 	desktoph = desktop.h;
 
@@ -560,7 +557,7 @@ void setupscreen()
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 	screen = SDL_CreateWindow("SchizoMania - 'Chapter A' - Polyhedron 0.0.1", winx, winy, winw, winh, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | flags);
-	if(!screen) fatal("failed to create OpenGL window: %s", SDL_GetError());
+	if(!screen) fatal("Failed to create OpenGL window: %s", SDL_GetError());
 
 	SDL_SetWindowMinimumSize(screen, SCR_MINW, SCR_MINH);
 	SDL_SetWindowMaximumSize(screen, SCR_MAXW, SCR_MAXH);
@@ -579,7 +576,7 @@ void setupscreen()
 		glcontext = SDL_GL_CreateContext(screen);
 		if(glcontext) break;
 	}
-	if(!glcontext) fatal("failed to create OpenGL context: %s", SDL_GetError());
+	if(!glcontext) fatal("Failed to create OpenGL context: %s", SDL_GetError());
 
 	SDL_GetWindowSize(screen, &screenw, &screenh);
 	renderw = min(scr_w, screenw);
@@ -588,11 +585,12 @@ void setupscreen()
 	hudh = screenh;
 }
 
+// Called whenever CHANGE_GFX or CHANGE_SHADERS is supposed to be there.
 SCRIPTEXPORT void resetgl()
 {
 	clearchanges(CHANGE_GFX|CHANGE_SHADERS);
 
-	renderbackground("resetting OpenGL");
+	renderbackground("Resetting OpenGL");
 
 	recorder::cleanup();
 	cleanupva();
@@ -622,10 +620,10 @@ SCRIPTEXPORT void resetgl()
 	   !reloadtexture("media/interface/mapshot_frame.png") ||
 	   !reloadtexture("media/interface/loading_frame.png") ||
 	   !reloadtexture("media/interface/loading_bar.png"))
-		fatal("failed to reload core texture");
+		fatal("Failed to reload core texture");
 	reloadfonts();
 	inbetweenframes = true;
-	renderbackground("initializing...");
+	renderbackground("Initializing...");
 	restoregamma();
 	restorevsync();
 	initgbuffer();
@@ -1028,17 +1026,26 @@ int main(int argc, char **argv)
     #endif
     #endif
 
-    // WatIsDeze: Debug log.
-    setlogfile(nullptr);
-
+	//////////////////////////////////////////////////////////////////
+	// Initialize SDL.                                              //
+	//////////////////////////////////////////////////////////////////
     // Dedicated server?
     int dedicated = 0;
 
     // Dedicated, what to load, and what script to initialize pointers.
     char *load = nullptr, *initscript = nullptr;
 
-    // Setup the initialization stage.
-    initing = INIT_RESET;
+	#ifdef DEBUG
+	setlogfile("debug.txt");
+	#else
+	setlogfile("log.txt");
+	#endif
+
+	//////////////////////////////////////////////////////////////////
+	// Sad;y comes in the mess. initing... logging what we init,    //
+	// were in the past totally wrong (outdated? ill placed?)       //
+	//////////////////////////////////////////////////////////////////
+	initing = INIT_CHECK_ARGS;
 
     // First scan for the home directory. It'll store custom configurations, and maps inside there.
     for(int i = 1; i<argc; i++) if(argv[i][0]=='-' && argv[i][1] == 'u') { sethomedir(&argv[i][2]); break; }
@@ -1055,7 +1062,9 @@ int main(int argc, char **argv)
     // Execute initialization configuration file.
     execfile("config/init.cfg", false);
 
-    // Parse out all other arguments.
+	//////////////////////////////////////////////////////////////////
+	// Argument parsing                                             //
+	//////////////////////////////////////////////////////////////////
     for(int i = 1; i<argc; i++)
     {
         if(argv[i][0]=='-') switch(argv[i][1])
@@ -1090,33 +1099,53 @@ int main(int argc, char **argv)
     // Used for calculating PVS and doing a benchmark.
     numcpus = clamp(SDL_GetCPUCount(), 1, 16);
 
-    // If it isnt a dedicated server run, initialize SDL.
+	//////////////////////////////////////////////////////////////////
+	// Initialize SDL.                                              //
+	//////////////////////////////////////////////////////////////////
     if(dedicated <= 1)
     {
-        logoutf("init: sdl");
+        logoutf("init: SDL_Timer | SDL_INIT_VIDEO | SDL_INIT_AUDIO");
+		initing = INIT_SDL;
         if(SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO)<0)
             fatal("Unable to initialize SDL: %s", SDL_GetError());
     }
 
-    // Initialize the enet networking module.
-    logoutf("init: net");
+	//////////////////////////////////////////////////////////////////
+	// Initialize the ENet networking module, we'll be needing it   //
+	// for client/server communications, going  Back AND Forth!!!   //
+	//////////////////////////////////////////////////////////////////
+    logoutf("init: ENet");
+	initing = INIT_ENET;
     if(enet_initialize()<0) fatal("Unable to initialise network module");
     atexit(enet_deinitialize);
     enet_time_set(0);
 
-    // Last but not least, we can now initialize the game itself.
-    logoutf("init: game");
-
-    // Parse the game options(Although there are none atm to my knowledge.) And initialize the local server.
-    game::parseoptions(gameargs);
-    // initserver(dedicated>0, dedicated>1);  // never returns if dedicated
-    ASSERT(dedicated <= 1)
+	//////////////////////////////////////////////////////////////////
+	// Initialize the player 1 entity and its camera. Poor folks    //
+	// lost their home I guess. (Shitty joke eh? I meant, map.)     //
+	//////////////////////////////////////////////////////////////////
+    logoutf("init: Client Requirements");
+	initing = INIT_CLSV_CLIENT;
+    
+	game::parseoptions(gameargs); // Parse the game options(Although there are none atm to my knowledge.) And initialize the local server.
+	ASSERT(dedicated <= 1)
+ 	initserver(dedicated>0, dedicated>1);  // never returns if dedicated
 
     // Last but not least, initialize our own client.
-    game::initclient();
+    game::InitClient();
+	player = dynamic_cast<entities::classes::Player*>(game::iterdynents(0));
+	camera1 = player->camera;
 
-    // Initialize the SDL Video, with certain specific settings.
-    logoutf("init: video");
+	//////////////////////////////////////////////////////////////////
+	// Initialize the OpenGL settings and extensions.               //
+	// Setup our OpenGL SDL Screen. Special hints for each OS etc.  //
+	//////////////////////////////////////////////////////////////////
+	logoutf("init: Creating an OpenGL compatible screen context");
+	initing = INIT_OPENGL;
+	//////////////////////////////////////////////////////////////////
+	// Setup our OpenGL SDL Screen. Special hints for each OS etc.  //
+	//////////////////////////////////////////////////////////////////
+    logoutf("init: OpenGL Window ");
     SDL_SetHint(SDL_HINT_GRAB_KEYBOARD, "0");
     #if !defined(WIN32) && !defined(__APPLE__)
     SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
@@ -1125,26 +1154,31 @@ int main(int argc, char **argv)
     // Setup the basic OpenGL Screen, fullscreen, etc.
     setupscreen();
 #ifndef DEBUG
-		SDL_ShowCursor(SDL_FALSE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
-#else
 		SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
+#else
+		SDL_ShowCursor(SDL_FALSE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
 #endif
 	SDL_StopTextInput(); // workaround for spurious text-input events getting sent on first text input toggle?
 
 	// Legitly initialize the OpenGL extensions.
-	logoutf("init: gl_checkextensions");
 	gl_checkextensions();
-
 	// Initialize the default settings of the OpenGL renderer.
-	logoutf("init: gl_init");
 	gl_init();
 
-	// Very important: notexture is required to load, if it fails, all fails.
-	notexture = textureload("media/texture/game/notexture.png");
-	if(!notexture) fatal("could not find core textures");
+	// This texture is required, it is used as the texture for when
+	// there is an object which has no valid material/texture ID.
+	//
+	// IMPORTANT: This also serves as a test to see if we have the
+	// proper working directory.	
+	notexture = textureload("media/texture/game/notexture.png");     //
+	if(!notexture) fatal("could not find core textures");            //
 
-	// Initialize our console and execute the stdlib.cfg, and font.cfg files.
-	logoutf("init: console");
+
+	//////////////////////////////////////////////////////////////////
+	// CubeScript, UI and Fonts.                                    //
+	//////////////////////////////////////////////////////////////////
+	logoutf("init: CubeScript and Fonts");
+	initing = INIT_CUBESCRIPT_UI_FONTS;
 	if(!execfile("config/stdlib.cfg", false)) fatal("cannot find data files (you are running from the wrong folder, try .bat file in the main folder)");   // this is the first file we load.
 	if(!execfile("config/font.cfg", false)) fatal("cannot find font definitions");
 	if(!setfont("default")) fatal("no default font specified");
@@ -1154,58 +1188,55 @@ int main(int argc, char **argv)
 
 	// Currently in between frames.
 	inbetweenframes = true;
+	renderbackground("Initializing...");
 
-	// Render the background letting the user know it is Initializing.
-	renderbackground("initializing...");
+	//////////////////////////////////////////////////////////////////
+	// Pre-initialize a few common entities.                        //
+	//////////////////////////////////////////////////////////////////
+	logoutf("init: Pre-initialize a few common entities.");
 
-	// Initialize our world, this'll be the mainmenu map.
-	logoutf("init: world");
-	player = dynamic_cast<entities::classes::Player*>(game::iterdynents(0));
-	camera1 = player->camera;
-	//emptymap(0, true, NULL, false); // This is the old original variant.
-	emptymap(false, false, "mainmenu.ogz");
-
-	// Initialize the sound system.
-	logoutf("init: sound");
+	//////////////////////////////////////////////////////////////////
+	// Initialize sound.                                            //
+	//////////////////////////////////////////////////////////////////
+	logoutf("init: Sound");
+	initing = INIT_SOUND;
 	initsound();
 
-	// Load in all configuration files, such as our keymap, game config, the UI etc.
-	logoutf("init: cfg");
-	initing = INIT_LOAD;
+	//////////////////////////////////////////////////////////////////
+	// Last but not least, let our configuration party begin!!..    //                     //
+	//////////////////////////////////////////////////////////////////
+	logoutf("init: Loading in configuration files.");
+	initing = INIT_CONFIG;
 	execfile("config/keymap.cfg");
 	execfile("config/stdedit.cfg");
-	execfile(game::gameconfig());
+	execfile(game::GameCfg());
 	execfile("config/sound.cfg");
 	execfile("config/ui.cfg");
 	execfile("config/heightmap.cfg");
 	execfile("config/blendbrush.cfg");
-	if(game::savedservers()) execfile(game::savedservers(), false);
+	if(game::SavedServersCfg()) execfile(game::SavedServersCfg());
 
-	// Ensure it is persistent.
+	// Set all idents to be persistent from here on
 	identflags |= IDF_PERSIST;
 
-	// No custom saved config file? Then not.
-	if(!execfile(game::savedconfig(), false))
+	// No custom saved config file? We'll load in our default config, and write it as THE restoreconfig.
+	if(!execfile(game::SavedCfg(), false))
 	{
-		execfile(game::defaultconfig());
-		writecfg(game::restoreconfig());
+		execfile(game::DefaultCfg());
 	}
-
-	// Execute the autoexec.cfg file(At least, it is what it returns atm.)
-	execfile(game::autoexec(), false);
 
 	// And we remove persistency again.
 	identflags &= ~IDF_PERSIST;
 
-	// Set the state to initializing the game, and allow it to load in its own custom .cfg files.
-	initing = INIT_GAME;
-	game::loadconfigs();
+	// Set the state to INIT_GAME and load in the authenticated config file. (Server/Client related)
+	initing = INIT_AUTH_CONFIG;
+	execfile("config/auth.cfg");
 
 	// We are DONE initializing.
-	initing = NOT_INITING;
+	initing = INIT_RENDERER;
 
 	// Time to initialize the rest of our rendering data. Speaks for itself.
-	logoutf("init: render");
+	logoutf("init: Renderer");
 	restoregamma();
 	restorevsync();
 	initgbuffer();
@@ -1216,20 +1247,18 @@ int main(int argc, char **argv)
 	// Ensure persistency is on again.
 	identflags |= IDF_PERSIST;
 
-	// Initialize the main game loop.
-	logoutf("init: mainloop");
-
-	// TODO: Not sure wtf this is for.
-	//if(execfile("once.cfg", false)) remove(findfile("once.cfg", "rb"));
-	
-	localconnect();
+	// If there is a map to load, then we'll damnit do so!
 	if(load)
 	{
-		// Since we are loading a map as a background, we best start doing a local connect.
-		logoutf("init: localconnect");
+		logoutf("init: Changing to map: %s", load);
+		initing = INIT_WITH_MAPLOAD;
+		localconnect();
 		game::changemap(load);
 	}
 	
+	// Initialize the main game loop.
+	logoutf("init: Preparing for main loop");
+	initing = INIT_MAINLOOP;
 
 	// Somehow another init script.
 	if(initscript) execute(initscript);
@@ -1240,6 +1269,9 @@ int main(int argc, char **argv)
 
 	inputgrab(grabinput = true);
 	ignoremousemotion();
+
+	logoutf("init: Main loop started.");
+	initing = NOT_INITING;
 
 	for(;;)
 	{

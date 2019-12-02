@@ -601,19 +601,31 @@ extern void writecompletions(stream *f);
 enum
 {
     NOT_INITING = 0,
-    INIT_GAME,
-    INIT_LOAD,
-    INIT_RESET
+    INIT_CHECK_ARGS,
+    INIT_ENET,
+    INIT_SDL,
+    INIT_CLSV_CLIENT,
+    INIT_CONFIG,
+    INIT_OPENGL,
+    INIT_CUBESCRIPT_UI_FONTS,
+    INIT_AUTH_CONFIG,
+    INIT_WITH_MAPLOAD,      // This is a bit of a weird one, but since we're setting "initing"..
+    INIT_SOUND,
+    INIT_RENDERER,
+    INIT_MAINLOOP,
+    INIT_MAX
 };
 extern int initing, numcpus;
 
 enum
 {
+    CHANGE_NOTHING = 0,
     CHANGE_GFX     = 1<<0,
     CHANGE_SOUND   = 1<<1,
-    CHANGE_SHADERS = 1<<2
+    CHANGE_SHADERS = 1<<2,
+    CHANGE_MAX     = 1<<3,
 };
-extern bool initwarning(const char *desc, int level = INIT_RESET, int type = CHANGE_GFX);
+extern bool InitWarning(const char *desc, int type = CHANGE_NOTHING, int mustInitReload = false);
 
 extern bool grabinput, minimized;
 

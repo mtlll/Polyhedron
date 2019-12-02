@@ -854,12 +854,12 @@ namespace game
     void writegamedata(vector<char> &extras) {}
     void readgamedata(vector<char> &extras) {}
 
-    const char *gameconfig() { return "config/game.cfg"; }
-    const char *savedconfig() { return "config/saved.cfg"; }
-    const char *restoreconfig() { return "config/restore.cfg"; }
-    const char *defaultconfig() { return "config/default.cfg"; }
-    const char *autoexec() { return "config/autoexec.cfg"; }
-    const char *savedservers() { return "config/servers.cfg"; }
+    const char *gameConfigPath() { return "config/game.cfg"; }
+    const char *savedConfigPath() { return "config/saved.cfg"; }
+    const char *restoreConfigPath() { return "config/restore.cfg"; }
+    const char *defaultConfigPath() { return "config/default.cfg"; }
+    const char *autoExecPath() { return "config/autoexec.cfg"; }
+    const char *savedServersPath() { return "config/servers.cfg"; }
 
     void loadconfigs()
     {

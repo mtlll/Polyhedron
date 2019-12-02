@@ -26,7 +26,7 @@ namespace gle
     ucharbuf attribbuf;
     static uchar *attribdata;
     static attribinfo attribdefs[MAXATTRIBS], lastattribs[MAXATTRIBS];
-    int enabled = 0;
+    int gle_enabled = 0;
     static int numattribs = 0, attribmask = 0, numlastattribs = 0, lastattribmask = 0, vertexsize = 0, lastvertexsize = 0;
     static GLenum primtype = GL_TRIANGLES;
     static uchar *lastbuf = NULL;
@@ -165,17 +165,17 @@ namespace gle
                 glVertexAttribPointer_(a.type, a.size, a.format, GL_TRUE, vertexsize, buf);
                 break;
         }
-        if(!(enabled&(1<<a.type)))
+        if(!(gle_enabled&(1<<a.type)))
         {
             glEnableVertexAttribArray_(a.type);
-            enabled |= 1<<a.type;
+            gle_enabled |= 1<<a.type;
         }
     }
 
     static inline void unsetattrib(const attribinfo &a)
     {
         glDisableVertexAttribArray_(a.type);
-        enabled &= ~(1<<a.type);
+        gle_enabled &= ~(1<<a.type);
     }
 
     static inline void setattribs(uchar *buf)
@@ -183,7 +183,7 @@ namespace gle
         bool forceattribs = numattribs != numlastattribs || vertexsize != lastvertexsize || buf != lastbuf;
         if(forceattribs || changedattribs)
         {
-            int diffmask = enabled & lastattribmask & ~attribmask;
+            int diffmask = gle_enabled & lastattribmask & ~attribmask;
             if(diffmask) loopi(numlastattribs)
             {
                 const attribinfo &a = lastattribs[i];
@@ -314,7 +314,7 @@ namespace gle
 
     void forcedisable()
     {
-        for(int i = 0; enabled; i++) if(enabled&(1<<i)) { glDisableVertexAttribArray_(i); enabled &= ~(1<<i); }
+        for(int i = 0; gle_enabled; i++) if(gle_enabled&(1<<i)) { glDisableVertexAttribArray_(i); gle_enabled &= ~(1<<i); }
         numlastattribs = lastattribmask = lastvertexsize = 0;
         lastbuf = NULL;
         if(quadsenabled) disablequads();

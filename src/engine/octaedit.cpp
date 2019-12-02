@@ -193,14 +193,14 @@ void toggleedit(bool force)
 
 bool noedit(bool view, bool msg)
 {
-    if(!editmode) { if(msg) conoutf(CON_ERROR, "operation only allowed in edit mode"); return true; }
+    if(!editmode) { if(msg) conoutf(CON_ERROR, "Operation only allowed in edit mode"); return true; }
     if(view || haveselent()) return false;
     vec o(sel.o), s(sel.s);
     s.mul(sel.grid / 2.0f);
     o.add(s);
     float r = max(s.x, max(s.y, s.z));
     bool viewable = (isvisiblesphere(r, o) != VFC_NOT_VISIBLE);
-    if(!viewable && msg) conoutf(CON_ERROR, "selection not in view");
+    if(!viewable && msg) conoutf(CON_ERROR, "Selection not in view");
     return !viewable;
 }
 

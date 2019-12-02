@@ -16,9 +16,9 @@ namespace gle
     extern const char * const attribnames[MAXATTRIBS];
     extern ucharbuf attribbuf;
 
-    extern int enabled;
+    extern int gle_enabled;
     extern void forcedisable();
-    static inline void disable() { if(enabled) forcedisable(); }
+    static inline void disable() { if(gle_enabled) forcedisable(); }
 
     extern void begin(GLenum mode);
     extern void begin(GLenum mode, int numverts);

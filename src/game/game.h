@@ -20,6 +20,18 @@ namespace game
     extern int maptime, maprealtime;            // Times.
     extern cubestr clientmap;                   // The map the client is currently running or loading.
 
+    //
+    // Configs and Init/Deinit
+    //
+    extern void InitClient();
+    extern const char *GameIdent();
+    extern const char *GameCfg();
+    extern const char *SavedCfg();
+    extern const char *DefaultCfg();
+    extern const char *AutoExecCfg();
+    extern const char *SavedServersCfg();
+    extern void LoadCfgs();
+
     // Entities.
     extern void clearworld();
 

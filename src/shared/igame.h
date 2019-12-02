@@ -43,17 +43,16 @@ namespace game
     extern int scaletime(int t);
     extern bool allowmouselook();
 
-    extern const char *gameident();
-    extern const char *gameconfig();
-    extern const char *savedconfig();
-    extern const char *restoreconfig();
-    extern const char *defaultconfig();
-    extern const char *autoexec();
-    extern const char *savedservers();
-    extern void loadconfigs();
+    extern const char *GameIdent();
+    extern const char *GameCfg();
+    extern const char *SavedCfg();
+    extern const char *DefaultCfg();
+    extern const char *AutoExecCfg();
+    extern const char *SavedServersCfg();
+    extern void LoadCfgs();
 
     extern void updateworld();
-    extern void initclient();
+    extern void InitClient();
     extern void physicstrigger(entities::classes::BasePhysicalEntity *d, bool local, int floorlevel, int waterlevel, int material = 0);
     extern void bounced(entities::classes::BasePhysicalEntity *d, const vec &surface);
     extern void edittrigger(const selinfo &sel, int op, int arg1 = 0, int arg2 = 0, int arg3 = 0, const VSlot *vs = NULL);

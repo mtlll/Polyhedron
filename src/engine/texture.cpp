@@ -684,14 +684,14 @@ VAR(hwcubetexsize, 1, 0, 0);
 VAR(hwmaxaniso, 1, 0, 0);
 VAR(hwtexunits, 1, 0, 0);
 VAR(hwvtexunits, 1, 0, 0);
-VARFP(maxtexsize, 0, 0, 1<<12, initwarning("texture quality", INIT_LOAD));
-VARFP(reducefilter, 0, 1, 1, initwarning("texture quality", INIT_LOAD));
-VARFP(texreduce, 0, 0, 12, initwarning("texture quality", INIT_LOAD));
-VARFP(texcompress, 0, 1536, 1<<12, initwarning("texture quality", INIT_LOAD));
+VARFP(maxtexsize, 0, 0, 1<<12, InitWarning("texture quality"));
+VARFP(reducefilter, 0, 1, 1, InitWarning("texture quality"));
+VARFP(texreduce, 0, 0, 12, InitWarning("texture quality"));
+VARFP(texcompress, 0, 1536, 1<<12, InitWarning("texture quality"));
 VARFP(texcompressquality, -1, -1, 1, setuptexcompress());
-VARF(trilinear, 0, 1, 1, initwarning("texture filtering", INIT_LOAD));
-VARF(bilinear, 0, 1, 1, initwarning("texture filtering", INIT_LOAD));
-VARFP(aniso, 0, 0, 16, initwarning("texture filtering", INIT_LOAD));
+VARF(trilinear, 0, 1, 1, InitWarning("texture filtering"));
+VARF(bilinear, 0, 1, 1, InitWarning("texture filtering"));
+VARFP(aniso, 0, 0, 16, InitWarning("texture filtering"));
 
 extern int usetexcompress;
 
@@ -744,7 +744,7 @@ int formatsize(GLenum format)
     }
 }
 
-VARFP(usenp2, 0, 1, 1, initwarning("texture quality", INIT_LOAD));
+VARFP(usenp2, 0, 1, 1, InitWarning("texture quality"));
 
 void resizetexture(int w, int h, bool mipmap, bool canreduce, GLenum target, int compress, int &tw, int &th)
 {

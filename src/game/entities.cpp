@@ -55,6 +55,8 @@ namespace entities
 
 	const char *entmodel(const entities::classes::CoreEntity *e)
 	{
+		if (e->classname == "base_map_model")
+			
 		return nullptr;
 	}
 

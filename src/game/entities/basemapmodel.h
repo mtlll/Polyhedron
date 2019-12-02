@@ -22,7 +22,8 @@ namespace entities
             virtual bool getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const;
         public:
             void preloadMapModel(const std::string &filename);
-
+            const std::string getModelFilename() { return mmi.name; }
+            
         private:
             void loadModelAttributes();
 

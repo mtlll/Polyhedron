@@ -53,6 +53,15 @@ void conoutf(int type, const char *fmt, ...)
     va_end(args);
 }
 
+inline void conoutfl(int type, const char *fmt, ...) {
+    std::string _fmt = "[%s:%s] - %s";
+    va_list args;
+    va_start(args, fmt);
+    _fmt += fmt;
+    conoutfv(type, _fmt.c_str(), args);
+    va_end(args);
+}
+
 SCRIPTEXPORT void fullconsole(int *val, CommandTypes::ArgLen numargs, ident *id)
 {
     if(*numargs > 0)

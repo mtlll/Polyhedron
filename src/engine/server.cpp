@@ -1040,7 +1040,7 @@ void initserver(bool listen, bool dedicated)
         updatemasterserver();
         if(dedicated) rundedicatedserver(); // never returns
 #ifndef STANDALONE
-        else conoutf("listen server started");
+        else conoutf("Listen server started");
 #endif
     }
 }
@@ -1048,7 +1048,7 @@ void initserver(bool listen, bool dedicated)
 #ifndef STANDALONE
 SCRIPTEXPORT void startlistenserver(int *usemaster)
 {
-    if(serverhost) { conoutf(CON_ERROR, "listen server is already running"); return; }
+    if(serverhost) { conoutf(CON_ERROR, "Listen server is already running"); return; }
 
     allowupdatemaster = *usemaster>0 ? 1 : 0;
 
@@ -1056,18 +1056,18 @@ SCRIPTEXPORT void startlistenserver(int *usemaster)
 
     updatemasterserver();
 
-    conoutf("listen server started for %d clients%s", maxclients, allowupdatemaster ? " and listed with master server" : "");
+    conoutf("Listen server started for %d clients%s", maxclients, allowupdatemaster ? " and listed with master server" : "");
 }
 
 SCRIPTEXPORT void stoplistenserver()
 {
-    if(!serverhost) { conoutf(CON_ERROR, "listen server is not running"); return; }
+    if(!serverhost) { conoutf(CON_ERROR, "Listen server is not running"); return; }
 
     kicknonlocalclients();
     enet_host_flush(serverhost);
     cleanupserver();
 
-    conoutf("listen server stopped");
+    conoutf("Listen server stopped");
 }
 #endif
 

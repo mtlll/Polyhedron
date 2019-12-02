@@ -1,22 +1,21 @@
-#include "game.h"
+#include "game/game.h"
 #include "server.h"
-#include "../shared/tools.h"
+#include "shared/tools.h"
 
 // This file only servers as an empty basic server implementation.
 namespace server
 {
 	void *newclientinfo() {
-		return NULL;
+		return new ClientInfo;
 	}
-
 	void deleteclientinfo(void *ci) {
-
+		delete (ClientInfo *)ci;
 	}
 	void serverinit() {
 
 	}
 	int reserveclients() {
-		return 0;
+		return 3; // Return 3, no clue why, but their default function does.
 	}
 	int numchannels() {
 		return 0;
@@ -25,6 +24,7 @@ namespace server
 
 	}
 	int clientconnect(int n, uint ip) {
+		
 		return DISC_NONE;
 	}
 	void localdisconnect(int n) {
@@ -43,9 +43,10 @@ namespace server
 
 	}
 	void sendservmsg(const char *s) {
-
+		
 	}
 	bool sendpackets(bool force) {
+
 		return false;
 	}
 	void serverinforeply(ucharbuf &req, ucharbuf &p) {

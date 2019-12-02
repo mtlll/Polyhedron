@@ -12,9 +12,6 @@ namespace game
     // Global player entity pointer.
     ::entities::classes::Player *player1 = NULL;
 
-    // List of connected players. (For future network usage.)
-	//vector<::entities::classes::Player*> players;
-
     // Networking State properties.
     bool connected = false;
 
@@ -313,19 +310,20 @@ namespace game
 
     }
 
-    const char *gameconfig() { return "config/game.cfg"; }
-    const char *savedconfig() { return "config/saved.cfg"; }
-    const char *restoreconfig() { return "config/restore.cfg"; }
-    const char *defaultconfig() { return "config/default.cfg"; }
-    const char *autoexec() { return "config/autoexec.cfg"; }
-    const char *savedservers() { return "config/servers.cfg"; }
+    // Cpmfogiratopm fo;es/
+    const char *GameCfg() { return "config/game.cfg"; }
+    const char *SavedCfg() { return "config/saved.cfg"; }
+    const char *DefaultCfg() { return "config/default.cfg"; }
+    const char *AutoExecCfg() { return "config/autoexec.cfg"; }
+    const char *SavedServersCfg() { return "config/servers.cfg"; }
 
+    // Amy custom configuration files yo'd like to have loaded by default
     void loadconfigs() {
         execfile("config/auth.cfg", false);
     }
 
     void parseoptions(vector<const char *> &args) {
-        conoutf(CON_WARN, "game::parseoption is empty");
+        //conoutf(CON_WARN, "game::parseoption is empty");
     }
 
     bool allowedittoggle() {
@@ -334,12 +332,12 @@ namespace game
             conoutf(CON_ERROR, "[%s:%i] %s", __FILE__, __LINE__, "Can't enter edit mode while in the mainmenu.");
             return false;
         }
-
+//"[%s:%i] %s", __FILE__, __LINE__,
         return true; 
     }
 
     void edittoggled(bool on) {
-        conoutf(CON_INFO, "Editor toggled - %s", (on == 0 ? "Off" : "On"));
+        conoutf(CON_INFO, "Editor toggled - %s", (on == 1 ? "On" : "Off"));
     }
 
 
@@ -366,14 +364,14 @@ namespace game
         else if(floorlevel<0) { if(d==player1 || d->type!=ENT_PLAYER || ((gameent *)d)->ai) msgsound(S_LAND, d); }*/
     }
 
-    void initclient() {
+    void InitClient() {
         // Setup the map time.
         maptime = 0;
 		SpawnPlayer();
         findplayerspawn(player1);
     }
 
-    const char *gameident() {
+    const char *GameIdent() {
         return "SchizoMania";
     }
     const char *getscreenshotinfo() {

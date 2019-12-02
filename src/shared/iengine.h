@@ -208,6 +208,7 @@ enum
 
 extern void conoutf(const char *s, ...) PRINTFARGS(1, 2);
 extern void conoutf(int type, const char *s, ...) PRINTFARGS(2, 3);
+extern void conoutfl(int type, const char *s, ...);
 extern void conoutfv(int type, const char *fmt, va_list args);
 
 extern FILE *getlogfile();
