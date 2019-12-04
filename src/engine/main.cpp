@@ -369,7 +369,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
 
 VARNP(relativemouse, userelativemouse, 0, 1, 1);
 
-bool shouldgrab = false, grabinput = false, minimized = false, canrelativemouse = true, relativemouse = false;
+bool shouldgrab = false, grabinput = false, minimized = false, canrelativemouse = false, relativemouse = false;
 int keyrepeatmask = 0, textinputmask = 0;
 Uint32 textinputtime = 0;
 VAR(textinputfilter, 0, 5, 1000);

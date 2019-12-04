@@ -55,9 +55,13 @@ namespace entities
 
 	const char *entmodel(const entities::classes::CoreEntity *e)
 	{
-		if (e->classname == "base_map_model")
+		auto ent = dynamic_cast<const entities::classes::BaseMapModel*>(e);
+
+		if (ent) {
+				return (const char *)ent->getModelFilename().c_str();
+		}		
 			
-		return nullptr;
+		return "";
 	}
 
 	void preloadentities()

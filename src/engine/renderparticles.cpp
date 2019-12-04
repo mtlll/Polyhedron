@@ -832,6 +832,7 @@ typedef varenderer<PT_PART> quadrenderer;
 typedef varenderer<PT_TAPE> taperenderer;
 typedef varenderer<PT_TRAIL> trailrenderer;
 
+
 #include "explosion.h"
 #include "lensflare.h"
 #include "lightning.h"
@@ -876,7 +877,7 @@ VARFP(fewparticles, 10, 100, 10000, initparticles());
 
 void initparticles()
 {
-    if(initing) return;
+    //if(initing) return;
     if(!particleshader) particleshader = lookupshaderbyname("particle");
     if(!particlenotextureshader) particlenotextureshader = lookupshaderbyname("particlenotexture");
     if(!particlesoftshader) particlesoftshader = lookupshaderbyname("particlesoft");

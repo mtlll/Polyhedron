@@ -1,4 +1,5 @@
 #include "playerstart.h"
+#include "basemapmodel.h"
 
 namespace entities {
 namespace classes {
@@ -7,6 +8,8 @@ PlayerStart::PlayerStart() {
 	et_type = ET_GAMESPECIFIC;
 	ent_type = ENT_INANIMATE;
 	game_type = PLAYERSTART;
+
+	setName("PlayerStart");
 }
 
 void PlayerStart::preload() {

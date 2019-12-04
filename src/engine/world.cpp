@@ -379,16 +379,17 @@ void findents(int low, int high, bool notspawned, const vec &pos, const vec &rad
     if(c->children && 1<<scale >= octaentsize) findents(c->children, ivec(bo).mask(~((2<<scale)-1)), 1<<scale, bo, br, low, high, notspawned, pos, invradius, found);
 }
 
-char *entname(entities::classes::CoreEntity *e)
+const char *entname(entities::classes::CoreEntity *e)
 {
-    static std::string fullentname;
-	std::string classname = e->classname;
-	std::string name = e->name;
-    if(!name.empty())
+    if (!e)
+        return "";
+    std::string fullentname = "";
+
+    if(!e->name.empty() && !e->classname.empty())
     {
-        fullentname = classname + ":" + name;
+        fullentname = e->classname + ":" + e->name;
     }
-    return (char*)fullentname.c_str();
+    return fullentname.c_str();
 }
 
 extern selinfo sel;

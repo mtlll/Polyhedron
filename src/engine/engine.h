@@ -383,7 +383,7 @@ extern bool debugaa();
 extern void cleanupaa();
 
 // ents
-extern char *entname(entities::classes::CoreEntity *e);
+extern const char *entname(entities::classes::CoreEntity *e);
 extern bool haveselent();
 extern undoblock *copyundoents(undoblock *u);
 extern void pasteundoent(int idx, entities::classes::CoreEntity *ue);
@@ -600,8 +600,8 @@ extern void writecompletions(stream *f);
 // main
 enum
 {
-    NOT_INITING = 0,
-    INIT_CHECK_ARGS,
+    NOT_INITING = -1,
+    INIT_CHECK_ARGS = 1,
     INIT_ENET,
     INIT_SDL,
     INIT_CLSV_CLIENT,
