@@ -10,7 +10,7 @@ namespace server
         int sessionid = 0;
         int overflow = 0;
         int playermodel = 0;
-        cubestr name
+        cubestr name;
         int privilege;
         bool connected = false;
         bool local = false;

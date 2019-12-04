@@ -126,5 +126,6 @@
     "files.autoSave": "afterDelay",
     "gitlens.blame.dateFormat": "${date}",
     "gitlens.insiders": false,
-    "cmake.debugConfig": "-g3 -DDEBUG"
+    "cmake.debugConfig": "-g3 -DDEBUG",
+    "cmake.sourceDirectory": "${workspaceFolder}/../src"
 }
