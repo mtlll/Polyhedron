@@ -1103,7 +1103,7 @@ void processhdr(GLuint outfbo, int aa)
         swap(b0h, b1h);
     }
 
-    if(!lasthdraccum || lastmillis - lasthdraccum >= hdraccummillis)
+    if(!lasthdraccum || ftsClient.lastMilliseconds - lasthdraccum >= hdraccummillis)
     {
         GLuint ltex = ptex;
         int lw = pw, lh = ph;
@@ -1142,7 +1142,7 @@ void processhdr(GLuint outfbo, int aa)
         glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
         SETSHADER(hdraccum);
         glBindTexture(GL_TEXTURE_RECTANGLE, b0tex);
-        LOCALPARAMF(accumscale, lasthdraccum ? pow(hdraccumscale, float(lastmillis - lasthdraccum)/hdraccummillis) : 0);
+        LOCALPARAMF(accumscale, lasthdraccum ? pow(hdraccumscale, float(ftsClient.lastMilliseconds - lasthdraccum)/hdraccummillis) : 0);
         screenquad(2, 2);
         glDisable(GL_BLEND);
 
@@ -1154,7 +1154,7 @@ void processhdr(GLuint outfbo, int aa)
             glBindBuffer_(GL_PIXEL_PACK_BUFFER, 0);
         }
 
-        lasthdraccum = lastmillis;
+        lasthdraccum = ftsClient.lastMilliseconds;
     }
 
     if(bloompbo)
@@ -4821,7 +4821,7 @@ void preparegbuffer(bool depthclear)
     GLOBALPARAMF(ldrscale, ldrscale);
     GLOBALPARAMF(hdrgamma, hdrgamma, 1.0f/hdrgamma);
     GLOBALPARAM(camera, camera1->o);
-    GLOBALPARAMF(millis, lastmillis/1000.0f);
+    GLOBALPARAMF(millis, ftsClient.lastMilliseconds/1000.0f);
 
     GLERROR;
 

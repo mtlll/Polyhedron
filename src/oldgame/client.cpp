@@ -907,6 +907,8 @@ namespace game
                     break;
                 }
                 case 's': sendcubestr(va_arg(args, const char *), p); nums++; break;
+                case 'S': sendcubestr(va_arg(args, const std::string &), p.c_str()); nums++; break;
+
             }
             va_end(args);
         }
@@ -926,12 +928,12 @@ namespace game
         return true;
     }
 
-    void connectattempt(const char *name, const char *password, const ENetAddress &address)
+    void ConnectAttempt(const char *name, const char *password, const ENetAddress &address)
     {
         copycubestr(connectpass, password);
     }
 
-    void connectfail()
+    void ConnectFail()
     {
         memset(connectpass, 0, sizeof(connectpass));
     }
@@ -1089,11 +1091,11 @@ namespace game
             messagereliable = false;
             messagecn = -1;
         }
-        if(totalmillis-lastping>250)
+        if(ftsClient.totalMilliseconds-lastping>250)
         {
             putint(p, N_PING);
-            putint(p, totalmillis);
-            lastping = totalmillis;
+            putint(p, ftsClient.totalMilliseconds);
+            lastping = ftsClient.totalMilliseconds;
         }
         sendclientpacket(p.finalize(), 1);
     }
@@ -1101,8 +1103,8 @@ namespace game
     void c2sinfo(bool force) // send update to the server
     {
         static int lastupdate = -1000;
-        if(totalmillis - lastupdate < 40 && !force) return; // don't update faster than 30fps
-        lastupdate = totalmillis;
+        if(ftsClient.totalMilliseconds - lastupdate < 40 && !force) return; // don't update faster than 30fps
+        lastupdate = ftsClient.totalMilliseconds;
         sendpositions();
         sendmessages();
         flushclient();
@@ -1154,11 +1156,11 @@ namespace game
             if(fx<fy) d->o.y += dy<0 ? r-fy : -(r-fy);  // push aside
             else      d->o.x += dx<0 ? r-fx : -(r-fx);
         }
-        int lagtime = totalmillis-d->lastupdate;
+        int lagtime = ftsClient.totalMilliseconds-d->lastupdate;
         if(lagtime)
         {
             if(d->state!=CS_SPAWNING && d->lastupdate) d->plag = (d->plag*5+lagtime)/6;
-            d->lastupdate = totalmillis;
+            d->lastupdate = ftsClient.totalMilliseconds;
         }
     }
 
@@ -1492,7 +1494,7 @@ namespace game
             }
 
             case N_CDIS:
-                clientdisconnected(getint(p));
+                ClientDisconnected(getint(p));
                 break;
 
             case N_SPAWN:
@@ -1805,7 +1807,7 @@ namespace game
             }
 
             case N_PONG:
-                addmsg(N_CLIENTPING, "i", player1->ping = (player1->ping*5+totalmillis-getint(p))/6);
+                addmsg(N_CLIENTPING, "i", player1->ping = (player1->ping*5+ftsClient.totalMilliseconds-getint(p))/6);
                 break;
 
             case N_CLIENTPING:
@@ -2036,7 +2038,7 @@ namespace game
         }
     }
 
-    void parsepacketclient(int chan, packetbuf &p)   // processes any updates from the server
+    void ParsePacketclient(int chan, packetbuf &p)   // processes any updates from the server
     {
         if(p.packet->flags&ENET_PACKET_FLAG_UNSEQUENCED) return;
         switch(chan)

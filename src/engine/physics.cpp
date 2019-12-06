@@ -1539,8 +1539,8 @@ bool move(entities::classes::BasePhysicalEntity *d, vec &dir)
 
 void crouchplayer(entities::classes::Player *pl, int moveres, bool local)
 {
-    if(!curtime) return;
-    float minheight = pl->maxheight * CROUCHHEIGHT, speed = (pl->maxheight - minheight) * curtime / float(CROUCHTIME);
+    if(!ftsClient.currentTime) return;
+    float minheight = pl->maxheight * CROUCHHEIGHT, speed = (pl->maxheight - minheight) * ftsClient.currentTime / float(CROUCHTIME);
     if(pl->crouching < 0)
     {
         if(pl->eyeheight > minheight)
@@ -1763,7 +1763,7 @@ FVAR(straferoll, 0, 0.033f, 90);
 FVAR(faderoll, 0, 0.95f, 1);
 VAR(floatspeed, 1, 100, 10000);
 
-void modifyvelocity(entities::classes::BasePhysicalEntity *pl, bool local, bool water, bool floating, int curtime)
+void modifyvelocity(entities::classes::BasePhysicalEntity *pl, bool local, bool water, bool floating, int curtime = ftsClient.currentTime)
 {
     bool allowmove = game::allowmove(pl);
     if(floating)
@@ -1787,7 +1787,7 @@ void modifyvelocity(entities::classes::BasePhysicalEntity *pl, bool local, bool 
             game::physicstrigger(pl, local, 1, 0);
         }
     }
-    if(!floating && pl->physstate == PHYS_FALL) pl->timeinair += curtime;
+    if(!floating && pl->physstate == PHYS_FALL) pl->timeinair += ftsClient.currentTime;
 
     vec m(0.0f, 0.0f, 0.0f);
     if((pl->move || pl->strafe) && allowmove)
@@ -1817,14 +1817,14 @@ void modifyvelocity(entities::classes::BasePhysicalEntity *pl, bool local, bool 
         else if(pl->crouching) d.mul(0.4f);
     }
     float fric = water && !floating ? 20.0f : (pl->physstate >= PHYS_SLOPE || floating ? 6.0f : 30.0f);
-    pl->vel.lerp(d, pl->vel, pow(1 - 1/fric, curtime/20.0f));
+    pl->vel.lerp(d, pl->vel, pow(1 - 1/fric, ftsClient.currentTime/20.0f));
 // old fps friction
 //    float friction = water && !floating ? 20.0f : (pl->physstate >= PHYS_SLOPE || floating ? 6.0f : 30.0f);
-//    float fpsfric = min(curtime/(20.0f*friction), 1.0f);
+//    float fpsfric = min(ftsClient.currentTime/(20.0f*friction), 1.0f);
 //    pl->vel.lerp(pl->vel, d, fpsfric);
 }
 
-void modifygravity(entities::classes::BasePhysicalEntity *pl, bool water, int curtime)
+void modifygravity(entities::classes::BasePhysicalEntity *pl, bool water, int curtime = ftsClient.currentTime)
 {
     float secs = curtime/1000.0f;
     vec g(0, 0, 0);
@@ -1845,17 +1845,17 @@ void modifygravity(entities::classes::BasePhysicalEntity *pl, bool water, int cu
         pl->falling.mul(pow(1 - c/fric, curtime/20.0f));
 // old fps friction
 //        float friction = water ? 2.0f : 6.0f,
-//              fpsfric = friction/curtime*20.0f,
+//              fpsfric = friction/ftsClient.currentTime*20.0f,
 //              c = water ? 1.0f : clamp((pl->floor.z - SLOPEZ)/(FLOORZ-SLOPEZ), 0.0f, 1.0f);
 //        pl->falling.mul(1 - c/fpsfric);
     }
 }
 
-// main physics routine, moves a player/monster for a curtime step
+// main physics routine, moves a player/monster for a ftsClient.currentTime step
 // moveres indicated the physics precision (which is lower for monsters and multiplayer prediction)
 // local is false for multiplayer prediction
 
-bool moveplayer(entities::classes::BasePhysicalEntity *pl, int moveres, bool local, int curtime)
+bool moveplayer(entities::classes::BasePhysicalEntity *pl, int moveres, bool local, int curtime = ftsClient.currentTime)
 {
     int material = lookupmaterial(vec(pl->o.x, pl->o.y, pl->o.z + (3*pl->aboveeye - pl->eyeheight)/4));
     bool water = isliquid(material&MATF_VOLUME);
@@ -1902,8 +1902,8 @@ bool moveplayer(entities::classes::BasePhysicalEntity *pl, int moveres, bool loc
 
     // automatically apply smooth roll when strafing
 
-    if(pl->strafe && maxroll) pl->roll = clamp(pl->roll - pow(clamp(1.0f + pl->strafe*pl->roll/maxroll, 0.0f, 1.0f), 0.33f)*pl->strafe*curtime*straferoll, -maxroll, maxroll);
-    else pl->roll *= curtime == PHYSFRAMETIME ? faderoll : pow(faderoll, curtime/float(PHYSFRAMETIME));
+    if(pl->strafe && maxroll) pl->roll = clamp(pl->roll - pow(clamp(1.0f + pl->strafe*pl->roll/maxroll, 0.0f, 1.0f), 0.33f)*pl->strafe*ftsClient.currentTime*straferoll, -maxroll, maxroll);
+    else pl->roll *= ftsClient.currentTime == PHYSFRAMETIME ? faderoll : pow(faderoll, ftsClient.currentTime/float(PHYSFRAMETIME));
 
     // play sounds on water transitions
 
@@ -1925,7 +1925,7 @@ int physsteps = 0, physframetime = PHYSFRAMETIME, lastphysframe = 0;
 
 void physicsframe()          // optimally schedule physics frames inside the graphics frames
 {
-    int diff = lastmillis - lastphysframe;
+    int diff = ftsClient.lastMilliseconds - lastphysframe;
     if(diff <= 0) physsteps = 0;
     else
     {
@@ -1942,7 +1942,7 @@ void interppos(entities::classes::BasePhysicalEntity *pl)
 {
     pl->o = pl->newpos;
 
-    int diff = lastphysframe - lastmillis;
+    int diff = lastphysframe - ftsClient.lastMilliseconds;
     if(diff <= 0 || !physinterp) return;
 
     vec deltapos(pl->deltapos);

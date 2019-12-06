@@ -51,7 +51,7 @@
         putint(q, ci->state.state);
         uint ip = extinfoip ? getclientip(ci->clientnum) : 0;
         q.put((uchar*)&ip, 3);
-        sendserverinforeply(q);
+        sendServerInfoReply(q);
     }
 
     static inline void extinfoteamscore(ucharbuf &p, int team, int score)
@@ -83,7 +83,7 @@
         loopv(scores) extinfoteamscore(p, scores[i].team, scores[i].score);
     }
 
-    void extserverinforeply(ucharbuf &req, ucharbuf &p)
+    void extServerInfoReply(ucharbuf &req, ucharbuf &p)
     {
         int extcmd = getint(req); // extended commands
 
@@ -110,7 +110,7 @@
                     if(!ci)
                     {
                         putint(p, EXT_ERROR); //client requested by id was not found
-                        sendserverinforeply(p);
+                        sendServerInfoReply(p);
                         return;
                     }
                 }
@@ -121,7 +121,7 @@
                 putint(q, EXT_PLAYERSTATS_RESP_IDS); //send player ids following
                 if(ci) putint(q, ci->clientnum);
                 else loopv(clients) putint(q, clients[i]->clientnum);
-                sendserverinforeply(q);
+                sendServerInfoReply(q);
 
                 if(ci) extinfoplayer(p, ci);
                 else loopv(clients) extinfoplayer(p, clients[i]);
@@ -140,6 +140,6 @@
                 break;
             }
         }
-        sendserverinforeply(p);
+        sendServerInfoReply(p);
     }
 

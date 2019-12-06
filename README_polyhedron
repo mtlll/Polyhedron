@@ -1,6 +1,6 @@
-Tesseract is a fork of the Cube 2: Sauerbraten engine. The goal of Tesseract
-is to make mapping more fun by using modern dynamic rendering techniques, so
-that you can get instant feedback on lighting changes, not just geometry.
+Polyhedron is a fork of the Tesseract engine, which in return is a fork of the Cube 2: Sauerbraten engine.
+The goal of Polyhedron is to make mapping and modding more pleasant by using a totally different entity and
+client/server 
 
 No more long calclight pauses... just plop down the light, move it, change its
 color, or do whatever else with it. It all happens in real-time now.

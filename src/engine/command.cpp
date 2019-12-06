@@ -4313,7 +4313,7 @@ void strsplice(const char *s, const char *vals, int *skip, int *count)
 COMMAND(strsplice, "ssii", "builtin");
 
 #ifndef STANDALONE
-ICOMMAND(getmillis, "i", (int *total), intret(*total ? totalmillis : lastmillis), "builtin");
+ICOMMAND(getmillis, "i", (int *total), intret(*total ? ftsClient.totalMilliseconds : ftsClient.lastMilliseconds), "builtin");
 
 struct sleepcmd
 {
@@ -4326,7 +4326,7 @@ void addsleep(int *msec, char *cmd)
 {
     sleepcmd &s = sleepcmds.add();
     s.delay = max(*msec, 1);
-    s.millis = lastmillis;
+    s.millis = ftsClient.lastMilliseconds;
     s.command = newcubestr(cmd);
     s.flags = identflags;
 }

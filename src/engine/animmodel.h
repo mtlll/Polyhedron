@@ -30,7 +30,7 @@ struct animmodel : model
             }
             else
             {
-                int time = info.anim&ANIM_SETTIME ? info.basetime : lastmillis-info.basetime;
+                int time = info.anim&ANIM_SETTIME ? info.basetime : ftsClient.lastMilliseconds-info.basetime;
                 fr1 = (int)(time/info.speed); // round to full frames
                 t = (time-fr1*info.speed)/info.speed; // progress of the frame, value from 0.0f to 1.0f
             }
@@ -135,7 +135,7 @@ struct animmodel : model
             if(key->checkversion() && Shader::lastshader->owner == key) return;
             Shader::lastshader->owner = key;
 
-            LOCALPARAMF(texscroll, scrollu*lastmillis/1000.0f, scrollv*lastmillis/1000.0f);
+            LOCALPARAMF(texscroll, scrollu*ftsClient.lastMilliseconds/1000.0f, scrollv*ftsClient.lastMilliseconds/1000.0f);
             if(alphatested()) LOCALPARAMF(alphatest, alphatest);
 
             if(!skinned) return;
@@ -149,7 +149,7 @@ struct animmodel : model
             float curglow = glow;
             if(glowpulse > 0)
             {
-                float curpulse = lastmillis*glowpulse;
+                float curpulse = ftsClient.lastMilliseconds*glowpulse;
                 curpulse -= floor(curpulse);
                 curglow += glowdelta*2*fabs(curpulse - 0.5f);
             }
@@ -839,21 +839,21 @@ struct animmodel : model
                 animinterpinfo &ai = d->animinterp[interp];
                 if((info.anim&(ANIM_LOOP|ANIM_CLAMP))==ANIM_CLAMP) aitime = min(aitime, int(info.range*info.speed*0.5e-3f));
                 void *ak = meshes->animkey();
-                if(d->ragdoll && d->ragdoll->millis != lastmillis)
+                if(d->ragdoll && d->ragdoll->millis != ftsClient.lastMilliseconds)
                 {
                     ai.prev.range = ai.cur.range = 0;
                     ai.lastswitch = -1;
                 }
-                else if(ai.lastmodel!=ak || ai.lastswitch<0 || lastmillis-d->lastrendered>aitime)
+                else if(ai.lastmodel!=ak || ai.lastswitch<0 || ftsClient.lastMilliseconds-d->lastrendered>aitime)
                 {
                     ai.prev = ai.cur = info;
-                    ai.lastswitch = lastmillis-aitime*2;
+                    ai.lastswitch = ftsClient.lastMilliseconds-aitime*2;
                 }
                 else if(ai.cur!=info)
                 {
-                    if(lastmillis-ai.lastswitch>aitime/2) ai.prev = ai.cur;
+                    if(ftsClient.lastMilliseconds-ai.lastswitch>aitime/2) ai.prev = ai.cur;
                     ai.cur = info;
-                    ai.lastswitch = lastmillis;
+                    ai.lastswitch = ftsClient.lastMilliseconds;
                 }
                 else if(info.anim&ANIM_SETTIME) ai.cur.basetime = info.basetime;
                 ai.lastmodel = ak;
@@ -880,7 +880,7 @@ struct animmodel : model
                 p.interp = 1;
                 if(interp>=0 && d->animinterp[interp].prev.range>0)
                 {
-                    int diff = lastmillis-d->animinterp[interp].lastswitch;
+                    int diff = ftsClient.lastMilliseconds-d->animinterp[interp].lastswitch;
                     if(diff<aitime)
                     {
                         p.prev.setframes(d->animinterp[interp].prev);
@@ -966,7 +966,7 @@ struct animmodel : model
                 p.interp = 1;
                 if(interp>=0 && d->animinterp[interp].prev.range>0)
                 {
-                    int diff = lastmillis-d->animinterp[interp].lastswitch;
+                    int diff = ftsClient.lastMilliseconds-d->animinterp[interp].lastswitch;
                     if(diff<aitime)
                     {
                         p.prev.setframes(d->animinterp[interp].prev);
@@ -1173,9 +1173,9 @@ struct animmodel : model
 
         matrixpos = 0;
         matrixstack[0].identity();
-        if(!d || !d->ragdoll || d->ragdoll->millis == lastmillis)
+        if(!d || !d->ragdoll || d->ragdoll->millis == ftsClient.lastMilliseconds)
         {
-            float secs = lastmillis/1000.0f;
+            float secs = ftsClient.lastMilliseconds/1000.0f;
             yaw += spinyaw*secs;
             pitch += spinpitch*secs;
             roll += spinroll*secs;
@@ -1294,9 +1294,9 @@ struct animmodel : model
 
         matrixpos = 0;
         matrixstack[0].identity();
-        if(!d || !d->ragdoll || d->ragdoll->millis == lastmillis)
+        if(!d || !d->ragdoll || d->ragdoll->millis == ftsClient.lastMilliseconds)
         {
-            float secs = lastmillis/1000.0f;
+            float secs = ftsClient.lastMilliseconds/1000.0f;
             yaw += spinyaw*secs;
             pitch += spinpitch*secs;
             roll += spinroll*secs;
@@ -1323,7 +1323,7 @@ struct animmodel : model
         if(anim&ANIM_NORENDER)
         {
             render(anim, basetime, basetime2, pitch, axis, forward, d, a);
-            if(d) d->lastrendered = lastmillis;
+            if(d) d->lastrendered = ftsClient.lastMilliseconds;
             return;
         }
 
@@ -1351,7 +1351,7 @@ struct animmodel : model
 
         render(anim, basetime, basetime2, pitch, axis, forward, d, a);
 
-        if(d) d->lastrendered = lastmillis;
+        if(d) d->lastrendered = ftsClient.lastMilliseconds;
     }
 
     vector<part *> parts;

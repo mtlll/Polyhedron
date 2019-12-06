@@ -194,16 +194,16 @@ namespace ai
         if(intermission) { loopv(players) if(players[i]->ai) players[i]->stopmoving(); }
         else // fixed rate logic done out-of-sequence at 1 frame per second for each ai
         {
-            if(totalmillis-updatemillis > 1000)
+            if(ftsClient.totalMilliseconds-updatemillis > 1000)
             {
                 avoid();
                 forcegun = multiplayer(false) ? -1 : aiforcegun;
-                updatemillis = totalmillis;
+                updatemillis = ftsClient.totalMilliseconds;
             }
-            if(!iteration && totalmillis-itermillis > 1000)
+            if(!iteration && ftsClient.totalMilliseconds-itermillis > 1000)
             {
                 iteration = 1;
-                itermillis = totalmillis;
+                itermillis = ftsClient.totalMilliseconds;
             }
             int count = 0;
             loopv(players) if(players[i]->ai) think(players[i], ++count == iteration ? true : false);

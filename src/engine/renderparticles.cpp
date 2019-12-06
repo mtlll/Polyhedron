@@ -214,7 +214,7 @@ struct partrenderer
         }
         else
         {
-            ts = lastmillis-p->millis;
+            ts = ftsClient.lastMilliseconds-p->millis;
             blend = max(255 - (ts<<8)/p->fade, 0);
             if(p->gravity)
             {
@@ -338,7 +338,7 @@ struct listrenderer : partrenderer
         p->d = d;
         p->gravity = gravity;
         p->fade = fade;
-        p->millis = lastmillis + emitoffset;
+        p->millis = ftsClient.lastMilliseconds + emitoffset;
         p->color = bvec::hexcolor(color);
         p->size = size;
         p->owner = NULL;
@@ -685,7 +685,7 @@ struct varenderer : partrenderer
         p->d = d;
         p->gravity = gravity;
         p->fade = fade;
-        p->millis = lastmillis + emitoffset;
+        p->millis = ftsClient.lastMilliseconds + emitoffset;
         p->color = bvec::hexcolor(color);
         p->size = size;
         p->owner = NULL;
@@ -791,8 +791,8 @@ struct varenderer : partrenderer
 
     void genvbo()
     {
-        if(lastmillis == lastupdate && vbo) return;
-        lastupdate = lastmillis;
+        if(ftsClient.lastMilliseconds == lastupdate && vbo) return;
+        lastupdate = ftsClient.lastMilliseconds;
 
         genverts();
 
@@ -1389,10 +1389,10 @@ void updateparticles()
 
     if(minimized) { canemit = false; return; }
 
-    if(lastmillis - lastemitframe >= emitmillis)
+    if(ftsClient.lastMilliseconds - lastemitframe >= emitmillis)
     {
         canemit = true;
-        lastemitframe = lastmillis - (lastmillis%emitmillis);
+        lastemitframe = ftsClient.lastMilliseconds - (ftsClient.lastMilliseconds%emitmillis);
     }
     else canemit = false;
 
@@ -1409,24 +1409,24 @@ void updateparticles()
         {
             particleemitter &pe = emitters[i];
             entities::classes::CoreEntity *e = pe.ent;
-			if(e->o.dist(camera1->o) > maxparticledistance) { pe.lastemit = lastmillis; continue; }
+			if(e->o.dist(camera1->o) > maxparticledistance) { pe.lastemit = ftsClient.lastMilliseconds; continue; }
             if(cullparticles && pe.maxfade >= 0)
             {
-                if(isfoggedsphere(pe.radius, pe.center)) { pe.lastcull = lastmillis; continue; }
-                if(pvsoccluded(pe.cullmin, pe.cullmax)) { pe.lastcull = lastmillis; continue; }
+                if(isfoggedsphere(pe.radius, pe.center)) { pe.lastcull = ftsClient.lastMilliseconds; continue; }
+                if(pvsoccluded(pe.cullmin, pe.cullmax)) { pe.lastcull = ftsClient.lastMilliseconds; continue; }
             }
 			makeparticles(e);
             emitted++;
             if(replayparticles && pe.maxfade > 5 && pe.lastcull > pe.lastemit)
             {
-                for(emitoffset = max(pe.lastemit + emitmillis - lastmillis, -pe.maxfade); emitoffset < 0; emitoffset += emitmillis)
+                for(emitoffset = max(pe.lastemit + emitmillis - ftsClient.lastMilliseconds, -pe.maxfade); emitoffset < 0; emitoffset += emitmillis)
                 {
 					makeparticles(e);
                     replayed++;
                 }
                 emitoffset = 0;
             }
-            pe.lastemit = lastmillis;
+            pe.lastemit = ftsClient.lastMilliseconds;
         }
         if(dbgpcull && (canemit || replayed) && addedparticles) conoutf(CON_DEBUG, "%d emitters, %d particles", emitted, addedparticles);
     }

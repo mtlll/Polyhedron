@@ -58,8 +58,8 @@ FVARR(grassanimscale, 0, 0.03f, 1);
 
 static void animategrass()
 {
-    loopi(NUMGRASSOFFSETS) grassanimoffsets[i] = grassanimscale*sinf(2*M_PI*(grassoffsets[i] + lastmillis/float(grassanimmillis)));
-    lastgrassanim = lastmillis;
+    loopi(NUMGRASSOFFSETS) grassanimoffsets[i] = grassanimscale*sinf(2*M_PI*(grassoffsets[i] + ftsClient.lastMilliseconds/float(grassanimmillis)));
+    lastgrassanim = ftsClient.lastMilliseconds;
 }
 
 VARR(grassscale, 1, 2, 64);
@@ -162,7 +162,7 @@ static void gengrassquads(grassgroup *&group, const grasswedge &w, const grasstr
             group->tex = tex->id;
             group->offset = grassverts.length()/4;
             group->numquads = 0;
-            if(lastgrassanim!=lastmillis) animategrass();
+            if(lastgrassanim!=ftsClient.lastMilliseconds) animategrass();
         }
 
         group->numquads++;

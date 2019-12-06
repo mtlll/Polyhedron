@@ -19,7 +19,7 @@ struct dynlight
     {
         if(fade + peak > 0)
         {
-            int remaining = expire - lastmillis;
+            int remaining = expire - ftsClient.lastMilliseconds;
             if(flags&DL_EXPAND)
                 curradius = initradius + (radius - initradius) * (1.0f - remaining/float(fade + peak));
             else if(!(flags&DL_FLASH) && remaining > fade)
@@ -36,7 +36,7 @@ struct dynlight
         if(flags&DL_FLASH || peak <= 0) curcolor = color;
         else
         {
-            int peaking = expire - lastmillis - fade;
+            int peaking = expire - ftsClient.lastMilliseconds - fade;
             if(peaking <= 0) curcolor = color;
             else curcolor.lerp(initcolor, color, 1.0f - float(peaking)/peak);
         }
@@ -44,7 +44,7 @@ struct dynlight
         float intensity = 1.0f;
         if(fade > 0)
         {
-            int fading = expire - lastmillis;
+            int fading = expire - ftsClient.lastMilliseconds;
             if(fading < fade) intensity = float(fading)/fade;
         }
         curcolor.mul(intensity);
@@ -59,7 +59,7 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
     if(!usedynlights) return;
     if(o.dist(camera1->o) > dynlightdist || radius <= 0) return;
 
-    int insert = 0, expire = fade + peak + lastmillis;
+    int insert = 0, expire = fade + peak + ftsClient.lastMilliseconds;
     loopvrev(dynlights) if(expire>=dynlights[i].expire) { insert = i+1; break; }
     dynlight d;
     d.o = d.hud = o;
@@ -80,7 +80,7 @@ void adddynlight(const vec &o, float radius, const vec &color, int fade, int pea
 void cleardynlights()
 {
     int faded = -1;
-    loopv(dynlights) if(lastmillis<dynlights[i].expire) { faded = i; break; }
+    loopv(dynlights) if(ftsClient.lastMilliseconds<dynlights[i].expire) { faded = i; break; }
     if(faded<0) dynlights.setsize(0);
     else if(faded>0) dynlights.remove(0, faded);
 }

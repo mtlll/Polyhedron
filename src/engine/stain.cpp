@@ -254,7 +254,7 @@ struct stainrenderer
 
     void clearfadedstains()
     {
-        int threshold = lastmillis - (timetolive>=0 ? timetolive : stainfade) - fadeouttime;
+        int threshold = ftsClient.lastMilliseconds - (timetolive>=0 ? timetolive : stainfade) - fadeouttime;
         staininfo *d = &stains[startstain],
                   *end = &stains[endstain < startstain ? maxstains : endstain],
                   *cleared[NUMSTAINBUFS] = { NULL };
@@ -276,7 +276,7 @@ struct stainrenderer
         while(d > end)
         {
             d--;
-            int fade = lastmillis - d->millis;
+            int fade = ftsClient.lastMilliseconds - d->millis;
             if(fade < fadeintime) fadestain(*d, (fade<<8)/fadeintime);
             else if(faded(*d)) fadestain(*d, 255);
             else return;
@@ -288,7 +288,7 @@ struct stainrenderer
             while(d > end)
             {
                 d--;
-                int fade = lastmillis - d->millis;
+                int fade = ftsClient.lastMilliseconds - d->millis;
                 if(fade < fadeintime) fadestain(*d, (fade<<8)/fadeintime);
                 else if(faded(*d)) fadestain(*d, 255);
                 else return;
@@ -300,7 +300,7 @@ struct stainrenderer
     {
         staininfo *d = &stains[startstain],
                   *end = &stains[endstain < startstain ? maxstains : endstain];
-        int offset = (timetolive>=0 ? timetolive : stainfade) + fadeouttime - lastmillis;
+        int offset = (timetolive>=0 ? timetolive : stainfade) + fadeouttime - ftsClient.lastMilliseconds;
         while(d < end)
         {
             int fade = d->millis + offset;
@@ -463,7 +463,7 @@ struct stainrenderer
             staininfo &d = newstain();
             d.owner = i;
             d.color = color;
-            d.millis = lastmillis;
+            d.millis = ftsClient.lastMilliseconds;
             d.startvert = buf.lastvert;
             d.endvert = buf.endvert;
             buf.addstain(d);

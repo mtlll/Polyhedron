@@ -34,7 +34,7 @@ SCRIPTEXPORT void quit()                     // normal exit
 	writeservercfg();
 	abortconnect();
 	disconnect();
-	localdisconnect();
+	LocalDisconnect();
 	writecfg();
 	cleanup();
 	exit(EXIT_SUCCESS);
@@ -80,7 +80,9 @@ int screenw = 0, screenh = 0;
 SDL_Window *screen = NULL;
 SDL_GLContext glcontext = NULL;
 
-int curtime = 0, lastmillis = 1, elapsedtime = 0, totalmillis = 1;
+//int curtime = 0, lastmillis = 1, ftsClient.elapsedTime = 0, ftsClient.totalMilliseconds = 1;
+// 
+FrameTimeState ftsClient; 
 
 entities::classes::Player *player = NULL;
 
@@ -149,16 +151,16 @@ void renderbackgroundview(int w, int h, const char *caption, Texture *mapshot, c
 {
 	static int lastupdate = -1, lastw = -1, lasth = -1;
 	static float backgroundu = 0, backgroundv = 0;
-	if((renderedframe && !mainmenu && lastupdate != lastmillis) || lastw != w || lasth != h)
+	if((renderedframe && !mainmenu && lastupdate != ftsClient.lastMilliseconds) || lastw != w || lasth != h)
 	{
-		lastupdate = lastmillis;
+		lastupdate = ftsClient.lastMilliseconds;
 		lastw = w;
 		lasth = h;
 
 		backgroundu = rndscale(1);
 		backgroundv = rndscale(1);
 	}
-	else if(lastupdate != lastmillis) lastupdate = lastmillis;
+	else if(lastupdate != ftsClient.lastMilliseconds) lastupdate = ftsClient.lastMilliseconds;
 	hudmatrix.ortho(0, w, h, 0, -1, 1);
 	resethudmatrix();
 	resethudshader();
@@ -360,7 +362,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
 	gettextres(w, h);
 
 	extern int mesa_swap_bug, curvsync;
-	bool forcebackground = progressbackground || (mesa_swap_bug && (curvsync || totalmillis==1));
+	bool forcebackground = progressbackground || (mesa_swap_bug && (curvsync || ftsClient.totalMilliseconds==1));
 	if(background || forcebackground) restorebackground(w, h, forcebackground);
 
 	renderprogressview(w, h, bar, text);
@@ -1001,7 +1003,7 @@ static bool findarg(int argc, char **argv, const char *str)
 }
 
 static int clockrealbase = 0, clockvirtbase = 0;
-static void clockreset() { clockrealbase = SDL_GetTicks(); clockvirtbase = totalmillis; }
+static void clockreset() { clockrealbase = SDL_GetTicks(); clockvirtbase = ftsClient.totalMilliseconds; }
 VARFP(clockerror, 990000, 1000000, 1010000, clockreset());
 VARFP(clockfix, 0, 0, 1, clockreset());
 
@@ -1010,7 +1012,7 @@ int getclockmillis()
 	int millis = SDL_GetTicks() - clockrealbase;
 	if(clockfix) millis = int(millis*(double(clockerror)/1000000));
 	millis += clockvirtbase;
-	return max(millis, totalmillis);
+	return max(millis, ftsClient.totalMilliseconds);
 }
 
 VAR(numcpus, 1, 1, 16);
@@ -1247,12 +1249,14 @@ int main(int argc, char **argv)
 	// Ensure persistency is on again.
 	identflags |= IDF_PERSIST;
 
+	// Start our local connection.
+	localconnect();
+
 	// If there is a map to load, then we'll damnit do so!
 	if(load)
 	{
 		logoutf("init: Changing to map: %s", load);
 		initing = INIT_WITH_MAPLOAD;
-		localconnect();
 		game::changemap(load);
 	}
 	
@@ -1277,16 +1281,16 @@ int main(int argc, char **argv)
 	{
 		static int frames = 0;
 		int millis = getclockmillis();
-		limitfps(millis, totalmillis);
-		elapsedtime = millis - totalmillis;
+		limitfps(millis, ftsClient.totalMilliseconds);
+		ftsClient.elapsedTime = millis - ftsClient.totalMilliseconds;
 		static int timeerr = 0;
-		int scaledtime = game::scaletime(elapsedtime) + timeerr;
-		curtime = scaledtime/100;
+		int scaledtime = game::scaletime(ftsClient.elapsedTime) + timeerr;
+		ftsClient.currentTime = scaledtime/100;
 		timeerr = scaledtime%100;
-		if(!multiplayer(false) && curtime>200) curtime = 200;
-		if(game::ispaused()) curtime = 0;
-		lastmillis += curtime;
-		totalmillis = millis;
+		if(!multiplayer(false) && ftsClient.currentTime >200) ftsClient.currentTime = 200;
+		if(game::ispaused()) ftsClient.currentTime = 0;
+		ftsClient.lastMilliseconds += ftsClient.currentTime;
+		ftsClient.totalMilliseconds = millis;
 		updatetime();
 
 		checkinput();
@@ -1294,13 +1298,13 @@ int main(int argc, char **argv)
 		menuprocess();
 		tryedit();
 
-		if(lastmillis) game::updateworld();
+		if(ftsClient.lastMilliseconds) game::updateworld();
 
-		checksleep(lastmillis);
+		checksleep(ftsClient.lastMilliseconds);
 
 		serverslice(false, 0);
 
-		if(frames) updatefpshistory(elapsedtime);
+		if(frames) updatefpshistory(ftsClient.elapsedTime);
 		frames++;
 
 		// miscellaneous general game effects

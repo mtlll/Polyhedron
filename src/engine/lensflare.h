@@ -93,7 +93,7 @@ struct flarerenderer : partrenderer
     void update()
     {
         numflares = 0; //regenerate flarelist each frame
-        shinetime = lastmillis/10;
+        shinetime = ftsClient.lastMilliseconds/10;
     }
 
     int count()

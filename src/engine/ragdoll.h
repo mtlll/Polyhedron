@@ -1,6 +1,7 @@
 #include "shared/entities/basephysicalentity.h"
 #include "shared/entities/basedynamicentity.h"
 
+struct FrameTimeSeconds;
 struct ragdollskel
 {
     struct vert
@@ -144,11 +145,11 @@ struct ragdolldata
 
     ragdolldata(ragdollskel *skel, float scale = 1)
         : skel(skel),
-          millis(lastmillis),
+          millis(ftsClient.lastMilliseconds),
           collidemillis(0),
           collisions(0),
           floating(0),
-          lastmove(lastmillis),
+          lastmove(ftsClient.lastMilliseconds),
           unsticks(INT_MAX),
           radius(0),
           timestep(0),
@@ -452,7 +453,7 @@ VAR(ragdollwaterexpireoffset, 0, 4000, 30000);
 void ragdolldata::move(entities::classes::BaseDynamicEntity *pl, float ts)
 {
     extern const float GRAVITY;
-    if(collidemillis && lastmillis > collidemillis) return;
+    if(collidemillis && ftsClient.lastMilliseconds > collidemillis) return;
 
     int material = lookupmaterial(vec(center.x, center.y, center.z + radius/2));
     bool water = isliquid(material&MATF_VOLUME);
@@ -474,7 +475,7 @@ void ragdolldata::move(entities::classes::BaseDynamicEntity *pl, float ts)
         vert &v = verts[i];
         vec dpos = vec(v.pos).sub(v.oldpos);
         dpos.z -= GRAVITY*ts*ts;
-        if(water) dpos.z += 0.25f*sinf(detrnd(size_t(this)+i, 360)*RAD + lastmillis/10000.0f*M_PI)*ts;
+        if(water) dpos.z += 0.25f*sinf(detrnd(size_t(this)+i, 360)*RAD + ftsClient.lastMilliseconds/10000.0f*M_PI)*ts;
         dpos.mul(pow((water ? ragdollwaterfric : 1.0f) * (v.collided ? ragdollgroundfric : airfric), ts*1000.0f/ragdolltimestepmin)*tsfric);
         v.oldpos = v.pos;
         v.pos.add(dpos);
@@ -500,9 +501,9 @@ void ragdolldata::move(entities::classes::BaseDynamicEntity *pl, float ts)
     if(collisions)
     {
         floating = 0;
-        if(!collidemillis) collidemillis = lastmillis + (water ? ragdollwaterexpireoffset : ragdollexpireoffset);
+        if(!collidemillis) collidemillis = ftsClient.lastMilliseconds + (water ? ragdollwaterexpireoffset : ragdollexpireoffset);
     }
-    else if(++floating > 1 && lastmillis < collidemillis) collidemillis = 0;
+    else if(++floating > 1 && ftsClient.lastMilliseconds < collidemillis) collidemillis = 0;
 
     constrain();
     calctris();
@@ -514,14 +515,14 @@ VAR(ragdolleyesmoothmillis, 1, 250, 10000);
 
 void moveragdoll(entities::classes::BaseDynamicEntity *d)
 {
-    if(!curtime || !d->ragdoll) return;
+    if(!ftsClient.currentTime || !d->ragdoll) return;
 
-    if(!d->ragdoll->collidemillis || lastmillis < d->ragdoll->collidemillis)
+    if(!d->ragdoll->collidemillis || ftsClient.lastMilliseconds < d->ragdoll->collidemillis)
     {
         int lastmove = d->ragdoll->lastmove;
-        while(d->ragdoll->lastmove + (lastmove == d->ragdoll->lastmove ? ragdolltimestepmin : ragdolltimestepmax) <= lastmillis)
+        while(d->ragdoll->lastmove + (lastmove == d->ragdoll->lastmove ? ragdolltimestepmin : ragdolltimestepmax) <= ftsClient.lastMilliseconds)
         {
-            int timestep = min(ragdolltimestepmax, lastmillis - d->ragdoll->lastmove);
+            int timestep = min(ragdolltimestepmax, ftsClient.lastMilliseconds - d->ragdoll->lastmove);
             d->ragdoll->move(d, timestep/1000.0f);
             d->ragdoll->lastmove += timestep;
         }
@@ -529,7 +530,7 @@ void moveragdoll(entities::classes::BaseDynamicEntity *d)
 
     vec eye = d->ragdoll->skel->eye >= 0 ? d->ragdoll->verts[d->ragdoll->skel->eye].pos : d->ragdoll->center;
     eye.add(d->ragdoll->offset);
-    float k = pow(ragdolleyesmooth, float(curtime)/ragdolleyesmoothmillis);
+    float k = pow(ragdolleyesmooth, float(ftsClient.currentTime)/ragdolleyesmoothmillis);
     d->o.lerp(eye, 1-k);
 }
 

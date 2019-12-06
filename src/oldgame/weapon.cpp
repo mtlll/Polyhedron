@@ -765,9 +765,9 @@ namespace game
         removeprojectiles(d);
     }
 
-    void updateweapons(int curtime)
+    void updateweapons(int currentTime)
     {
-        updateprojectiles(curtime);
+        updateprojectiles(currentTime);
         if(player1->clientnum>=0 && player1->state==CS_ALIVE) shoot(player1, worldpos); // only shoot when connected to server
         updatebouncers(curtime); // need to do this after the player shoots so bouncers don't end up inside player's BB next frame
     }

@@ -802,7 +802,7 @@ undoblock *newundocube(const selinfo &s)
 void addundo(undoblock *u)
 {
     u->size = undosize(u);
-    u->timestamp = totalmillis;
+    u->timestamp = ftsClient.totalMilliseconds;
     undos.add(u);
     totalundos += u->size;
     pruneundos(undomegs<<20);
@@ -870,7 +870,7 @@ void swapundo(undolist &a, undolist &b, int op)
         if(r)
         {
             r->size = u->size;
-            r->timestamp = totalmillis;
+            r->timestamp = ftsClient.totalMilliseconds;
             b.add(r);
         }
         pasteundo(u);
@@ -2204,7 +2204,7 @@ void mpeditvslot(int delta, VSlot &ds, int allfaces, selinfo &sel, bool local)
     if(local && findedit)
     {
         lasttex = findedit->index;
-        lasttexmillis = totalmillis;
+        lasttexmillis = ftsClient.totalMilliseconds;
         curtexindex = texmru.find(lasttex);
         if(curtexindex < 0)
         {
@@ -2437,7 +2437,7 @@ void compactmruvslots()
 void edittex(int i, bool save = true)
 {
     lasttex = i;
-    lasttexmillis = totalmillis;
+    lasttexmillis = ftsClient.totalMilliseconds;
     if(save)
     {
         loopvj(texmru) if(texmru[j]==lasttex) { curtexindex = j; break; }
@@ -2779,7 +2779,7 @@ SCRIPTEXPORT void editmat(char *name, char *filtername)
 
 void rendertexturepanel(int w, int h)
 {
-    if((texpaneltimer -= curtime)>0 && editmode)
+    if((texpaneltimer -= ftsClient.currentTime)>0 && editmode)
     {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -2888,10 +2888,10 @@ void rendertexturepanel(int w, int h)
         static int laststat = 0; \
         static type prevstat = 0; \
         static type curstat = 0; \
-        if(totalmillis - laststat >= statrate) \
+        if(ftsClient.totalMilliseconds - laststat >= statrate) \
         { \
             prevstat = curstat; \
-            laststat = totalmillis - (totalmillis%statrate); \
+            laststat = ftsClient.totalMilliseconds - (ftsClient.totalMilliseconds%statrate); \
         } \
         if(prevstat == curstat) curstat = (val); \
         type##ret(curstat); \

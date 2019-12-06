@@ -5,76 +5,76 @@
 // This file only servers as an empty basic server implementation.
 namespace server
 {
-	void *newclientinfo() {
+	void *NewClientInfo() {
 		return new ClientInfo;
 	}
-	void deleteclientinfo(void *ci) {
+	void DeleteClientInfo(void *ci) {
 		delete (ClientInfo *)ci;
 	}
-	void serverinit() {
+	void ServerInit() {
 
 	}
-	int reserveclients() {
+	int ReserveClients() {
 		return 3; // Return 3, no clue why, but their default function does.
 	}
-	int numchannels() {
+	int GetGetNumChannels() {
 		return 0;
 	}
-	void clientdisconnect(int n) {
+	void ClientDisconnect(int n) {
 
 	}
-	int clientconnect(int n, uint ip) {
+	int ClientConnect(int n, uint ip) {
 		
 		return DISC_NONE;
 	}
-	void localdisconnect(int n) {
+	void LocalDisconnect(int n) {
 
 	}
 	void localconnect(int n) {
 
 	}
-	bool allowbroadcast(int n) {
+	bool AllowBroadcast(int n) {
 		return true;
 	}
-	void recordpacket(int chan, void *data, int len) {
+	void RecordPacket(int chan, void *data, int len) {
 
 	}
-	void parsepacket(int sender, int chan, packetbuf &p) {
+	void ParsePacket(int sender, int chan, packetbuf &p) {
 
 	}
 	void sendservmsg(const char *s) {
 		
 	}
-	bool sendpackets(bool force) {
+	bool SendPackets(bool force) {
 
 		return false;
 	}
-	void serverinforeply(ucharbuf &req, ucharbuf &p) {
+	void ServerInfoReply(ucharbuf &req, ucharbuf &p) {
 
 	}
-	void serverupdate() {
+	void ServerUpdate() {
 
 	}
 	bool servercompatible(char *name, char *sdec, char *map, int ping, const vector<int> &attr, int np) {
 		return true;
 	}
 
-	int protocolversion() {
+	int ProtocolVersion() {
 		return 1;
 	}
 	int serverinfoport(int servport) {
 		return 0;
 	}
-	int serverport() {
+	int ServerPort() {
 		return 0;
 	}
-	const char *defaultmaster() {
+	const char *DefaultMaster() {
 		return "";
 	}
-	int masterport() {
+	int MasterPort() {
 		return 0;
 	}
-	int laninfoport() {
+	int LanInfoPort() {
 		return 0;
 	}
 	void processmasterinput(const char *cmd, int cmdlen, const char *args) {

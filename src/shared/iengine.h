@@ -1,11 +1,16 @@
 // the interface the game uses to access the engine
+struct FrameTimeState {
+    int currentTime = 0;
+    int lastMilliseconds = 0;
+    int elapsedTime = 0;
+    int totalMilliseconds = 0;
+    uint totalSeconds = 0;
 
-extern int curtime;                     // current frame time
-extern int lastmillis;                  // last time
-extern int elapsedtime;                 // elapsed frame time
-extern int totalmillis;                 // total elapsed time
-extern uint totalsecs;
-extern int gamespeed, paused;
+    int gamespeed = 100;
+    int paused = 0;
+};
+
+extern FrameTimeState ftsClient;
 
 // Predefined base engine entities.
 // Predefinitions.
@@ -502,7 +507,7 @@ extern void disconnect_client(int n, int reason);
 extern void kicknonlocalclients(int reason = DISC_NONE);
 extern bool hasnonlocalclients();
 extern bool haslocalclients();
-extern void sendserverinforeply(ucharbuf &p);
+extern void sendServerInfoReply(ucharbuf &p);
 extern bool requestmaster(const char *req);
 extern bool requestmasterf(const char *fmt, ...) PRINTFARGS(1, 2);
 extern bool isdedicatedserver();

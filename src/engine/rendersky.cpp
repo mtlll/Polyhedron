@@ -489,7 +489,7 @@ void drawskybox(bool clear)
 
         matrix4 skymatrix = cammatrix, skyprojmatrix;
         skymatrix.settranslation(0, 0, 0);
-        skymatrix.rotate_around_z((spinsky*lastmillis/1000.0f+yawsky)*-RAD);
+        skymatrix.rotate_around_z((spinsky*ftsClient.lastMilliseconds/1000.0f+yawsky)*-RAD);
         skyprojmatrix.mul(projmatrix, skymatrix);
         LOCALPARAM(skymatrix, skyprojmatrix);
 
@@ -525,7 +525,7 @@ void drawskybox(bool clear)
 
         matrix4 skymatrix = cammatrix, skyprojmatrix;
         skymatrix.settranslation(0, 0, 0);
-        skymatrix.rotate_around_z((spinclouds*lastmillis/1000.0f+yawclouds)*-RAD);
+        skymatrix.rotate_around_z((spinclouds*ftsClient.lastMilliseconds/1000.0f+yawclouds)*-RAD);
         skyprojmatrix.mul(projmatrix, skymatrix);
         LOCALPARAM(skymatrix, skyprojmatrix);
 
@@ -545,11 +545,11 @@ void drawskybox(bool clear)
 
         matrix4 skymatrix = cammatrix, skyprojmatrix;
         skymatrix.settranslation(0, 0, 0);
-        skymatrix.rotate_around_z((spincloudlayer*lastmillis/1000.0f+yawcloudlayer)*-RAD);
+        skymatrix.rotate_around_z((spincloudlayer*ftsClient.lastMilliseconds/1000.0f+yawcloudlayer)*-RAD);
         skyprojmatrix.mul(projmatrix, skymatrix);
         LOCALPARAM(skymatrix, skyprojmatrix);
 
-        drawenvoverlay(cloudoverlay, cloudoffsetx + cloudscrollx * lastmillis/1000.0f, cloudoffsety + cloudscrolly * lastmillis/1000.0f);
+        drawenvoverlay(cloudoverlay, cloudoffsetx + cloudscrollx * ftsClient.lastMilliseconds/1000.0f, cloudoffsety + cloudscrolly * ftsClient.lastMilliseconds/1000.0f);
 
         glDisable(GL_BLEND);
 

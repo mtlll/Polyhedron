@@ -10,7 +10,7 @@
             VARP(radarteammates, 0, 1, 1);
             FVARP(minimapalpha, 0, 1, 1);
 
-            void gameconnect(bool _remote)
+            void GameConnect(bool _remote)
             {
                 remote = _remote;
                 conoutf("Connected");
@@ -19,13 +19,13 @@
                     toggleedit();
             }
 
-            void gamedisconnect(bool cleanup)
+            void GameDisconnect(bool cleanup)
             {
                 // Disconnected.
                 connected = false;
             }
 
-            SCRIPTEXPORT void changemap(const char *name)
+            SCRIPTEXPORT void ChangeMap(const char *name)
             {
                 // Are we connected? If not, connect locally.
                 if(!connected) localconnect();
@@ -67,8 +67,9 @@
                 case 'r': reliable = true; break;
                 case 'c':
                 {
-                    gameent *d = va_arg(args, gameent *);
-                    mcn = !d || d == player1 ? -1 : d->clientnum;
+                    entities::CoreEntity *_d = va_arg(args, entities::CoreEntity *);
+                    auto d = dynamic_cast<entities::BaseDynamicEntity*>(_d);
+                    mcn = (d ? !d || d == player1 ? -1 : d->clientnum) ? -1);
                     break;
                 }
                 case 'v':
@@ -116,22 +117,22 @@
         return true;
     }
 
-    void connectattempt(const char *name, const char *password, const ENetAddress &address)
+    void ConnectAttempt(const char *name, const char *password, const ENetAddress &address)
     {
         copycubestr(connectpass, password);
     }
 
-    void connectfail()
+    void ConnectFail()
     {
         memset(connectpass, 0, sizeof(connectpass));
     }
 
-    void gameconnect(bool _remote)
+    void GameConnect(bool _remote)
     {
         remote = _remote;
     }
 
-    void gamedisconnect(bool cleanup)
+    void GameDisconnect(bool cleanup)
     {
         if(remote) stopfollowing();
         ignores.setsize(0);
@@ -159,7 +160,7 @@
         }
     }
 
-    void toserver(char *text) { conoutf(CON_CHAT, "%s:%s %s", colorname(player1), teamtextcode[0], text); addmsg(N_TEXT, "rcs", player1, text); }
+    void toserver(char *text) { conoutf(CON_CHAT, "%s:%s %s", GenerateClientColorName(player1), teamtextcode[0], text); addmsg(N_TEXT, "rcs", player1, text); }
     COMMANDN(say, toserver, "C");
 
     void sayteam(char *text) { if(!m_teammode || !validteam(player1->team)) return; conoutf(CON_TEAMCHAT, "%s:%s %s", colorname(player1), teamtextcode[player1->team], text); addmsg(N_SAYTEAM, "rcs", player1, text); }
@@ -279,11 +280,11 @@
             messagereliable = false;
             messagecn = -1;
         }
-        if(totalmillis-lastping>250)
+        if(ftsClient.totalMilliseconds-lastping>250)
         {
             putint(p, N_PING);
-            putint(p, totalmillis);
-            lastping = totalmillis;
+            putint(p, ftsClient.totalMilliseconds);
+            lastping = ftsClient.totalMilliseconds;
         }
         sendclientpacket(p.finalize(), 1);
     }
@@ -291,8 +292,8 @@
     void c2sinfo(bool force) // send update to the server
     {
         static int lastupdate = -1000;
-        if(totalmillis - lastupdate < 40 && !force) return; // don't update faster than 30fps
-        lastupdate = totalmillis;
+        if(ftsClient.totalMilliseconds - lastupdate < 40 && !force) return; // don't update faster than 30fps
+        lastupdate = ftsClient.totalMilliseconds;
         sendpositions();
         sendmessages();
         flushclient();
@@ -344,11 +345,11 @@
             if(fx<fy) d->o.y += dy<0 ? r-fy : -(r-fy);  // push aside
             else      d->o.x += dx<0 ? r-fx : -(r-fx);
         }
-        int lagtime = totalmillis-d->lastupdate;
+        int lagtime = ftsClient.totalMilliseconds-d->lastupdate;
         if(lagtime)
         {
             if(d->state!=CS_SPAWNING && d->lastupdate) d->plag = (d->plag*5+lagtime)/6;
-            d->lastupdate = totalmillis;
+            d->lastupdate = ftsClient.totalMilliseconds;
         }
     }
 
@@ -682,7 +683,7 @@
             }
 
             case N_CDIS:
-                clientdisconnected(getint(p));
+                ClientDisconnected(getint(p));
                 break;
 
             case N_SPAWN:
@@ -995,7 +996,7 @@
             }
 
             case N_PONG:
-                addmsg(N_CLIENTPING, "i", player1->ping = (player1->ping*5+totalmillis-getint(p))/6);
+                addmsg(N_CLIENTPING, "i", player1->ping = (player1->ping*5+ftsClient.totalMilliseconds-getint(p))/6);
                 break;
 
             case N_CLIENTPING:

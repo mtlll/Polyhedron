@@ -21,10 +21,10 @@ static void calclightningjitter(int frame)
 
 static void setuplightning()
 {
-    if(!lastlnjitter || lastmillis-lastlnjitter > lnjittermillis)
+    if(!lastlnjitter || ftsClient.lastMilliseconds-lastlnjitter > lnjittermillis)
     {
         if(!lastlnjitter) calclightningjitter(lnjitterframe);
-        lastlnjitter = lastmillis - (lastmillis%lnjittermillis);
+        lastlnjitter = ftsClient.lastMilliseconds - (ftsClient.lastMilliseconds%lnjittermillis);
         calclightningjitter(lnjitterframe ^= 1);
     }
 }
@@ -42,9 +42,9 @@ static void renderlightning(Texture *tex, const vec &o, const vec &d, float sz)
     up.normalize();
     right.cross(up, step);
     right.normalize();
-    float scroll = -float(lastmillis%lnscrollmillis)/lnscrollmillis,
+    float scroll = -float(ftsClient.lastMilliseconds%lnscrollmillis)/lnscrollmillis,
           scrollscale = lnscrollscale*(LIGHTNINGSTEP*tex->ys)/(sz*tex->xs),
-          blend = pow(clamp(float(lastmillis - lastlnjitter)/lnjittermillis, 0.0f, 1.0f), lnblendpower),
+          blend = pow(clamp(float(ftsClient.lastMilliseconds - lastlnjitter)/lnjittermillis, 0.0f, 1.0f), lnblendpower),
           jitter0 = (1-blend)*lnjitterscale*sz/lnjitterradius, jitter1 = blend*lnjitterscale*sz/lnjitterradius;
     gle::begin(GL_TRIANGLE_STRIP);
     loopj(numsteps)

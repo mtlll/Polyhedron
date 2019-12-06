@@ -57,7 +57,7 @@ namespace game
 
     void updateworld() {
         // Update the map time. (First frame since maptime = 0.
-        if(!maptime) { maptime = lastmillis; maprealtime = totalmillis; return; }
+        if(!maptime) { maptime = lastmillis; maprealtime = ftsClient.totalMilliseconds; return; }
 
         // Escape this function if there is no currenttime yet from server to client. (Meaning it is 0.)
         if(!curtime) return; //{ gets2c(); if (player1->) c2sinfo(); return; } //c2sinfo(); }///if(player1->clientnum>=0) c2sinfo(); return; }
@@ -340,12 +340,12 @@ namespace game
     }
 
 
-    void connectattempt(const char *name, const char *password, const ENetAddress &address) {
+    void ConnectAttempt(const char *name, const char *password, const ENetAddress &address) {
         // Will need this to even join a game.
         //copycubestr(connectpass, password);
     }
-    void connectfail() {}
-    void parsepacketclient(int chan, packetbuf &p) {}
+    void ConnectFail() {}
+    void ParsePacketclient(int chan, packetbuf &p) {}
     void writeclientinfo(stream *f) {}
     void toserver(char *text) {}
     bool ispaused() { return false; }

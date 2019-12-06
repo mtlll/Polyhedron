@@ -843,7 +843,7 @@ namespace recorder
 
     int gettime()
     {
-        return inbetweenframes ? getclockmillis() : totalmillis;
+        return inbetweenframes ? getclockmillis() : ftsClient.totalMilliseconds;
     }
 
     int videoencoder(void *data) // runs on a separate thread

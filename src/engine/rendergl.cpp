@@ -1173,19 +1173,19 @@ void printtimers(int conw, int conh)
     if(frametimer)
     {
         static int printmillis = 0;
-        if(totalmillis - lastprint >= 200) printmillis = framemillis;
+        if(ftsClient.totalMilliseconds - lastprint >= 200) printmillis = framemillis;
         draw_textf("frame time %i ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, printmillis);
         offset++;
     }
     if(usetimers) loopv(timerorder)
     {
         timer &t = timers[timerorder[i]];
-        if(t.print < 0 ? t.result >= 0 : totalmillis - lastprint >= 200) t.print = t.result;
+        if(t.print < 0 ? t.result >= 0 : ftsClient.totalMilliseconds - lastprint >= 200) t.print = t.result;
         if(t.print < 0 || (t.gpu && !(t.waiting&(1<<timercycle)))) continue;
         draw_textf("%s%s %5.2f ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, t.name, t.gpu ? "" : " (cpu)", t.print);
         offset++;
     }
-    if(totalmillis - lastprint >= 200) lastprint = totalmillis;
+    if(ftsClient.totalMilliseconds - lastprint >= 200) lastprint = ftsClient.totalMilliseconds;
 }
 
 void gl_resize()
@@ -1364,10 +1364,10 @@ void disablezoom()
 void computezoom()
 {
     if(!zoom) { zoomprogress = 0; curfov = fov; curavatarfov = avatarfov; return; }
-    if(zoom > 0) zoomprogress = zoominvel ? min(zoomprogress + float(elapsedtime) / zoominvel, 1.0f) : 1;
+    if(zoom > 0) zoomprogress = zoominvel ? min(zoomprogress + float(ftsClient.elapsedTime) / zoominvel, 1.0f) : 1;
     else
     {
-        zoomprogress = zoomoutvel ? max(zoomprogress - float(elapsedtime) / zoomoutvel, 0.0f) : 0;
+        zoomprogress = zoomoutvel ? max(zoomprogress - float(ftsClient.elapsedTime) / zoomoutvel, 0.0f) : 0;
         if(zoomprogress <= 0) zoom = 0;
     }
     curfov = zoomfov*zoomprogress + fov*(1 - zoomprogress);
@@ -1437,7 +1437,7 @@ void mousemove(int dx, int dy)
             curaccel = zoomaccel;
         }
     }
-    if(curaccel && curtime && (dx || dy)) cursens += curaccel * sqrtf(dx*dx + dy*dy)/curtime;
+    if(curaccel && ftsClient.currentTime && (dx || dy)) cursens += curaccel * sqrtf(dx*dx + dy*dy)/ftsClient.currentTime;
     cursens /= sensitivityscale;
     modifyorient(dx*cursens, dy*cursens*(invmouse ? 1 : -1));
 }
@@ -2383,7 +2383,7 @@ namespace modelpreview
 
 vec calcmodelpreviewpos(const vec &radius, float &yaw)
 {
-    yaw = fmod(lastmillis/10000.0f*360.0f, 360.0f);
+    yaw = fmod(ftsClient.lastMilliseconds/10000.0f*360.0f, 360.0f);
     float dist = max(radius.magnitude2()/aspect, radius.magnitude())/sinf(fovy/2*RAD);
     return vec(0, dist, 0).rotate_around_x(camera1->pitch*RAD);
 }
@@ -2565,7 +2565,7 @@ void drawdamagecompass(int w, int h)
         gle::attrib(m.transform(vec2(0, 0)));
 
         // fade in log space so short blips don't disappear too quickly
-        scale -= float(curtime)/damagecompassfade;
+        scale -= float(ftsClient.currentTime)/damagecompassfade;
         damagedirs[i] = scale > 0 ? (pow(logscale, scale) - 1) / (logscale - 1) : 0;
     }
     if(dirs) gle::end();
@@ -2583,13 +2583,13 @@ VARP(damagescreenmax, 1, 100, 1000);
 void damageblend(int n)
 {
     if(!damagescreen || minimized) return;
-    if(lastmillis > damageblendmillis) damageblendmillis = lastmillis;
+    if(ftsClient.lastMilliseconds > damageblendmillis) damageblendmillis = ftsClient.lastMilliseconds;
     damageblendmillis += clamp(n, damagescreenmin, damagescreenmax)*damagescreenfactor;
 }
 
 void drawdamagescreen(int w, int h)
 {
-    if(lastmillis >= damageblendmillis) return;
+    if(ftsClient.lastMilliseconds >= damageblendmillis) return;
 
     hudshader->set();
 
@@ -2599,8 +2599,8 @@ void drawdamagescreen(int w, int h)
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     glBindTexture(GL_TEXTURE_2D, damagetex->id);
     float fade = damagescreenalpha/100.0f;
-    if(damageblendmillis - lastmillis < damagescreenfade)
-        fade *= float(damageblendmillis - lastmillis)/damagescreenfade;
+    if(damageblendmillis - ftsClient.lastMilliseconds < damagescreenfade)
+        fade *= float(damageblendmillis - ftsClient.lastMilliseconds)/damagescreenfade;
     gle::colorf(fade, fade, fade, fade);
 
     hudquad(0, 0, w, h);
@@ -2749,10 +2749,10 @@ void gl_drawhud()
             if(showfps)
             {
                 static int lastfps = 0, prevfps[3] = { 0, 0, 0 }, curfps[3] = { 0, 0, 0 };
-                if(totalmillis - lastfps >= statrate)
+                if(ftsClient.totalMilliseconds - lastfps >= statrate)
                 {
                     memcpy(prevfps, curfps, sizeof(prevfps));
-                    lastfps = totalmillis - (totalmillis%statrate);
+                    lastfps = ftsClient.totalMilliseconds - (ftsClient.totalMilliseconds%statrate);
                 }
                 int nextfps[3];
                 getfps(nextfps[0], nextfps[1], nextfps[2]);
@@ -2766,8 +2766,8 @@ void gl_drawhud()
 
             if(wallclock)
             {
-                if(!walltime) { walltime = time(NULL); walltime -= totalmillis/1000; if(!walltime) walltime++; }
-                time_t walloffset = walltime + totalmillis/1000;
+                if(!walltime) { walltime = time(NULL); walltime -= ftsClient.totalMilliseconds/1000; if(!walltime) walltime++; }
+                time_t walloffset = walltime + ftsClient.totalMilliseconds/1000;
                 struct tm *localvals = localtime(&walloffset);
                 static cubestr buf;
                 if(localvals && strftime(buf, sizeof(buf), wallclocksecs ? (wallclock24 ? "%H:%M:%S" : "%I:%M:%S%p") : (wallclock24 ? "%H:%M" : "%I:%M%p"), localvals))
@@ -2813,7 +2813,7 @@ void gl_drawhud()
     if(frametimer)
     {
         glFinish();
-        framemillis = getclockmillis() - totalmillis;
+        framemillis = getclockmillis() - ftsClient.totalMilliseconds;
     }
 }
 

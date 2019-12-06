@@ -399,8 +399,8 @@ namespace server
     {
         allowedips.removeobj(ip);
         ban b;
-        b.time = totalmillis;
-        b.expire = totalmillis + expire;
+        b.time = ftsClient.totalMilliseconds;
+        b.expire = ftsClient.totalMilliseconds + expire;
         b.ip = ip;
         loopv(bannedips) if(bannedips[i].expire - b.expire > 0) { bannedips.insert(i, b); return; }
         bannedips.add(b);
@@ -773,7 +773,7 @@ namespace server
         return false;
     }
 
-    void serverinit()
+    void ServerInit()
     {
         smapname[0] = '\0';
         resetitems();
@@ -1015,7 +1015,7 @@ namespace server
         if(demorecord->rawtell() >= (maxdemosize<<20)) enddemorecord();
     }
 
-    void recordpacket(int chan, void *data, int len)
+    void RecordPacket(int chan, void *data, int len)
     {
         writedemo(chan, data, len);
     }
@@ -1530,7 +1530,7 @@ namespace server
     {
         if(wsbuf.empty()) return;
         int wslen = wsbuf.length();
-        recordpacket(0, wsbuf.buf, wslen);
+        RecordPacket(0, wsbuf.buf, wslen);
         wsbuf.put(wsbuf.buf, wslen);
         loopv(clients)
         {
@@ -1564,7 +1564,7 @@ namespace server
     {
         if(wsbuf.empty()) return;
         int wslen = wsbuf.length();
-        recordpacket(1, wsbuf.buf, wslen);
+        RecordPacket(1, wsbuf.buf, wslen);
         wsbuf.put(wsbuf.buf, wslen);
         loopv(clients)
         {
@@ -1641,7 +1641,7 @@ namespace server
         return false;
     }
 
-    bool sendpackets(bool force)
+    bool SendPackets(bool force)
     {
         if(clients.empty() || (!hasnonlocalclients() && !demorecord)) return false;
         enet_uint32 curtime = enet_time_get()-lastsend;
@@ -2270,7 +2270,7 @@ namespace server
         ci->timesync = false;
     }
 
-    void serverupdate()
+    void ServerUpdate()
     {
         if(shouldstep && !gamepaused)
         {
@@ -2298,8 +2298,8 @@ namespace server
             }
         }
 
-        while(bannedips.length() && bannedips[0].expire-totalmillis <= 0) bannedips.remove(0);
-        loopv(connects) if(totalmillis-connects[i]->connectmillis>15000) disconnect_client(connects[i]->clientnum, DISC_TIMEOUT);
+        while(bannedips.length() && bannedips[0].expire-ftsClient.totalMilliseconds <= 0) bannedips.remove(0);
+        loopv(connects) if(ftsClient.totalMilliseconds-connects[i]->connectmillis>15000) disconnect_client(connects[i]->clientnum, DISC_TIMEOUT);
 
         if(nextexceeded && gamemillis > nextexceeded && (!m_timed || gamemillis < gamelimit))
         {
@@ -2437,26 +2437,26 @@ namespace server
     {
         clientinfo *ci = getinfo(n);
         ci->clientnum = ci->ownernum = n;
-        ci->connectmillis = totalmillis;
-        ci->sessionid = (rnd(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
+        ci->connectmillis = ftsClient.totalMilliseconds;
+        ci->sessionid = (rnd(0x1000000)*((ftsClient.totalMilliseconds%10000)+1))&0xFFFFFF;
         ci->local = true;
 
         connects.add(ci);
         sendservinfo(ci);
     }
 
-    void localdisconnect(int n)
+    void LocalDisconnect(int n)
     {
         if(m_demo) enddemoplayback();
-        clientdisconnect(n);
+        ClientDisconnect(n);
     }
 
-    int clientconnect(int n, uint ip)
+    int ClientConnect(int n, uint ip)
     {
         clientinfo *ci = getinfo(n);
         ci->clientnum = ci->ownernum = n;
-        ci->connectmillis = totalmillis;
-        ci->sessionid = (rnd(0x1000000)*((totalmillis%10000)+1))&0xFFFFFF;
+        ci->connectmillis = ftsClient.totalMilliseconds;
+        ci->sessionid = (rnd(0x1000000)*((ftsClient.totalMilliseconds%10000)+1))&0xFFFFFF;
 
         connects.add(ci);
         if(!m_mp(gamemode)) return DISC_LOCAL;
@@ -2464,7 +2464,7 @@ namespace server
         return DISC_NONE;
     }
 
-    void clientdisconnect(int n)
+    void ClientDisconnect(int n)
     {
         clientinfo *ci = getinfo(n);
         loopv(clients) if(clients[i]->authkickvictim == ci->clientnum) clients[i]->cleanauth();
@@ -2483,7 +2483,7 @@ namespace server
         else connects.removeobj(ci);
     }
 
-    int reserveclients() { return 3; }
+    int ReserveClients() { return 3; }
 
     extern void verifybans();
 
@@ -2545,7 +2545,7 @@ namespace server
         return DISC_NONE;
     }
 
-    bool allowbroadcast(int n)
+    bool AllowBroadcast(int n)
     {
         clientinfo *ci = getinfo(n);
         return ci && ci->connected;
@@ -2605,7 +2605,7 @@ namespace server
             userinfo *u = users.access(userkey(ci->authname, ci->authdesc));
             if(u)
             {
-                uint seed[3] = { ::hthash(serverauth) + detrnd(size_t(ci) + size_t(user) + size_t(desc), 0x10000), uint(totalmillis), randomMT() };
+                uint seed[3] = { ::hthash(serverauth) + detrnd(size_t(ci) + size_t(user) + size_t(desc), 0x10000), uint(ftsClient.totalMilliseconds), randomMT() };
                 vector<char> buf;
                 ci->authchallenge = genchallenge(u->pubkey, seed, sizeof(seed), buf);
                 sendf(ci->clientnum, 1, "risis", N_AUTHCHAL, desc, ci->authreq, buf.getbuf());
@@ -2728,7 +2728,7 @@ namespace server
 
         ci->connectauth = 0;
         ci->connected = true;
-        ci->needclipboard = totalmillis ? totalmillis : 1;
+        ci->needclipboard = ftsClient.totalMilliseconds ? ftsClient.totalMilliseconds : 1;
         if(mastermode>=MM_LOCKED) ci->state.state = CS_SPECTATOR;
         ci->state.lasttimeplayed = lastmillis;
 
@@ -2745,7 +2745,7 @@ namespace server
         if(servermotd[0]) sendf(ci->clientnum, 1, "ris", N_SERVMSG, servermotd);
     }
 
-    void parsepacket(int sender, int chan, packetbuf &p)     // has to parse exactly each byte of the packet
+    void ParsePacket(int sender, int chan, packetbuf &p)     // has to parse exactly each byte of the packet
     {
         if(sender<0 || p.packet->flags&ENET_PACKET_FLAG_UNSEQUENCED || chan > 2) return;
         char text[MAXTRANS];
@@ -3339,7 +3339,7 @@ namespace server
                     sendservmsgf("[%s is getting the map]", colorname(ci));
                     if((ci->getmap = sendfile(sender, 2, mapdata, "ri", N_SENDMAP)))
                         ci->getmap->freeCallback = freegetmap;
-                    ci->needclipboard = totalmillis ? totalmillis : 1;
+                    ci->needclipboard = ftsClient.totalMilliseconds ? ftsClient.totalMilliseconds : 1;
                 }
                 break;
 
@@ -3460,7 +3460,7 @@ namespace server
 
             case N_COPY:
                 ci->cleanclipboard();
-                ci->lastclipboard = totalmillis ? totalmillis : 1;
+                ci->lastclipboard = ftsClient.totalMilliseconds ? ftsClient.totalMilliseconds : 1;
                 goto genericmsg;
 
             case N_PASTE:
@@ -3558,19 +3558,19 @@ namespace server
         }
     }
 
-    int laninfoport() { return TESSERACT_LANINFO_PORT; }
-    int serverport() { return TESSERACT_SERVER_PORT; }
-    const char *defaultmaster() { return "master.tesseract.gg"; }
-    int masterport() { return TESSERACT_MASTER_PORT; }
-    int numchannels() { return 3; }
+    int LanInfoPort() { return TESSERACT_LANINFO_PORT; }
+    int ServerPort() { return TESSERACT_SERVER_PORT; }
+    const char *DefaultMaster() { return "master.tesseract.gg"; }
+    int MasterPort() { return TESSERACT_MASTER_PORT; }
+    int GetGetNumChannels() { return 3; }
 
     #include "extinfo.h"
 
-    void serverinforeply(ucharbuf &req, ucharbuf &p)
+    void ServerInfoReply(ucharbuf &req, ucharbuf &p)
     {
         if(req.remaining() && !getint(req))
         {
-            extserverinforeply(req, p);
+            extServerInfoReply(req, p);
             return;
         }
 
@@ -3588,10 +3588,10 @@ namespace server
         }
         sendcubestr(smapname, p);
         sendcubestr(serverdesc, p);
-        sendserverinforeply(p);
+        sendServerInfoReply(p);
     }
 
-    int protocolversion() { return PROTOCOL_VERSION; }
+    int ProtocolVersion() { return PROTOCOL_VERSION; }
 
     #include "aiman.h"
 }

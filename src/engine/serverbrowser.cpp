@@ -35,7 +35,7 @@ int resolverloop(void * data)
         SDL_LockMutex(resolvermutex);
         while(resolverqueries.empty()) SDL_CondWait(querycond, resolvermutex);
         rt->query = resolverqueries.pop();
-        rt->starttime = totalmillis;
+        rt->starttime = ftsClient.totalMilliseconds;
         SDL_UnlockMutex(resolvermutex);
 
         ENetAddress address = { ENET_HOST_ANY, ENET_PORT_ANY };
@@ -127,7 +127,7 @@ bool resolvercheck(const char **name, ENetAddress *address)
     else loopv(resolverthreads)
     {
         resolverthread &rt = resolverthreads[i];
-        if(rt.query && totalmillis - rt.starttime > RESOLVERLIMIT)
+        if(rt.query && ftsClient.totalMilliseconds - rt.starttime > RESOLVERLIMIT)
         {
             resolverstop(rt);
             *name = rt.query;
@@ -255,7 +255,7 @@ struct pingattempts
 
 };
 
-static int currentprotocol = server::protocolversion();
+static int currentprotocol = server::ProtocolVersion();
 
 enum { UNRESOLVED = 0, RESOLVING, RESOLVED };
 
@@ -310,9 +310,9 @@ struct serverinfo : servinfo, pingattempts
 
     void checkdecay(int decay)
     {
-        if(lastping >= 0 && totalmillis - lastping >= decay)
+        if(lastping >= 0 && ftsClient.totalMilliseconds - lastping >= decay)
             cleanup();
-        if(lastping < 0) lastping = totalmillis;
+        if(lastping < 0) lastping = ftsClient.totalMilliseconds;
     }
 
     void calcping()
@@ -388,7 +388,7 @@ static serverinfo *newserver(const char *name, int port, uint ip = ENET_HOST_ANY
 
 void addserver(const char *name, int port, const char *password, bool keep)
 {
-    if(port <= 0) port = server::serverport();
+    if(port <= 0) port = server::ServerPort();
     loopv(servers)
     {
         serverinfo *s = servers[i];
@@ -418,7 +418,7 @@ template<size_t N> static inline void buildping(ENetBuffer &buf, uchar (&ping)[N
 {
     ucharbuf p(ping, N);
     p.put(0xFF); p.put(0xFF);
-    putint(p, a.addattempt(totalmillis));
+    putint(p, a.addattempt(ftsClient.totalMilliseconds));
     buf.data = ping;
     buf.dataLength = p.length();
 }
@@ -430,7 +430,7 @@ void pingservers()
         pingsock = enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM);
         if(pingsock == ENET_SOCKET_NULL)
         {
-            lastinfo = totalmillis;
+            lastinfo = ftsClient.totalMilliseconds;
             return;
         }
         enet_socket_set_option(pingsock, ENET_SOCKOPT_NONBLOCK, 1);
@@ -458,11 +458,11 @@ void pingservers()
     {
         ENetAddress address;
         address.host = ENET_HOST_BROADCAST;
-        address.port = server::laninfoport();
+        address.port = server::LanInfoPort();
         buildping(buf, ping, lanpings);
         enet_socket_send(pingsock, &address, &buf, 1);
     }
-    lastinfo = totalmillis;
+    lastinfo = ftsClient.totalMilliseconds;
 }
 
 void checkresolver()
@@ -529,7 +529,7 @@ void checkpings()
             si = newserver(NULL, addr.port, addr.host);
             millis = lanpings.decodeping(millis);
         }
-        int rtt = clamp(totalmillis - millis, 0, min(servpingdecay, totalmillis));
+        int rtt = clamp(ftsClient.totalMilliseconds - millis, 0, min(servpingdecay, ftsClient.totalMilliseconds));
         if(millis >= lastreset && rtt < servpingdecay) si->addping(rtt, millis);
         si->protocol = getint(p);
         si->numplayers = getint(p);
@@ -555,17 +555,17 @@ VARP(autoupdateservers, 0, 1, 1);
 SCRIPTEXPORT void refreshservers()
 {
     static int lastrefresh = 0;
-    if(lastrefresh==totalmillis) return;
-    if(totalmillis - lastrefresh > 1000)
+    if(lastrefresh==ftsClient.totalMilliseconds) return;
+    if(ftsClient.totalMilliseconds - lastrefresh > 1000)
     {
         loopv(servers) servers[i]->reset();
-        lastreset = totalmillis;
+        lastreset = ftsClient.totalMilliseconds;
     }
-    lastrefresh = totalmillis;
+    lastrefresh = ftsClient.totalMilliseconds;
 
     checkresolver();
     checkpings();
-    if(totalmillis - lastinfo >= servpingrate/(maxservpings ? max(1, (servers.length() + maxservpings - 1) / maxservpings) : 1)) pingservers();
+    if(ftsClient.totalMilliseconds - lastinfo >= servpingrate/(maxservpings ? max(1, (servers.length() + maxservpings - 1) / maxservpings) : 1)) pingservers();
     if(autosortservers) sortservers();
 }
 
@@ -650,9 +650,9 @@ SCRIPTEXPORT void servinfoattr(int *i, int *n)
     GETSERVERINFO(*i, si, { if(si.attr.inrange(*n)) intret(si.attr[*n]); });
 }
 
-SCRIPTEXPORT void connectservinfo(int *i, char *pw)
+SCRIPTEXPORT void ConnectServinfo(int *i, char *pw)
 {
-    GETSERVERINFO_(*i, si, connectserv(si.name, si.address.port, pw[0] ? pw : si.password));
+    GETSERVERINFO_(*i, si, ConnectServ(si.name, si.address.port, pw[0] ? pw : si.password));
 }
 
 servinfo *getservinfo(int i)

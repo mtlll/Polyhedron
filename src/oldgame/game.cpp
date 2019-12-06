@@ -198,7 +198,7 @@ namespace game
                 if(lastmillis - d->lastaction >= d->gunwait) d->gunwait = 0;
             }
 
-            const int lagtime = totalmillis-d->lastupdate;
+            const int lagtime = ftsClient.totalMilliseconds-d->lastupdate;
             if(!lagtime || intermission) continue;
             else if(lagtime>1000 && d->state==CS_ALIVE)
             {
@@ -217,7 +217,7 @@ namespace game
 
     void updateworld()        // main game update loop
     {
-        if(!maptime) { maptime = lastmillis; maprealtime = totalmillis; return; }
+        if(!maptime) { maptime = lastmillis; maprealtime = ftsClient.totalMilliseconds; return; }
         if(!curtime) { gets2c(); if(player1->clientnum>=0) c2sinfo(); return; }
 
         physicsframe();
@@ -487,7 +487,7 @@ namespace game
         return clients.inrange(cn) ? clients[cn] : NULL;
     }
 
-    void clientdisconnected(int cn, bool notify)
+    void ClientDisconnected(int cn, bool notify)
     {
         if(!clients.inrange(cn)) return;
         unignore(cn);
@@ -513,7 +513,7 @@ namespace game
 
     void clearclients(bool notify)
     {
-        loopv(clients) if(clients[i]) clientdisconnected(i, notify);
+        loopv(clients) if(clients[i]) ClientDisconnected(i, notify);
     }
 
     void initclient()

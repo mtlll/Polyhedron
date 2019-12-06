@@ -137,7 +137,7 @@ char ModPlug_ExportIT(ModPlugFile* file, const char* filepath);
 unsigned int ModPlug_NumInstruments(ModPlugFile* file);
 unsigned int ModPlug_NumSamples(ModPlugFile* file);
 unsigned int ModPlug_NumPatterns(ModPlugFile* file);
-unsigned int ModPlug_NumChannels(ModPlugFile* file);
+unsigned int ModPlug_GetGetNumChannels(ModPlugFile* file);
 unsigned int ModPlug_SampleName(ModPlugFile* file, unsigned int qual, char* buff);
 unsigned int ModPlug_InstrumentName(ModPlugFile* file, unsigned int qual, char* buff);
 

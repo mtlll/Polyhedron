@@ -517,7 +517,7 @@ namespace game
     extern void stopfollowing();
     extern void checkfollow();
     extern void nextfollow(int dir = 1);
-    extern void clientdisconnected(int cn, bool notify = true);
+    extern void ClientDisconnected(int cn, bool notify = true);
     extern void clearclients(bool notify = true);
     extern void startgame();
     extern void spawnplayer(gameent *);
