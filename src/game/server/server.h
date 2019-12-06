@@ -4,19 +4,22 @@
 namespace server
 {
     struct ClientInfo {
-		int clientnumber = 0;
-        int ownernumber = 0;
-        int connectmillis = 0;
-        int sessionid = 0;
+        // Client and Owner number.
+		int clientNumber = 0;
+        int ownerNumber = 0;
+
+        int connectMilliseconds = 0;
+
+        int sessionID = 0;
         int overflow = 0;
-        int playermodel = 0;
+        int playerModel = 0;
         cubestr name;
         int privilege;
         bool connected = false;
         bool local = false;
-        bool timesync = false;
-        int gameoffset = 0;
-        int lastevent = 0;
+        bool timeSync = false;
+        int gameOffset = 0;
+        int lastEvent = 0;
         int pushed = 0;
         int exceeded = 0;
 	};

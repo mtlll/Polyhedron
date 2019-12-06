@@ -1,14 +1,49 @@
 #include "game.h"
 #include "entities.h"
+#include "entities/basedynamicentity.h"
 #include "entities/player.h"
 #include "entities/playerstart.h"
 #include "engine/engine.h"
 #include "engine/scriptexport.h"
 
-
-
 namespace game
 {
+    VARP(deadpush, 1, 2, 20);
+
+    void switchname(const char *name)
+    {
+        std::string plName = name;
+
+        if (player1->name.empty() || player1->name == "") { 
+            player1->name = "untitled"; 
+        }
+
+        addmsg(NetCLMsg::SwitchName, "rS", player1->name);
+    }
+    void printname()
+    {
+        conoutf("Your name is: %s", player1->name.c_str());
+    //    conoutf("your name is: %s", colorname(player1));
+    }
+
+    SCRIPTEXPORT_AS(name) void CL_ChangeName(char *s, int *numargs) {
+        if(*numargs > 0) switchname(s);
+        else if(!*numargs) printname();
+        else result(colorname(player1));
+    }
+    SCRIPTEXPORT_AS(getname) const char * CL_GetName() {
+        result(player1->name.c_str());
+        return player1->name.c_str();
+    }
+    
+    bool duplicatename(entities::BaseDynamicEntity *d, const char *name = NULL, const char *alt = NULL)
+    {
+        if(!name) name = d->name;
+        if(alt && d != player1 && !strcmp(name, alt)) return true;
+        loopv(players) if(d!=players[i] && !strcmp(name, players[i]->name)) return true;
+        return false;
+    }
+
     // Global player entity pointer.
     ::entities::classes::Player *player1 = NULL;
 
@@ -64,42 +99,6 @@ namespace game
 
         if (game::player1)
             game::player1->think();
-    }
-
-    void gameconnect(bool _remote)
-    {
-        // Store connection state.
-        //connected = _remote;
-        connected = true;
-
-        // Toggle edit mode if required.
-        if(editmode)
-            toggleedit();
-    }
-
-    void gamedisconnect(bool cleanup)
-    {
-        // Disconnected.
-        connected = false;
-    }
-
-    SCRIPTEXPORT void changemap(const char *name)
-    {
-        // Are we connected? If not, connect locally.
-        if(!connected) localconnect();
-
-        // Toggle edit mode if required.
-        if(editmode)
-            toggleedit();
-
-        // If world loading fails, start a new empty map instead.
-        if(!load_world(name))
-            emptymap(0, true, name);
-    }
-
-    void forceedit(const char *name) {
-        // Trigger a changemap by force edit, which in return toggles edit mode.
-        changemap(name);
     }
 
     // Never seen an implementation of this function, should be part of BaseEntity.

@@ -91,6 +91,7 @@ namespace game {
     VARP(blood, 0, 1, 1);
     VARP(ragdoll, 0, 1, 1);
     VARP(ragdolllmillis, 0, 1, 1);
+    
     SCRIPTEXPORT void isspectator() { intret(0); }
 
 }

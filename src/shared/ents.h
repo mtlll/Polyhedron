@@ -45,15 +45,15 @@ enum { COLLIDE_NONE = 0, COLLIDE_ELLIPSE, COLLIDE_OBB, COLLIDE_TRI };
 
 enum                              // static entity types
 {
-    NOTUSED = ET_EMPTY,           // entity slot not in use in map
-    LIGHT = ET_LIGHT,             // lightsource, attr1 = radius, attr2 = intensity
-    MAPMODEL = ET_MAPMODEL,       // modelfilename = attr1 index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
-    PLAYERSTART = ET_PLAYERSTART, // attr1 = angle, attr2 = team
-    ENVMAP = ET_ENVMAP,           // attr1 = radius
-    PARTICLES = ET_PARTICLES,
-    MAPSOUND = ET_SOUND,
-    SPOTLIGHT = ET_SPOTLIGHT,
-    DECAL = ET_DECAL,
+    NOTUSED = ET_EMPTY,             // entity slot not in use in map
+    LIGHT = ET_LIGHT,               // lightsource, attr1 = radius, attr2 = intensity
+    MAPMODEL = ET_MAPMODEL,         // modelfilename = attr1 index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
+    PLAYERSTART = ET_PLAYERSTART,   // attr1 = angle, attr2 = team
+    ENVMAP = ET_ENVMAP,             // attr1 = radius
+    PARTICLES = ET_PARTICLES,       // Particles... sparkling beautiful and bright, fireworks all night.
+    MAPSOUND = ET_SOUND,            // An area sound effect.
+    SPOTLIGHT = ET_SPOTLIGHT,       // Spotlights are attached to a normal light, but as such can be used to create flashlights etc.
+    DECAL = ET_DECAL,               // Decals, blood splatters and alike!
 
 	// SchizoMania entity types. (game_type values, all should be >= ET_GAMEENTITY
 	// Anyhting >= GAMEENTITY usese classname is...
