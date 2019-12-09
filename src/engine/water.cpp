@@ -35,8 +35,8 @@ void setupcaustics(int tmu, float surface = -1e16f)
     if(!caustictex[0]) loadcaustics(true);
 
     vec s = vec(0.011f, 0, 0.0066f).mul(100.0f/causticscale), t = vec(0, 0.011f, 0.0066f).mul(100.0f/causticscale);
-    int tex = (lastmillis/causticmillis)%NUMCAUSTICS;
-    float frac = float(lastmillis%causticmillis)/causticmillis;
+    int tex = (ftsClient.lastMilliseconds/causticmillis)%NUMCAUSTICS;
+    float frac = float(ftsClient.lastMilliseconds%causticmillis)/causticmillis;
     loopi(2)
     {
         glActiveTexture_(GL_TEXTURE0+tmu+i);
@@ -242,14 +242,14 @@ void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
     {
         case MAT_WATER:
         {
-            whoffset = fmod(float(lastmillis/600.0f/(2*M_PI)), 1.0f);
+            whoffset = fmod(float(ftsClient.lastMilliseconds/600.0f/(2*M_PI)), 1.0f);
             renderwaterstrips(vertwt, z);
             break;
         }
 
         case MAT_LAVA:
         {
-            whoffset = fmod(float(lastmillis/2000.0f/(2*M_PI)), 1.0f);
+            whoffset = fmod(float(ftsClient.lastMilliseconds/2000.0f/(2*M_PI)), 1.0f);
             renderwaterstrips(vertl, z);
             break;
         }
@@ -484,7 +484,7 @@ void renderlava()
         MatSlot &lslot = lookupmaterialslot(MAT_LAVA+k);
 
         SETSHADER(lava);
-        float t = lastmillis/2000.0f;
+        float t = ftsClient.lastMilliseconds/2000.0f;
         t -= floor(t);
         t = 1.0f - 2*fabs(t-0.5f);
         t = 0.5f + 0.5f*t;
@@ -498,7 +498,7 @@ void renderlava()
             Texture *tex = lslot.sts.inrange(0) ? lslot.sts[0].t: notexture;
             wxscale = TEX_SCALE/(tex->xs*lslot.scale);
             wyscale = TEX_SCALE/(tex->ys*lslot.scale);
-            wscroll = lastmillis/1000.0f;
+            wscroll = ftsClient.lastMilliseconds/1000.0f;
 
             glBindTexture(GL_TEXTURE_2D, tex->id);
             glActiveTexture_(GL_TEXTURE1);
@@ -515,11 +515,11 @@ void renderlava()
         if(drawtex != DRAWTEX_MINIMAP && lavafallsurfs[k].length())
         {
             Texture *tex = lslot.sts.inrange(2) ? lslot.sts[2].t : (lslot.sts.inrange(0) ? lslot.sts[0].t : notexture);
-            float angle = fmod(float(lastmillis/2000.0f/(2*M_PI)), 1.0f),
+            float angle = fmod(float(ftsClient.lastMilliseconds/2000.0f/(2*M_PI)), 1.0f),
                   s = angle - int(angle) - 0.5f;
             s *= 8 - fabs(s)*16;
             wfwave = vertwater ? WATER_AMPLITUDE*s-WATER_OFFSET : -WATER_OFFSET;
-            wfscroll = 16.0f*lastmillis/3000.0f;
+            wfscroll = 16.0f*ftsClient.lastMilliseconds/3000.0f;
             wfxscale = TEX_SCALE/(tex->xs*lslot.scale);
             wfyscale = TEX_SCALE/(tex->ys*lslot.scale);
 
@@ -549,11 +549,11 @@ void renderwaterfalls()
         MatSlot &wslot = lookupmaterialslot(MAT_WATER+k);
 
         Texture *tex = wslot.sts.inrange(2) ? wslot.sts[2].t : (wslot.sts.inrange(0) ? wslot.sts[0].t : notexture);
-        float angle = fmod(float(lastmillis/600.0f/(2*M_PI)), 1.0f),
+        float angle = fmod(float(ftsClient.lastMilliseconds/600.0f/(2*M_PI)), 1.0f),
               s = angle - int(angle) - 0.5f;
         s *= 8 - fabs(s)*16;
         wfwave = vertwater ? WATER_AMPLITUDE*s-WATER_OFFSET : -WATER_OFFSET;
-        wfscroll = 16.0f*lastmillis/1000.0f;
+        wfscroll = 16.0f*ftsClient.lastMilliseconds/1000.0f;
         wfxscale = TEX_SCALE/(tex->xs*wslot.scale);
         wfyscale = TEX_SCALE/(tex->ys*wslot.scale);
 

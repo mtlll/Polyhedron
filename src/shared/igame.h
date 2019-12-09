@@ -26,13 +26,13 @@ namespace entities
 
 namespace game
 {
-    extern void parseoptions(vector<const char *> &args);
+    extern void ParseOptions(vector<const char *> &args);
 
-    extern void gamedisconnect(bool cleanup);
+    extern void GameDisconnect(bool cleanup);
     extern void ParsePacketclient(int chan, packetbuf &p);
     extern void ConnectAttempt(const char *name, const char *password, const ENetAddress &address);
     extern void ConnectFail();
-    extern void gameconnect(bool _remote);
+    extern void GameConnect(bool _remote);
     extern bool allowedittoggle();
     extern void edittoggled(bool on);
     extern void writeclientinfo(stream *f);
@@ -93,36 +93,36 @@ namespace game
     extern void particletrack(entities::classes::CoreEntity *owner, vec &o, vec &d);
     extern void dynlighttrack(entities::classes::CoreEntity *owner, vec &o, vec &hud);
     extern bool needminimap();
-}
 
-namespace server
-{
-    extern void *NewClientInfo();
-    extern void DeleteClientInfo(void *ci);
+    namespace server
+    {
+        extern void *NewClientInfo();
+        extern void DeleteClientInfo(void *ci);
 
-    extern void ServerInit();
-    extern int ReserveClients();
-    extern int GetNumChannels();
-    extern void ClientDisconnect(int n);
-    extern int ClientConnect(int n, uint ip);
-    extern void LocalDisconnect(int n);
-    extern void LocalConnect(int n);
-    extern bool AllowBroadcast(int n);
-    extern void RecordPacket(int chan, void *data, int len);
-    extern void ParsePacket(int sender, int chan, packetbuf &p);
-    extern void SendServMsg(const char *s);
-    extern bool SendPackets(bool force = false);
-    extern void ServerInfoReply(ucharbuf &req, ucharbuf &p);
-    extern void ServerUpdate();
-    extern int ProtocolVersion();
-    extern int LanInfoPort();
-    extern int ServerPort();
-    extern const char *DefaultMaster();
-    extern int MasterPort();
-    extern void ProcessMasterInput(const char *cmd, int cmdlen, const char *args);
-    extern void MasterConnect();
-    extern void MasterDisconnected();
-    extern bool IsPaused();
-    extern int ScaleTime(int t);
-}
+        extern void ServerInit();
+        extern int ReserveClients();
+        extern int GetNumChannels();
+        extern void ClientDisconnect(int n);
+        extern int ClientConnect(int n, uint ip);
+        extern void LocalDisconnect(int n);
+        extern void LocalConnect(int n);
+        extern bool AllowBroadcast(int n);
+        extern void RecordPacket(int chan, void *data, int len);
+        extern void ParsePacket(int sender, int chan, packetbuf &p);
+        extern void SendServMsg(const char *s);
+        extern bool SendPackets(bool force = false);
+        extern void ServerInfoReply(ucharbuf &req, ucharbuf &p);
+        extern void ServerUpdate();
+        extern int ProtocolVersion();
+        extern int LanInfoPort();
+        extern int ServerPort();
+        extern const char *DefaultMaster();
+        extern int MasterPort();
+        extern void ProcessMasterInput(const char *cmd, int cmdlen, const char *args);
+        extern void MasterConnect();
+        extern void MasterDisconnected();
+        extern bool IsPaused();
+        extern int ScaleTime(int t);
+    };
+};
 

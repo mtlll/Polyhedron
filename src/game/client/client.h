@@ -1,16 +1,36 @@
 #pragma once
 
-namespace game {
-    namespace client {
-        // Client Info.
+#include "game/game.h"
+#include "game/server/server.h"
 
-        struct Session {
+#include "shared/networking/network.h"
+#include "shared/networking/cl_sv.h"
+#include "shared/networking/protocol.h"
+#include "shared/networking/frametimestate.h"
+
+namespace game
+{
+    namespace networking {
+        namespace protocol {
+            //
+            // Enum class copy MasterMode flags. Open to join, password, vote, locked etc.
+            //
+            enum struct MasterMode : int;
+        };
+    };
+    namespace client
+    {
+        // Client Session Info.
+        struct Session
+        {
             int sessionID = 0;
-            int masterMode = MM_OPEN;
             int gameSpeed = 100;
+            ::game::networking::protocol::MasterMode masterMode;
         };
 
-        struct SessionState {
+        // Client Session State info.
+        struct SessionState
+        {
             bool sendItemsToServer = false; // Mike: This'll change, duh... "after a map change, since server doesn't have map data"
             bool sendCRC = false;           // Mike: This'll change, duh... "after a map change, since server doesn't have map data"
 
@@ -20,13 +40,15 @@ namespace game {
             int lastPing = 0;
         };
 
-
         // Connection.
-        void GameConnect(bool _remote);
-        void GameDisconnect(bool cleanup);
+        extern void GameConnect(bool _remote);
+        extern void GameDisconnect(bool cleanup);
+
+        // Messaging.
+        extern bool AddMessage(::networking::protocol::NetClientMessage type, const char *fmt, ...);
 
         // Map.
-        void ChangeMap(const char *name);
-        void ForceEdit(const char *name);
-    } // client
-} // game
+        extern void ChangeMap(const char *name);
+        extern void ForceEdit(const char *name);
+    } // namespace client
+} // namespace game

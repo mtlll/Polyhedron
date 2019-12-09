@@ -1,16 +1,4 @@
-// the interface the game uses to access the engine
-struct FrameTimeState {
-    int currentTime = 0;
-    int lastMilliseconds = 0;
-    int elapsedTime = 0;
-    int totalMilliseconds = 0;
-    uint totalSeconds = 0;
-
-    int gamespeed = 100;
-    int paused = 0;
-};
-
-extern FrameTimeState ftsClient;
+#pragma once
 
 // Predefined base engine entities.
 // Predefinitions.
@@ -496,10 +484,10 @@ extern void *getclientinfo(int i);
 extern ENetPeer *getclientpeer(int i);
 extern ENetPacket *sendf(int cn, int chan, const char *format, ...);
 extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format = "", ...);
-extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
+extern void SendPacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
 extern void flushserver(bool force);
 extern int getservermtu();
-extern int getnumclients();
+extern int GetNumClients();
 extern uint getclientip(int n);
 extern void localconnect();
 extern const char *disconnectreason(int reason);
@@ -539,7 +527,7 @@ extern servinfo *getservinfo(int i);
     GETSERVINFO(idx, si, { if(si->attr.inrange(aidx)) { int aval = si->attr[aidx]; body; } })
 
 // client
-extern void sendclientpacket(ENetPacket *packet, int chan);
+extern void SendClientPacket(ENetPacket *packet, int chan);
 extern void flushclient();
 extern void disconnect(bool async = false, bool cleanup = true);
 extern bool isconnected(bool attempt = false, bool local = true);

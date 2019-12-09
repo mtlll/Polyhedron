@@ -547,7 +547,7 @@ extern void preloadwatershaders(bool force = false);
 extern vector<const char *> gameargs;
 
 extern void initserver(bool listen, bool dedicated);
-extern void cleanupserver();
+extern void CleanupServer();
 extern void serverslice(bool dedicated, uint timeout);
 extern void updatetime();
 

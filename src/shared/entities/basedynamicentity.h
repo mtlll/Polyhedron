@@ -1,6 +1,7 @@
 #pragma once
-#include "animinfo.h"
-#include "basephysicalentity.h"
+
+#include "shared/entities/animinfo.h"
+#include "shared/entities/basephysicalentity.h"
 
 struct occludequery;
 struct ragdolldata;

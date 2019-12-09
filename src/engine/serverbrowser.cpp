@@ -1,4 +1,6 @@
 #include "engine.h"
+#include "shared/networking/cl_sv.h"
+#include "game/server/server.h"
 
 struct resolverthread
 {
@@ -255,7 +257,7 @@ struct pingattempts
 
 };
 
-static int currentprotocol = server::ProtocolVersion();
+static int currentprotocol = game::server::ProtocolVersion();
 
 enum { UNRESOLVED = 0, RESOLVING, RESOLVED };
 
@@ -388,7 +390,7 @@ static serverinfo *newserver(const char *name, int port, uint ip = ENET_HOST_ANY
 
 void addserver(const char *name, int port, const char *password, bool keep)
 {
-    if(port <= 0) port = server::ServerPort();
+    if(port <= 0) port = game::server::ServerPort();
     loopv(servers)
     {
         serverinfo *s = servers[i];
@@ -418,7 +420,7 @@ template<size_t N> static inline void buildping(ENetBuffer &buf, uchar (&ping)[N
 {
     ucharbuf p(ping, N);
     p.put(0xFF); p.put(0xFF);
-    putint(p, a.addattempt(ftsClient.totalMilliseconds));
+    game::networking::putint(p, a.addattempt(ftsClient.totalMilliseconds));
     buf.data = ping;
     buf.dataLength = p.length();
 }
@@ -458,7 +460,7 @@ void pingservers()
     {
         ENetAddress address;
         address.host = ENET_HOST_BROADCAST;
-        address.port = server::LanInfoPort();
+        address.port = game::server::LanInfoPort();
         buildping(buf, ping, lanpings);
         enet_socket_send(pingsock, &address, &buf, 1);
     }
@@ -515,7 +517,7 @@ void checkpings()
         int len = enet_socket_receive(pingsock, &addr, &buf, 1);
         if(len <= 0) return;
         ucharbuf p(ping, len);
-        int millis = getint(p);
+        int millis = game::networking::getint(p);
         serverinfo *si = NULL;
         loopv(servers) if(addr.host == servers[i]->address.host && addr.port == servers[i]->address.port) { si = servers[i]; break; }
         if(si)
@@ -531,16 +533,16 @@ void checkpings()
         }
         int rtt = clamp(ftsClient.totalMilliseconds - millis, 0, min(servpingdecay, ftsClient.totalMilliseconds));
         if(millis >= lastreset && rtt < servpingdecay) si->addping(rtt, millis);
-        si->protocol = getint(p);
-        si->numplayers = getint(p);
-        si->maxplayers = getint(p);
-        int numattr = getint(p);
+        si->protocol = game::networking::getint(p);
+        si->numplayers = game::networking::getint(p);
+        si->maxplayers = game::networking::getint(p);
+        int numattr = game::networking::getint(p);
         si->attr.setsize(0);
-        loopj(numattr) { int attr = getint(p); if(p.overread()) break; si->attr.add(attr); }
-        getcubestr(text, p);
-        filtertext(si->map, text, false);
-        getcubestr(text, p);
-        filtertext(si->desc, text);
+        loopj(numattr) { int attr = game::networking::getint(p); if(p.overread()) break; si->attr.add(attr); }
+        game::networking::getcubestr(text, p);
+        game::networking::filtertext(si->map, text, false);
+        game::networking::getcubestr(text, p);
+        game::networking::filtertext(si->desc, text);
     }
 }
 

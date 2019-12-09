@@ -39,18 +39,6 @@ static const char * const animnames[] =
     "vwep idle", "vwep shoot", "vwep melee"
 };
 
-// console message types
-
-enum
-{
-    CON_CHAT       = 1<<8,
-    CON_TEAMCHAT   = 1<<9,
-    CON_GAMEINFO   = 1<<10,
-    CON_FRAG_SELF  = 1<<11,
-    CON_FRAG_OTHER = 1<<12,
-    CON_TEAMKILL   = 1<<13
-};
-
 // network quantization scale
 #define DMF 16.0f                // for world locations
 #define DNF 100.0f              // for normalized vectors
@@ -99,12 +87,12 @@ enum
     M_PULSE      = 1<<8
 };
 
-static struct gamemodeinfo
+static struct GameModeinfo
 {
     const char *name, *prettyname;
     int flags;
     const char *info;
-} gamemodes[] =
+} gameModes[] =
 {
     { "demo", "Demo", M_DEMO | M_LOCAL, NULL},
     { "edit", "Edit", M_EDIT, "Cooperative Editing:\nEdit maps with multiple players simultaneously." },
@@ -117,25 +105,28 @@ static struct gamemodeinfo
 };
 
 #define STARTGAMEMODE (-1)
-#define NUMGAMEMODES ((int)(sizeof(gamemodes)/sizeof(gamemodes[0])))
+#define NUMGAMEMODES ((int)(sizeof(gameModes)/sizeof(gameModes[0])))
+
+// Default game mode = edit.
+static GameModeinfo gameMode = m_edit;
 
 #define m_valid(mode)          ((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES)
-#define m_check(mode, flag)    (m_valid(mode) && gamemodes[(mode) - STARTGAMEMODE].flags&(flag))
-#define m_checknot(mode, flag) (m_valid(mode) && !(gamemodes[(mode) - STARTGAMEMODE].flags&(flag)))
-#define m_checkall(mode, flag) (m_valid(mode) && (gamemodes[(mode) - STARTGAMEMODE].flags&(flag)) == (flag))
+#define m_check(mode, flag)    (m_valid(mode) && gameModes[(mode) - STARTGAMEMODE].flags&(flag))
+#define m_checknot(mode, flag) (m_valid(mode) && !(gameModes[(mode) - STARTGAMEMODE].flags&(flag)))
+#define m_checkall(mode, flag) (m_valid(mode) && (gameModes[(mode) - STARTGAMEMODE].flags&(flag)) == (flag))
 
-#define m_ctf          (m_check(gamemode, M_CTF))
-#define m_teammode     (m_check(gamemode, M_TEAM))
-#define m_overtime     (m_check(gamemode, M_OVERTIME))
+#define m_ctf          (m_check(gameMode, M_CTF))
+#define m_teammode     (m_check(gameMode, M_TEAM))
+#define m_overtime     (m_check(gameMode, M_OVERTIME))
 #define isteam(a,b)    (m_teammode && a==b)
-#define m_rail         (m_check(gamemode, M_RAIL))
-#define m_pulse        (m_check(gamemode, M_PULSE))
+#define m_rail         (m_check(gameMode, M_RAIL))
+#define m_pulse        (m_check(gameMode, M_PULSE))
 
-#define m_demo         (m_check(gamemode, M_DEMO))
-#define m_edit         (m_check(gamemode, M_EDIT))
-#define m_lobby        (m_check(gamemode, M_LOBBY))
-#define m_timed        (m_checknot(gamemode, M_DEMO|M_EDIT|M_LOCAL))
-#define m_botmode      (m_checknot(gamemode, M_DEMO|M_LOCAL))
+#define m_demo         (m_check(gameMode, M_DEMO))
+#define m_edit         (m_check(gameMode, M_EDIT))
+#define m_lobby        (m_check(gameMode, M_LOBBY))
+#define m_timed        (m_checknot(gameMode, M_DEMO|M_EDIT|M_LOCAL))
+#define m_botmode      (m_checknot(gameMode, M_DEMO|M_LOCAL))
 #define m_mp(mode)     (m_checknot(mode, M_LOCAL))
 
 enum { MM_AUTH = -1, MM_OPEN = 0, MM_VETO, MM_LOCKED, MM_PRIVATE, MM_PASSWORD, MM_START = MM_AUTH, MM_INVALID = MM_START - 1 };
@@ -226,8 +217,8 @@ static const int msgsizes[] =               // size inclusive message token, 0 f
 #define TESSERACT_LANINFO_PORT 41998
 #define TESSERACT_MASTER_PORT 41999
 #define PROTOCOL_VERSION 2              // bump when protocol changes
-#define DEMO_VERSION 1                  // bump when demo format changes
-#define DEMO_MAGIC "TESSERACT_DEMO\0\0"
+#define DEMO_VERSION 2                  // bump when demo format changes
+#define DEMO_MAGIC "POLYHEDRONDMO\0\0"
 
 struct demoheader
 {
@@ -306,7 +297,7 @@ struct gamestate
         loopi(NUMGUNS) ammo[i] = 0;
     }
 
-    void spawnstate(int gamemode)
+    void spawnstate(int gameMode)
     {
         if(m_rail)
         {
@@ -463,7 +454,7 @@ namespace entities
 
 namespace game
 {
-    extern int gamemode;
+    extern int gameMode;
 
     struct clientmode
     {
@@ -506,21 +497,21 @@ namespace game
     extern int smoothmove, smoothdist;
 
     extern bool clientoption(const char *arg);
-    extern gameent *getclient(int cn);
-    extern gameent *newclient(int cn);
-    extern const char *colorname(gameent *d, const char *name = NULL, const char *alt = NULL, const char *color = "");
+    extern game::entities::BaseDynamicEntity *getclient(int cn);
+    extern game::entities::BaseDynamicEntity *newclient(int cn);
+    extern const char *GenerateClientColorName(&game::entities::BaseDynamicEntity *d, const char *name = NULL, const char *alt = NULL, const char *color = "");
     extern const char *teamcolorname(gameent *d, const char *alt = "you");
     extern const char *teamcolor(const char *prefix, const char *suffix, int team, const char *alt);
-    extern gameent *pointatplayer();
-    extern gameent *hudplayer();
-    extern gameent *followingplayer();
-    extern void stopfollowing();
-    extern void checkfollow();
-    extern void nextfollow(int dir = 1);
+    extern game::entities::BaseDynamicEntity *pointatplayer();
+    extern game::entities::BaseDynamicEntity *hudplayer();
+    extern game::entities::BaseDynamicEntity *followingplayer();
+    extern void StopFollowing();
+    extern void CheckFollow();
+    extern void NextFollow(int dir = 1);
     extern void ClientDisconnected(int cn, bool notify = true);
-    extern void clearclients(bool notify = true);
-    extern void startgame();
-    extern void spawnplayer(gameent *);
+    extern void ClearClients(bool notify = true);
+    extern void StartGame();
+    extern void SpawnPlayer(gameent *);
     extern void deathstate(gameent *d, bool restore = false);
     extern void damaged(int damage, gameent *d, gameent *actor, bool local = true);
     extern void killed(gameent *d, gameent *actor);
@@ -548,7 +539,7 @@ namespace game
     extern void stopdemo();
     extern void changemap(const char *name, int mode);
     extern void c2sinfo(bool force = false);
-    extern void sendposition(gameent *d, bool reliable = false);
+    extern void SendPosition(gameent *d, bool reliable = false);
 
     // weapon
     extern int getweapon(const char *name);
@@ -592,11 +583,11 @@ namespace game
         bool ragdoll;
     };
 
-    extern void saveragdoll(gameent *d);
+    extern void saveragdoll(entities::classes::BaseClientEntity *d);
     extern void clearragdolls();
     extern void moveragdolls();
-    extern const playermodelinfo &getplayermodelinfo(gameent *d);
-    extern int getplayercolor(gameent *d, int team);
+    extern const playermodelinfo &getplayermodelinfo(entities::classes::BaseClientEntity *d);
+    extern int getplayercolor(entities::classes::BaseClientEntity *d, int team);
     extern int chooserandomplayermodel(int seed);
     extern void syncplayer();
     extern void swayhudgun(int curtime);
@@ -614,7 +605,7 @@ namespace server
     extern void forcepaused(bool paused);
     extern void forcegamespeed(int speed);
     extern void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen = MAXSTRLEN);
-    extern int msgsizelookup(int msg);
+    extern int MessageSizeLookup(int msg);
     extern bool serveroption(const char *arg);
     extern bool delayspawn(int type);
 }

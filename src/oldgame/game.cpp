@@ -1,4 +1,6 @@
 #include "game.h"
+#include "shared/entities/basedynamicentity.h"
+#include "shared/networking/protocol.h"
 
 namespace game
 {
@@ -96,14 +98,14 @@ namespace game
     gameent *spawnstate(gameent *d)              // reset player state not persistent accross spawns
     {
         d->respawn();
-        d->spawnstate(gamemode);
+        d->spawnstate(gameMode);
         return d;
     }
 
     void respawnself()
     {
         if(ispaused()) return;
-        if(m_mp(gamemode))
+        if(m_mp(gameMode))
         {
             int seq = (player1->lifesequence<<16)|((lastmillis/1000)&0xFFFF);
             if(player1->respawned!=seq) { addmsg(N_TRYSPAWN, "rc", player1); player1->respawned = seq; }
@@ -405,8 +407,8 @@ namespace game
         }
         else
         {
-            dname = colorname(d, NULL, "you");
-            aname = colorname(actor, NULL, "you");
+            dname = GenerateClientColorName(&d, NULL, "you");
+            aname = GenerateClientColorName(&actor, NULL, "you");
         }
         if(d==actor)
             conoutf(contype, "\f2%s suicided%s", dname, d==player1 ? "!" : "");
@@ -548,9 +550,9 @@ namespace game
             cmode->setup();
         }
 
-        conoutf(CON_GAMEINFO, "\f2game mode is %s", server::modeprettyname(gamemode));
+        conoutf(CON_GAMEINFO, "\f2game mode is %s", server::modeprettyname(gameMode));
 
-        const char *info = m_valid(gamemode) ? gamemodes[gamemode - STARTGAMEMODE].info : NULL;
+        const char *info = m_valid(gameMode) ? gameModes[gameMode - STARTGAMEMODE].info : NULL;
         if(showmodeinfo && info) conoutf(CON_GAMEINFO, "\f0%s", info);
 
         syncplayer();
@@ -567,7 +569,7 @@ namespace game
         ai::savewaypoints();
         ai::clearwaypoints(true);
 
-        if(!m_mp(gamemode)) spawnplayer(player1);
+        if(!m_mp(gameMode)) spawnplayer(player1);
         else findplayerspawn(player1, -1, m_teammode ? player1->team : 0);
         entities::resetspawns();
         copycubestr(clientmap, name ? name : "");
@@ -577,12 +579,12 @@ namespace game
 
     const char *getmapinfo()
     {
-        return showmodeinfo && m_valid(gamemode) ? gamemodes[gamemode - STARTGAMEMODE].info : NULL;
+        return showmodeinfo && m_valid(gameMode) ? gameModes[gameMode - STARTGAMEMODE].info : NULL;
     }
 
     const char *getscreenshotinfo()
     {
-        return server::modename(gamemode, NULL);
+        return server::modename(gameMode, NULL);
     }
 
     void physicstrigger(physent *d, bool local, int floorlevel, int waterlevel, int material)
@@ -660,7 +662,7 @@ namespace game
         {
             if(d->state!=CS_ALIVE) return;
             gameent *pl = (gameent *)d;
-            if(!m_mp(gamemode)) killed(pl, pl);
+            if(!m_mp(gameMode)) killed(pl, pl);
             else
             {
                 int seq = (pl->lifesequence<<16)|((lastmillis/1000)&0xFFFF);

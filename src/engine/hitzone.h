@@ -620,7 +620,7 @@ void skelmodel::skelmeshgroup::intersect(skelhitdata *z, part *p, const skelmode
     if(bc.owner != owner || bc != sc)
     {
         bc.owner = owner;
-        bc.millis = lastmillis;
+        bc.millis = ftsClient.lastMilliseconds;
         (animcacheentry &)bc = sc;
         blendbones(sc.bdata, bc.bdata, blendcombos.getbuf(), z->numblends);
         z->propagate(this, sc.bdata, bc.bdata);

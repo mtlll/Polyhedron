@@ -140,25 +140,6 @@ list(APPEND fileListEngine
 )
 
 list(APPEND fileListShared
-    shared/utils/network.cpp
-    shared/utils/cubectype.h
-    shared/utils/cubestr.h 
-    shared/utils/cubestr.cpp
-    shared/utils/databuf.h
-    shared/utils/endianness.h 
-    shared/utils/hashbase.h
-    shared/utils/hashset.h
-    shared/utils/hashtable.h
-    shared/utils/hthash.h
-    shared/utils/network.h
-    shared/utils/network.cpp
-    shared/utils/queue.h 
-    shared/utils/rndnumbers.h 
-    shared/utils/stream.h
-    shared/utils/streambuf.h
-    shared/utils/ucharbuf.h 
-    shared/utils/vector.h 
- 
     shared/command.h
     shared/crypto.cpp
     shared/cube.h
@@ -178,7 +159,36 @@ list(APPEND fileListShared
     shared/zip.cpp
 )
 
+list(APPEND fileListSharedNetworking
+    shared/networking/protocol.h
+    shared/networking/frametimestate.h
+    shared/networking/cl_sv.cpp
+    shared/networking/cl_sv.h
+    shared/networking/network.cpp
+    shared/networking/network.h
+)
+
+list(APPEND fileListSharedUtils
+    shared/utils/cubectype.h
+    shared/utils/cubestr.h 
+    shared/utils/cubestr.cpp
+    shared/utils/databuf.h
+    shared/utils/endianness.h 
+    shared/utils/hashbase.h
+    shared/utils/hashset.h
+    shared/utils/hashtable.h
+    shared/utils/hthash.h
+    shared/utils/queue.h 
+    shared/utils/rndnumbers.h 
+    shared/utils/stream.h
+    shared/utils/streambuf.h
+    shared/utils/ucharbuf.h 
+    shared/utils/vector.h 
+)
+
 list(APPEND fileListGame
+    game/client/client.cpp
+    game/client/client.h
     game/commands.cpp
     game/commands.h
     game/entities.cpp
@@ -186,6 +196,13 @@ list(APPEND fileListGame
     game/game.cpp
     game/game.h
     game/render.cpp
+    game/server/server.cpp
+    game/server/server.h
+)
+
+list(APPEND fileListGameClient
+    game/client/client.cpp
+    game/client/client.h
     game/server/server.cpp
     game/server/server.h
 )
@@ -226,8 +243,12 @@ list(APPEND fileListSharedEntities
 list(APPEND fileList
     ${fileListEngine}
     ${fileListShared}
-    ${fileListGame}
     ${fileListSharedEntities}
+    ${fileListSharedNetworking}
+    ${fileListSharedUtils}
+    ${fileListGame}
+    ${fileListGameClient}
+    ${fileListGameServer}
     ${fileListGameEntities}
 )
 
@@ -298,7 +319,10 @@ source_group("Sources\\Shared" FILES ${fileListShared})
 source_group("Sources\\Game" FILES ${fileListGame})
 source_group("Sources\\Entities\\Shared" FILES ${fileListSharedEntities})
 source_group("Sources\\Entities\\Game" FILES ${fileListGameEntities})
-
+source_group("Sources\\Client\\Game" FILES ${fileListGameClient})
+source_group("Sources\\Server\\Game" FILES ${fileListGameServer})
+source_group("Sources\\Utils\\Shared" FILES ${fileListSharedUtils})
+source_group("Sources\\Networking\\Shared" FILES ${fileListSharedNetworking})
 # --- BINDINGS
 foreach(input_file ${fileListEngine})
     GenerateBindingFor(${input_file} "Generated\\\\Engine")
@@ -306,6 +330,14 @@ endforeach()
 
 foreach(input_file ${fileListShared})
     GenerateBindingFor(${input_file} "Generated\\\\Shared")
+endforeach()
+
+foreach(input_file ${fileListShared})
+    GenerateBindingFor(${input_file} "Generated\\Utils\\Shared")
+endforeach()
+
+foreach(input_file ${fileListShared})
+    GenerateBindingFor(${input_file} "Generated\\Networking\\Shared")
 endforeach()
 
 foreach(input_file ${fileListGame})
@@ -318,6 +350,14 @@ endforeach()
 
 foreach(input_file ${fileListGameEntities})
     GenerateBindingFor(${input_file} "Generated\\\\Entities\\\\Game")
+endforeach()
+
+foreach(input_file ${fileListGameClient})
+    GenerateBindingFor(${input_file} "Generated\\\\Client\\\\Game")
+endforeach()
+
+foreach(input_file ${fileListGameServer})
+    GenerateBindingFor(${input_file} "Generated\\\\Server\\\\Game")
 endforeach()
 
 

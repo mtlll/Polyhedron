@@ -1,14 +1,54 @@
-#include "game.h"
-#include "entities.h"
-#include "entities/basedynamicentity.h"
-#include "entities/player.h"
-#include "entities/playerstart.h"
 #include "engine/engine.h"
 #include "engine/scriptexport.h"
 
+#include "shared/networking/network.h"
+#include "shared/networking/protocol.h"
+#include "shared/networking/cl_sv.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/entities/coreentity.h"
+#include "shared/entities/basedynamicentity.h"
+
+#include "game/game.h"
+#include "game/client/client.h"
+#include "game/server/server.h"
+
+#include "game/entities.h"
+#include "game/entities/player.h"
+#include "game/entities/playerstart.h"
+
 namespace game
 {
+    // Stores all the player entities that are in our (local, or remotte) server.
+    vector<entities::classes::BaseClientEntity *> players;
+    networking::protocol::MasterMode masterMode = networking::protocol::MasterMode::Private;
+    networking::GameMode gameMode = networking::GameMode::Edit;
+
+    bool sendItemsToServer = false, sendCRC = false; // after a map change, since server doesn't have map data
+    int lastPing = 0;
+
+   // Networking State properties.
+    bool connected = false, remote = false, demoPlayback = false, gamePaused = false;
+    int sessionID = 0, gameSpeed = 100;
+    game::networking::GameMode gameMode;     // Current game mode (M_LOBBY, M_EDIT | M_LOCAL etc)
+    game::networking::protocol::MasterMode masterMode; // Master Privilige mode (when hosting with this client).
+    cubestr servDesc = "", servAuth = "", connectPass = "";
+
     VARP(deadpush, 1, 2, 20);
+
+    // Minimap radar.
+    VARP(minradarscale, 0, 384, 10000);
+    VARP(maxradarscale, 1, 1024, 10000);
+    VARP(radarteammates, 0, 1, 1);
+    FVARP(minimapalpha, 0, 1, 1);
+
+    // Global player entity pointer.
+    ::entities::classes::Player *player1 = NULL;
+
+    // Map Game State properties.
+    cubestr clientmap = "";     // Current map filename.
+    int maptime = 0;            // Frame time.
+    int maprealtime = 0;        // Total time.
+
 
     void switchname(const char *name)
     {
@@ -18,49 +58,42 @@ namespace game
             player1->name = "untitled"; 
         }
 
-        addmsg(NetCLMsg::SwitchName, "rS", player1->name);
+        game::client::AddMessage(game::client::protocol::NetClientMessage::SwitchName, "rs", player1->name.c_str());
     }
+
     void printname()
     {
         conoutf("Your name is: %s", player1->name.c_str());
-    //    conoutf("your name is: %s", colorname(player1));
+    //    conoutf("your name is: %s", GenerateClientColorName(&player1));
     }
 
     SCRIPTEXPORT_AS(name) void CL_ChangeName(char *s, int *numargs) {
         if(*numargs > 0) switchname(s);
         else if(!*numargs) printname();
-        else result(colorname(player1));
+        else result((player1->name.c_str()));
     }
     SCRIPTEXPORT_AS(getname) const char * CL_GetName() {
         result(player1->name.c_str());
         return player1->name.c_str();
     }
     
-    bool duplicatename(entities::BaseDynamicEntity *d, const char *name = NULL, const char *alt = NULL)
+    bool duplicatename(entities::classes::BaseDynamicEntity *d, const char *name = NULL, const char *alt = NULL)
     {
-        if(!name) name = d->name;
+        if(!name) strcpy((char*)name, d->name.c_str());
         if(alt && d != player1 && !strcmp(name, alt)) return true;
-        loopv(players) if(d!=players[i] && !strcmp(name, players[i]->name)) return true;
+        loopv(players) if(d!=players[i] && !strcmp(name, players[i]->name.c_str())) return true;
         return false;
     }
 
-    // Global player entity pointer.
-    ::entities::classes::Player *player1 = NULL;
-
-    // Networking State properties.
-    bool connected = false;
-
-    // Map Game State properties.
-    cubestr clientmap = "";     // Current map filename.
-    int maptime = 0;            // Frame time.
-    int maprealtime = 0;        // Total time.
-
+    /////////////// /
+    // World functions
+    ///////////////////
     void updateworld() {
         // Update the map time. (First frame since maptime = 0.
-        if(!maptime) { maptime = lastmillis; maprealtime = ftsClient.totalMilliseconds; return; }
+        if(!maptime) { maptime = ftsClient.lastMilliseconds; maprealtime = ftsClient.totalMilliseconds; return; }
 
         // Escape this function if there is no currenttime yet from server to client. (Meaning it is 0.)
-        if(!curtime) return; //{ gets2c(); if (player1->) c2sinfo(); return; } //c2sinfo(); }///if(player1->clientnum>=0) c2sinfo(); return; }
+        if(!ftsClient.currentTime) return; //{ gets2c(); if (player1->) c2sinfo(); return; } //c2sinfo(); }///if(player1->clientnum>=0) c2sinfo(); return; }
         //if(!curtime) return; //{ gets2c(); c2sinfo(); }///if(player1->clientnum>=0) c2sinfo(); return; }
 
 		// Update the physics.
@@ -123,7 +156,7 @@ namespace game
 
     // These speak for themselves.
     const char *getclientmap() {
-        return clientmap;
+        return clientMap;
     }
     const char *getmapinfo() {
         return NULL;
@@ -147,7 +180,7 @@ namespace game
         SpawnPlayer();
 
         // Find our playerspawn.
-        findplayerspawn(player1);
+        findplayerspawn(game::player1);
     }
 
     void loadingmap(const char *name) {
@@ -163,9 +196,9 @@ namespace game
         SpawnPlayer();
 
 		// Find player spawn point.
-		findplayerspawn(player1);
+		findplayerspawn(game::player1);
 
-        copycubestr(clientmap, name ? name : "");
+        copycubestr(clientMap, name ? name : "");
         execident("mapstart");
     }
 
@@ -363,11 +396,16 @@ namespace game
         else if(floorlevel<0) { if(d==player1 || d->type!=ENT_PLAYER || ((gameent *)d)->ai) msgsound(S_LAND, d); }*/
     }
 
+    void ClearClients(bool notify)
+    {
+        loopv(server::clients) if(server::clients[i]) ClientDisconnected(i, notify);
+    }
+
     void InitClient() {
         // Setup the map time.
         maptime = 0;
 		SpawnPlayer();
-        findplayerspawn(player1);
+        findplayerspawn(game::player1);
     }
 
     const char *GameIdent() {

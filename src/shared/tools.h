@@ -279,7 +279,6 @@ template<class T> struct isclass
 #endif
 
 #include "utils/rndnumbers.h"
-#include "utils/network.h"
 #include "utils/stream.h"
 #include "utils/streambuf.h"
 #include "utils/cubectype.h"
@@ -308,9 +307,6 @@ extern char *loadfile(const char *fn, size_t *size, bool utf8 = true);
 extern bool listdir(const char *dir, bool rel, const char *ext, vector<char *> &files);
 extern int listfiles(const char *dir, const char *ext, vector<char *> &files);
 extern int listzipfiles(const char *dir, const char *ext, vector<char *> &files);
-
-template<size_t N> static inline void getcubestr(char (&t)[N], ucharbuf &p) { getcubestr(t, p, N); }
-template<size_t N> static inline void filtertext(char (&dst)[N], const char *src, bool whitespace = true, bool forcespace = false) { filtertext(dst, src, whitespace, forcespace, N-1); }
 
 //
 // Mike: externs

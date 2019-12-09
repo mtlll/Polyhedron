@@ -386,7 +386,7 @@ struct vertmodel : animmodel
                     if(!c.vbuf) continue;
                     if(c.as==*as) { vc = &c; break; }
                 }
-                if(!vc) loopi(MAXVBOCACHE) { vc = &vbocache[i]; if(!vc->vbuf || vc->millis < lastmillis) break; }
+                if(!vc) loopi(MAXVBOCACHE) { vc = &vbocache[i]; if(!vc->vbuf || vc->millis < ftsClient.lastMilliseconds) break; }
             }
             if(!vc->vbuf) genvbo(*vc);
             if(numframes>1)
@@ -394,7 +394,7 @@ struct vertmodel : animmodel
                 if(vc->as!=*as)
                 {
                     vc->as = *as;
-                    vc->millis = lastmillis;
+                    vc->millis = ftsClient.lastMilliseconds;
                     looprendermeshes(vertmesh, m,
                     {
                         m.interpverts(*as, (vvert *)vdata, p->skins[i]);
@@ -402,7 +402,7 @@ struct vertmodel : animmodel
                     gle::bindvbo(vc->vbuf);
                     glBufferData_(GL_ARRAY_BUFFER, vlen*vertsize, vdata, GL_STREAM_DRAW);
                 }
-                vc->millis = lastmillis;
+                vc->millis = ftsClient.lastMilliseconds;
             }
 
             bindvbo(as, p, *vc);

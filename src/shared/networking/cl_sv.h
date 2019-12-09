@@ -1,26 +1,51 @@
 #pragma once
 
+#include "game/server/server.h"
+#include "game/client/client.h"
+
 namespace game {
-    // Returns a coloured string of a name.
-    const char *GenerateClientColorName(game::client::ClientInfo *ci, const std::string &name = "unnamed")
-    {
-        if (!ci) {
-            conoutfl("%s", "Invalid pointer reference to ClientInfo *ci: == NULL");
-            return "invalid_ref";
-        }
+    // network messages codes, c2s, c2c, s2c
+    namespace networking {
+        namespace protocol {
+            enum struct Priviliges : int;
+            enum struct Events : int;
+            enum struct MasterMode : int;
+        };
 
-        static cubestr cname[3];
-        static int colorIndex = 0;
-        static int colorIndex = (colorIndex+1)%3;
+        //
+        // Our implementation of ClientInfo.
+        //
+        struct ClientInfo {
+        public:
+            // Client and Owner number.
+            int clientNumber = 0;           // Client number.
+            int ownerNumber = 0;            // Owner client number.
+            int connectMilliseconds = 0;    // Connection MS duration.
 
-        if(name.size() < 260) // Stay below CubeStr its max value.
-            name = (name.empty() ? std::string(ci->name).substr(0, 32).c_str() : "unnamed" + "_#" std::to_str(cidx)); // Personally I find 32 chars enough.
+            int sessionID = 0;              // ENET Peer Session ID.
+            int overflow = 0;               // Overflow??
 
-        if(name[0] && !duplicatename(ci, name.c_str()) && ci->state.aitype == AI_NONE) 
-            return name.c_str();
-        
-        // Generate colour based on type of Client and client number.
-        formatcubestr(cname[colorIndex], ci->state.aitype == AI_NONE ? "%s \fs\f5(%d)\fr" : "%s \fs\f5[%d]\fr", name.c_str(), ci->clientNumber);
-        return cname[colorIndex];
-    }
-}
+            int playerModelID = 0;            // PLayer Model ID.
+            int lifeSequence = 0;             // LifeSequence?
+
+            // Client personal relations.
+            cubestr name;
+            game::networking::protocol::Priviliges privilege;
+            bool local = false;
+            bool connected = false;
+            
+            // Time related.
+            bool timeSync = false;
+            int gameOffset = 0;
+            int lastEvent = 0;
+            int pushed = 0;
+            int exceeded = 0;
+
+            // Temporarily?
+            int team = 0;
+        };
+      
+        // Returns a coloured string of a name.
+        const char *GenerateClientColorName(game::networking::ClientInfo *ci, const std::string &name = "unnamed");
+    };
+};

@@ -1,5 +1,13 @@
 #include "engine.h"
-#include "../game/entities/player.h"
+
+#include "shared/networking/network.h"
+#include "shared/networking/cl_sv.h"
+#include "shared/networking/protocol.h"
+
+#include "game/game.h"
+#include "game/server/server.h"
+#include "game/client/client.h"
+#include "game/entities/player.h"
 
 extern int outline;
 

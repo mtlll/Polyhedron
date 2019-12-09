@@ -1,24 +1,159 @@
-#ifndef __GAME_H__
-#define __GAME_H__
+#pragma once 
 
 #include "cube.h"
 #include "ents.h"
 
-namespace entities
-{
-	namespace classes
-	{
+namespace entities {
+    namespace classes {
 		class Player;
 		class BaseEntity;
+        class BasePhysicalEntity;
+        class BaseDynamicEntity;
+        class BaseClientEntity;
+        class BaseAIEntity;
+        class Player;
 	}
 }
 
-namespace game
-{
+#include "shared/networking/cl_sv.h"
+#include "shared/networking/network.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/networking/protocol.h"
+
+namespace game {
+    namespace networking {
+        namespace protocol {
+            //
+            // Enum class copy MasterMode flags. Open to join, password, vote, locked etc.
+            //
+            enum struct MasterMode : int {
+                Authorize = 0,
+                Open,
+                Veto,
+                Locked,
+                Private,
+                Password,
+                Start = Authorize,
+                Invalid = Start - 1
+            };
+        };
+
+        //
+        // Console message types
+        //
+        enum
+        {
+            CON_CHAT       = 1<<8,
+            CON_TEAMCHAT   = 1<<9,
+            CON_GAMEINFO   = 1<<10,
+            CON_FRAG_SELF  = 1<<11,
+            CON_FRAG_OTHER = 1<<12,
+            CON_TEAMKILL   = 1<<13
+        };
+    };
+
     // Extern variables.
     extern entities::classes::Player *player1;  // Main player entity in the game code.
-    extern int maptime, maprealtime;            // Times.
-    extern cubestr clientmap;                   // The map the client is currently running or loading.
+    extern vector<entities::classes::BaseClientEntity *> players; // Players array. (Client side, it is clients on the server side.)
+
+    extern networking::GameMode gameMode;     // Current game mode (M_LOBBY, M_EDIT | M_LOCAL etc)
+    extern networking::protocol::MasterMode masterMode; // Master Privilige mode (when hosting with this client).
+
+    extern int mapTime, mapRealTime;            // Times.
+    extern cubestr clientMap;                   // The map the client is currently running or loading.
+
+    extern bool sendItemsToServer, sendCRC; // after a map change, since server doesn't have map data
+    extern int lastPing;
+
+    extern bool connected, remote, demoPlayback, gamePaused;
+    extern int sessionID, gameSpeed;
+
+    extern cubestr servDesc, servAuth, connectPass;
+
+    #define MAXTEAMS 2
+    static const char * const teamnames[1+MAXTEAMS] = { "", "azul", "rojo" };
+    static const char * const teamtextcode[1+MAXTEAMS] = { "\f0", "\f1", "\f3" };
+    static const int teamtextcolor[1+MAXTEAMS] = { 0x1EC850, 0x6496FF, 0xFF4B19 };
+    static const int teamscoreboardcolor[1+MAXTEAMS] = { 0, 0x3030C0, 0xC03030 };
+    static const char * const teamblipcolor[1+MAXTEAMS] = { "_neutral", "_blue", "_red" };
+    static inline int teamnumber(const char *name) { loopi(MAXTEAMS) if(!strcmp(teamnames[1+i], name)) return 1+i; return 0; }
+    #define validteam(n) ((n) >= 1 && (n) <= MAXTEAMS)
+    #define teamname(n) (teamnames[validteam(n) ? (n) : 0])
+        // network quantization scale
+    #define DMF 8.0f                // for world locations
+    #define DNF 100.0f              // for normalized vectors
+    #define DVELF 1.0f              // for playerspeed based velocity vectors
+
+    enum                            // static entity types
+    {
+        NOTUSED = ET_EMPTY,         // entity slot not in use in map
+        LIGHT = ET_LIGHT,           // lightsource, attr1 = radius, attr2 = intensity
+        MAPMODEL = ET_MAPMODEL,     // attr1 = idx, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
+        PLAYERSTART,                // attr1 = angle, attr2 = team
+        ENVMAP = ET_ENVMAP,         // attr1 = radius
+        PARTICLES = ET_PARTICLES,
+        MAPSOUND = ET_SOUND,
+        SPOTLIGHT = ET_SPOTLIGHT,
+        DECAL = ET_DECAL,
+        TELEPORT,                   // attr1 = idx, attr2 = model, attr3 = tag
+        TELEDEST,                   // attr1 = angle, attr2 = idx
+        JUMPPAD,                    // attr1 = zpush, attr2 = ypush, attr3 = xpush
+        FLAG,                       // attr1 = angle, attr2 = team
+        GAMEENTITY,					// classname = game entity class type, attributes list is what it is, and can be accessed in any derived BaseEntity class.
+        MAXENTTYPES,
+
+        I_FIRST = 0,
+        I_LAST = -1
+    };
+
+    enum { GUN_RAIL = 0, GUN_PULSE, NUMGUNS };
+    enum { ACT_IDLE = 0, ACT_SHOOT, ACT_MELEE, NUMACTS };
+    enum { ATK_RAIL_SHOOT = 0, ATK_RAIL_MELEE, ATK_PULSE_SHOOT, ATK_PULSE_MELEE, NUMATKS };
+
+    #define validgun(n) ((n) >= 0 && (n) < NUMGUNS)
+    #define validact(n) ((n) >= 0 && (n) < NUMACTS)
+    #define validatk(n) ((n) >= 0 && (n) < NUMATKS)
+
+    static struct gameModeinfo
+    {
+        const char *name, *prettyname;
+        networking::GameMode flags;
+        const char *info;
+    } gameModes[] = {
+        { "demo", "Demo", networking::GameMode::Demo | networking::GameMode::Local, NULL},
+        { "edit", "Edit", networking::GameMode::Edit, "Cooperative Editing:\nEdit maps with multiple players simultaneously." },
+        { "rdm", "rDM", networking::GameMode::Lobby | networking::GameMode::Rail, "Railgun Deathmatch:\nFrag everyone with railguns to score points." },
+        { "pdm", "pDM", networking::GameMode::Lobby | networking::GameMode::Pulse, "Pulse Rifle Deathmatch:\nFrag everyone with pulse rifles to score points." },
+        { "rtdm", "rTDM", networking::GameMode::Team | networking::GameMode::Rail, "Railgun Team Deathmatch:\nFrag \fs\f3the enemy team\fr with railguns to score points for \fs\f1your team\fr." },
+        { "ptdm", "pTDM", networking::GameMode::Team | networking::GameMode::Pulse, "Pulse Rifle Team Deathmatch:\nFrag \fs\f3the enemy team\fr with pulse rifles to score points for \fs\f1your team\fr." },
+        { "rctf", "rCTF", networking::GameMode::Ctf | networking::GameMode::Team | networking::GameMode::Rail, "Railgun Capture The Flag:\nCapture \fs\f3the enemy flag\fr and bring it back to \fs\f1your flag\fr to score points for \fs\f1your team\fr." },
+        { "pctf", "pCTF", networking::GameMode::Ctf | networking::GameMode::Team | networking::GameMode::Pulse, "Pulse Rifle Capture The Flag:\nCapture \fs\f3the enemy flag\fr and bring it back to \fs\f1your flag\fr to score points for \fs\f1your team\fr." },
+    };
+
+    #define STARTGAMEMODE (-1)
+    #define NUMGAMEMODES ((int)(sizeof(game::gameModes)/sizeof(game::gameModes[0])))
+
+    #define m_valid(mode)          ((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES)
+    #define m_check(mode, flag)    (m_valid(mode) && game::gameModes[(mode) - STARTGAMEMODE].flags&(flag))
+    #define m_checknot(mode, flag) (m_valid(mode) && !(game::gameModes[(mode) - STARTGAMEMODE].flags&(flag)))
+    #define m_checkall(mode, flag) (m_valid(mode) && (game::gameModes[(mode) - STARTGAMEMODE].flags&(flag)) == (flag))
+
+    #define m_ctf          (m_check(game::gameMode, ::networking::GameMode::Ctf))
+    #define m_teammode     (m_check(game::gameMode, ::networking::GameMode::Team))
+    #define m_overtime     (m_check(game::gameMode, ::networking::GameMode::OverTime))
+    #define isteam(a,b)    (m_teammode && a==b)
+    #define m_rail         (m_check(game::gameMode, ::networking::GameMode::Rail))
+    #define m_pulse        (m_check(game::gameMode, ::networking::GameMode::Pulse))
+
+    #define m_demo         (m_check(game::gameMode, ::networking::GameMode::Demo))
+    #define m_edit         (m_check(game::gameMode, ::networking::GameMode::Edit))
+    #define m_lobby        (m_check(game::gameMode, ::networking::GameMode::Lobby))
+    #define m_timed        (m_checknot(game::gameMode, ::networking::GameMode::Demo|networking::GameMode::Edit|networking::GameMode::Local))
+    #define m_botmode      (m_checknot(game::gameMode, ::networking::GameMode::Demo|networking::GameMode::Local))
+    #define m_mp(mode)     (m_checknot(mode, ::networking::GameMode::Local))
+
+
+
 
     //
     // Configs and Init/Deinit
@@ -57,16 +192,46 @@ namespace game
         bool ragdoll;
     };
 
-    extern void saveragdoll(entities::classes::CoreEntity *d);
+    extern void saveragdoll(entities::classes::BaseClientEntity *d);
     extern void clearragdolls();
     extern void moveragdolls();
-    extern const playermodelinfo &getplayermodelinfo(entities::classes::CoreEntity *d);
-    extern int getplayercolor(entities::classes::CoreEntity *d, int team);
+    extern const playermodelinfo &getplayermodelinfo(entities::classes::BaseClientEntity *d);
+    extern int getplayercolor(entities::classes::BaseClientEntity *d, int team);
     extern int chooserandomplayermodel(int seed);
     extern void syncplayer();
     extern void swayhudgun(int curtime);
-    extern vec hudgunorigin(int gun, const vec &from, const vec &to, entities::classes::CoreEntity *d);
+    extern vec hudgunorigin(int gun, const vec &from, const vec &to, entities::classes::BaseClientEntity *d);
+
+
+    extern bool clientoption(const char *arg);
+    extern ::entities::classes::BaseClientEntity *GetClient(int cn);
+    extern ::entities::classes::BaseClientEntity *NewClient(int cn);
+    extern const char *GenerateClientColorName(::entities::classes::BaseClientEntity *d, const char *name = NULL, const char *alt = NULL, const char *color = "");
+    extern const char *TeamColorName(::entities::classes::BaseClientEntity *d, const char *alt = "you");
+    extern const char *TeamColor(const char *prefix, const char *suffix, int team, const char *alt = "Team");
+    extern ::entities::classes::BaseClientEntity *PointAtPlayer();
+    extern ::entities::classes::BaseClientEntity *HUDPlayer();
+    extern ::entities::classes::BaseClientEntity *FollowingPlayer();
+    extern void StopFollowing();
+    extern void CheckFollow();
+    extern void NextFollow(int dir = 1);
+    extern void ClientDisconnected(int cn, bool notify = true);
+    extern void ClearClients(bool notify = true);
+    extern void StartGame();
 }
 
-#endif
-
+namespace server
+{
+    extern const char *modename(int n, const char *unknown = "unknown");
+    extern const char *modeprettyname(int n, const char *unknown = "unknown");
+    extern const char *mastermodename(int n, const char *unknown = "unknown");
+    extern void startintermission();
+    extern void stopdemo();
+    extern void forcemap(const char *map, int mode);
+    extern void forcepaused(bool paused);
+    extern void forcegamespeed(int speed);
+    extern void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen = MAXSTRLEN);
+    extern int MessageSizeLookup(networking::protocol::NetClientMessage msg);
+    extern bool serveroption(const char *arg);
+    extern bool delayspawn(int type);
+}

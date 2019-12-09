@@ -1,11 +1,15 @@
-#include "player.h"
 #include "cube.h"
-#include "game.h"
+
+#include "shared/entities/basecliententity.h"
+#include "shared/networking/cl_sv.h"
+
+#include "game/game.h"
+#include "game/entities/player.h"
 
 namespace entities {
 namespace classes {
 
-Player::Player() : BaseDynamicEntity() {
+Player::Player() : BaseClientEntity() {
 	state = CS_ALIVE;
 	et_type = ET_GAMESPECIFIC;
 	ent_type = ENT_PLAYER;

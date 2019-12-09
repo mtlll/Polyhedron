@@ -1,4 +1,5 @@
 #pragma once
+
 #include "shared/entities/basephysicalentity.h"
 
 namespace entities {

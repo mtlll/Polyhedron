@@ -244,7 +244,7 @@ namespace aiman
         botlimit = clamp(limit, 0, MAXBOTS);
         dorefresh = true;
         defformatcubestr(msg, "bot limit is now %d", botlimit);
-        sendservmsg(msg);
+        SendServMsg(msg);
     }
 
     void setbotbalance(clientinfo *ci, bool balance)
@@ -253,7 +253,7 @@ namespace aiman
         botbalance = balance ? 1 : 0;
         dorefresh = true;
         defformatcubestr(msg, "bot team balancing is now %s", botbalance ? "enabled" : "disabled");
-        sendservmsg(msg);
+        SendServMsg(msg);
     }
 
 
@@ -264,12 +264,12 @@ namespace aiman
         if(botbalance != (serverbotbalance != 0)) setbotbalance(NULL, serverbotbalance != 0);
     }
 
-    void addclient(clientinfo *ci)
+    void AddClient(ClientInfo *ci)
     {
         if(ci->state.aitype == AI_NONE) dorefresh = true;
     }
 
-    void changeteam(clientinfo *ci)
+    void changeteam(ClientInfo *ci)
     {
         if(ci->state.aitype == AI_NONE) dorefresh = true;
     }

@@ -1,7 +1,12 @@
-// script binding functionality
 #pragma once
+
 #include "cube.h"
 #include "tools.h"
+
+#include "shared/networking/network.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/networking/protocol.h"
+#include "shared/networking/cl_sv.h"
 
 enum { VAL_NULL = 0, VAL_INT, VAL_FLOAT, VAL_STR, VAL_ANY, VAL_CODE, VAL_MACRO, VAL_IDENT, VAL_CSTR, VAL_CANY, VAL_WORD, VAL_POP, VAL_COND };
 

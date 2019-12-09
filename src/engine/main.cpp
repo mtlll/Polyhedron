@@ -1,14 +1,17 @@
 // main.cpp: initialisation & main loop
 
 #include "engine.h"
-#include "../game/entities/player.h"
+#include "game/client/client.h"
+#include "game/server/server.h"
+
+#include "game/entities/player.h"
 
 extern void cleargamma();
 
 void cleanup()
 {
 	recorder::stop();
-	cleanupserver();
+	CleanupServer();
 	SDL_ShowCursor(SDL_TRUE);
 	SDL_SetRelativeMouseMode(SDL_FALSE);
 	if(screen) SDL_SetWindowGrab(screen, SDL_FALSE);
@@ -81,8 +84,8 @@ SDL_Window *screen = NULL;
 SDL_GLContext glcontext = NULL;
 
 //int curtime = 0, lastmillis = 1, ftsClient.elapsedTime = 0, ftsClient.totalMilliseconds = 1;
-// 
-FrameTimeState ftsClient; 
+// Replaced by: ftsClient
+game::networking::FrameTimeState ftsClient; 
 
 entities::classes::Player *player = NULL;
 
@@ -1129,7 +1132,7 @@ int main(int argc, char **argv)
     logoutf("init: Client Requirements");
 	initing = INIT_CLSV_CLIENT;
     
-	game::parseoptions(gameargs); // Parse the game options(Although there are none atm to my knowledge.) And initialize the local server.
+	game::ParseOptions(gameargs); // Parse the game options(Although there are none atm to my knowledge.) And initialize the local server.
 	ASSERT(dedicated <= 1)
  	initserver(dedicated>0, dedicated>1);  // never returns if dedicated
 
@@ -1257,7 +1260,7 @@ int main(int argc, char **argv)
 	{
 		logoutf("init: Changing to map: %s", load);
 		initing = INIT_WITH_MAPLOAD;
-		game::changemap(load);
+		game::client::ChangeMap(load);
 	}
 	
 	// Initialize the main game loop.

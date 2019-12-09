@@ -1010,7 +1010,7 @@ struct skelmodel : animmodel
                 sc = &c;
                 break;
             mismatch:
-                if(c.millis < lastmillis) { sc = &c; break; }
+                if(c.millis < ftsClient.lastMilliseconds) { sc = &c; break; }
             }
             if(!sc) sc = &skelcache.add();
             if(!match)
@@ -1022,7 +1022,7 @@ struct skelmodel : animmodel
                 if(rdata) genragdollbones(*rdata, *sc, p);
                 else interpbones(as, pitch, axis, forward, numanimparts, partmask, *sc);
             }
-            sc->millis = lastmillis;
+            sc->millis = ftsClient.lastMilliseconds;
             return *sc;
         }
 
@@ -1364,7 +1364,7 @@ struct skelmodel : animmodel
             loopi(cachesize-1) \
             { \
                 cacheentry &c = cache[i]; \
-                if(reusecheck c.owner < 0 || c.millis < lastmillis) \
+                if(reusecheck c.owner < 0 || c.millis < ftsClient.lastMilliseconds) \
                     return c; \
             } \
             return cache[cachesize-1];
@@ -1390,7 +1390,7 @@ struct skelmodel : animmodel
 
             if(skel->shouldcleanup()) skel->cleanup();
 
-            skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? NULL : d->ragdoll);
+            skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == ftsClient.lastMilliseconds ? NULL : d->ragdoll);
 
             intersect(hitdata, p, sc, o, ray);
 
@@ -1425,18 +1425,18 @@ struct skelmodel : animmodel
                 return;
             }
 
-            skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == lastmillis ? NULL : d->ragdoll);
+            skelcacheentry &sc = skel->checkskelcache(p, as, pitch, axis, forward, !d || !d->ragdoll || d->ragdoll->skel != skel->ragdoll || d->ragdoll->millis == ftsClient.lastMilliseconds ? NULL : d->ragdoll);
             if(!(as->cur.anim&ANIM_NORENDER))
             {
                 int owner = &sc-&skel->skelcache[0];
                 vbocacheentry &vc = skel->usegpuskel ? *vbocache : checkvbocache(sc, owner);
-                vc.millis = lastmillis;
+                vc.millis = ftsClient.lastMilliseconds;
                 if(!vc.vbuf) genvbo(vc);
                 blendcacheentry *bc = NULL;
                 if(vblends)
                 {
                     bc = &checkblendcache(sc, owner);
-                    bc->millis = lastmillis;
+                    bc->millis = ftsClient.lastMilliseconds;
                     if(bc->owner!=owner)
                     {
                         bc->owner = owner;

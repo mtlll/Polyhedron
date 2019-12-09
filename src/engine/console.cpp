@@ -2,8 +2,13 @@
 
 #include "engine.h"
 
-// WatIsDeze: Required.... sadly.
-#include "../game/entities/player.h"
+#include "shared/networking/protocol.h"
+#include "shared/networking/network.h"
+#include "shared/networking/cl_sv.h"
+
+#include "game/game.h"
+#include "game/server/server.h"
+#include "game/entities/player.h"
 
 #define MAXCONLINES 1000
 struct cline { char *line; int type, outtime; };

@@ -158,13 +158,13 @@ namespace entities
         }
         if(local && d->clientnum >= 0)
         {
-            sendposition(d);
+            SendPosition(d);
             packetbuf p(32, ENET_PACKET_FLAG_RELIABLE);
             putint(p, N_TELEPORT);
             putint(p, d->clientnum);
             putint(p, tp);
             putint(p, td);
-            sendclientpacket(p.finalize(), 0);
+            SendClientPacket(p.finalize(), 0);
             flushclient();
         }
     }
@@ -184,12 +184,12 @@ namespace entities
         }
         if(local && d->clientnum >= 0)
         {
-            sendposition(d);
+            SendPosition(d);
             packetbuf p(16, ENET_PACKET_FLAG_RELIABLE);
             putint(p, N_JUMPPAD);
             putint(p, d->clientnum);
             putint(p, jp);
-            sendclientpacket(p.finalize(), 0);
+            SendClientPacket(p.finalize(), 0);
             flushclient();
         }
     }

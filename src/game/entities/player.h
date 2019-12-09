@@ -1,12 +1,13 @@
 #pragma once
 
-#include "shared/entities/basedynamicentity.h"
+#include "shared/networking/cl_sv.h"
+#include "shared/entities/basecliententity.h"
 
 struct vec;
 
 namespace entities {
     namespace classes {
-        class Player : public BaseDynamicEntity {
+        class Player : public BaseClientEntity {
             ENTITY_FACTORY_IMPL(Player)
         public:
 			//
@@ -37,7 +38,7 @@ namespace entities {
 			// Entity member variables.
 			//
             DONTSERIALIZE entities::classes::BasePhysicalEntity *camera;
-			
+
         private:
 
         };

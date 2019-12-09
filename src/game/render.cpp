@@ -1,11 +1,14 @@
 #include "game.h"
 #include "engine/scriptexport.h"
-#include "entities.h"
-#include "entities/player.h"
+#include "shared/entities/basecliententity.h"
+#include "shared/entities/baseentity.h"
+#include "game/entities.h"
+#include "game/entities/player.h"
 
 namespace game
 {
-    __attribute__((optimize("O0"))) void RenderGameEntities()
+    //__attribute__((optimize("O0"))) void 
+    void RenderGameEntities()
     {
         loopv(entities::getents()) {
             entities::classes::BaseEntity *ent = dynamic_cast<entities::classes::BaseEntity*>(entities::getents()[i]);
@@ -58,7 +61,7 @@ namespace game
         return 0;
     }
 
-    __attribute__((used)) void findanims(const char *pattern, vector<int> &anims)
+    void findanims(const char *pattern, vector<int> &anims)
     {
         //loopi(sizeof(animnames)/sizeof(animnames[0])) if(matchanim(animnames[i], pattern)) anims.add(i);
     }
@@ -71,19 +74,25 @@ namespace game
     {
 
     }
-}
 
-SCRIPTEXPORT int getplayercolor(int team, int color)
-{
-    switch(team)
+    int getplayercolor(int team, int color)
     {
-        case 1: return 0x0000FF;
-        case 2: return 0xFF0000;
-        default: return 0xFFFF77;
+        switch(team)
+        {
+            case 1: return 0x0000FF;
+            case 2: return 0xFF0000;
+            default: return 0xFFFF77;
+        }
     }
-}
 
+    int _getplayercolor(entities::classes::BaseClientEntity *d, int color) {
+        return getplayercolor(d->ci.clientNumber, color);
+    }
 
+    SCRIPTEXPORT_AS(getclientcolor) void GetClientColor(int ci, int color) {
+        intret(_getplayercolor(game::, color));
+    }
+}   
 // >>>>>>>>>> SCRIPTBIND >>>>>>>>>>>>>> //
 #if 0
 #include "/Users/micha/dev/ScMaMike/src/build/binding/..+game+render.binding.cpp"

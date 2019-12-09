@@ -2,6 +2,16 @@
 
 namespace game
 {
+
+    bool senditemstoserver = false, sendcrc = false; // after a map change, since server doesn't have map data
+    int lastping = 0;
+
+    bool connected = false, remote = false, demoplayback = false, gamepaused = false;
+    int sessionid = 0, mastermode = MasterMode::Open, gamespeed = 100;
+    cubestr servdesc = "", servauth = "", connectpass = "";
+
+    VARP(deadpush, 1, 2, 20);
+
     VARP(minradarscale, 0, 384, 10000);
     VARP(maxradarscale, 1, 1024, 10000);
     VARP(radarteammates, 0, 1, 1);
@@ -133,14 +143,6 @@ namespace game
         else cmode = NULL;
     }
 
-    bool senditemstoserver = false, sendcrc = false; // after a map change, since server doesn't have map data
-    int lastping = 0;
-
-    bool connected = false, remote = false, demoplayback = false, gamepaused = false;
-    int sessionid = 0, mastermode = MM_OPEN, gamespeed = 100;
-    cubestr servdesc = "", servauth = "", connectpass = "";
-
-    VARP(deadpush, 1, 2, 20);
 
     void switchname(const char *name)
     {
@@ -568,18 +570,18 @@ namespace game
 
     ICOMMAND(checkmaps, "", (), addmsg(N_CHECKMAPS, "r"));
 
-    int gamemode = INT_MAX, nextmode = INT_MAX;
+    int gameMode = INT_MAX, nextmode = INT_MAX;
     cubestr clientmap = "";
 
     void changemapserv(const char *name, int mode)        // forced map change from the server
     {
         if(multiplayer(false) && !m_mp(mode))
         {
-            conoutf(CON_ERROR, "mode %s (%d) not supported in multiplayer", server::modeprettyname(gamemode), gamemode);
+            conoutf(CON_ERROR, "mode %s (%d) not supported in multiplayer", server::modeprettyname(gameMode), gameMode);
             loopi(NUMGAMEMODES) if(m_mp(STARTGAMEMODE + i)) { mode = STARTGAMEMODE + i; break; }
         }
 
-        gamemode = mode;
+        gameMode = mode;
         nextmode = mode;
         if(editmode) toggleedit();
         if(m_demo) { entities::resetspawns(); return; }
@@ -603,7 +605,7 @@ namespace game
         intret(1);
     }
     ICOMMAND(mode, "i", (int *val), setmode(*val));
-    ICOMMAND(getmode, "", (), intret(gamemode));
+    ICOMMAND(getmode, "", (), intret(gameMode));
     ICOMMAND(getnextmode, "", (), intret(m_valid(nextmode) ? nextmode : (remote ? 1 : 0)));
     ICOMMAND(getmodename, "i", (int *mode), result(server::modename(*mode, "")));
     ICOMMAND(getmodeprettyname, "i", (int *mode), result(server::modeprettyname(*mode, "")));
@@ -615,14 +617,14 @@ namespace game
     });
     ICOMMAND(intermission, "", (), intret(intermission ? 1 : 0));
 
-    ICOMMANDS("m_ctf", "i", (int *mode), { int gamemode = *mode; intret(m_ctf); });
-    ICOMMANDS("m_teammode", "i", (int *mode), { int gamemode = *mode; intret(m_teammode); });
-    ICOMMANDS("m_rail", "i", (int *mode), { int gamemode = *mode; intret(m_rail); });
-    ICOMMANDS("m_pulse", "i", (int *mode), { int gamemode = *mode; intret(m_pulse); });
-    ICOMMANDS("m_demo", "i", (int *mode), { int gamemode = *mode; intret(m_demo); });
-    ICOMMANDS("m_edit", "i", (int *mode), { int gamemode = *mode; intret(m_edit); });
-    ICOMMANDS("m_lobby", "i", (int *mode), { int gamemode = *mode; intret(m_lobby); });
-    ICOMMANDS("m_timed", "i", (int *mode), { int gamemode = *mode; intret(m_timed); });
+    ICOMMANDS("m_ctf", "i", (int *mode), { int gameMode = *mode; intret(m_ctf); });
+    ICOMMANDS("m_teammode", "i", (int *mode), { int gameMode = *mode; intret(m_teammode); });
+    ICOMMANDS("m_rail", "i", (int *mode), { int gameMode = *mode; intret(m_rail); });
+    ICOMMANDS("m_pulse", "i", (int *mode), { int gameMode = *mode; intret(m_pulse); });
+    ICOMMANDS("m_demo", "i", (int *mode), { int gameMode = *mode; intret(m_demo); });
+    ICOMMANDS("m_edit", "i", (int *mode), { int gameMode = *mode; intret(m_edit); });
+    ICOMMANDS("m_lobby", "i", (int *mode), { int gameMode = *mode; intret(m_lobby); });
+    ICOMMANDS("m_timed", "i", (int *mode), { int gameMode = *mode; intret(m_timed); });
 
     void changemap(const char *name, int mode) // request map change, server may ignore
     {
@@ -665,7 +667,7 @@ namespace game
         putint(p, inlen);
         putint(p, outlen);
         if(outlen > 0) p.put(outbuf, outlen);
-        sendclientpacket(p.finalize(), 1);
+        SendClientPacket(p.finalize(), 1);
         needclipboard = -1;
     }
 
@@ -860,7 +862,7 @@ namespace game
 
     // collect c2s messages conveniently
     vector<uchar> messages;
-    int messagecn = -1, messagereliable = false;
+    int messageClientNumber = -1, messageReliable = false;
 
     bool addmsg(int type, const char *fmt, ...)
     {
@@ -912,17 +914,17 @@ namespace game
             }
             va_end(args);
         }
-        int num = nums || numf ? 0 : numi, msgsize = server::msgsizelookup(type);
+        int num = nums || numf ? 0 : numi, msgsize = ::server::MessageSizeLookup(type);
         if(msgsize && num!=msgsize) { fatal("inconsistent msg size for %d (%d != %d)", type, num, msgsize); }
-        if(reliable) messagereliable = true;
-        if(mcn != messagecn)
+        if(reliable) messageReliable = true;
+        if(mcn != messageClientNumber)
         {
             static uchar mbuf[16];
             ucharbuf m(mbuf, sizeof(mbuf));
             putint(m, N_FROMAI);
             putint(m, mcn);
             messages.put(mbuf, m.length());
-            messagecn = mcn;
+            messageClientNumber = mcn;
         }
         messages.put(buf, p.length());
         return true;
@@ -953,8 +955,8 @@ namespace game
         sessionid = 0;
         mastermode = MM_OPEN;
         messages.setsize(0);
-        messagereliable = false;
-        messagecn = -1;
+        messageReliable = false;
+        messageClientNumber = -1;
         player1->respawn();
         player1->lifesequence = 0;
         player1->state = CS_ALIVE;
@@ -966,7 +968,7 @@ namespace game
         clearclients(false);
         if(cleanup)
         {
-            nextmode = gamemode = INT_MAX;
+            nextmode = gameMode = INT_MAX;
             clientmap[0] = '\0';
         }
     }
@@ -979,7 +981,7 @@ namespace game
 
     ICOMMAND(servcmd, "C", (char *cmd), addmsg(N_SERVCMD, "rs", cmd));
 
-    static void sendposition(gameent *d, packetbuf &q)
+    static void SendPosition(gameent *d, packetbuf &q)
     {
         putint(q, N_POS);
         putuint(q, d->clientnum);
@@ -1035,15 +1037,15 @@ namespace game
         }
     }
 
-    void sendposition(gameent *d, bool reliable)
+    void SendPosition(gameent *d, bool reliable)
     {
         if(d->state != CS_ALIVE && d->state != CS_EDITING) return;
         packetbuf q(100, reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
-        sendposition(d, q);
-        sendclientpacket(q.finalize(), 0);
+        SendPosition(d, q);
+        SendClientPacket(q.finalize(), 0);
     }
 
-    void sendpositions()
+    void SendPositions()
     {
         loopv(players)
         {
@@ -1051,14 +1053,14 @@ namespace game
             if((d == player1 || d->ai) && (d->state == CS_ALIVE || d->state == CS_EDITING))
             {
                 packetbuf q(100);
-                sendposition(d, q);
+                SendPosition(d, q);
                 for(int j = i+1; j < players.length(); j++)
                 {
                     gameent *d = players[j];
                     if((d == player1 || d->ai) && (d->state == CS_ALIVE || d->state == CS_EDITING))
-                        sendposition(d, q);
+                        SendPosition(d, q);
                 }
-                sendclientpacket(q.finalize(), 0);
+                SendClientPacket(q.finalize(), 0);
                 break;
             }
         }
@@ -1087,9 +1089,9 @@ namespace game
         {
             p.put(messages.getbuf(), messages.length());
             messages.setsize(0);
-            if(messagereliable) p.reliable();
-            messagereliable = false;
-            messagecn = -1;
+            if(messageReliable) p.reliable();
+            messageReliable = false;
+            messageClientNumber = -1;
         }
         if(ftsClient.totalMilliseconds-lastping>250)
         {
@@ -1097,7 +1099,7 @@ namespace game
             putint(p, ftsClient.totalMilliseconds);
             lastping = ftsClient.totalMilliseconds;
         }
-        sendclientpacket(p.finalize(), 1);
+        SendClientPacket(p.finalize(), 1);
     }
 
     void c2sinfo(bool force) // send update to the server
@@ -1105,7 +1107,7 @@ namespace game
         static int lastupdate = -1000;
         if(ftsClient.totalMilliseconds - lastupdate < 40 && !force) return; // don't update faster than 30fps
         lastupdate = ftsClient.totalMilliseconds;
-        sendpositions();
+        SendPositions();
         sendmessages();
         flushclient();
     }
@@ -1136,7 +1138,7 @@ namespace game
             sendcubestr("", p);
             sendcubestr("", p);
         }
-        sendclientpacket(p.finalize(), 1);
+        SendClientPacket(p.finalize(), 1);
     }
 
     void updatepos(gameent *d)
@@ -1843,7 +1845,7 @@ namespace game
                 if(on) player1->state = CS_SPECTATOR;
                 else clearclients();
                 demoplayback = on!=0;
-                player1->clientnum = getint(p);
+                game::player1->clientNumber = getint(p);
                 gamepaused = false;
                 checkfollow();
                 execident(on ? "demostart" : "demoend");
@@ -1972,7 +1974,7 @@ namespace game
                     sendcubestr(a->desc, p);
                     putint(p, id);
                     sendcubestr(buf.getbuf(), p);
-                    sendclientpacket(p.finalize(), 1);
+                    SendClientPacket(p.finalize(), 1);
                 }
                 break;
             }

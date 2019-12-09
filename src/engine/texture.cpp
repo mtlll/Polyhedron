@@ -2032,64 +2032,64 @@ void packvslot(vector<uchar> &buf, const VSlot &src)
         {
             const SlotShaderParam &p = src.params[i];
             buf.put(VSLOT_SHPARAM);
-            sendcubestr(p.name, buf);
-            loopj(4) putfloat(buf, p.val[j]);
+            game::networking::sendcubestr(p.name, buf);
+            loopj(4) game::networking::putfloat(buf, p.val[j]);
         }
     }
     if(src.changed & (1<<VSLOT_SCALE))
     {
         buf.put(VSLOT_SCALE);
-        putfloat(buf, src.scale);
+        game::networking::putfloat(buf, src.scale);
     }
     if(src.changed & (1<<VSLOT_ROTATION))
     {
         buf.put(VSLOT_ROTATION);
         // WatIsDeze: Todo: Fetched from svn rev 2199/rev 2200 from Tesseract svn.
         //putfloat(buf, src.rotation);
-        putint(buf, src.rotation);
+        game::networking::putint(buf, src.rotation);
     }
     if(src.changed & (1<<VSLOT_OFFSET))
     {
         buf.put(VSLOT_OFFSET);
-        putint(buf, src.offset.x);
-        putint(buf, src.offset.y);
+        game::networking::putint(buf, src.offset.x);
+        game::networking::putint(buf, src.offset.y);
     }
     if(src.changed & (1<<VSLOT_SCROLL))
     {
         buf.put(VSLOT_SCROLL);
-        putfloat(buf, src.scroll.x);
-        putfloat(buf, src.scroll.y);
+        game::networking::putfloat(buf, src.scroll.x);
+        game::networking::putfloat(buf, src.scroll.y);
     }
     if(src.changed & (1<<VSLOT_LAYER))
     {
         buf.put(VSLOT_LAYER);
-        putuint(buf, vslots.inrange(src.layer) && !vslots[src.layer]->changed ? src.layer : 0);
+        game::networking::putuint(buf, vslots.inrange(src.layer) && !vslots[src.layer]->changed ? src.layer : 0);
     }
     if(src.changed & (1<<VSLOT_ALPHA))
     {
         buf.put(VSLOT_ALPHA);
-        putfloat(buf, src.alphafront);
-        putfloat(buf, src.alphaback);
+        game::networking::putfloat(buf, src.alphafront);
+        game::networking::putfloat(buf, src.alphaback);
     }
     if(src.changed & (1<<VSLOT_COLOR))
     {
         buf.put(VSLOT_COLOR);
-        putfloat(buf, src.colorscale.r);
-        putfloat(buf, src.colorscale.g);
-        putfloat(buf, src.colorscale.b);
+        game::networking::putfloat(buf, src.colorscale.r);
+        game::networking::putfloat(buf, src.colorscale.g);
+        game::networking::putfloat(buf, src.colorscale.b);
     }
     if(src.changed & (1<<VSLOT_REFRACT))
     {
         buf.put(VSLOT_REFRACT);
-        putfloat(buf, src.refractscale);
-        putfloat(buf, src.refractcolor.r);
-        putfloat(buf, src.refractcolor.g);
-        putfloat(buf, src.refractcolor.b);
+        game::networking::putfloat(buf, src.refractscale);
+        game::networking::putfloat(buf, src.refractcolor.r);
+        game::networking::putfloat(buf, src.refractcolor.g);
+        game::networking::putfloat(buf, src.refractcolor.b);
     }
     if(src.changed & (1<<VSLOT_DETAIL))
     {
         buf.put(VSLOT_DETAIL);
-        putuint(buf, vslots.inrange(src.detail) && !vslots[src.detail]->changed ? src.detail : 0);
+        game::networking::putuint(buf, vslots.inrange(src.detail) && !vslots[src.detail]->changed ? src.detail : 0);
     }
     buf.put(0xFF);
 }
@@ -2119,27 +2119,27 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
                 cubestr name;
                 getcubestr(name, buf);
                 SlotShaderParam p = { name[0] ? getshaderparamname(name) : NULL, -1, 0, { 0, 0, 0, 0 } };
-                loopi(4) p.val[i] = getfloat(buf);
+                loopi(4) p.val[i] = game::networking::getfloat(buf);
                 if(p.name) dst.params.add(p);
                 break;
             }
             case VSLOT_SCALE:
-                dst.scale = getfloat(buf);
+                dst.scale = game::networking::getfloat(buf);
                 if(dst.scale <= 0) dst.scale = 1;
                 else if(!delta) dst.scale = clamp(dst.scale, 1/8.0f, 8.0f);
                 break;
             case VSLOT_ROTATION:
-                dst.rotation = getint(buf);
+                dst.rotation = game::networking::getint(buf);
                 if(!delta) dst.rotation = clamp(dst.rotation, 0, 7);
                 break;
             case VSLOT_OFFSET:
-                dst.offset.x = getint(buf);
-                dst.offset.y = getint(buf);
+                dst.offset.x = game::networking::getint(buf);
+                dst.offset.y = game::networking::getint(buf);
                 if(!delta) dst.offset.max(0);
                 break;
             case VSLOT_SCROLL:
-                dst.scroll.x = getfloat(buf);
-                dst.scroll.y = getfloat(buf);
+                dst.scroll.x = game::networking::getfloat(buf);
+                dst.scroll.y = game::networking::getfloat(buf);
                 break;
             case VSLOT_LAYER:
             {
@@ -2148,23 +2148,23 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
                 break;
             }
             case VSLOT_ALPHA:
-                dst.alphafront = clamp(getfloat(buf), 0.0f, 1.0f);
-                dst.alphaback = clamp(getfloat(buf), 0.0f, 1.0f);
+                dst.alphafront = clamp(game::networking::getfloat(buf), 0.0f, 1.0f);
+                dst.alphaback = clamp(game::networking::getfloat(buf), 0.0f, 1.0f);
                 break;
             case VSLOT_COLOR:
-                dst.colorscale.r = clamp(getfloat(buf), 0.0f, 2.0f);
-                dst.colorscale.g = clamp(getfloat(buf), 0.0f, 2.0f);
-                dst.colorscale.b = clamp(getfloat(buf), 0.0f, 2.0f);
+                dst.colorscale.r = clamp(game::networking::getfloat(buf), 0.0f, 2.0f);
+                dst.colorscale.g = clamp(game::networking::getfloat(buf), 0.0f, 2.0f);
+                dst.colorscale.b = clamp(game::networking::getfloat(buf), 0.0f, 2.0f);
                 break;
             case VSLOT_REFRACT:
-                dst.refractscale = clamp(getfloat(buf), 0.0f, 1.0f);
-                dst.refractcolor.r = clamp(getfloat(buf), 0.0f, 1.0f);
-                dst.refractcolor.g = clamp(getfloat(buf), 0.0f, 1.0f);
-                dst.refractcolor.b = clamp(getfloat(buf), 0.0f, 1.0f);
+                dst.refractscale = clamp(game::networking::getfloat(buf), 0.0f, 1.0f);
+                dst.refractcolor.r = clamp(game::networking::getfloat(buf), 0.0f, 1.0f);
+                dst.refractcolor.g = clamp(game::networking::getfloat(buf), 0.0f, 1.0f);
+                dst.refractcolor.b = clamp(game::networking::getfloat(buf), 0.0f, 1.0f);
                 break;
             case VSLOT_DETAIL:
             {
-                int tex = getuint(buf);
+                int tex = game::networking::getuint(buf);
                 dst.detail = vslots.inrange(tex) ? tex : 0;
                 break;
             }
