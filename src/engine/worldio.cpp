@@ -602,7 +602,7 @@ bool save_world(const char *mname, bool nolms)
     if(!f) { conoutf(CON_WARN, "could not write map to %s", ogzname); return false; }
 
     int numvslots = vslots.length();
-    if(!nolms && !multiplayer(false))
+    if(!nolms && !game::networking::Multiplayer(false))
     {
         numvslots = compactvslots();
         allchanged();
@@ -709,7 +709,7 @@ bool save_world(const char *mname, bool nolms)
 
 static uint mapcrc = 0;
 
-uint getmapcrc() { return mapcrc; }
+uint GetMapCRC() { return mapcrc; }
 void clearmapcrc() { mapcrc = 0; }
 
 bool load_world(const char *mname, const char *cname)        // Does not support old map formats anymore.

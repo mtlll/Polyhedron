@@ -1861,7 +1861,7 @@ int compactvslots(bool cull)
 SCRIPTEXPORT_AS(compactvslots) void compactvslots_scriptimpl(int *cull)
 {
     extern int nompedit;
-    if(nompedit && multiplayer()) return;
+    if(nompedit && game::networking::Multiplayer()) return;
     compactvslots(*cull!=0);
     allchanged();
 }
@@ -2117,7 +2117,7 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
             case VSLOT_SHPARAM:
             {
                 cubestr name;
-                getcubestr(name, buf);
+                game::networking::getcubestr(name, buf);
                 SlotShaderParam p = { name[0] ? getshaderparamname(name) : NULL, -1, 0, { 0, 0, 0, 0 } };
                 loopi(4) p.val[i] = game::networking::getfloat(buf);
                 if(p.name) dst.params.add(p);
@@ -2143,7 +2143,7 @@ bool unpackvslot(ucharbuf &buf, VSlot &dst, bool delta)
                 break;
             case VSLOT_LAYER:
             {
-                int tex = getuint(buf);
+                int tex = game::networking::getuint(buf);
                 dst.layer = vslots.inrange(tex) ? tex : 0;
                 break;
             }
@@ -2232,7 +2232,7 @@ static void fixinsidefaces(cube *c, const ivec &o, int size, int tex)
 SCRIPTEXPORT_AS(fixinsidefaces) void fixinsidefaces_scriptimpl(int *tex)
 {
     extern int nompedit;
-    if(noedit(true) || (nompedit && multiplayer())) return;
+    if(noedit(true) || (nompedit && game::networking::Multiplayer())) return;
     fixinsidefaces(worldroot, ivec(0, 0, 0), worldsize>>1, *tex && vslots.inrange(*tex) ? *tex : DEFAULT_GEOM);
     allchanged();
 }
@@ -3006,7 +3006,7 @@ GLuint genenvmap(const vec &o, int envmapsize, int blur, bool onlysky)
     }
     glBindFramebuffer_(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, hudw, hudh);
-    clientkeepalive();
+    ClientKeepAlive();
     return tex;
 }
 

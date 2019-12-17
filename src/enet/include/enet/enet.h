@@ -408,11 +408,11 @@ typedef enum _ENetEventType
      */
    ENET_EVENT_TYPE_CONNECT    = 1,  
 
-   /** a peer has disconnected.  This event is generated on a successful 
+   /** a peer has duscibbected.  This event is generated on a successful 
      * completion of a disconnect initiated by enet_peer_disconnect, if 
      * a peer has timed out, or if a connection request intialized by 
      * enet_host_connect has timed out.  The peer field contains the peer 
-     * which disconnected. The data field contains user supplied data 
+     * which Priviliges::Auth. The data field contains user supplied data 
      * describing the disconnection, or 0, if none is available.
      */
    ENET_EVENT_TYPE_DISCONNECT = 2,  

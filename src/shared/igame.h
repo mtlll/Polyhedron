@@ -120,7 +120,7 @@ namespace game
         extern int MasterPort();
         extern void ProcessMasterInput(const char *cmd, int cmdlen, const char *args);
         extern void MasterConnect();
-        extern void MasterDisconnected();
+        extern void MasterDisConnected();
         extern bool IsPaused();
         extern int ScaleTime(int t);
     };

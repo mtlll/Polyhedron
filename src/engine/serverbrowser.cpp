@@ -1,6 +1,12 @@
 #include "engine.h"
-#include "shared/networking/cl_sv.h"
+
 #include "game/server/server.h"
+#include "game/client/client.h"
+
+#include "shared/networking/cl_sv.h"
+#include "shared/networking/network.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/networking/protocol.h"
 
 struct resolverthread
 {
@@ -214,54 +220,63 @@ int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress 
     return -1;
 }
 
-struct pingattempts
-{
-    enum { MAXATTEMPTS = 2 };
-
-    int offset, attempts[MAXATTEMPTS];
-
-    pingattempts() : offset(0) { clearattempts(); }
-
-    void clearattempts() { memset(attempts, 0, sizeof(attempts)); }
-
-    void setoffset() { offset = 1 + rnd(0xFFFFFF); }
-
-    int encodeping(int millis)
-    {
-        millis += offset;
-        return millis ? millis : 1;
-    }
-
-    int decodeping(int val)
-    {
-        return val - offset;
-    }
-
-    int addattempt(int millis)
-    {
-        int val = encodeping(millis);
-        loopk(MAXATTEMPTS-1) attempts[k+1] = attempts[k];
-        attempts[0] = val;
-        return val;
-    }
-
-    bool checkattempt(int val, bool del = true)
-    {
-        if(val) loopk(MAXATTEMPTS) if(attempts[k] == val)
+namespace game { 
+    namespace networking {
+        struct BrowserPingAttempts
         {
-            if(del) attempts[k] = 0;
-            return true;
-        }
-        return false;
-    }
+        public:
+            enum class MaxAttempts : int { 
+                Two = 2 
+            };
 
-};
+            int offset = 0;
+            int attempts[2];
 
-static int currentprotocol = game::server::ProtocolVersion();
+            BrowserPingAttempts() {
+                ClearAttempts();
+            }
+
+            void ClearAttempts() {
+                std::memset(attempts, 0, static_cast<std::size_t>(MaxAttempts::Two));
+            }
+
+            void SetOffset() {
+                offset = 1 + rnd(0xFFFFFF);
+            }
+
+            int EncodePing(int millis) {
+                millis += offset;
+                return millis ? millis : 1;
+            }
+
+            int DecodePing(int val) {
+                return val - offset;
+            }
+
+            int AddAttempt(int millis) {
+                int val = EncodePing(millis);
+                loopk(static_cast<int>(MaxAttempts::Two)-1) attempts[k+1] = attempts[k];
+                attempts[0] = val;
+                return val;
+            }
+
+            bool CheckAttempt(int val, bool del = true) {
+                if(val) loopk(static_cast<int>(MaxAttempts::Two)) if(attempts[k] == val)
+                {
+                    if(del) attempts[k] = 0;
+                    return true;
+                }
+                return false;
+            }
+        };
+    };
+
+
+static int currentProtocol = game::server::ProtocolVersion();
 
 enum { UNRESOLVED = 0, RESOLVING, RESOLVED };
 
-struct serverinfo : servinfo, pingattempts
+struct BrowserServerInfo : public game::networking::BrowserPingAttempts, public game::networking::ServerInfo, public game::networking::ServerClient
 {
     enum
     {
@@ -270,90 +285,90 @@ struct serverinfo : servinfo, pingattempts
         MAXPINGS = 3
     };
 
-    int resolved, lastping, nextping;
+    int resolved, lastPing, nextPing;
     int pings[MAXPINGS];
     ENetAddress address;
     bool keep;
     const char *password;
 
-    serverinfo()
+    BrowserServerInfo()
      : resolved(UNRESOLVED), keep(false), password(NULL)
     {
-        clearpings();
-        setoffset();
+        ClearPings();
+        SetOffset();
     }
 
-    ~serverinfo()
+    ~BrowserServerInfo()
     {
         DELETEA(password);
     }
 
-    void clearpings()
+    void ClearPings()
     {
         ping = WAITING;
         loopk(MAXPINGS) pings[k] = WAITING;
-        nextping = 0;
-        lastping = -1;
-        clearattempts();
+        nextPing = 0;
+        lastPing = -1;
+        ClearAttempts();
     }
 
-    void cleanup()
+    void CleanUp()
     {
-        clearpings();
+        ClearPings();
         protocol = -1;
-        numplayers = maxplayers = 0;
+        numberOfPlayers = maxPlayers = 0;
         attr.setsize(0);
     }
 
-    void reset()
+    void Reset()
     {
-        lastping = -1;
+        lastPing = -1;
     }
 
-    void checkdecay(int decay)
+    void CheckDecay(int decay)
     {
-        if(lastping >= 0 && ftsClient.totalMilliseconds - lastping >= decay)
-            cleanup();
-        if(lastping < 0) lastping = ftsClient.totalMilliseconds;
+        if(lastPing >= 0 && ftsClient.totalMilliseconds - lastPing >= decay)
+            CleanUp();
+        if(lastPing < 0) lastPing = ftsClient.totalMilliseconds;
     }
 
-    void calcping()
+    void CalcPing()
     {
-        int numpings = 0, totalpings = 0;
-        loopk(MAXPINGS) if(pings[k] != WAITING) { totalpings += pings[k]; numpings++; }
-        ping = numpings ? totalpings/numpings : WAITING;
+        int numPings = 0, totalPings = 0;
+        loopk(MAXPINGS) if(pings[k] != WAITING) { totalPings += pings[k]; numPings++; }
+        ping = numPings ? totalPings/numPings : WAITING;
     }
 
-    void addping(int rtt, int millis)
+    void AddPing(int rtt, int millis)
     {
-        if(millis >= lastping) lastping = -1;
-        pings[nextping] = rtt;
-        nextping = (nextping+1)%MAXPINGS;
-        calcping();
+        if(millis >= lastPing) lastPing = -1;
+        pings[nextPing] = rtt;
+        nextPing = (nextPing+1)%MAXPINGS;
+        CalcPing();
     }
 
-    const char *status() const
+    const char *Status() const
     {
         if(address.host == ENET_HOST_ANY) return "[unknown host]";
         if(ping == WAITING) return "[waiting for response]";
-        if(protocol < currentprotocol) return "[older protocol]";
-        if(protocol > currentprotocol) return "[newer protocol]";
+        if(protocol < currentProtocol) return "[older protocol]";
+        if(protocol > currentProtocol) return "[newer protocol]";
         return NULL;
     }
 
-    bool valid() const { return !status(); }
+    bool valid() const { return !Status(); }
 
-    static bool compare(serverinfo *a, serverinfo *b)
+    static bool Compare(BrowserServerInfo *a, BrowserServerInfo *b)
     {
-        if(a->protocol == currentprotocol)
+        if(a->protocol == currentProtocol)
         {
-            if(b->protocol != currentprotocol) return true;
+            if(b->protocol != currentProtocol) return true;
         }
-        else if(b->protocol == currentprotocol) return false;
+        else if(b->protocol == currentProtocol) return false;
         if(a->keep > b->keep) return true;
         if(a->keep < b->keep) return false;
-        if(a->numplayers < b->numplayers) return false;
-        if(a->numplayers > b->numplayers) return true;
+        if(a->numberOfPlayers < b->numberOfPlayers) return false;
+        if(a->numberOfPlayers > b->numberOfPlayers) return true;
         if(a->ping > b->ping) return false;
         if(a->ping < b->ping) return true;
         int cmp = strcmp(a->name, b->name);
@@ -364,13 +379,14 @@ struct serverinfo : servinfo, pingattempts
     }
 };
 
-vector<serverinfo *> servers;
-ENetSocket pingsock = ENET_SOCKET_NULL;
-int lastinfo = 0;
+vector<BrowserServerInfo *> browserServers;
+ENetSocket browserPingSock = ENET_SOCKET_NULL;
+BrowserServerInfo browserLanPings;
+int browserLastInfo = 0;
 
-static serverinfo *newserver(const char *name, int port, uint ip = ENET_HOST_ANY)
+static BrowserServerInfo *NewServer(const char *name, int port, uint ip = ENET_HOST_ANY)
 {
-    serverinfo *si = new serverinfo;
+    BrowserServerInfo *si = new BrowserServerInfo;
     si->address.host = ip;
     si->address.port = port;
     if(ip!=ENET_HOST_ANY) si->resolved = RESOLVED;
@@ -383,17 +399,17 @@ static serverinfo *newserver(const char *name, int port, uint ip = ENET_HOST_ANY
 
     }
 
-    servers.add(si);
+    browserServers.add(si);
 
     return si;
 }
 
-void addserver(const char *name, int port, const char *password, bool keep)
+void AddServer(const char *name, int port, const char *password, bool keep = true)
 {
     if(port <= 0) port = game::server::ServerPort();
-    loopv(servers)
+    loopv(browserServers)
     {
-        serverinfo *s = servers[i];
+        BrowserServerInfo *s = browserServers[i];
         if(strcmp(s->name, name) || s->address.port != port) continue;
         if(password && (!s->password || strcmp(s->password, password)))
         {
@@ -403,7 +419,7 @@ void addserver(const char *name, int port, const char *password, bool keep)
         if(keep && !s->keep) s->keep = true;
         return;
     }
-    serverinfo *s = newserver(name, port);
+    BrowserServerInfo *s = NewServer(name, port);
     if(!s) return;
     if(password) s->password = newcubestr(password);
     s->keep = keep;
@@ -414,65 +430,65 @@ VARMP(servpingrate, 1, 5, 60, 1000);
 VARMP(servpingdecay, 1, 15, 60, 1000);
 VARP(maxservpings, 0, 10, 1000);
 
-pingattempts lanpings;
+game::networking::BrowserPingAttempts lanPings;
 
-template<size_t N> static inline void buildping(ENetBuffer &buf, uchar (&ping)[N], pingattempts &a)
+template<size_t N> static inline void BuildPing(ENetBuffer &buf, uchar (&ping)[N], game::networking::BrowserPingAttempts &a)
 {
     ucharbuf p(ping, N);
     p.put(0xFF); p.put(0xFF);
-    game::networking::putint(p, a.addattempt(ftsClient.totalMilliseconds));
+    game::networking::putint(p, a.AddAttempt(ftsClient.totalMilliseconds));
     buf.data = ping;
     buf.dataLength = p.length();
 }
 
 void pingservers()
 {
-    if(pingsock == ENET_SOCKET_NULL)
+    if(browserPingSock == ENET_SOCKET_NULL)
     {
-        pingsock = enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM);
-        if(pingsock == ENET_SOCKET_NULL)
+        browserPingSock = enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM);
+        if(browserPingSock == ENET_SOCKET_NULL)
         {
-            lastinfo = ftsClient.totalMilliseconds;
+            browserLastInfo = ftsClient.totalMilliseconds;
             return;
         }
-        enet_socket_set_option(pingsock, ENET_SOCKOPT_NONBLOCK, 1);
-        enet_socket_set_option(pingsock, ENET_SOCKOPT_BROADCAST, 1);
+        enet_socket_set_option(browserPingSock, ENET_SOCKOPT_NONBLOCK, 1);
+        enet_socket_set_option(browserPingSock, ENET_SOCKOPT_BROADCAST, 1);
 
-        lanpings.setoffset();
+        lanPings.SetOffset();
     }
 
     ENetBuffer buf;
     uchar ping[MAXTRANS];
 
-    static int lastping = 0;
-    if(lastping >= servers.length()) lastping = 0;
-    loopi(maxservpings ? min(servers.length(), maxservpings) : servers.length())
+    static int lastPing = 0;
+    if(lastPing >= browserServers.length()) lastPing = 0;
+    loopi(maxservpings ? min(browserServers.length(), maxservpings) : browserServers.length())
     {
-        serverinfo &si = *servers[lastping];
-        if(++lastping >= servers.length()) lastping = 0;
+        BrowserServerInfo &si = *browserServers[lastPing];
+        if(++lastPing >= browserServers.length()) lastPing = 0;
         if(si.address.host == ENET_HOST_ANY) continue;
-        buildping(buf, ping, si);
-        enet_socket_send(pingsock, &si.address, &buf, 1);
+        BuildPing(buf, ping, si);
+        enet_socket_send(browserPingSock, &si.address, &buf, 1);
 
-        si.checkdecay(servpingdecay);
+        si.CheckDecay(servpingdecay);
     }
     if(searchlan)
     {
         ENetAddress address;
         address.host = ENET_HOST_BROADCAST;
         address.port = game::server::LanInfoPort();
-        buildping(buf, ping, lanpings);
-        enet_socket_send(pingsock, &address, &buf, 1);
+        BuildPing(buf, ping, browserLanPings);
+        enet_socket_send(browserPingSock, &address, &buf, 1);
     }
-    lastinfo = ftsClient.totalMilliseconds;
+    browserLastInfo = ftsClient.totalMilliseconds;
 }
 
 void checkresolver()
 {
     int resolving = 0;
-    loopv(servers)
+    loopv(browserServers)
     {
-        serverinfo &si = *servers[i];
+        BrowserServerInfo &si = *browserServers[i];
         if(si.resolved == RESOLVED) continue;
         if(si.address.host == ENET_HOST_ANY)
         {
@@ -487,9 +503,9 @@ void checkresolver()
     {
         ENetAddress addr = { ENET_HOST_ANY, ENET_PORT_ANY };
         if(!resolvercheck(&name, &addr)) break;
-        loopv(servers)
+        loopv(browserServers)
         {
-            serverinfo &si = *servers[i];
+            BrowserServerInfo &si = *browserServers[i];
             if(name == si.name)
             {
                 si.resolved = RESOLVED;
@@ -502,9 +518,9 @@ void checkresolver()
 
 static int lastreset = 0;
 
-void checkpings()
+void CheckPings()
 {
-    if(pingsock==ENET_SOCKET_NULL) return;
+    if(browserPingSock==ENET_SOCKET_NULL) return;
     enet_uint32 events = ENET_SOCKET_WAIT_RECEIVE;
     ENetBuffer buf;
     ENetAddress addr;
@@ -512,173 +528,173 @@ void checkpings()
     char text[MAXTRANS];
     buf.data = ping;
     buf.dataLength = sizeof(ping);
-    while(enet_socket_wait(pingsock, &events, 0) >= 0 && events)
+    while(enet_socket_wait(browserPingSock, &events, 0) >= 0 && events)
     {
-        int len = enet_socket_receive(pingsock, &addr, &buf, 1);
+        int len = enet_socket_receive(browserPingSock, &addr, &buf, 1);
         if(len <= 0) return;
         ucharbuf p(ping, len);
         int millis = game::networking::getint(p);
-        serverinfo *si = NULL;
-        loopv(servers) if(addr.host == servers[i]->address.host && addr.port == servers[i]->address.port) { si = servers[i]; break; }
+        BrowserServerInfo *si = NULL;
+        loopv(browserServers) if(addr.host == browserServers[i]->address.host && addr.port == browserServers[i]->address.port) { si = browserServers[i]; break; }
         if(si)
         {
-            if(!si->checkattempt(millis)) continue;
-            millis = si->decodeping(millis);
+            if(!si->CheckAttempt(millis)) continue;
+            millis = si->DecodePing(millis);
         }
-        else if(!searchlan || !lanpings.checkattempt(millis, false)) continue;
+        else if(!searchlan || !lanPings.CheckAttempt(millis, false)) continue;
         else
         {
-            si = newserver(NULL, addr.port, addr.host);
-            millis = lanpings.decodeping(millis);
+            si = NewServer(NULL, addr.port, addr.host);
+            millis = lanPings.DecodePing(millis);
         }
         int rtt = clamp(ftsClient.totalMilliseconds - millis, 0, min(servpingdecay, ftsClient.totalMilliseconds));
-        if(millis >= lastreset && rtt < servpingdecay) si->addping(rtt, millis);
+        if(millis >= lastreset && rtt < servpingdecay) si->AddPing(rtt, millis);
         si->protocol = game::networking::getint(p);
-        si->numplayers = game::networking::getint(p);
-        si->maxplayers = game::networking::getint(p);
+        si->numberOfPlayers = game::networking::getint(p);
+        si->maxPlayers = game::networking::getint(p);
         int numattr = game::networking::getint(p);
         si->attr.setsize(0);
         loopj(numattr) { int attr = game::networking::getint(p); if(p.overread()) break; si->attr.add(attr); }
         game::networking::getcubestr(text, p);
-        game::networking::filtertext(si->map, text, false);
+        game::networking::filtertext<260>(si->map, text, false);
         game::networking::getcubestr(text, p);
-        game::networking::filtertext(si->desc, text);
+        game::networking::filtertext<260>(si->desc, text);
     }
 }
 
 SCRIPTEXPORT void sortservers()
 {
-    servers.sort(serverinfo::compare);
+    browserServers.sort(BrowserServerInfo::Compare);
 }
 
 VARP(autosortservers, 0, 1, 1);
 VARP(autoupdateservers, 0, 1, 1);
 
-SCRIPTEXPORT void refreshservers()
+SCRIPTEXPORT_AS(refreshservers) void RefreshServers()
 {
     static int lastrefresh = 0;
     if(lastrefresh==ftsClient.totalMilliseconds) return;
     if(ftsClient.totalMilliseconds - lastrefresh > 1000)
     {
-        loopv(servers) servers[i]->reset();
+        loopv(browserServers) browserServers[i]->Reset();
         lastreset = ftsClient.totalMilliseconds;
     }
     lastrefresh = ftsClient.totalMilliseconds;
 
     checkresolver();
-    checkpings();
-    if(ftsClient.totalMilliseconds - lastinfo >= servpingrate/(maxservpings ? max(1, (servers.length() + maxservpings - 1) / maxservpings) : 1)) pingservers();
+    CheckPings();
+    if(ftsClient.totalMilliseconds - browserLastInfo >= servpingrate/(maxservpings ? max(1, (browserServers.length() + maxservpings - 1) / maxservpings) : 1)) pingservers();
     if(autosortservers) sortservers();
 }
 
-SCRIPTEXPORT void numservers()
+SCRIPTEXPORT void NumServers()
 {
-    intret(servers.length());
+    intret(browserServers.length());
 }
 
 #define GETSERVERINFO_(idx, si, body) \
-    if(servers.inrange(idx)) \
+    if(browserServers.inrange(idx)) \
     { \
-        serverinfo &si = *servers[idx]; \
+        BrowserServerInfo &si = *browserServers[idx]; \
         body; \
     }
 #define GETSERVERINFO(idx, si, body) GETSERVERINFO_(idx, si, if(si.valid()) { body; })
 
-SCRIPTEXPORT void servinfovalid(int *i)
+SCRIPTEXPORT_AS(servinfovalid) void ServerInfoValid(int *i)
 {
     GETSERVERINFO_(*i, si, intret(si.valid() ? 1 : 0));
 }
 
-SCRIPTEXPORT void servinfodesc(int *i)
+SCRIPTEXPORT_AS(servinfodesc) void ServerInfoDescription(int *i)
 {
     GETSERVERINFO_(*i, si,
     {
-        const char *status = si.status();
+        const char *status = si.Status();
         result(status ? status : si.desc);
     });
 }
 
-SCRIPTEXPORT void servinfoname(int *i)
+SCRIPTEXPORT_AS(servinfoname) void ServerInfoName(int *i)
 {
     GETSERVERINFO_(*i, si, result(si.name));
 }
 
-SCRIPTEXPORT void servinfoport(int *i)
+SCRIPTEXPORT_AS(servinfoport) void ServInfoPort(int *i)
 {
     GETSERVERINFO_(*i, si, intret(si.address.port));
 }
 
-SCRIPTEXPORT void servinfohaspassword(int *i)
+SCRIPTEXPORT_AS(servinfohaspassword) void ServerInfoHasPassword(int *i)
 {
     GETSERVERINFO_(*i, si, intret(si.password && si.password[0] ? 1 : 0));
 }
 
-SCRIPTEXPORT void servinfokeep(int *i)
+SCRIPTEXPORT_AS(servinfokeep) void ServerInfoKeep(int *i)
 {
     GETSERVERINFO_(*i, si, intret(si.keep ? 1 : 0));
 }
 
-SCRIPTEXPORT void servinfomap(int *i)
+SCRIPTEXPORT_AS(servinfomap) void ServerInfoMap(int *i)
 {
     GETSERVERINFO(*i, si, result(si.map));
 }
 
-SCRIPTEXPORT void servinfoping(int *i)
+SCRIPTEXPORT_AS(servinfoping) void ServerInfoPing(int *i)
 {
     GETSERVERINFO(*i, si, intret(si.ping));
 }
 
-SCRIPTEXPORT void servinfonumplayers(int *i)
+SCRIPTEXPORT_AS(servinfonumberOfPlayers) void ServerInfoNumberOfPlayers(int *i)
 {
-    GETSERVERINFO(*i, si, intret(si.numplayers));
+    GETSERVERINFO(*i, si, intret(si.numberOfPlayers));
 }
 
-SCRIPTEXPORT void servinfomaxplayers(int *i)
+SCRIPTEXPORT_AS(servinfomaxPlayers) void ServerInfoMaxPlayers(int *i)
 {
-    GETSERVERINFO(*i, si, intret(si.maxplayers));
+    GETSERVERINFO(*i, si, intret(si.maxPlayers));
 }
 
-SCRIPTEXPORT void servinfoplayers(int *i)
+SCRIPTEXPORT_AS(servinfoplayers) void ServerInfoPlayers(int *i)
 {
     GETSERVERINFO(*i, si,
     {
-        if(si.maxplayers <= 0) intret(si.numplayers);
-        else result(tempformatcubestr(si.numplayers >= si.maxplayers ? "\f3%d/%d" : "%d/%d", si.numplayers, si.maxplayers));
+        if(si.maxPlayers <= 0) intret(si.numberOfPlayers);
+        else result(tempformatcubestr(si.numberOfPlayers >= si.maxPlayers ? "\f3%d/%d" : "%d/%d", si.numberOfPlayers, si.maxPlayers));
     });
 }
 
-SCRIPTEXPORT void servinfoattr(int *i, int *n)
+SCRIPTEXPORT_AS(servinfoattr) void ServerInfoAttribute(int *i, int *n)
 {
     GETSERVERINFO(*i, si, { if(si.attr.inrange(*n)) intret(si.attr[*n]); });
 }
 
-SCRIPTEXPORT void ConnectServinfo(int *i, char *pw)
+SCRIPTEXPORT_AS(connectservinfo) void ConnectServinfo(int *i, char *pw)
 {
     GETSERVERINFO_(*i, si, ConnectServ(si.name, si.address.port, pw[0] ? pw : si.password));
 }
 
-servinfo *getservinfo(int i)
-{
-    return servers.inrange(i) && servers[i]->valid() ? servers[i] : NULL;
-}
+// game::networking::BrowserServerInfo *::GetServerInfo(int i)
+// {
+//     return browserServers.inrange(i) && browserServers[i]->Valid() ? browserServers[i] : NULL;
+// }
 
-void clearservers(bool full = false)
+void ClearServers(bool full = false)
 {
     resolverclear();
-    if(full) servers.deletecontents();
-    else loopvrev(servers) if(!servers[i]->keep) delete servers.remove(i);
+    if(full) browserServers.deletecontents();
+    else loopvrev(browserServers) if(!browserServers[i]->keep) delete browserServers.remove(i);
 }
 
 #define RETRIEVELIMIT 20000
 
-void retrieveservers(vector<char> &data)
+void RetrieveServers(vector<char> &data)
 {
-    ENetSocket sock = connectmaster(true);
+    ENetSocket sock = ConnectMaster(true);
     if(sock == ENET_SOCKET_NULL) return;
 
-    extern char *mastername;
-    defformatcubestr(text, "retrieving servers from %s... (esc to abort)", mastername);
-    renderprogress(0, text);
+    extern char *masterName;
+    defformatcubestr(text, "retrieving servers from %s... (esc to abort)", masterName);
+    ::renderprogress(0, text);
 
     int starttime = SDL_GetTicks(), timeout = 0;
     const char *req = "list\n";
@@ -698,7 +714,7 @@ void retrieveservers(vector<char> &data)
             if(reqlen <= 0) break;
         }
         timeout = SDL_GetTicks() - starttime;
-        renderprogress(min(float(timeout)/RETRIEVELIMIT, 1.0f), text);
+        ::renderprogress(min(float(timeout)/RETRIEVELIMIT, 1.0f), text);
         if(interceptkey(SDLK_ESCAPE)) timeout = RETRIEVELIMIT + 1;
         if(timeout > RETRIEVELIMIT) break;
     }
@@ -716,7 +732,7 @@ void retrieveservers(vector<char> &data)
             data.advance(recv);
         }
         timeout = SDL_GetTicks() - starttime;
-        renderprogress(min(float(timeout)/RETRIEVELIMIT, 1.0f), text);
+        ::renderprogress(min(float(timeout)/RETRIEVELIMIT, 1.0f), text);
         if(interceptkey(SDLK_ESCAPE)) timeout = RETRIEVELIMIT + 1;
         if(timeout > RETRIEVELIMIT) break;
     }
@@ -725,53 +741,54 @@ void retrieveservers(vector<char> &data)
     enet_socket_destroy(sock);
 }
 
-bool updatedservers = false;
+bool updatedServers = false;
 
-SCRIPTEXPORT void updatefrommaster()
+SCRIPTEXPORT_AS(updatefrommaster) void UpdateFromMaster()
 {
     vector<char> data;
-    retrieveservers(data);
+    RetrieveServers(data);
     if(data.empty()) conoutf("master server not replying");
     else
     {
-        clearservers();
+        ClearServers();
         execute(data.getbuf());
     }
-    refreshservers();
-    updatedservers = true;
+    RefreshServers();
+    updatedServers = true;
 }
 
-SCRIPTEXPORT void initservers()
+SCRIPTEXPORT_AS(initservers) void InitServers()
 {
-    if(autoupdateservers && !updatedservers) updatefrommaster();
+    if(autoupdateservers && !updatedServers) UpdateFromMaster();
 }
 
 SCRIPTEXPORT_AS(addserver) void addserver_scriptimpl(const char *name, int *port, const char *password)
 {
-    addserver(name, *port, password[0] ? password : NULL);
+    AddServer(name, *port, password[0] ? password : NULL);
 }
 
-SCRIPTEXPORT void keepserver(const char *name, int *port, const char *password)
+SCRIPTEXPORT_AS(keepserver) void KeepServer(const char *name, int *port, const char *password)
 {
-    addserver(name, *port, password[0] ? password : NULL, true);
+    AddServer(name, *port, password[0] ? password : NULL, true);
 }
 
 SCRIPTEXPORT_AS(clearservers) void clearservers_scriptimpl(int *full)
 {
-    clearservers(*full!=0);
+    ClearServers(*full!=0);
 }
 
-void writeservercfg()
+void WriteServerCfg()
 {
     if(!game::SavedServersCfg()) return;
     stream *f = openutf8file(path(game::SavedServersCfg(), true), "w");
     if(!f) return;
     int kept = 0;
-    loopv(servers)
+    loopv(browserServers)
     {
-        serverinfo *s = servers[i];
+        BrowserServerInfo *s = browserServers[i];
         if(s->keep)
         {
+            // Notice how escapeid(CS Variable) function is used, for keepserver.
             if(!kept) f->printf("// servers that should never be cleared from the server list\n\n");
             if(s->password) f->printf("keepserver %s %d %s\n", escapeid(s->name), s->address.port, escapecubestr(s->password));
             else f->printf("keepserver %s %d\n", escapeid(s->name), s->address.port);
@@ -780,9 +797,9 @@ void writeservercfg()
     }
     if(kept) f->printf("\n");
     f->printf("// servers connected to are added here automatically\n\n");
-    loopv(servers)
+    loopv(browserServers)
     {
-        serverinfo *s = servers[i];
+        BrowserServerInfo *s = browserServers[i];
         if(!s->keep)
         {
             if(s->password) f->printf("addserver %s %d %s\n", escapeid(s->name), s->address.port, escapecubestr(s->password));
@@ -791,7 +808,7 @@ void writeservercfg()
     }
     delete f;
 }
-
+};
 
 // >>>>>>>>>> SCRIPTBIND >>>>>>>>>>>>>> //
 #if 0

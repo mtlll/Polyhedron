@@ -11,7 +11,7 @@
 #include "game/game.h"
 #include "game/client/client.h"
 #include "game/server/server.h"
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 #include "game/entities.h"
 #include "game/entities/player.h"
 #include "game/entities/playerstart.h"
@@ -20,8 +20,8 @@ namespace game
 {
     // Stores all the player entities that are in our (local, or remotte) server.
     vector<entities::classes::BaseClientEntity *> players;
-    networking::protocol::MasterMode masterMode = networking::protocol::MasterMode::Private;
-    networking::GameMode gameMode = networking::GameMode::Edit;
+    networking::protocol::MasterMode masterMode = networking::protocol::MasterMode::Private; // Current game mode (M_LOBBY, M_EDIT | M_LOCAL etc)
+    networking::GameMode gameMode = networking::GameMode::Edit; // Master Privilige mode (when hosting with this client).
 
     bool sendItemsToServer = false, sendCRC = false; // after a map change, since server doesn't have map data
     int lastPing = 0;
@@ -29,8 +29,6 @@ namespace game
    // Networking State properties.
     bool connected = false, remote = false, demoPlayback = false, gamePaused = false;
     int sessionID = 0, gameSpeed = 100;
-    game::networking::GameMode gameMode;     // Current game mode (M_LOBBY, M_EDIT | M_LOCAL etc)
-    game::networking::protocol::MasterMode masterMode; // Master Privilige mode (when hosting with this client).
     cubestr servDesc = "", servAuth = "", connectPass = "";
 
     VARP(deadpush, 1, 2, 20);
@@ -54,55 +52,43 @@ namespace game
     {
         std::string plName = name;
 
-        if (player1->name.empty() || player1->name == "") { 
-            player1->name = "untitled"; 
+        if (game::player1->name.empty() || plName.empty()) { 
+            game::player1->name = "untitled_" + std::to_string(game::player1->ci.clientNumber) + std::to_string(rnd(128));
         }
 
-        game::client::AddMessage(game::client::protocol::NetClientMessage::SwitchName, "rs", player1->name.c_str());
+        game::client::AddMessage(game::networking::protocol::NetClientMessage::SwitchName, "rcs", game::player1->name.c_str());
     }
 
-    void printname()
-    {
-        conoutf("Your name is: %s", player1->name.c_str());
-    //    conoutf("your name is: %s", GenerateClientColorName(&player1));
-    }
-
-    SCRIPTEXPORT_AS(name) void CL_ChangeName(char *s, int *numargs) {
-        if(*numargs > 0) switchname(s);
-        else if(!*numargs) printname();
-        else result((player1->name.c_str()));
-    }
-    SCRIPTEXPORT_AS(getname) const char * CL_GetName() {
-        result(player1->name.c_str());
-        return player1->name.c_str();
-    }
-    
-    bool duplicatename(entities::classes::BaseDynamicEntity *d, const char *name = NULL, const char *alt = NULL)
-    {
-        if(!name) strcpy((char*)name, d->name.c_str());
-        if(alt && d != player1 && !strcmp(name, alt)) return true;
-        loopv(players) if(d!=players[i] && !strcmp(name, players[i]->name.c_str())) return true;
-        return false;
-    }
-
-    /////////////// /
+    ////////////////////
     // World functions
     ///////////////////
     void updateworld() {
         // Update the map time. (First frame since maptime = 0.
-        if(!maptime) { maptime = ftsClient.lastMilliseconds; maprealtime = ftsClient.totalMilliseconds; return; }
+        if(!maptime) { 
+            maptime = ftsClient.lastMilliseconds; 
+            maprealtime = ftsClient.totalMilliseconds; 
+            return; 
+        }
 
         // Escape this function if there is no currenttime yet from server to client. (Meaning it is 0.)
-        if(!ftsClient.currentTime) return; //{ gets2c(); if (player1->) c2sinfo(); return; } //c2sinfo(); }///if(player1->clientnum>=0) c2sinfo(); return; }
+        if(!ftsClient.currentTime) 
+            return; 
+            //{ gets2c(); if (player1->) c2sinfo(); return; } //c2sinfo(); }///if(player1->clientnum>=0) c2sinfo(); return; }
         //if(!curtime) return; //{ gets2c(); c2sinfo(); }///if(player1->clientnum>=0) c2sinfo(); return; }
+        networking::GetS2C();
 
 		// Update the physics.
-        physicsframe();
+        PhysicsFrame();
 
         // Update all our entity objects.
         updateentities();
-        // gets2c();
-		// if(player->clientnum >=0) c2sinfo();   // do this last, to reduce the effective frame lag
+
+        // Fetch server to client messages and info.
+        networking::GetS2C();
+
+        // Do this last, to reduce the effective frame lag
+		if(player->ci.clientNumber >=0) 
+            Client2ServerInfo();   
     }
 
     void SpawnPlayer()   // place at random spawn
@@ -155,7 +141,7 @@ namespace game
     }
 
     // These speak for themselves.
-    const char *getclientmap() {
+    const char *GetClientMap() {
         return clientMap;
     }
     const char *getmapinfo() {
@@ -398,7 +384,9 @@ namespace game
 
     void ClearClients(bool notify)
     {
-        loopv(server::clients) if(server::clients[i]) ClientDisconnected(i, notify);
+        loopv(game::server::clients) 
+            if(game::server::clients[i]) 
+                ClientDIsConnected(i, notify);
     }
 
     void InitClient() {

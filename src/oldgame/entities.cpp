@@ -113,7 +113,7 @@ namespace entities
     }
 
     // these two functions are called when the server acknowledges that you really
-    // picked up the item (in multiplayer someone may grab it before you).
+    // picked up the item (in Multiplayer someone may grab it before you).
 
     void pickupeffects(int n, gameent *d)
     {

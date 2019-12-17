@@ -6,12 +6,14 @@
 #include "shared/networking/frametimestate.h"
 
 #include "shared/entities/coreentity.h"
+#include "shared/entities/baseentity.h"
 #include "shared/entities/basedynamicentity.h"
+#include "shared/entities/basecliententity.h"
 
-#include "game/entities/player.h"
 #include "game/game.h"
-#include "game/server/client.h"
+#include "game/client/client.h"
 #include "game/server/server.h"
+#include "game/entities/player.h"
 
 namespace game {
     namespace client {
@@ -33,7 +35,7 @@ namespace game {
         SCRIPTEXPORT_AS(changemap) void ChangeMap(const char *name)
         {
             // Are we connected? If not, connect locally.
-            if(!connected) localconnect();
+            if(!connected) LocalConnect();
 
             // Toggle edit mode if required.
             if(editmode)
@@ -53,11 +55,11 @@ namespace game {
         vector<uchar> messages;
         int messageClientNumber = -1, messageReliable = false;
 
-        bool AddMessage(::client::protocol::NetClientMessage type, const char *fmt, ...) {
+        bool AddMessage(game::networking::protocol::NetClientMessage type, const char *fmt, ...) {
             if(!connected) return false;
             static uchar buf[MAXTRANS];
             ucharbuf p(buf, sizeof(buf));
-            ::putint(p, static_cast<int>(type));
+            game::networking::putint(p, static_cast<int>(type));
             int numi = 1, numf = 0, nums = 0, mcn = -1;
             bool reliable = false;
             if(fmt)
@@ -69,8 +71,7 @@ namespace game {
                     case 'r': reliable = true; break;
                     case 'c':
                     {
-                        entities::classes::CoreEntity *_d = va_arg(args, entities::classes::CoreEntity *);
-                        auto d = dynamic_cast<entities::classes::Player*>(_d);
+                        auto d = dynamic_cast<entities::classes::BaseClientEntity*>( va_arg(args, entities::classes::CoreEntity*) );
                         mcn = (d ? (!d || d == game::player1 ? -1 : d->ci.clientNumber) : -1);
                         break;
                     }
@@ -78,7 +79,7 @@ namespace game {
                     {
                         int n = va_arg(args, int);
                         int *v = va_arg(args, int *);
-                        loopi(n) networking::putint(p, v[i]);
+                        loopi(n) game::networking::putint(p, v[i]);
                         numi += n;
                         break;
                     }
@@ -86,19 +87,19 @@ namespace game {
                     case 'i':
                     {
                         int n = isdigit(*fmt) ? *fmt++-'0' : 1;
-                        loopi(n) networking::putint(p, va_arg(args, int));
+                        loopi(n) game::networking::putint(p, va_arg(args, int));
                         numi += n;
                         break;
                     }
                     case 'f':
                     {
                         int n = isdigit(*fmt) ? *fmt++-'0' : 1;
-                        loopi(n) networking::putfloat(p, (float)va_arg(args, double));
+                        loopi(n) game::networking::putfloat(p, (float)va_arg(args, double));
                         numf += n;
                         break;
                     }
-                    case 's': networking::sendcubestr(va_arg(args, const char *), p); nums++; break;
-                    case 'S': networking::sendcubestr(va_arg(args, const char *), p); nums++; break;
+                    case 's': game::networking::sendcubestr(va_arg(args, const char *), p); nums++; break;
+                    case 'S': game::networking::sendcubestr(va_arg(args, const char *), p); nums++; break; // TODO: Allow it to fetch std::string
 
                 }
                 va_end(args);
@@ -110,7 +111,7 @@ namespace game {
             {
                 static uchar mbuf[16];
                 ucharbuf m(mbuf, sizeof(mbuf));
-                networking::putint(m, static_cast<int>(game::networking::Events::FromAI));
+                networking::putint(m, static_cast<int>(networking::protocol::Events::FromAI));
                 networking::putint(m, mcn);
                 messages.put(mbuf, m.length());
                 messageClientNumber = mcn;
@@ -137,14 +138,14 @@ namespace game {
             game::player1->ci.clientNumber = -1;
             if(editmode) toggleedit();
             sessionID = 0;
-            game::masterMode = game::networking::MasterMode::Open;
+            game::masterMode = game::networking::protocol::MasterMode::Open;
             messages.setsize(0);
             messageReliable = false;
             messageClientNumber = -1;
             game::player1->respawn();
             game::player1->ci.lifeSequence = 0;
             game::player1->state = CS_ALIVE;
-            game::player1->ci.privilege =game::networking::Priviliges::None;
+            game::player1->ci.privilege = game::networking::protocol::Priviliges::None;
             game::sendCRC = game::sendItemsToServer = false;
             game::demoPlayback = false;
             game::gamePaused = false;
@@ -153,23 +154,26 @@ namespace game {
             if(cleanup)
             {
                 //game::nextMode =  game::gameMode = INT_MAX;
-                game::gameMode = 0;
+                game::gameMode = game::networking::GameMode::Lobby;;
                 clientMap[0] = '\0';
             }
         }
 
-        void toserver(char *text) { conoutf(CON_CHAT, "%s:%s %s", game::networking::GenerateClientColorName(&game::player1->ci), teamtextcode[0], text); game::client::AddMessage(&game::networking::Events::Text, "rcs", &game::player1->ci, text); }
         COMMANDN(say, toserver, "C", "Speak out to the players");
 
-        void sayteam(char *text) { if(!m_teammode || !validteam(&game::player1->ci.team)) return; conoutf(CON_TEAMCHAT, "%s:%s %s", &game::networking::GenerateClientColorName(game::player1->ci), teamtextcode[player1->team], text); game::client::AddMessage(game::networking::Events::SayTeam, "rcs", game::player1->ci, text); }
+        void sayteam(char *text) { 
+            if(!static_cast<int>(m_teammode) || !static_cast<int>(validteam(game::player1->ci.team))) return; 
+            conoutf(game::networking::protocol::ConsoleMessage::Chat, "%s:%s %s", game::networking::GenerateClientColorName(&game::player1->ci), teamtextcode[game::player1->ci.team], text); 
+            game::client::AddMessage(game::networking::protocol::Events::SayTeam, "rcs", game::player1->ci, text);
+        }
         COMMAND(sayteam, "s");
 
-        ICOMMAND(servcmd, "C", (char *cmd), AddMessage(game::networking::Events::ServerCommand, "rs", cmd));
+        ICOMMAND(servcmd, "C", (char *cmd), AddMessage(game::networking::protocol::Events::ServerCommand, "rs", cmd));
 
         static void SendPosition(entities::classes::BaseClientEntity *d, packetbuf &q)
         {
-            putint(q, networking::Events::Position);
-            putuint(q, d->ci.clientNumber);
+            game::networking::putint(q, static_cast<int>(game::networking::protocol::Events::Position));
+            game::networking::putuint(q, d->ci.clientNumber);
             // 3 bits phys state, 1 bit life sequence, 2 bits move, 2 bits strafe
             uchar physstate = d->physstate | ((d->ci.lifeSequence&1)<<3) | ((d->move&3)<<4) | ((d->strafe&3)<<6);
             q.put(physstate);
@@ -189,7 +193,7 @@ namespace game {
             }
             if((lookupmaterial(d->feetpos())&MATF_CLIP) == MAT_GAMECLIP) flags |= 1<<7;
             if(d->crouching < 0) flags |= 1<<8;
-            networking::putuint(q, flags);
+            game::networking::putuint(q, flags);
             loopk(3)
             {
                 q.put(o[k]&0xFF);
@@ -234,15 +238,15 @@ namespace game {
         {
             loopv(players)
             {
-                auto *d = dynamic_cast<entities::classes::BaseClientEntity>(players[i]);
-                if((d == player1 || d->ai) && (d->state == CS_ALIVE || d->state == CS_EDITING))
+                auto *d = dynamic_cast<entities::classes::BaseClientEntity*>(&game::players[i]);
+                if((d == game::player1 || d->ai) && (d->state == CS_ALIVE || d->state == CS_EDITING))
                 {
                     packetbuf q(100);
                     SendPosition(d, q);
-                    for(int j = i+1; j < players.length(); j++)
+                    for(int j = i+1; j < game::players.length(); j++)
                     {
-                        auto *d = dynamic_cast<entities::BaseClientEntity*>(players[j]);
-                        if((d == player1 || d->ai) && (d->state == CS_ALIVE || d->state == CS_EDITING))
+                        auto *d = dynamic_cast<::entities::classes::BaseClientEntity*>(&game::players[j]);
+                        if((d == game::player1 || d->ai) && (d->state == CS_ALIVE || d->state == CS_EDITING))
                             SendPosition(d, q);
                     }
                     SendClientPacket(q.finalize(), 0);
@@ -251,24 +255,24 @@ namespace game {
             }
         }
 
-        void sendmessages()
+        void SendMessages()
         {
             packetbuf p(MAXTRANS);
-            if(sendcrc)
+            if(sendCRC)
             {
                 p.reliable();
-                sendcrc = false;
-                const char *mname = getclientmap();
-                networking::putint(p, N_MAPCRC);
-                networking::sendcubestr(mname, p);
-                networking::putint(p, mname[0] ? getmapcrc() : 0);
+//                sendCRC = false;
+                // const char *mname = GetClientMap();
+                // networking::putint(p, networking::protocol::NetClientMessage::SendMap);
+                // networking::sendcubestr(mname, p);
+                // networking::putint(p, mname[0] ? GetMapCRC() : 0);
             }
-            if(senditemstoserver)
+            if(sendItemsToServer)
             {
                 p.reliable();
-                entities::putitems(p);
-                if(cmode) cmode->senditems(p);
-                senditemstoserver = false;
+                //entities::putitems(p);
+                //if(cmode) cmode->senditems(p);
+                sendItemsToServer = false;
             }
             if(messages.length())
             {
@@ -280,9 +284,9 @@ namespace game {
             }
             if(ftsClient.totalMilliseconds-lastping>250)
             {
-                networking::putint(p, N_PING);
-                networking::putint(p, ftsClient.totalMilliseconds);
-                lastping = ftsClient.totalMilliseconds;
+                game::networking::putint(p, networking::protocol::NetClientMessage::Ping);
+                game::networking::putint(p, ftsClient.totalMilliseconds);
+                lastPing = ftsClient.totalMilliseconds;
             }
             SendClientPacket(p.finalize(), 1);
         }
@@ -293,24 +297,24 @@ namespace game {
             if(ftsClient.totalMilliseconds - lastupdate < 40 && !force) return; // don't update faster than 30fps
             lastupdate = ftsClient.totalMilliseconds;
             SendPositions();
-            sendmessages();
-            flushclient();
+            SendMessages();
+            FlushClient();
         }
 
-        void sendintro()
+        void SendIntro()
         {
             packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
             networking::putint(p, N_CONNECT);
-            networking::sendcubestr(game::player1->name, p);
-            networking::putint(p, game::player1->playermodel);
-            networking::putint(p, game::player1->playercolor);
+            networking::sendcubestr(game::player1->name.c_str(), p);
+            networking::putint(p, game::player1->model_idx);
+            networking::putint(p, game::player1->0xff00ff);
             cubestr hash = "";
-            if(connectpass[0])
+            if(connectPass[0])
             {
-                server::hashpassword(game::player1->clientNumber, sessionID, connectPass, hash);
+                game::server::hashpassword(game::player1->ci.clientNumber, sessionID, connectPass, hash);
                 memset(connectPass, 0, sizeof(connectPass));
             }
-            game::sendcubestr(hash, p);
+            game::sendcubestr(hash.c_str(), p);
             authkey *a = servauth[0] && autoauth ? findauthkey(servauth) : NULL;
             if(a)
             {
@@ -326,38 +330,38 @@ namespace game {
             SendClientPacket(p.finalize(), 1);
         }
 
-        void updatepos(gameent *d)
+        void UpdateClientPositions(entities::BasePhysicalEntity  *d)
         {
             // update the position of other clients in the game in our world
             // don't care if he's in the scenery or other players,
             // just don't overlap with our client
 
-            const float r = player1->radius+d->radius;
-            const float dx = player1->o.x-d->o.x;
-            const float dy = player1->o.y-d->o.y;
-            const float dz = player1->o.z-d->o.z;
-            const float rz = player1->aboveeye+d->eyeheight;
+            const float r = game::player1->radius+d->radius;
+            const float dx = game::player1->o.x-d->o.x;
+            const float dy = game::player1->o.y-d->o.y;
+            const float dz = game::player1->o.z-d->o.z;
+            const float rz = game::player1->aboveeye+d->eyeheight;
             const float fx = (float)fabs(dx), fy = (float)fabs(dy), fz = (float)fabs(dz);
-            if(fx<r && fy<r && fz<rz && player1->state!=CS_SPECTATOR && d->state!=CS_DEAD)
+            if(fx<r && fy<r && fz<rz && game::player1->state!=CS_SPECTATOR && d->state!=CS_DEAD)
             {
                 if(fx<fy) d->o.y += dy<0 ? r-fy : -(r-fy);  // push aside
                 else      d->o.x += dx<0 ? r-fx : -(r-fx);
             }
-            int lagtime = ftsClient.totalMilliseconds-d->lastupdate;
+            int lagtime = ftsClient.totalMilliseconds-d->lastUpdate;
             if(lagtime)
             {
-                if(d->state!=CS_SPAWNING && d->lastupdate) d->plag = (d->plag*5+lagtime)/6;
+                if(d->state!=CS_SPAWNING && d->lastUpdate) d->plag = (d->plag*5+lagtime)/6;
                 d->lastupdate = ftsClient.totalMilliseconds;
             }
         }
 
-        void parsepositions(ucharbuf &p)
+        void ParsePositions(ucharbuf &p)
         {
             int type;
             while(p.remaining()) switch(type = getint(p))
             {
                 case N_DEMOPACKET: break;
-                case N_POS:                        // position of another client
+                case N_POSITION:                        // position of another client
                 {
                     int cn = getuint(p), physstate = p.get(), flags = getuint(p);
                     vec o, vel, falling;
@@ -388,7 +392,7 @@ namespace game {
                     }
                     else falling = vec(0, 0, 0);
                     int seqcolor = (physstate>>3)&1;
-                    gameent *d = getclient(cn);
+                    entities::classes::BaseClientEntity *d = GetClient(cn);
                     if(!d || d->lifesequence < 0 || seqcolor!=(d->lifesequence&1) || d->state==CS_DEAD) continue;
                     float oldyaw = d->yaw, oldpitch = d->pitch, oldroll = d->roll;
                     d->yaw = yaw;
@@ -403,8 +407,8 @@ namespace game {
                     d->vel = vel;
                     d->falling = falling;
                     d->physstate = physstate&7;
-                    updatephysstate(d);
-                    updatepos(d);
+                    UpdatePhysState(d);
+                    UpdateClientPositions(d);
                     if(smoothmove && d->smoothmillis>=0 && oldpos.dist(d->o) < smoothdist)
                     {
                         d->newpos = d->o;
@@ -421,7 +425,7 @@ namespace game {
                         else if(d->deltayaw < -180) d->deltayaw += 360;
                         d->deltapitch = oldpitch - d->newpitch;
                         d->deltaroll = oldroll - d->newroll;
-                        d->smoothmillis = lastmillis;
+                        d->smoothmillis = ftsClient.lastMilliseconds;
                     }
                     else d->smoothmillis = 0;
                     if(d->state==CS_LAGGED || d->state==CS_SPAWNING) d->state = CS_ALIVE;
@@ -431,7 +435,7 @@ namespace game {
                 case N_TELEPORT:
                 {
                     int cn = getint(p), tp = getint(p), td = getint(p);
-                    gameent *d = getclient(cn);
+                    entities::classes::BaseClientEntity *d = GetClient(cn);
                     if(!d || d->lifesequence < 0 || d->state==CS_DEAD) continue;
                     entities::teleporteffects(d, tp, td, false);
                     break;
@@ -440,7 +444,7 @@ namespace game {
                 case N_JUMPPAD:
                 {
                     int cn = getint(p), jp = getint(p);
-                    gameent *d = getclient(cn);
+                    entities::classes::BaseClientEntity *d = GetClient(cn);
                     if(!d || d->lifesequence < 0 || d->state==CS_DEAD) continue;
                     entities::jumppadeffects(d, jp, false);
                     break;
@@ -452,9 +456,9 @@ namespace game {
             }
         }
 
-        void parsestate(gameent *d, ucharbuf &p, bool resume = false)
+        void ParseState(shared::entities::BaseEntity *d, ucharbuf &p, bool resume = false)
         {
-            if(!d) { static gameent dummy; d = &dummy; }
+            if(!d) { static shared::entities::BaseEntity dummy; d = &dummy; }
             if(resume)
             {
                 if(d==player1) getint(p);
@@ -481,7 +485,7 @@ namespace game {
 
         extern int deathscore;
 
-        void parsemessages(int cn, gameent *d, ucharbuf &p)
+        void ParseMessages(int cn, entities::classes::BaseEntity *d, ucharbuf &p)
         {
             static char text[MAXTRANS];
             int type;
@@ -500,11 +504,11 @@ namespace game {
                         disconnect();
                         return;
                     }
-                    sessionid = getint(p);
-                    player1->clientnum = mycn;      // we are now connected
+                    sessionID = getint(p);
+                    game::player1->clientNumber = mycn;      // we are now connected
                     if(getint(p) > 0) conoutf("this server is password protected");
-                    getcubestr(servdesc, p, sizeof(servdesc));
-                    getcubestr(servauth, p, sizeof(CleanupServer));
+                    getcubestr(servDesc, p, sizeof(servDesc));
+                    getcubestr(servAuth, p, sizeof(CleanupServer));
                     sendintro();
                     break;
                 }
@@ -520,11 +524,11 @@ namespace game {
                 {
                     bool val = getint(p) > 0;
                     int cn = getint(p);
-                    gameent *a = cn >= 0 ? getclient(cn) : NULL;
+                    entities::classes::BaseClientEntity *a = cn >= 0 ? GetClient(cn) : NULL;
                     if(!demopacket)
                     {
                         gamepaused = val;
-                        player1->attacking = ACT_IDLE;
+                        game::player1->attacking = ACT_IDLE;
                     }
                     if(a) conoutf("%s %s the game", colorname(a), val ? "paused" : "resumed");
                     else conoutf("game is %s", val ? "paused" : "resumed");
@@ -534,7 +538,7 @@ namespace game {
                 case N_GAMESPEED:
                 {
                     int val = clamp(getint(p), 10, 1000), cn = getint(p);
-                    gameent *a = cn >= 0 ? getclient(cn) : NULL;
+                    entities::classes::BaseClientEntity *a = cn >= 0 ? GetClient(cn) : NULL;
                     if(!demopacket) gamespeed = val;
                     if(a) conoutf("%s set gamespeed to %d", colorname(a), val);
                     else conoutf("gamespeed is %d", val);
@@ -545,7 +549,7 @@ namespace game {
                 {
                     int cn = getint(p), len = getuint(p);
                     ucharbuf q = p.subbuf(len);
-                    parsemessages(cn, getclient(cn), q);
+                    parsemessages(cn, GetClient(cn), q);
                     break;
                 }
 
@@ -585,13 +589,13 @@ namespace game {
                     changemapserv(text, getint(p));
                     mapchanged = true;
                     if(getint(p)) entities::spawnitems();
-                    else senditemstoserver = false;
+                    else sendItemsToServer = false;
                     break;
 
                 case N_FORCEDEATH:
                 {
                     int cn = getint(p);
-                    gameent *d = cn==player1->clientnum ? player1 : newclient(cn);
+                    entities::classes::BaseClientEntity *d = cn==game::player1->ci.clientNumber ? game::player1 : NewClient(cn);
                     if(!d) break;
                     if(d==player1)
                     {
@@ -600,20 +604,20 @@ namespace game {
                     }
                     else d->resetinterp();
                     d->state = CS_DEAD;
-                    checkfollow();
+                    CheckFollow();
                     break;
                 }
 
-                case N_ITEMLIST:
-                {
-                    int n;
-                    while((n = getint(p))>=0 && !p.overread())
-                    {
-                        if(mapchanged) entities::setspawn(n, true);
-                        getint(p); // type
-                    }
-                    break;
-                }
+                // case N_ITEMLIST:
+                // {
+                //     int n;
+                //     while((n = getint(p))>=0 && !p.overread())
+                //     {
+                //         if(mapchanged) entities::setspawn(n, true);
+                //         getint(p); // type
+                //     }
+                //     break;
+                // }
 
                 case N_INITCLIENT:            // another client either connected or changed name/team
                 {
@@ -681,7 +685,7 @@ namespace game {
                 }
 
                 case N_CDIS:
-                    ClientDisconnected(getint(p));
+                    ClientDIsConnected(getint(p));
                     break;
 
                 case N_SPAWN:
@@ -702,126 +706,126 @@ namespace game {
                 case N_SPAWNSTATE:
                 {
                     int scn = getint(p);
-                    gameent *s = getclient(scn);
-                    if(!s) { parsestate(NULL, p); break; }
+                    entities::classes::BaseClientEntity *s = GetClient(scn);
+                    if(!s) { ParseState(NULL, p); break; }
                     if(s->state==CS_DEAD && s->lastpain) saveragdoll(s);
                     if(s==player1)
                     {
                         if(editmode) toggleedit();
                     }
                     s->respawn();
-                    parsestate(s, p);
+                    ParseState(s, p);
                     s->state = CS_ALIVE;
-                    if(cmode) cmode->pickspawn(s);
+                    //if(cmode) cmode->pickspawn(s);
                     else findplayerspawn(s, -1, m_teammode ? s->team : 0);
                     if(s == player1)
                     {
                         showscores(false);
                         lasthit = 0;
                     }
-                    if(cmode) cmode->respawned(s);
-                    ai::spawned(s);
+                    //if(cmode) cmode->respawned(s);
+                    //ai::spawned(s);
                     checkfollow();
                     addmsg(N_SPAWN, "rcii", s, s->lifesequence, s->gunselect);
                     break;
                 }
 
-                case N_SHOTFX:
-                {
-                    int scn = getint(p), atk = getint(p), id = getint(p);
-                    vec from, to;
-                    loopk(3) from[k] = getint(p)/DMF;
-                    loopk(3) to[k] = getint(p)/DMF;
-                    gameent *s = getclient(scn);
-                    if(!s || !validatk(atk)) break;
-                    int gun = attacks[atk].gun;
-                    s->gunselect = gun;
-                    s->ammo[gun] -= attacks[atk].use;
-                    s->gunwait = attacks[atk].attackdelay;
-                    int prevaction = s->lastaction;
-                    s->lastaction = lastmillis;
-                    s->lastattack = atk;
-                    shoteffects(atk, from, to, s, false, id, prevaction);
-                    break;
-                }
+        //         case N_SHOTFX:
+        //         {
+        //             int scn = getint(p), atk = getint(p), id = getint(p);
+        //             vec from, to;
+        //             loopk(3) from[k] = getint(p)/DMF;
+        //             loopk(3) to[k] = getint(p)/DMF;
+        //             gameent *s = getclient(scn);
+        //             if(!s || !validatk(atk)) break;
+        //             int gun = attacks[atk].gun;
+        //             s->gunselect = gun;
+        //             s->ammo[gun] -= attacks[atk].use;
+        //             s->gunwait = attacks[atk].attackdelay;
+        //             int prevaction = s->lastaction;
+        //             s->lastaction = lastmillis;
+        //             s->lastattack = atk;
+        //             shoteffects(atk, from, to, s, false, id, prevaction);
+        //             break;
+        //         }
 
-                case N_EXPLODEFX:
-                {
-                    int ecn = getint(p), atk = getint(p), id = getint(p);
-                    gameent *e = getclient(ecn);
-                    if(!e || !validatk(atk)) break;
-                    explodeeffects(atk, e, false, id);
-                    break;
-                }
-                case N_DAMAGE:
-                {
-                    int tcn = getint(p),
-                        acn = getint(p),
-                        damage = getint(p),
-                        health = getint(p);
-                    gameent *target = getclient(tcn),
-                            *actor = getclient(acn);
-                    if(!target || !actor) break;
-                    target->health = health;
-                    if(target->state == CS_ALIVE && actor != player1) target->lastpain = lastmillis;
-                    damaged(damage, target, actor, false);
-                    break;
-                }
+        //         case N_EXPLODEFX:
+        //         {
+        //             int ecn = getint(p), atk = getint(p), id = getint(p);
+        //             gameent *e = getclient(ecn);
+        //             if(!e || !validatk(atk)) break;
+        //             explodeeffects(atk, e, false, id);
+        //             break;
+        //         }
+        //         case N_DAMAGE:
+        //         {
+        //             int tcn = getint(p),
+        //                 acn = getint(p),
+        //                 damage = getint(p),
+        //                 health = getint(p);
+        //             gameent *target = getclient(tcn),
+        //                     *actor = getclient(acn);
+        //             if(!target || !actor) break;
+        //             target->health = health;
+        //             if(target->state == CS_ALIVE && actor != player1) target->lastpain = lastmillis;
+        //             damaged(damage, target, actor, false);
+        //             break;
+        //         }
 
-                case N_HITPUSH:
-                {
-                    int tcn = getint(p), atk = getint(p), damage = getint(p);
-                    gameent *target = getclient(tcn);
-                    vec dir;
-                    loopk(3) dir[k] = getint(p)/DNF;
-                    if(!target || !validatk(atk)) break;
-                    target->hitpush(damage * (target->health<=0 ? deadpush : 1), dir, NULL, atk);
-                    break;
-                }
+        //         case N_HITPUSH:
+        //         {
+        //             int tcn = getint(p), atk = getint(p), damage = getint(p);
+        //             gameent *target = getclient(tcn);
+        //             vec dir;
+        //             loopk(3) dir[k] = getint(p)/DNF;
+        //             if(!target || !validatk(atk)) break;
+        //             target->hitpush(damage * (target->health<=0 ? deadpush : 1), dir, NULL, atk);
+        //             break;
+        //         }
 
-                case N_DIED:
-                {
-                    int vcn = getint(p), acn = getint(p), frags = getint(p), tfrags = getint(p);
-                    gameent *victim = getclient(vcn),
-                            *actor = getclient(acn);
-                    if(!actor) break;
-                    actor->frags = frags;
-                    if(m_teammode) setteaminfo(actor->team, tfrags);
-        #if 0
-                    if(actor!=player1 && (!cmode || !cmode->hidefrags()))
-                        particle_textcopy(actor->abovehead(), tempformatcubestr("%d", actor->frags), PART_TEXT, 2000, 0x32FF64, 4.0f, -8);
-        #endif
-                    if(!victim) break;
-                    killed(victim, actor);
-                    break;
-                }
+        //         case N_DIED:
+        //         {
+        //             int vcn = getint(p), acn = getint(p), frags = getint(p), tfrags = getint(p);
+        //             gameent *victim = getclient(vcn),
+        //                     *actor = getclient(acn);
+        //             if(!actor) break;
+        //             actor->frags = frags;
+        //             if(m_teammode) setteaminfo(actor->team, tfrags);
+        // #if 0
+        //             if(actor!=player1 && (!cmode || !cmode->hidefrags()))
+        //                 particle_textcopy(actor->abovehead(), tempformatcubestr("%d", actor->frags), PART_TEXT, 2000, 0x32FF64, 4.0f, -8);
+        // #endif
+        //             if(!victim) break;
+        //             killed(victim, actor);
+        //             break;
+        //         }
 
-                case N_TEAMINFO:
-                    loopi(MAXTEAMS)
-                    {
-                        int frags = getint(p);
-                        if(m_teammode) setteaminfo(1+i, frags);
-                    }
-                    break;
+        //         case N_TEAMINFO:
+        //             loopi(MAXTEAMS)
+        //             {
+        //                 int frags = getint(p);
+        //                 if(m_teammode) setteaminfo(1+i, frags);
+        //             }
+        //             break;
 
-                case N_GUNSELECT:
-                {
-                    if(!d) return;
-                    int gun = getint(p);
-                    if(!validgun(gun)) return;
-                    d->gunselect = gun;
-                    playsound(S_WEAPLOAD, &d->o);
-                    break;
-                }
+        //         case N_GUNSELECT:
+        //         {
+        //             if(!d) return;
+        //             int gun = getint(p);
+        //             if(!validgun(gun)) return;
+        //             d->gunselect = gun;
+        //             playsound(S_WEAPLOAD, &d->o);
+        //             break;
+        //         }
 
-                case N_TAUNT:
-                {
-                    if(!d) return;
-                    d->lasttaunt = lastmillis;
-                    break;
-                }
+        //         case N_TAUNT:
+        //         {
+        //             if(!d) return;
+        //             d->lasttaunt = lastmillis;
+        //             break;
+        //         }
 
-                case N_RESUME:
+        //         case N_RESUME:
                 {
                     for(;;)
                     {
@@ -833,29 +837,29 @@ namespace game {
                     break;
                 }
 
-                case N_ITEMSPAWN:
-                {
-                    int i = getint(p);
-                    if(!entities::ents.inrange(i)) break;
-                    entities::setspawn(i, true);
-                    ai::itemspawned(i);
-                    playsound(S_ITEMSPAWN, &entities::ents[i]->o, NULL, 0, 0, 0, -1, 0, 1500);
-                    #if 0
-                    const char *name = entities::itemname(i);
-                    if(name) particle_text(entities::ents[i]->o, name, PART_TEXT, 2000, 0x32FF64, 4.0f, -8);
-                    #endif
-                    int icon = entities::itemicon(i);
-                    if(icon >= 0) particle_icon(vec(0.0f, 0.0f, 4.0f).add(entities::ents[i]->o), icon%4, icon/4, PART_HUD_ICON, 2000, 0xFFFFFF, 2.0f, -8);
-                    break;
-                }
+                // case N_ITEMSPAWN:
+                // {
+                //     int i = getint(p);
+                //     if(!entities::ents.inrange(i)) break;
+                //     entities::setspawn(i, true);
+                //     ai::itemspawned(i);
+                //     playsound(S_ITEMSPAWN, &entities::ents[i]->o, NULL, 0, 0, 0, -1, 0, 1500);
+                //     #if 0
+                //     const char *name = entities::itemname(i);
+                //     if(name) particle_text(entities::ents[i]->o, name, PART_TEXT, 2000, 0x32FF64, 4.0f, -8);
+                //     #endif
+                //     int icon = entities::itemicon(i);
+                //     if(icon >= 0) particle_icon(vec(0.0f, 0.0f, 4.0f).add(entities::ents[i]->o), icon%4, icon/4, PART_HUD_ICON, 2000, 0xFFFFFF, 2.0f, -8);
+                //     break;
+                // }
 
-                case N_ITEMACC:            // server acknowledges that I picked up this item
-                {
-                    int i = getint(p), cn = getint(p);
-                    gameent *d = getclient(cn);
-                    entities::pickupeffects(i, d);
-                    break;
-                }
+                // case N_ITEMACC:            // server acknowledges that I picked up this item
+                // {
+                //     int i = getint(p), cn = getint(p);
+                //     gameent *d = getclient(cn);
+                //     entities::pickupeffects(i, d);
+                //     break;
+                // }
 
                 // case N_CLIPBOARD:
                 // {
@@ -1027,7 +1031,7 @@ namespace game {
                 case N_DEMOPLAYBACK:
                 {
                     int on = getint(p);
-                    if(on) player1->state = CS_SPECTATOR;
+                    if(on) game::player1->state = CS_SPECTATOR;
                     else game::ClearClients();
                     game::demoPlayback = on!=0;
                     game::player1->ci.clientNumber = getint(p);
@@ -1040,10 +1044,10 @@ namespace game {
                 case N_CURRENTMASTER:
                 {
                     int mm = getint(p), mn;
-                    loopv(players) game::players[i]->ci.privilege = PRIV_NONE;
+                    loopv(game::players) game::players[i]->ci.privilege = game::networking::protocol::Priviliges::Admin;
                     while((mn = getint(p))>=0 && !p.overread())
                     {
-                        entities::classes::BaseDynamicEntity *m = mn ==game::player1->ci.clientNumber ? player1 : NewClient(mn);
+                        entities::classes::BaseClientEntity *m = mn == game::player1->ci.clientNumber ? dynamic_cast<entities::classes::Player>(game::player1) : NewClient(mn);
                         int priv = getint(p);
                         if(m) m->ci.privilege = priv;
                     }
@@ -1083,10 +1087,10 @@ namespace game {
                 case N_SPECTATOR:
                 {
                     int sn = getint(p), val = getint(p);
-                    gameent *s;
-                    if(sn==player1->clientnum)
+                    entities::classes::BaseClientEntity *s;
+                    if(sn==game::player1->ci.clientNumber)
                     {
-                        s = player1;
+                        s = dynamic_cast<entities::classes::Player>(game::player1);
                         if(val && remote && !player1->privilege) senditemstoserver = false;
                     }
                     else s = newclient(sn);
@@ -1133,7 +1137,7 @@ namespace game {
                     authkey *a = findauthkey(text);
                     uint id = (uint)getint(p);
                     getcubestr(text, p);
-                    if(a && a->lastauth && lastmillis - a->lastauth < 60*1000)
+                    if(a && a->lastauth &&  ftsClient.lastMilliseconds - a->lastauth < 60*1000)
                     {
                         vector<char> buf;
                         answerchallenge(a->key, text, buf);
@@ -1154,7 +1158,7 @@ namespace game {
                     cubestr name;
                     getcubestr(text, p);
                     filtertext(name, text, false, false, MAXNAMELEN);
-                    gameent *b = newclient(bn);
+                    entities::classes::BaseClientEntity *b = NewClient(bn);
                     if(!b) break;
                     ai::init(b, at, on, sk, bn, pm, col, name, team);
                     break;
@@ -1170,7 +1174,7 @@ namespace game {
             }
         }
 
-        void receivefile(packetbuf &p)
+        void ReceiveFile(packetbuf &p)
         {
             int type;
             while(p.remaining()) switch(type = getint(p))
@@ -1215,15 +1219,15 @@ namespace game {
             switch(chan)
             {
                 case 0:
-                    parsepositions(p);
+                    ParsePositions(p);
                     break;
 
                 case 1:
-                    parsemessages(-1, NULL, p);
+                    ParseMessages(-1, NULL, p);
                     break;
 
                 case 2:
-                    receivefile(p);
+                    ReceiveFile(p);
                     break;
             }
         }

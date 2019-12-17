@@ -34,9 +34,9 @@ extern void writeinitcfg();
 SCRIPTEXPORT void quit()                     // normal exit
 {
 	writeinitcfg();
-	writeservercfg();
-	abortconnect();
-	disconnect();
+	WriteServerCfg();
+	AbortConnect();
+	game::networking::Disconnect();
 	LocalDisconnect();
 	writecfg();
 	cleanup();
@@ -83,10 +83,10 @@ int screenw = 0, screenh = 0;
 SDL_Window *screen = NULL;
 SDL_GLContext glcontext = NULL;
 
-//int curtime = 0, lastmillis = 1, ftsClient.elapsedTime = 0, ftsClient.totalMilliseconds = 1;
-// Replaced by: ftsClient
+// Replaced by: ftsClient -> //int curtime = 0, lastmillis = 1, ftsClient.elapsedTime = 0, ftsClient.totalMilliseconds = 1;
 game::networking::FrameTimeState ftsClient; 
 
+// Not included in FrameTimeState, although, we possibly could/should given it is an actual part of it.
 entities::classes::Player *player = NULL;
 
 int initing = NOT_INITING;
@@ -353,7 +353,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
 		lastprogress = ticks;
 	}
 
-	clientkeepalive();      // make sure our connection doesn't time out while loading maps etc.
+	ClientKeepAlive();      // make sure our connection doesn't time out while loading maps etc.
 
 	#ifdef __APPLE__
 	interceptkey(SDLK_UNKNOWN); // keep the event queue awake to avoid 'beachball' cursor
@@ -1095,7 +1095,7 @@ int main(int argc, char **argv)
                 break;
             }
             case 'x': initscript = &argv[i][2]; break;
-            default: if(!serveroption(argv[i])) gameargs.add(argv[i]); break;
+            default: if(!ServerOption(argv[i])) gameargs.add(argv[i]); break;
         }
         else gameargs.add(argv[i]);
     }
@@ -1134,7 +1134,7 @@ int main(int argc, char **argv)
     
 	game::ParseOptions(gameargs); // Parse the game options(Although there are none atm to my knowledge.) And initialize the local server.
 	ASSERT(dedicated <= 1)
- 	initserver(dedicated>0, dedicated>1);  // never returns if dedicated
+ 	InitServer(dedicated>0, dedicated>1);  // never returns if dedicated
 
     // Last but not least, initialize our own client.
     game::InitClient();
@@ -1253,7 +1253,7 @@ int main(int argc, char **argv)
 	identflags |= IDF_PERSIST;
 
 	// Start our local connection.
-	localconnect();
+	LocalConnect();
 
 	// If there is a map to load, then we'll damnit do so!
 	if(load)
@@ -1290,11 +1290,11 @@ int main(int argc, char **argv)
 		int scaledtime = game::scaletime(ftsClient.elapsedTime) + timeerr;
 		ftsClient.currentTime = scaledtime/100;
 		timeerr = scaledtime%100;
-		if(!multiplayer(false) && ftsClient.currentTime >200) ftsClient.currentTime = 200;
+		if(!game::networking::Multiplayer(false) && ftsClient.currentTime >200) ftsClient.currentTime = 200;
 		if(game::ispaused()) ftsClient.currentTime = 0;
 		ftsClient.lastMilliseconds += ftsClient.currentTime;
 		ftsClient.totalMilliseconds = millis;
-		updatetime();
+		UpdateTime();
 
 		checkinput();
 		UI::update();
@@ -1305,7 +1305,7 @@ int main(int argc, char **argv)
 
 		checksleep(ftsClient.lastMilliseconds);
 
-		serverslice(false, 0);
+		ServerSlice(false, 0);
 
 		if(frames) updatefpshistory(ftsClient.elapsedTime);
 		frames++;

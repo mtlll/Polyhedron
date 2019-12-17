@@ -186,7 +186,7 @@ namespace game
         {
             const playermodelinfo *mdl = getplayermodelinfo(i);
             if(!mdl) break;
-            if(i != playermodel && (!multiplayer(false) || forceplayermodels)) continue;
+            if(i != playermodel && (!Multiplayer(false) || forceplayermodels)) continue;
             if(m_teammode)
             {
                 loopj(MAXTEAMS) preloadmodel(mdl->model[1+j]);

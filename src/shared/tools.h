@@ -1,7 +1,6 @@
 // generic useful stuff for any C++ program
+#pragma once
 
-#ifndef _TOOLS_H
-#define _TOOLS_H
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
@@ -312,6 +311,3 @@ extern int listzipfiles(const char *dir, const char *ext, vector<char *> &files)
 // Mike: externs
 //
 extern cubestr homedir;
-
-#endif
-

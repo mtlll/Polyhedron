@@ -155,9 +155,9 @@ field must be destroyed with enet_packet_destroy() when you are done
 inspecting its contents.
 
 An event of type ENET_EVENT_TYPE_DISCONNECT is returned when a connected peer
-has either explicitly disconnected or timed out. Only the "peer" field of the
+has either explicitly dIsConnected or timed out. Only the "peer" field of the
 event structure is valid for this event and contains the peer that 
-disconnected. Only the "data" field of the peer is still valid on a 
+dIsConnected. Only the "data" field of the peer is still valid on a 
 disconnect event and must be explicitly reset.
 
 @code
@@ -191,7 +191,7 @@ disconnect event and must be explicitly reset.
             break;
            
         case ENET_EVENT_TYPE_DISCONNECT:
-            printf ("%s disconnected.\n", event.peer -> data);
+            printf ("%s dIsConnected.\n", event.peer -> data);
 
             /* Reset the peer's client information. */
 
@@ -217,7 +217,7 @@ delivery.  A reliable packet is guaranteed to be delivered, and a
 number of retry attempts will be made until an acknowledgement is
 received from the foreign host the packet is sent to. If a certain
 number of retry attempts is reached without any acknowledgement, ENet
-will assume the peer has disconnected and forcefully reset the
+will assume the peer has dIsConnected and forcefully reset the
 connection. If this flag is not specified, the packet is assumed an
 unreliable packet, and no retry attempts will be made nor
 acknowledgements generated.
@@ -263,14 +263,14 @@ dispatching any events.
 
 @section Disconnecting Disconnecting an ENet peer
 
-Peers may be gently disconnected with enet_peer_disconnect(). A
+Peers may be gently dIsConnected with enet_peer_disconnect(). A
 disconnect request will be sent to the foreign host, and ENet will
 wait for an acknowledgement from the foreign host before finally
 disconnecting. An event of type ENET_EVENT_TYPE_DISCONNECT will be
 generated once the disconnection succeeds. Normally timeouts apply to
 the disconnect acknowledgement, and so if no acknowledgement is
 received after a length of time the peer will be forcefully
-disconnected.
+dIsConnected.
 
 enet_peer_reset() will forcefully disconnect a peer. The foreign host
 will get no notification of a disconnect and will time out on the

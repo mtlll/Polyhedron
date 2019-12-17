@@ -1852,8 +1852,8 @@ void modifygravity(entities::classes::BasePhysicalEntity *pl, bool water, int cu
 }
 
 // main physics routine, moves a player/monster for a ftsClient.currentTime step
-// moveres indicated the physics precision (which is lower for monsters and multiplayer prediction)
-// local is false for multiplayer prediction
+// moveres indicated the physics precision (which is lower for monsters and Multiplayer prediction)
+// local is false for Multiplayer prediction
 
 bool moveplayer(entities::classes::BasePhysicalEntity *pl, int moveres, bool local, int curtime = ftsClient.currentTime)
 {
@@ -1923,7 +1923,7 @@ bool moveplayer(entities::classes::BasePhysicalEntity *pl, int moveres, bool loc
 
 int physsteps = 0, physframetime = PHYSFRAMETIME, lastphysframe = 0;
 
-void physicsframe()          // optimally schedule physics frames inside the graphics frames
+void PhysicsFrame()          // optimally schedule physics frames inside the graphics frames
 {
     int diff = ftsClient.lastMilliseconds - lastphysframe;
     if(diff <= 0) physsteps = 0;
@@ -1992,7 +1992,7 @@ bool bounce(entities::classes::BasePhysicalEntity *d, float elasticity, float wa
     return hitplayer;
 }
 
-void updatephysstate(entities::classes::BasePhysicalEntity *d)
+void UpdatePhysState(entities::classes::BasePhysicalEntity *d)
 {
     if(d->physstate == PHYS_FALL) return;
     d->timeinair = 0;

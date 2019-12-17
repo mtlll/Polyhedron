@@ -5,21 +5,26 @@
 #include "game/client/client.h"
 #include "game/server/server.h"
 
-ENetHost *clienthost = NULL;
-ENetPeer *curpeer = NULL, *connpeer = NULL;
-int connmillis = 0, connattempts = 0, discmillis = 0;
+struct ClientConnection {
+    ENetHost *clientHost = NULL;
+    ENetPeer *currentPeer = NULL, *connectedPeer = NULL;
 
-bool multiplayer(bool msg)
+    int connectedMilliseconds = 0;
+    int connectionAttempts = 0;
+    int disconnectMilliseconds = 0;
+} clientConnection;
+
+bool Multiplayer(bool msg)
 {
-    bool val = curpeer || hasnonlocalclients();
-    if(val && msg) conoutf(CON_ERROR, "operation not available in multiplayer");
+    bool val = clientConnection.currentPeer || game::networking::HasNonLocalClients();
+    if(val && msg) conoutf(CON_ERROR, "operation not available in Multiplayer");
     return val;
 }
 
 void setrate(int rate)
 {
-   if(!curpeer) return;
-   enet_host_bandwidth_limit(clienthost, rate*1024, rate*1024);
+   if(!clientConnection.currentPeer) return;
+   enet_host_bandwidth_limit(clientConnection.clientHost, rate*1024, rate*1024);
 }
 
 VARF(rate, 0, 0, 1024, setrate(rate));
@@ -32,75 +37,75 @@ VARF(throttle_decel,    0, 2, 32, throttle());
 
 void throttle()
 {
-    if(!curpeer) return;
+    if(!clientConnection.currentPeer) return;
     ASSERT(ENET_PEER_PACKET_THROTTLE_SCALE==32);
-    enet_peer_throttle_configure(curpeer, throttle_interval*1000, throttle_accel, throttle_decel);
+    enet_peer_throttle_configure(clientConnection.currentPeer, throttle_interval*1000, throttle_accel, throttle_decel);
 }
 
-bool isconnected(bool attempt, bool local)
+bool IsConnected(bool attempt, bool local)
 {
-    return curpeer || (attempt && connpeer) || (local && haslocalclients());
+    return clientConnection.currentPeer || (attempt && clientConnection.connectedPeer) || (local && game::networking::HasLocalClients());
 }
 
-SCRIPTEXPORT_AS(isconnected) void isconnected_scriptimpl(CommandTypes::Boolean attempt, CommandTypes::Boolean local)
+SCRIPTEXPORT_AS(IsConnected) void IsConnected_scriptimpl(CommandTypes::Boolean attempt, CommandTypes::Boolean local)
 {
-    intret(isconnected(*attempt > 0, *local != 0) ? 1 : 0);
+    intret(IsConnected(*attempt > 0, *local != 0) ? 1 : 0);
 }
 
-const ENetAddress *connectedpeer()
+const ENetAddress *ConnectedPeer()
 {
-    return curpeer ? &curpeer->address : NULL;
+    return clientConnection.currentPeer ? &clientConnection.currentPeer->address : NULL;
 }
 
-SCRIPTEXPORT void connectedip()
+SCRIPTEXPORT_AS(connectedip) void ConnectedIP()
 {
-    const ENetAddress *address = connectedpeer();
+    const ENetAddress *address = ConnectedPeer();
     cubestr hostname;
     result(address && enet_address_get_host_ip(address, hostname, sizeof(hostname)) >= 0 ? hostname : "");
 };
 
-SCRIPTEXPORT void connectedport()
+SCRIPTEXPORT_AS(connectedport) void connectedport()
 {
-    const ENetAddress *address = connectedpeer();
+    const ENetAddress *address = ConnectedPeer();
     intret(address ? address->port : -1);
 };
 
-void abortconnect()
+void AbortConnect()
 {
-    if(!connpeer) return;
+    if(!clientConnection.connectedPeer) return;
     game::ConnectFail();
-    if(connpeer->state!=ENET_PEER_STATE_DISCONNECTED) enet_peer_reset(connpeer);
-    connpeer = NULL;
-    if(curpeer) return;
-    enet_host_destroy(clienthost);
-    clienthost = NULL;
+    if(clientConnection.connectedPeer->state!=ENET_PEER_STATE_DISCONNECTED) enet_peer_reset(clientConnection.connectedPeer);
+    clientConnection.connectedPeer = NULL;
+    if(clientConnection.currentPeer) return;
+    enet_host_destroy(clientConnection.clientHost);
+    clientConnection.clientHost = NULL;
 }
 
 SVARP(connectname, "");
 VARP(connectport, 0, 0, 0xFFFF);
 
-SCRIPTEXPORT_AS(connect) void ConnectServ(const char *servername, int ServerPort, const char *serverpassword)
+SCRIPTEXPORT_AS(connect) void ConnectServ(const char *serverName, int serverPort, const char *serverPassword)
 {
-    if(connpeer)
+    if(clientConnection.connectedPeer)
     {
         conoutf("aborting connection attempt");
-        abortconnect();
+        AbortConnect();
     }
 
-    if(ServerPort <= 0) ServerPort = game::server::ServerPort();
+    if(serverPort <= 0) serverPort = game::server::ServerPort();
 
     ENetAddress address;
-    address.port = ServerPort;
+    address.port = serverPort;
 
-    if(servername)
+    if(serverName)
     {
-        if(strcmp(servername, connectname)) setsvar("connectname", servername);
-        if(ServerPort != connectport) setvar("connectport", ServerPort);
-        addserver(servername, ServerPort, serverpassword && serverpassword[0] ? serverpassword : NULL);
-        conoutf("attempting to connect to %s:%d", servername, ServerPort);
-        if(!resolverwait(servername, &address))
+        if(strcmp(serverName, connectname)) setsvar("connectname", serverName);
+        if(serverPort != connectport) setvar("connectport", serverPort);
+        AddServer(serverName, serverPort, serverPassword && serverPassword[0] ? serverPassword : NULL);
+        conoutf("attempting to connect to %s:%d", serverName, serverPort);
+        if(!ResolverWait(serverName, &address))
         {
-            conoutf("\f3could not resolve server %s", servername);
+            conoutf("\f3could not resolve server %s", serverName);
             return;
         }
     }
@@ -112,26 +117,26 @@ SCRIPTEXPORT_AS(connect) void ConnectServ(const char *servername, int ServerPort
         address.host = ENET_HOST_BROADCAST;
     }
 
-    if(!clienthost)
+    if(!clientConnection.clientHost)
     {
-        clienthost = enet_host_create(NULL, 2, game::server::GetNumChannels(), rate*1024, rate*1024);
-        if(!clienthost)
+        clientConnection.clientHost = enet_host_create(NULL, 2, game::server::GetNumChannels(), rate*1024, rate*1024);
+        if(!clientConnection.clientHost)
         {
             conoutf("\f3could not connect to server");
             return;
         }
-        clienthost->duplicatePeers = 0;
+        clientConnection.clientHost->duplicatePeers = 0;
     }
 
-    connpeer = enet_host_connect(clienthost, &address, game::server::GetNumChannels(), 0);
-    enet_host_flush(clienthost);
-    connmillis = ftsClient.totalMilliseconds;
-    connattempts = 0;
+    clientConnection.connectedPeer = enet_host_connect(clientConnection.clientHost, &address, game::server::GetNumChannels(), 0);
+    enet_host_flush(clientConnection.clientHost);
+    clientConnection.connectedMilliseconds = ftsClient.totalMilliseconds;
+    clientConnection.connectionAttempts = 0;
 
-    game::ConnectAttempt(servername ? servername : "", serverpassword ? serverpassword : "", address);
+    game::ConnectAttempt(serverName ? serverName : "", serverPassword ? serverPassword : "", address);
 }
 
-SCRIPTEXPORT void reconnect(const char *serverpassword)
+SCRIPTEXPORT_AS(reconnect) void Reconnect(const char *serverPassword)
 {
     if(!connectname[0] || connectport <= 0)
     {
@@ -139,74 +144,74 @@ SCRIPTEXPORT void reconnect(const char *serverpassword)
         return;
     }
 
-    ConnectServ(connectname, connectport, serverpassword);
+    ConnectServ(connectname, connectport, serverPassword);
 }
 
-void disconnect(bool async, bool cleanup)
+void Disconnect(bool async, bool cleanup)
 {
-    if(curpeer)
+    if(clientConnection.currentPeer)
     {
-        if(!discmillis)
+        if(!clientConnection.disconnectMilliseconds)
         {
-            enet_peer_disconnect(curpeer, DISC_NONE);
-            enet_host_flush(clienthost);
-            discmillis = ftsClient.totalMilliseconds;
+            enet_peer_disconnect(clientConnection.currentPeer, DISC_NONE);
+            enet_host_flush(clientConnection.clientHost);
+            clientConnection.disconnectMilliseconds = ftsClient.totalMilliseconds;
         }
-        if(curpeer->state!=ENET_PEER_STATE_DISCONNECTED)
+        if(clientConnection.currentPeer->state!=ENET_PEER_STATE_DISCONNECTED)
         {
             if(async) return;
-            enet_peer_reset(curpeer);
+            enet_peer_reset(clientConnection.currentPeer);
         }
-        curpeer = NULL;
-        discmillis = 0;
-        conoutf("disconnected");
+        clientConnection.currentPeer = NULL;
+        clientConnection.disconnectMilliseconds = 0;
+        conoutf("dIsConnected");
         game::client::GameDisconnect(cleanup);
         mainmenu = 1;
     }
-    if(!connpeer && clienthost)
+    if(!clientConnection.connectedPeer && clientConnection.clientHost)
     {
-        enet_host_destroy(clienthost);
-        clienthost = NULL;
+        enet_host_destroy(clientConnection.clientHost);
+        clientConnection.clientHost = NULL;
     }
 }
 
-void trydisconnect(bool local)
+void TryDisconnect(bool local)
 {
-    if(connpeer)
+    if(clientConnection.connectedPeer)
     {
         conoutf("aborting connection attempt");
-        abortconnect();
+        AbortConnect();
     }
-    else if(curpeer)
+    else if(clientConnection.currentPeer)
     {
         conoutf("attempting to disconnect...");
-        disconnect(!discmillis);
+        Disconnect(true, !clientConnection.disconnectMilliseconds);
     }
-    else if(local && haslocalclients()) LocalDisconnect();
+    else if(local && game::networking::HasLocalClients()) LocalDisconnect();
     else conoutf("not connected");
 }
 
-SCRIPTEXPORT_AS(lanconnect) void lanconnect(int *port, char *pw)
+SCRIPTEXPORT_AS(lanconnect) void LanConnect(int *port, char *pw)
 {
     ConnectServ(NULL, *port, pw);
 }
 
 SCRIPTEXPORT_AS(disconnect) void disconnect_scriptimpl(int *local)
 {
-    trydisconnect(*local != 0);
+    TryDisconnect(*local != 0);
 }
 
 SCRIPTEXPORT_AS(localconnect) void localconnect_scriptimpl() //!!!!
 {
-    if(!isconnected())
+    if(!game::networking::IsConnected())
     {
-        localconnect();
+        game::networking::LocalConnect();
     }
 }
 
 SCRIPTEXPORT_AS(localdisconnect) void LocalDisconnect_scriptimpl()
 {
-    if(haslocalclients())
+    if(game::networking::HasLocalClients())
     {
         LocalDisconnect();
     }
@@ -214,19 +219,19 @@ SCRIPTEXPORT_AS(localdisconnect) void LocalDisconnect_scriptimpl()
 
 void SendClientPacket(ENetPacket *packet, int chan)
 {
-    if(curpeer) enet_peer_send(curpeer, chan, packet);
-    else localclienttoserver(chan, packet);
+    if(clientConnection.currentPeer) enet_peer_send(clientConnection.currentPeer, chan, packet);
+    else LocalClientToServer(chan, packet);
 }
 
-void flushclient()
+void FlushClient()
 {
-    if(clienthost) enet_host_flush(clienthost);
+    if(clientConnection.clientHost) enet_host_flush(clientConnection.clientHost);
 }
 
-void neterr(const char *s, bool disc)
+void NetErr(const char *s, bool disc)
 {
     conoutf(CON_ERROR, "\f3illegal network message (%s)", s);
-    if(disc) disconnect();
+    if(disc) game::networking::Disconnect();
 }
 
 void LocalServerToClient(int chan, ENetPacket *packet)   // processes any updates from the server
@@ -235,32 +240,32 @@ void LocalServerToClient(int chan, ENetPacket *packet)   // processes any update
     game::ParsePacketclient(chan, p);
 }
 
-void clientkeepalive() { if(clienthost) enet_host_service(clienthost, NULL, 0); }
+void ClientKeepAlive() { if(clientConnection.clientHost) enet_host_service(clientConnection.clientHost, NULL, 0); }
 
-void gets2c()           // get updates from the server
+void GetS2C()           // get updates from the server
 {
     ENetEvent event;
-    if(!clienthost) return;
-    if(connpeer && ftsClient.totalMilliseconds/3000 > connmillis/3000)
+    if(!clientConnection.clientHost) return;
+    if(clientConnection.connectedPeer && ftsClient.totalMilliseconds/3000 > clientConnection.connectedMilliseconds/3000)
     {
         conoutf("attempting to connect...");
-        connmillis = ftsClient.totalMilliseconds;
-        ++connattempts;
-        if(connattempts > 3)
+        clientConnection.connectedMilliseconds = ftsClient.totalMilliseconds;
+        ++clientConnection.connectionAttempts;
+        if(clientConnection.connectionAttempts > 3)
         {
             conoutf("\f3could not connect to server");
-            abortconnect();
+            AbortConnect();
             return;
         }
     }
-    while(clienthost && enet_host_service(clienthost, &event, 0)>0)
+    while(clientConnection.clientHost && enet_host_service(clientConnection.clientHost, &event, 0)>0)
     switch(event.type)
     {
         case ENET_EVENT_TYPE_CONNECT:
-            disconnect(false, false);
+            Disconnect(false, false);
             LocalDisconnect(false);
-            curpeer = connpeer;
-            connpeer = NULL;
+            clientConnection.currentPeer = clientConnection.connectedPeer;
+            clientConnection.connectedPeer = NULL;
             conoutf("connected to server");
             throttle();
             if(rate) setrate(rate);
@@ -268,27 +273,27 @@ void gets2c()           // get updates from the server
             break;
 
         case ENET_EVENT_TYPE_RECEIVE:
-            if(discmillis) conoutf("attempting to disconnect...");
+            if(clientConnection.disconnectMilliseconds) conoutf("attempting to disconnect...");
             else LocalServerToClient(event.channelID, event.packet);
             enet_packet_destroy(event.packet);
             break;
 
         case ENET_EVENT_TYPE_DISCONNECT:
-            if(event.data>=DISC_NUM) event.data = DISC_NONE;
-            if(event.peer==connpeer)
+            if(event.data>=DISC_NUM) event.data = static_cast<enet_uint32>(game::networking::protocol::DisconnectReason::Default);
+            if(event.peer==clientConnection.connectedPeer)
             {
                 conoutf("\f3could not connect to server");
-                abortconnect();
+                AbortConnect();
             }
             else
             {
-                if(!discmillis || event.data)
+                if(!clientConnection.disconnectMilliseconds || event.data)
                 {
-                    const char *msg = disconnectreason(event.data);
+                    const char *msg = game::networking::DisconnectReason(static_cast<game::networking::protocol::DisconnectReason>(event.data));
                     if(msg) conoutf("\f3server network error, disconnecting (%s) ...", msg);
                     else conoutf("\f3server network error, disconnecting...");
                 }
-                disconnect();
+                game::networking::Disconnect();
             }
             return;
 

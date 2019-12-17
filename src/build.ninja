@@ -31,10 +31,22 @@ include rules.ninja
 
 
 #############################################
+# Utility command for edit_cache
+
+build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && /usr/bin/cmake-gui -S/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src -B/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src
+  DESC = Running CMake cache editor...
+  pool = console
+  restat = 1
+
+build edit_cache: phony CMakeFiles/edit_cache.util
+
+
+#############################################
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && /usr/local/bin/cmake -S/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src -B/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && /usr/bin/cmake -S/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src -B/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -48,1347 +60,1111 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 #############################################
 # Order-only phony target for Polyhedron
 
-build cmake_object_order_depends_target_Polyhedron: phony || cmake_object_order_depends_target_enet engine+aa.binding.cpp engine+bih.binding.cpp engine+blend.binding.cpp engine+client.binding.cpp engine+command.binding.cpp engine+console.binding.cpp engine+dynlight.binding.cpp engine+grass.binding.cpp engine+help.binding.cpp engine+light.binding.cpp engine+log.binding.cpp engine+main.binding.cpp engine+material.binding.cpp engine+menus.binding.cpp engine+movie.binding.cpp engine+normal.binding.cpp engine+octa.binding.cpp engine+octaedit.binding.cpp engine+octarender.binding.cpp engine+pch.binding.cpp engine+physics.binding.cpp engine+pvs.binding.cpp engine+rendergl.binding.cpp engine+renderlights.binding.cpp engine+rendermodel.binding.cpp engine+renderparticles.binding.cpp engine+rendersky.binding.cpp engine+rendertext.binding.cpp engine+renderva.binding.cpp engine+scriptexport.binding.cpp engine+server.binding.cpp engine+serverbrowser.binding.cpp engine+shader.binding.cpp engine+sound.binding.cpp engine+stain.binding.cpp engine+texture.binding.cpp engine+ui.binding.cpp engine+water.binding.cpp engine+world.binding.cpp engine+worldio.binding.cpp game+commands.binding.cpp game+entities+basemapmodel.binding.cpp game+entities+basemonster.binding.cpp game+entities+door.binding.cpp game+entities+dynamiclight.binding.cpp game+entities+player.binding.cpp game+entities+playerstart.binding.cpp game+entities.binding.cpp game+game.binding.cpp game+render.binding.cpp game+server.binding.cpp shared+crypto.binding.cpp shared+entities+attributes.binding.cpp shared+entities+basedynamicentity.binding.cpp shared+entities+baseentity.binding.cpp shared+entities+basephysicalentity.binding.cpp shared+entities+coreentity.binding.cpp shared+entities+decalentity.binding.cpp shared+entities+entityfactory.binding.cpp shared+geom.binding.cpp shared+glemu.binding.cpp shared+pch.binding.cpp shared+stream.binding.cpp shared+tools.binding.cpp shared+utils+cubestr.binding.cpp shared+utils+network.binding.cpp shared+zip.binding.cpp
+build cmake_object_order_depends_target_Polyhedron: phony || cmake_object_order_depends_target_enet engine+aa.binding.cpp engine+bih.binding.cpp engine+blend.binding.cpp engine+client.binding.cpp engine+command.binding.cpp engine+console.binding.cpp engine+dynlight.binding.cpp engine+grass.binding.cpp engine+help.binding.cpp engine+light.binding.cpp engine+log.binding.cpp engine+main.binding.cpp engine+material.binding.cpp engine+menus.binding.cpp engine+movie.binding.cpp engine+normal.binding.cpp engine+octa.binding.cpp engine+octaedit.binding.cpp engine+octarender.binding.cpp engine+pch.binding.cpp engine+physics.binding.cpp engine+pvs.binding.cpp engine+rendergl.binding.cpp engine+renderlights.binding.cpp engine+rendermodel.binding.cpp engine+renderparticles.binding.cpp engine+rendersky.binding.cpp engine+rendertext.binding.cpp engine+renderva.binding.cpp engine+scriptexport.binding.cpp engine+server.binding.cpp engine+serverbrowser.binding.cpp engine+shader.binding.cpp engine+sound.binding.cpp engine+stain.binding.cpp engine+texture.binding.cpp engine+ui.binding.cpp engine+water.binding.cpp engine+world.binding.cpp engine+worldio.binding.cpp game+client+client.binding.cpp game+commands.binding.cpp game+entities+basemapmodel.binding.cpp game+entities+basemonster.binding.cpp game+entities+door.binding.cpp game+entities+dynamiclight.binding.cpp game+entities+player.binding.cpp game+entities+playerstart.binding.cpp game+entities.binding.cpp game+game.binding.cpp game+render.binding.cpp game+server+server.binding.cpp shared+crypto.binding.cpp shared+entities+attributes.binding.cpp shared+entities+basedynamicentity.binding.cpp shared+entities+baseentity.binding.cpp shared+entities+basephysicalentity.binding.cpp shared+entities+coreentity.binding.cpp shared+entities+decalentity.binding.cpp shared+entities+entityfactory.binding.cpp shared+geom.binding.cpp shared+glemu.binding.cpp shared+networking+cl_sv.binding.cpp shared+networking+network.binding.cpp shared+pch.binding.cpp shared+stream.binding.cpp shared+tools.binding.cpp shared+utils+cubestr.binding.cpp shared+zip.binding.cpp
 
 build CMakeFiles/Polyhedron.dir/engine+aa.binding.cpp.o: CXX_COMPILER__Polyhedron engine+aa.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+aa.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+bih.binding.cpp.o: CXX_COMPILER__Polyhedron engine+bih.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+bih.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+blend.binding.cpp.o: CXX_COMPILER__Polyhedron engine+blend.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+blend.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+client.binding.cpp.o: CXX_COMPILER__Polyhedron engine+client.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+client.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+command.binding.cpp.o: CXX_COMPILER__Polyhedron engine+command.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+command.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+console.binding.cpp.o: CXX_COMPILER__Polyhedron engine+console.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+console.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+dynlight.binding.cpp.o: CXX_COMPILER__Polyhedron engine+dynlight.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+dynlight.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+grass.binding.cpp.o: CXX_COMPILER__Polyhedron engine+grass.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+grass.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+help.binding.cpp.o: CXX_COMPILER__Polyhedron engine+help.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+help.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+light.binding.cpp.o: CXX_COMPILER__Polyhedron engine+light.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+light.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+log.binding.cpp.o: CXX_COMPILER__Polyhedron engine+log.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+log.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+main.binding.cpp.o: CXX_COMPILER__Polyhedron engine+main.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+main.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+material.binding.cpp.o: CXX_COMPILER__Polyhedron engine+material.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+material.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+menus.binding.cpp.o: CXX_COMPILER__Polyhedron engine+menus.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+menus.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+movie.binding.cpp.o: CXX_COMPILER__Polyhedron engine+movie.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+movie.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+normal.binding.cpp.o: CXX_COMPILER__Polyhedron engine+normal.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+normal.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+octa.binding.cpp.o: CXX_COMPILER__Polyhedron engine+octa.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+octa.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+octaedit.binding.cpp.o: CXX_COMPILER__Polyhedron engine+octaedit.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+octaedit.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+octarender.binding.cpp.o: CXX_COMPILER__Polyhedron engine+octarender.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+octarender.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+pch.binding.cpp.o: CXX_COMPILER__Polyhedron engine+pch.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+pch.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+physics.binding.cpp.o: CXX_COMPILER__Polyhedron engine+physics.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+physics.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+pvs.binding.cpp.o: CXX_COMPILER__Polyhedron engine+pvs.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+pvs.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+rendergl.binding.cpp.o: CXX_COMPILER__Polyhedron engine+rendergl.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+rendergl.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+renderlights.binding.cpp.o: CXX_COMPILER__Polyhedron engine+renderlights.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+renderlights.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+rendermodel.binding.cpp.o: CXX_COMPILER__Polyhedron engine+rendermodel.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+rendermodel.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+renderparticles.binding.cpp.o: CXX_COMPILER__Polyhedron engine+renderparticles.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+renderparticles.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+rendersky.binding.cpp.o: CXX_COMPILER__Polyhedron engine+rendersky.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+rendersky.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+rendertext.binding.cpp.o: CXX_COMPILER__Polyhedron engine+rendertext.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+rendertext.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+renderva.binding.cpp.o: CXX_COMPILER__Polyhedron engine+renderva.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+renderva.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+scriptexport.binding.cpp.o: CXX_COMPILER__Polyhedron engine+scriptexport.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+scriptexport.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+server.binding.cpp.o: CXX_COMPILER__Polyhedron engine+server.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+server.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+serverbrowser.binding.cpp.o: CXX_COMPILER__Polyhedron engine+serverbrowser.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+serverbrowser.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+shader.binding.cpp.o: CXX_COMPILER__Polyhedron engine+shader.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+shader.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+sound.binding.cpp.o: CXX_COMPILER__Polyhedron engine+sound.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+sound.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+stain.binding.cpp.o: CXX_COMPILER__Polyhedron engine+stain.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+stain.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+texture.binding.cpp.o: CXX_COMPILER__Polyhedron engine+texture.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+texture.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+ui.binding.cpp.o: CXX_COMPILER__Polyhedron engine+ui.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+ui.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+water.binding.cpp.o: CXX_COMPILER__Polyhedron engine+water.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+water.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+world.binding.cpp.o: CXX_COMPILER__Polyhedron engine+world.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+world.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine+worldio.binding.cpp.o: CXX_COMPILER__Polyhedron engine+worldio.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine+worldio.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
-build CMakeFiles/Polyhedron.dir/shared+utils+network.binding.cpp.o: CXX_COMPILER__Polyhedron shared+utils+network.binding.cpp || cmake_object_order_depends_target_Polyhedron
+build CMakeFiles/Polyhedron.dir/game+client+client.binding.cpp.o: CXX_COMPILER__Polyhedron game+client+client.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+utils+network.binding.cpp.o.d
+  DEP_FILE = CMakeFiles/Polyhedron.dir/game+client+client.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared+utils+cubestr.binding.cpp.o: CXX_COMPILER__Polyhedron shared+utils+cubestr.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+utils+cubestr.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared+crypto.binding.cpp.o: CXX_COMPILER__Polyhedron shared+crypto.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+crypto.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared+geom.binding.cpp.o: CXX_COMPILER__Polyhedron shared+geom.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+geom.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared+glemu.binding.cpp.o: CXX_COMPILER__Polyhedron shared+glemu.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+glemu.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared+pch.binding.cpp.o: CXX_COMPILER__Polyhedron shared+pch.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+pch.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared+stream.binding.cpp.o: CXX_COMPILER__Polyhedron shared+stream.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+stream.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared+tools.binding.cpp.o: CXX_COMPILER__Polyhedron shared+tools.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+tools.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared+zip.binding.cpp.o: CXX_COMPILER__Polyhedron shared+zip.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+zip.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/game+entities.binding.cpp.o: CXX_COMPILER__Polyhedron game+entities.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/game+entities.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/game+game.binding.cpp.o: CXX_COMPILER__Polyhedron game+game.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/game+game.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/game+render.binding.cpp.o: CXX_COMPILER__Polyhedron game+render.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/game+render.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/game+server.binding.cpp.o: CXX_COMPILER__Polyhedron game+server.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/game+server.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/game+commands.binding.cpp.o: CXX_COMPILER__Polyhedron game+commands.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game+commands.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
-build CMakeFiles/Polyhedron.dir/shared+entities+attributes.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+attributes.binding.cpp || cmake_object_order_depends_target_Polyhedron
+build CMakeFiles/Polyhedron.dir/game+entities.binding.cpp.o: CXX_COMPILER__Polyhedron game+entities.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+attributes.binding.cpp.o.d
+  DEP_FILE = CMakeFiles/Polyhedron.dir/game+entities.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
-build CMakeFiles/Polyhedron.dir/shared+entities+coreentity.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+coreentity.binding.cpp || cmake_object_order_depends_target_Polyhedron
+build CMakeFiles/Polyhedron.dir/game+game.binding.cpp.o: CXX_COMPILER__Polyhedron game+game.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+coreentity.binding.cpp.o.d
+  DEP_FILE = CMakeFiles/Polyhedron.dir/game+game.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
-build CMakeFiles/Polyhedron.dir/shared+entities+baseentity.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+baseentity.binding.cpp || cmake_object_order_depends_target_Polyhedron
+build CMakeFiles/Polyhedron.dir/game+render.binding.cpp.o: CXX_COMPILER__Polyhedron game+render.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+baseentity.binding.cpp.o.d
+  DEP_FILE = CMakeFiles/Polyhedron.dir/game+render.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
-build CMakeFiles/Polyhedron.dir/shared+entities+basedynamicentity.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+basedynamicentity.binding.cpp || cmake_object_order_depends_target_Polyhedron
+build CMakeFiles/Polyhedron.dir/game+server+server.binding.cpp.o: CXX_COMPILER__Polyhedron game+server+server.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+basedynamicentity.binding.cpp.o.d
+  DEP_FILE = CMakeFiles/Polyhedron.dir/game+server+server.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared+entities+basephysicalentity.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+basephysicalentity.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+basephysicalentity.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared+entities+decalentity.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+decalentity.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+decalentity.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared+entities+entityfactory.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+entityfactory.binding.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+entityfactory.binding.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/game+entities+basemapmodel.binding.cpp.o: CXX_COMPILER__Polyhedron game+entities+basemapmodel.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game+entities+basemapmodel.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/game+entities+door.binding.cpp.o: CXX_COMPILER__Polyhedron game+entities+door.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game+entities+door.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/game+entities+dynamiclight.binding.cpp.o: CXX_COMPILER__Polyhedron game+entities+dynamiclight.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game+entities+dynamiclight.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/game+entities+basemonster.binding.cpp.o: CXX_COMPILER__Polyhedron game+entities+basemonster.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game+entities+basemonster.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/game+entities+playerstart.binding.cpp.o: CXX_COMPILER__Polyhedron game+entities+playerstart.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game+entities+playerstart.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/game+entities+player.binding.cpp.o: CXX_COMPILER__Polyhedron game+entities+player.binding.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game+entities+player.binding.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
+
+build CMakeFiles/Polyhedron.dir/shared+crypto.binding.cpp.o: CXX_COMPILER__Polyhedron shared+crypto.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+crypto.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+geom.binding.cpp.o: CXX_COMPILER__Polyhedron shared+geom.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+geom.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+glemu.binding.cpp.o: CXX_COMPILER__Polyhedron shared+glemu.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+glemu.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+pch.binding.cpp.o: CXX_COMPILER__Polyhedron shared+pch.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+pch.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+stream.binding.cpp.o: CXX_COMPILER__Polyhedron shared+stream.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+stream.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+tools.binding.cpp.o: CXX_COMPILER__Polyhedron shared+tools.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+tools.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+zip.binding.cpp.o: CXX_COMPILER__Polyhedron shared+zip.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+zip.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+entities+attributes.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+attributes.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+attributes.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+entities+coreentity.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+coreentity.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+coreentity.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+entities+baseentity.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+baseentity.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+baseentity.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+entities+basedynamicentity.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+basedynamicentity.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+basedynamicentity.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+entities+basephysicalentity.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+basephysicalentity.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+basephysicalentity.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+entities+decalentity.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+decalentity.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+decalentity.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+entities+entityfactory.binding.cpp.o: CXX_COMPILER__Polyhedron shared+entities+entityfactory.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+entities+entityfactory.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+utils+cubestr.binding.cpp.o: CXX_COMPILER__Polyhedron shared+utils+cubestr.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+utils+cubestr.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+networking+cl_sv.binding.cpp.o: CXX_COMPILER__Polyhedron shared+networking+cl_sv.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+networking+cl_sv.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
+
+build CMakeFiles/Polyhedron.dir/shared+networking+network.binding.cpp.o: CXX_COMPILER__Polyhedron shared+networking+network.binding.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared+networking+network.binding.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir
 
 build CMakeFiles/Polyhedron.dir/engine/aa.cpp.o: CXX_COMPILER__Polyhedron engine/aa.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/aa.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/bih.cpp.o: CXX_COMPILER__Polyhedron engine/bih.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/bih.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/blend.cpp.o: CXX_COMPILER__Polyhedron engine/blend.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/blend.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/client.cpp.o: CXX_COMPILER__Polyhedron engine/client.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/client.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/command.cpp.o: CXX_COMPILER__Polyhedron engine/command.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/command.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/console.cpp.o: CXX_COMPILER__Polyhedron engine/console.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/console.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/dynlight.cpp.o: CXX_COMPILER__Polyhedron engine/dynlight.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/dynlight.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/grass.cpp.o: CXX_COMPILER__Polyhedron engine/grass.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/grass.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/help.cpp.o: CXX_COMPILER__Polyhedron engine/help.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/help.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/light.cpp.o: CXX_COMPILER__Polyhedron engine/light.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/light.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/log.cpp.o: CXX_COMPILER__Polyhedron engine/log.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/log.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/main.cpp.o: CXX_COMPILER__Polyhedron engine/main.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/main.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/material.cpp.o: CXX_COMPILER__Polyhedron engine/material.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/material.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/menus.cpp.o: CXX_COMPILER__Polyhedron engine/menus.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/menus.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/movie.cpp.o: CXX_COMPILER__Polyhedron engine/movie.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/movie.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/normal.cpp.o: CXX_COMPILER__Polyhedron engine/normal.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/normal.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/octa.cpp.o: CXX_COMPILER__Polyhedron engine/octa.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/octa.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/octaedit.cpp.o: CXX_COMPILER__Polyhedron engine/octaedit.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/octaedit.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/octarender.cpp.o: CXX_COMPILER__Polyhedron engine/octarender.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/octarender.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/pch.cpp.o: CXX_COMPILER__Polyhedron engine/pch.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/pch.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/physics.cpp.o: CXX_COMPILER__Polyhedron engine/physics.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/physics.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/pvs.cpp.o: CXX_COMPILER__Polyhedron engine/pvs.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/pvs.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/rendergl.cpp.o: CXX_COMPILER__Polyhedron engine/rendergl.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/rendergl.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/renderlights.cpp.o: CXX_COMPILER__Polyhedron engine/renderlights.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/renderlights.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/rendermodel.cpp.o: CXX_COMPILER__Polyhedron engine/rendermodel.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/rendermodel.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/renderparticles.cpp.o: CXX_COMPILER__Polyhedron engine/renderparticles.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/renderparticles.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/rendersky.cpp.o: CXX_COMPILER__Polyhedron engine/rendersky.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/rendersky.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/rendertext.cpp.o: CXX_COMPILER__Polyhedron engine/rendertext.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/rendertext.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/renderva.cpp.o: CXX_COMPILER__Polyhedron engine/renderva.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/renderva.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/scriptexport.cpp.o: CXX_COMPILER__Polyhedron engine/scriptexport.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/scriptexport.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/server.cpp.o: CXX_COMPILER__Polyhedron engine/server.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/server.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/serverbrowser.cpp.o: CXX_COMPILER__Polyhedron engine/serverbrowser.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/serverbrowser.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/shader.cpp.o: CXX_COMPILER__Polyhedron engine/shader.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/shader.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/sound.cpp.o: CXX_COMPILER__Polyhedron engine/sound.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/sound.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/stain.cpp.o: CXX_COMPILER__Polyhedron engine/stain.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/stain.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/texture.cpp.o: CXX_COMPILER__Polyhedron engine/texture.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/texture.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/ui.cpp.o: CXX_COMPILER__Polyhedron engine/ui.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/ui.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/water.cpp.o: CXX_COMPILER__Polyhedron engine/water.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/water.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/world.cpp.o: CXX_COMPILER__Polyhedron engine/world.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/world.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/engine/worldio.cpp.o: CXX_COMPILER__Polyhedron engine/worldio.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/engine/worldio.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/engine
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared/utils/network.cpp.o: CXX_COMPILER__Polyhedron shared/utils/network.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared/utils/network.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared/utils
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/shared/utils/cubestr.cpp.o: CXX_COMPILER__Polyhedron shared/utils/cubestr.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/shared/utils/cubestr.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared/utils
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/crypto.cpp.o: CXX_COMPILER__Polyhedron shared/crypto.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/crypto.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/geom.cpp.o: CXX_COMPILER__Polyhedron shared/geom.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/geom.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/glemu.cpp.o: CXX_COMPILER__Polyhedron shared/glemu.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/glemu.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/pch.cpp.o: CXX_COMPILER__Polyhedron shared/pch.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/pch.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/stream.cpp.o: CXX_COMPILER__Polyhedron shared/stream.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/stream.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/tools.cpp.o: CXX_COMPILER__Polyhedron shared/tools.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/tools.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/zip.cpp.o: CXX_COMPILER__Polyhedron shared/zip.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/zip.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/game/entities.cpp.o: CXX_COMPILER__Polyhedron game/entities.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/game/entities.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/game/game.cpp.o: CXX_COMPILER__Polyhedron game/game.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/game/game.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/game/render.cpp.o: CXX_COMPILER__Polyhedron game/render.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/game/render.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/game/server.cpp.o: CXX_COMPILER__Polyhedron game/server.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/game/server.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
-
-build CMakeFiles/Polyhedron.dir/game/commands.cpp.o: CXX_COMPILER__Polyhedron game/commands.cpp || cmake_object_order_depends_target_Polyhedron
-  DEFINES = -DGL_SILENCE_DEPRECATION
-  DEP_FILE = CMakeFiles/Polyhedron.dir/game/commands.cpp.o.d
-  FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
-  OBJECT_DIR = CMakeFiles/Polyhedron.dir
-  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/entities/attributes.cpp.o: CXX_COMPILER__Polyhedron shared/entities/attributes.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/entities/attributes.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/entities/coreentity.cpp.o: CXX_COMPILER__Polyhedron shared/entities/coreentity.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/entities/coreentity.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/entities/baseentity.cpp.o: CXX_COMPILER__Polyhedron shared/entities/baseentity.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/entities/baseentity.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/entities/basedynamicentity.cpp.o: CXX_COMPILER__Polyhedron shared/entities/basedynamicentity.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/entities/basedynamicentity.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/entities/basephysicalentity.cpp.o: CXX_COMPILER__Polyhedron shared/entities/basephysicalentity.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/entities/basephysicalentity.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/entities/decalentity.cpp.o: CXX_COMPILER__Polyhedron shared/entities/decalentity.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/entities/decalentity.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/shared/entities/entityfactory.cpp.o: CXX_COMPILER__Polyhedron shared/entities/entityfactory.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/shared/entities/entityfactory.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
+
+build CMakeFiles/Polyhedron.dir/shared/networking/cl_sv.cpp.o: CXX_COMPILER__Polyhedron shared/networking/cl_sv.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared/networking/cl_sv.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared/networking
+
+build CMakeFiles/Polyhedron.dir/shared/networking/network.cpp.o: CXX_COMPILER__Polyhedron shared/networking/network.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared/networking/network.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared/networking
+
+build CMakeFiles/Polyhedron.dir/shared/utils/cubestr.cpp.o: CXX_COMPILER__Polyhedron shared/utils/cubestr.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/shared/utils/cubestr.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/shared/utils
+
+build CMakeFiles/Polyhedron.dir/game/client/client.cpp.o: CXX_COMPILER__Polyhedron game/client/client.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/game/client/client.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game/client
+
+build CMakeFiles/Polyhedron.dir/game/commands.cpp.o: CXX_COMPILER__Polyhedron game/commands.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/game/commands.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game
+
+build CMakeFiles/Polyhedron.dir/game/entities.cpp.o: CXX_COMPILER__Polyhedron game/entities.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/game/entities.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game
+
+build CMakeFiles/Polyhedron.dir/game/game.cpp.o: CXX_COMPILER__Polyhedron game/game.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/game/game.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game
+
+build CMakeFiles/Polyhedron.dir/game/render.cpp.o: CXX_COMPILER__Polyhedron game/render.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/game/render.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game
+
+build CMakeFiles/Polyhedron.dir/game/server/server.cpp.o: CXX_COMPILER__Polyhedron game/server/server.cpp || cmake_object_order_depends_target_Polyhedron
+  DEFINES = -DGL_SILENCE_DEPRECATION
+  DEP_FILE = CMakeFiles/Polyhedron.dir/game/server/server.cpp.o.d
+  FLAGS = -std=c++1z
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  OBJECT_DIR = CMakeFiles/Polyhedron.dir
+  OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game/server
 
 build CMakeFiles/Polyhedron.dir/game/entities/basemapmodel.cpp.o: CXX_COMPILER__Polyhedron game/entities/basemapmodel.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game/entities/basemapmodel.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/game/entities/door.cpp.o: CXX_COMPILER__Polyhedron game/entities/door.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game/entities/door.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/game/entities/dynamiclight.cpp.o: CXX_COMPILER__Polyhedron game/entities/dynamiclight.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game/entities/dynamiclight.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/game/entities/basemonster.cpp.o: CXX_COMPILER__Polyhedron game/entities/basemonster.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game/entities/basemonster.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/game/entities/playerstart.cpp.o: CXX_COMPILER__Polyhedron game/entities/playerstart.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game/entities/playerstart.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 build CMakeFiles/Polyhedron.dir/game/entities/player.cpp.o: CXX_COMPILER__Polyhedron game/entities/player.cpp || cmake_object_order_depends_target_Polyhedron
   DEFINES = -DGL_SILENCE_DEPRECATION
   DEP_FILE = CMakeFiles/Polyhedron.dir/game/entities/player.cpp.o.d
   FLAGS = -std=c++1z
-  INCLUDES = -Iext/json-develop/single_include -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -I. -Ishared -Igame -Iengine -I. -I/usr/include/SDL2 -I/usr/include/freetype2 -Ienet/include
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   OBJECT_FILE_DIR = CMakeFiles/Polyhedron.dir/game/entities
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
-  TARGET_PDB = Polyhedron.pdb
 
 
 # =============================================================================
@@ -1398,25 +1174,13 @@ build CMakeFiles/Polyhedron.dir/game/entities/player.cpp.o: CXX_COMPILER__Polyhe
 #############################################
 # Link the executable Polyhedron
 
-build Polyhedron: CXX_EXECUTABLE_LINKER__Polyhedron CMakeFiles/Polyhedron.dir/engine+aa.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+bih.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+blend.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+client.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+command.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+console.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+dynlight.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+grass.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+help.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+light.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+log.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+main.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+material.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+menus.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+movie.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+normal.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+octa.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+octaedit.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+octarender.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+pch.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+physics.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+pvs.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+rendergl.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+renderlights.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+rendermodel.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+renderparticles.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+rendersky.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+rendertext.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+renderva.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+scriptexport.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+server.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+serverbrowser.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+shader.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+sound.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+stain.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+texture.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+ui.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+water.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+world.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+worldio.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+utils+network.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+utils+cubestr.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+crypto.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+geom.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+glemu.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+pch.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+stream.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+tools.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+zip.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities.binding.cpp.o CMakeFiles/Polyhedron.dir/game+game.binding.cpp.o CMakeFiles/Polyhedron.dir/game+render.binding.cpp.o CMakeFiles/Polyhedron.dir/game+server.binding.cpp.o CMakeFiles/Polyhedron.dir/game+commands.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+attributes.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+coreentity.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+baseentity.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+basedynamicentity.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+basephysicalentity.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+decalentity.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+entityfactory.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities+basemapmodel.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities+door.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities+dynamiclight.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities+basemonster.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities+playerstart.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities+player.binding.cpp.o CMakeFiles/Polyhedron.dir/engine/aa.cpp.o CMakeFiles/Polyhedron.dir/engine/bih.cpp.o CMakeFiles/Polyhedron.dir/engine/blend.cpp.o CMakeFiles/Polyhedron.dir/engine/client.cpp.o CMakeFiles/Polyhedron.dir/engine/command.cpp.o CMakeFiles/Polyhedron.dir/engine/console.cpp.o CMakeFiles/Polyhedron.dir/engine/dynlight.cpp.o CMakeFiles/Polyhedron.dir/engine/grass.cpp.o CMakeFiles/Polyhedron.dir/engine/help.cpp.o CMakeFiles/Polyhedron.dir/engine/light.cpp.o CMakeFiles/Polyhedron.dir/engine/log.cpp.o CMakeFiles/Polyhedron.dir/engine/main.cpp.o CMakeFiles/Polyhedron.dir/engine/material.cpp.o CMakeFiles/Polyhedron.dir/engine/menus.cpp.o CMakeFiles/Polyhedron.dir/engine/movie.cpp.o CMakeFiles/Polyhedron.dir/engine/normal.cpp.o CMakeFiles/Polyhedron.dir/engine/octa.cpp.o CMakeFiles/Polyhedron.dir/engine/octaedit.cpp.o CMakeFiles/Polyhedron.dir/engine/octarender.cpp.o CMakeFiles/Polyhedron.dir/engine/pch.cpp.o CMakeFiles/Polyhedron.dir/engine/physics.cpp.o CMakeFiles/Polyhedron.dir/engine/pvs.cpp.o CMakeFiles/Polyhedron.dir/engine/rendergl.cpp.o CMakeFiles/Polyhedron.dir/engine/renderlights.cpp.o CMakeFiles/Polyhedron.dir/engine/rendermodel.cpp.o CMakeFiles/Polyhedron.dir/engine/renderparticles.cpp.o CMakeFiles/Polyhedron.dir/engine/rendersky.cpp.o CMakeFiles/Polyhedron.dir/engine/rendertext.cpp.o CMakeFiles/Polyhedron.dir/engine/renderva.cpp.o CMakeFiles/Polyhedron.dir/engine/scriptexport.cpp.o CMakeFiles/Polyhedron.dir/engine/server.cpp.o CMakeFiles/Polyhedron.dir/engine/serverbrowser.cpp.o CMakeFiles/Polyhedron.dir/engine/shader.cpp.o CMakeFiles/Polyhedron.dir/engine/sound.cpp.o CMakeFiles/Polyhedron.dir/engine/stain.cpp.o CMakeFiles/Polyhedron.dir/engine/texture.cpp.o CMakeFiles/Polyhedron.dir/engine/ui.cpp.o CMakeFiles/Polyhedron.dir/engine/water.cpp.o CMakeFiles/Polyhedron.dir/engine/world.cpp.o CMakeFiles/Polyhedron.dir/engine/worldio.cpp.o CMakeFiles/Polyhedron.dir/shared/utils/network.cpp.o CMakeFiles/Polyhedron.dir/shared/utils/cubestr.cpp.o CMakeFiles/Polyhedron.dir/shared/crypto.cpp.o CMakeFiles/Polyhedron.dir/shared/geom.cpp.o CMakeFiles/Polyhedron.dir/shared/glemu.cpp.o CMakeFiles/Polyhedron.dir/shared/pch.cpp.o CMakeFiles/Polyhedron.dir/shared/stream.cpp.o CMakeFiles/Polyhedron.dir/shared/tools.cpp.o CMakeFiles/Polyhedron.dir/shared/zip.cpp.o CMakeFiles/Polyhedron.dir/game/entities.cpp.o CMakeFiles/Polyhedron.dir/game/game.cpp.o CMakeFiles/Polyhedron.dir/game/render.cpp.o CMakeFiles/Polyhedron.dir/game/server.cpp.o CMakeFiles/Polyhedron.dir/game/commands.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/attributes.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/coreentity.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/baseentity.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/basedynamicentity.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/basephysicalentity.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/decalentity.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/entityfactory.cpp.o CMakeFiles/Polyhedron.dir/game/entities/basemapmodel.cpp.o CMakeFiles/Polyhedron.dir/game/entities/door.cpp.o CMakeFiles/Polyhedron.dir/game/entities/dynamiclight.cpp.o CMakeFiles/Polyhedron.dir/game/entities/basemonster.cpp.o CMakeFiles/Polyhedron.dir/game/entities/playerstart.cpp.o CMakeFiles/Polyhedron.dir/game/entities/player.cpp.o | enet/libenet.a /usr/lib/x86_64-linux-gnu/libSDL2main.a /usr/lib/x86_64-linux-gnu/libSDL2.so /usr/lib/x86_64-linux-gnu/libSDL2_mixer.so /usr/lib/x86_64-linux-gnu/libSDL2_image.so /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib/x86_64-linux-gnu/libz.so /usr/lib/x86_64-linux-gnu/libOpenGL.so /usr/lib/x86_64-linux-gnu/libGLX.so /usr/lib/x86_64-linux-gnu/libGLU.so || enet/libenet.a
+build Polyhedron: CXX_EXECUTABLE_LINKER__Polyhedron CMakeFiles/Polyhedron.dir/engine+aa.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+bih.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+blend.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+client.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+command.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+console.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+dynlight.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+grass.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+help.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+light.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+log.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+main.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+material.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+menus.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+movie.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+normal.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+octa.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+octaedit.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+octarender.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+pch.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+physics.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+pvs.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+rendergl.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+renderlights.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+rendermodel.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+renderparticles.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+rendersky.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+rendertext.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+renderva.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+scriptexport.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+server.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+serverbrowser.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+shader.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+sound.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+stain.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+texture.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+ui.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+water.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+world.binding.cpp.o CMakeFiles/Polyhedron.dir/engine+worldio.binding.cpp.o CMakeFiles/Polyhedron.dir/game+client+client.binding.cpp.o CMakeFiles/Polyhedron.dir/game+commands.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities.binding.cpp.o CMakeFiles/Polyhedron.dir/game+game.binding.cpp.o CMakeFiles/Polyhedron.dir/game+render.binding.cpp.o CMakeFiles/Polyhedron.dir/game+server+server.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities+basemapmodel.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities+door.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities+dynamiclight.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities+basemonster.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities+playerstart.binding.cpp.o CMakeFiles/Polyhedron.dir/game+entities+player.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+crypto.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+geom.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+glemu.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+pch.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+stream.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+tools.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+zip.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+attributes.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+coreentity.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+baseentity.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+basedynamicentity.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+basephysicalentity.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+decalentity.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+entities+entityfactory.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+utils+cubestr.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+networking+cl_sv.binding.cpp.o CMakeFiles/Polyhedron.dir/shared+networking+network.binding.cpp.o CMakeFiles/Polyhedron.dir/engine/aa.cpp.o CMakeFiles/Polyhedron.dir/engine/bih.cpp.o CMakeFiles/Polyhedron.dir/engine/blend.cpp.o CMakeFiles/Polyhedron.dir/engine/client.cpp.o CMakeFiles/Polyhedron.dir/engine/command.cpp.o CMakeFiles/Polyhedron.dir/engine/console.cpp.o CMakeFiles/Polyhedron.dir/engine/dynlight.cpp.o CMakeFiles/Polyhedron.dir/engine/grass.cpp.o CMakeFiles/Polyhedron.dir/engine/help.cpp.o CMakeFiles/Polyhedron.dir/engine/light.cpp.o CMakeFiles/Polyhedron.dir/engine/log.cpp.o CMakeFiles/Polyhedron.dir/engine/main.cpp.o CMakeFiles/Polyhedron.dir/engine/material.cpp.o CMakeFiles/Polyhedron.dir/engine/menus.cpp.o CMakeFiles/Polyhedron.dir/engine/movie.cpp.o CMakeFiles/Polyhedron.dir/engine/normal.cpp.o CMakeFiles/Polyhedron.dir/engine/octa.cpp.o CMakeFiles/Polyhedron.dir/engine/octaedit.cpp.o CMakeFiles/Polyhedron.dir/engine/octarender.cpp.o CMakeFiles/Polyhedron.dir/engine/pch.cpp.o CMakeFiles/Polyhedron.dir/engine/physics.cpp.o CMakeFiles/Polyhedron.dir/engine/pvs.cpp.o CMakeFiles/Polyhedron.dir/engine/rendergl.cpp.o CMakeFiles/Polyhedron.dir/engine/renderlights.cpp.o CMakeFiles/Polyhedron.dir/engine/rendermodel.cpp.o CMakeFiles/Polyhedron.dir/engine/renderparticles.cpp.o CMakeFiles/Polyhedron.dir/engine/rendersky.cpp.o CMakeFiles/Polyhedron.dir/engine/rendertext.cpp.o CMakeFiles/Polyhedron.dir/engine/renderva.cpp.o CMakeFiles/Polyhedron.dir/engine/scriptexport.cpp.o CMakeFiles/Polyhedron.dir/engine/server.cpp.o CMakeFiles/Polyhedron.dir/engine/serverbrowser.cpp.o CMakeFiles/Polyhedron.dir/engine/shader.cpp.o CMakeFiles/Polyhedron.dir/engine/sound.cpp.o CMakeFiles/Polyhedron.dir/engine/stain.cpp.o CMakeFiles/Polyhedron.dir/engine/texture.cpp.o CMakeFiles/Polyhedron.dir/engine/ui.cpp.o CMakeFiles/Polyhedron.dir/engine/water.cpp.o CMakeFiles/Polyhedron.dir/engine/world.cpp.o CMakeFiles/Polyhedron.dir/engine/worldio.cpp.o CMakeFiles/Polyhedron.dir/shared/crypto.cpp.o CMakeFiles/Polyhedron.dir/shared/geom.cpp.o CMakeFiles/Polyhedron.dir/shared/glemu.cpp.o CMakeFiles/Polyhedron.dir/shared/pch.cpp.o CMakeFiles/Polyhedron.dir/shared/stream.cpp.o CMakeFiles/Polyhedron.dir/shared/tools.cpp.o CMakeFiles/Polyhedron.dir/shared/zip.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/attributes.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/coreentity.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/baseentity.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/basedynamicentity.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/basephysicalentity.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/decalentity.cpp.o CMakeFiles/Polyhedron.dir/shared/entities/entityfactory.cpp.o CMakeFiles/Polyhedron.dir/shared/networking/cl_sv.cpp.o CMakeFiles/Polyhedron.dir/shared/networking/network.cpp.o CMakeFiles/Polyhedron.dir/shared/utils/cubestr.cpp.o CMakeFiles/Polyhedron.dir/game/client/client.cpp.o CMakeFiles/Polyhedron.dir/game/commands.cpp.o CMakeFiles/Polyhedron.dir/game/entities.cpp.o CMakeFiles/Polyhedron.dir/game/game.cpp.o CMakeFiles/Polyhedron.dir/game/render.cpp.o CMakeFiles/Polyhedron.dir/game/server/server.cpp.o CMakeFiles/Polyhedron.dir/game/entities/basemapmodel.cpp.o CMakeFiles/Polyhedron.dir/game/entities/door.cpp.o CMakeFiles/Polyhedron.dir/game/entities/dynamiclight.cpp.o CMakeFiles/Polyhedron.dir/game/entities/basemonster.cpp.o CMakeFiles/Polyhedron.dir/game/entities/playerstart.cpp.o CMakeFiles/Polyhedron.dir/game/entities/player.cpp.o | enet/libenet.a /usr/lib/x86_64-linux-gnu/libSDL2main.a /usr/lib/x86_64-linux-gnu/libSDL2.so /usr/lib/x86_64-linux-gnu/libSDL2_mixer.so /usr/lib/x86_64-linux-gnu/libSDL2_image.so /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib/x86_64-linux-gnu/libz.so /usr/lib/x86_64-linux-gnu/libOpenGL.so /usr/lib/x86_64-linux-gnu/libGLX.so /usr/lib/x86_64-linux-gnu/libGLU.so || enet/libenet.a
   LINK_LIBRARIES = enet/libenet.a  -lrt  /usr/lib/x86_64-linux-gnu/libSDL2main.a  /usr/lib/x86_64-linux-gnu/libSDL2.so  -lpthread  /usr/lib/x86_64-linux-gnu/libSDL2_mixer.so  /usr/lib/x86_64-linux-gnu/libSDL2_image.so  /usr/lib/x86_64-linux-gnu/libfreetype.so  /usr/lib/x86_64-linux-gnu/libz.so  /usr/lib/x86_64-linux-gnu/libOpenGL.so  /usr/lib/x86_64-linux-gnu/libGLX.so  /usr/lib/x86_64-linux-gnu/libGLU.so
   OBJECT_DIR = CMakeFiles/Polyhedron.dir
   POST_BUILD = :
   PRE_LINK = :
-  TARGET_COMPILE_PDB = CMakeFiles/Polyhedron.dir/
   TARGET_FILE = Polyhedron
-  TARGET_PDB = Polyhedron.pdb
-
-
-#############################################
-# Utility command for edit_cache
-
-build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && /usr/local/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-  DESC = No interactive CMake dialog available...
-  restat = 1
-
-build edit_cache: phony CMakeFiles/edit_cache.util
+  TARGET_PDB = Polyhedron.dbg
 
 
 #############################################
@@ -1780,20 +1544,110 @@ build engine+worldio.binding.cpp: CUSTOM_COMMAND engine/worldio.cpp || enet/libe
 
 
 #############################################
-# Custom command for shared+utils+network.binding.cpp
+# Custom command for game+client+client.binding.cpp
 
-build shared+utils+network.binding.cpp: CUSTOM_COMMAND shared/utils/network.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src shared/utils/network.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/shared+utils+network.binding.cpp
-  DESC = Preprocessing shared/utils/network.cpp
+build game+client+client.binding.cpp: CUSTOM_COMMAND game/client/client.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/client/client.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+client+client.binding.cpp
+  DESC = Preprocessing game/client/client.cpp
   restat = 1
 
 
 #############################################
-# Custom command for shared+utils+cubestr.binding.cpp
+# Custom command for game+commands.binding.cpp
 
-build shared+utils+cubestr.binding.cpp: CUSTOM_COMMAND shared/utils/cubestr.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src shared/utils/cubestr.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/shared+utils+cubestr.binding.cpp
-  DESC = Preprocessing shared/utils/cubestr.cpp
+build game+commands.binding.cpp: CUSTOM_COMMAND game/commands.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/commands.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+commands.binding.cpp
+  DESC = Preprocessing game/commands.cpp
+  restat = 1
+
+
+#############################################
+# Custom command for game+entities.binding.cpp
+
+build game+entities.binding.cpp: CUSTOM_COMMAND game/entities.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities.binding.cpp
+  DESC = Preprocessing game/entities.cpp
+  restat = 1
+
+
+#############################################
+# Custom command for game+game.binding.cpp
+
+build game+game.binding.cpp: CUSTOM_COMMAND game/game.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/game.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+game.binding.cpp
+  DESC = Preprocessing game/game.cpp
+  restat = 1
+
+
+#############################################
+# Custom command for game+render.binding.cpp
+
+build game+render.binding.cpp: CUSTOM_COMMAND game/render.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/render.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+render.binding.cpp
+  DESC = Preprocessing game/render.cpp
+  restat = 1
+
+
+#############################################
+# Custom command for game+server+server.binding.cpp
+
+build game+server+server.binding.cpp: CUSTOM_COMMAND game/server/server.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/server/server.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+server+server.binding.cpp
+  DESC = Preprocessing game/server/server.cpp
+  restat = 1
+
+
+#############################################
+# Custom command for game+entities+basemapmodel.binding.cpp
+
+build game+entities+basemapmodel.binding.cpp: CUSTOM_COMMAND game/entities/basemapmodel.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities/basemapmodel.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities+basemapmodel.binding.cpp
+  DESC = Preprocessing game/entities/basemapmodel.cpp
+  restat = 1
+
+
+#############################################
+# Custom command for game+entities+door.binding.cpp
+
+build game+entities+door.binding.cpp: CUSTOM_COMMAND game/entities/door.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities/door.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities+door.binding.cpp
+  DESC = Preprocessing game/entities/door.cpp
+  restat = 1
+
+
+#############################################
+# Custom command for game+entities+dynamiclight.binding.cpp
+
+build game+entities+dynamiclight.binding.cpp: CUSTOM_COMMAND game/entities/dynamiclight.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities/dynamiclight.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities+dynamiclight.binding.cpp
+  DESC = Preprocessing game/entities/dynamiclight.cpp
+  restat = 1
+
+
+#############################################
+# Custom command for game+entities+basemonster.binding.cpp
+
+build game+entities+basemonster.binding.cpp: CUSTOM_COMMAND game/entities/basemonster.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities/basemonster.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities+basemonster.binding.cpp
+  DESC = Preprocessing game/entities/basemonster.cpp
+  restat = 1
+
+
+#############################################
+# Custom command for game+entities+playerstart.binding.cpp
+
+build game+entities+playerstart.binding.cpp: CUSTOM_COMMAND game/entities/playerstart.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities/playerstart.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities+playerstart.binding.cpp
+  DESC = Preprocessing game/entities/playerstart.cpp
+  restat = 1
+
+
+#############################################
+# Custom command for game+entities+player.binding.cpp
+
+build game+entities+player.binding.cpp: CUSTOM_COMMAND game/entities/player.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities/player.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities+player.binding.cpp
+  DESC = Preprocessing game/entities/player.cpp
   restat = 1
 
 
@@ -1861,51 +1715,6 @@ build shared+zip.binding.cpp: CUSTOM_COMMAND shared/zip.cpp || enet/libenet.a
 
 
 #############################################
-# Custom command for game+entities.binding.cpp
-
-build game+entities.binding.cpp: CUSTOM_COMMAND game/entities.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities.binding.cpp
-  DESC = Preprocessing game/entities.cpp
-  restat = 1
-
-
-#############################################
-# Custom command for game+game.binding.cpp
-
-build game+game.binding.cpp: CUSTOM_COMMAND game/game.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/game.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+game.binding.cpp
-  DESC = Preprocessing game/game.cpp
-  restat = 1
-
-
-#############################################
-# Custom command for game+render.binding.cpp
-
-build game+render.binding.cpp: CUSTOM_COMMAND game/render.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/render.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+render.binding.cpp
-  DESC = Preprocessing game/render.cpp
-  restat = 1
-
-
-#############################################
-# Custom command for game+server.binding.cpp
-
-build game+server.binding.cpp: CUSTOM_COMMAND game/server.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/server.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+server.binding.cpp
-  DESC = Preprocessing game/server.cpp
-  restat = 1
-
-
-#############################################
-# Custom command for game+commands.binding.cpp
-
-build game+commands.binding.cpp: CUSTOM_COMMAND game/commands.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/commands.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+commands.binding.cpp
-  DESC = Preprocessing game/commands.cpp
-  restat = 1
-
-
-#############################################
 # Custom command for shared+entities+attributes.binding.cpp
 
 build shared+entities+attributes.binding.cpp: CUSTOM_COMMAND shared/entities/attributes.cpp || enet/libenet.a
@@ -1969,56 +1778,29 @@ build shared+entities+entityfactory.binding.cpp: CUSTOM_COMMAND shared/entities/
 
 
 #############################################
-# Custom command for game+entities+basemapmodel.binding.cpp
+# Custom command for shared+utils+cubestr.binding.cpp
 
-build game+entities+basemapmodel.binding.cpp: CUSTOM_COMMAND game/entities/basemapmodel.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities/basemapmodel.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities+basemapmodel.binding.cpp
-  DESC = Preprocessing game/entities/basemapmodel.cpp
+build shared+utils+cubestr.binding.cpp: CUSTOM_COMMAND shared/utils/cubestr.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src shared/utils/cubestr.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/shared+utils+cubestr.binding.cpp
+  DESC = Preprocessing shared/utils/cubestr.cpp
   restat = 1
 
 
 #############################################
-# Custom command for game+entities+door.binding.cpp
+# Custom command for shared+networking+cl_sv.binding.cpp
 
-build game+entities+door.binding.cpp: CUSTOM_COMMAND game/entities/door.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities/door.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities+door.binding.cpp
-  DESC = Preprocessing game/entities/door.cpp
+build shared+networking+cl_sv.binding.cpp: CUSTOM_COMMAND shared/networking/cl_sv.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src shared/networking/cl_sv.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/shared+networking+cl_sv.binding.cpp
+  DESC = Preprocessing shared/networking/cl_sv.cpp
   restat = 1
 
 
 #############################################
-# Custom command for game+entities+dynamiclight.binding.cpp
+# Custom command for shared+networking+network.binding.cpp
 
-build game+entities+dynamiclight.binding.cpp: CUSTOM_COMMAND game/entities/dynamiclight.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities/dynamiclight.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities+dynamiclight.binding.cpp
-  DESC = Preprocessing game/entities/dynamiclight.cpp
-  restat = 1
-
-
-#############################################
-# Custom command for game+entities+basemonster.binding.cpp
-
-build game+entities+basemonster.binding.cpp: CUSTOM_COMMAND game/entities/basemonster.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities/basemonster.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities+basemonster.binding.cpp
-  DESC = Preprocessing game/entities/basemonster.cpp
-  restat = 1
-
-
-#############################################
-# Custom command for game+entities+playerstart.binding.cpp
-
-build game+entities+playerstart.binding.cpp: CUSTOM_COMMAND game/entities/playerstart.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities/playerstart.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities+playerstart.binding.cpp
-  DESC = Preprocessing game/entities/playerstart.cpp
-  restat = 1
-
-
-#############################################
-# Custom command for game+entities+player.binding.cpp
-
-build game+entities+player.binding.cpp: CUSTOM_COMMAND game/entities/player.cpp || enet/libenet.a
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src game/entities/player.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/game+entities+player.binding.cpp
-  DESC = Preprocessing game/entities/player.cpp
+build shared+networking+network.binding.cpp: CUSTOM_COMMAND shared/networking/network.cpp || enet/libenet.a
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src && python3 /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/binding/index.py gen /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src shared/networking/network.cpp /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/shared+networking+network.binding.cpp
+  DESC = Preprocessing shared/networking/network.cpp
   restat = 1
 
 # =============================================================================
@@ -2031,12 +1813,24 @@ build game+entities+player.binding.cpp: CUSTOM_COMMAND game/entities/player.cpp 
 # Utility command for rebuild_cache
 
 build enet/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/enet && /usr/local/bin/cmake -S/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src -B/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/enet && /usr/bin/cmake -S/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src -B/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
 
 build enet/rebuild_cache: phony enet/CMakeFiles/rebuild_cache.util
+
+
+#############################################
+# Utility command for edit_cache
+
+build enet/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/enet && /usr/bin/cmake-gui -S/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src -B/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src
+  DESC = Running CMake cache editor...
+  pool = console
+  restat = 1
+
+build enet/edit_cache: phony enet/CMakeFiles/edit_cache.util
 
 # =============================================================================
 # Object build statements for STATIC_LIBRARY target enet
@@ -2051,91 +1845,73 @@ build enet/CMakeFiles/enet.dir/callbacks.c.o: C_COMPILER__enet enet/callbacks.c 
   DEFINES = -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETHOSTBYADDR_R=1 -DHAS_GETHOSTBYNAME_R=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1
   DEP_FILE = enet/CMakeFiles/enet.dir/callbacks.c.o.d
   FLAGS = -Wno-error
-  INCLUDES = -Iext/json-develop/single_include -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -Ienet/include
   OBJECT_DIR = enet/CMakeFiles/enet.dir
   OBJECT_FILE_DIR = enet/CMakeFiles/enet.dir
-  TARGET_COMPILE_PDB = enet/CMakeFiles/enet.dir/enet.pdb
-  TARGET_PDB = enet/libenet.pdb
 
 build enet/CMakeFiles/enet.dir/compress.c.o: C_COMPILER__enet enet/compress.c || cmake_object_order_depends_target_enet
   DEFINES = -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETHOSTBYADDR_R=1 -DHAS_GETHOSTBYNAME_R=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1
   DEP_FILE = enet/CMakeFiles/enet.dir/compress.c.o.d
   FLAGS = -Wno-error
-  INCLUDES = -Iext/json-develop/single_include -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -Ienet/include
   OBJECT_DIR = enet/CMakeFiles/enet.dir
   OBJECT_FILE_DIR = enet/CMakeFiles/enet.dir
-  TARGET_COMPILE_PDB = enet/CMakeFiles/enet.dir/enet.pdb
-  TARGET_PDB = enet/libenet.pdb
 
 build enet/CMakeFiles/enet.dir/host.c.o: C_COMPILER__enet enet/host.c || cmake_object_order_depends_target_enet
   DEFINES = -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETHOSTBYADDR_R=1 -DHAS_GETHOSTBYNAME_R=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1
   DEP_FILE = enet/CMakeFiles/enet.dir/host.c.o.d
   FLAGS = -Wno-error
-  INCLUDES = -Iext/json-develop/single_include -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -Ienet/include
   OBJECT_DIR = enet/CMakeFiles/enet.dir
   OBJECT_FILE_DIR = enet/CMakeFiles/enet.dir
-  TARGET_COMPILE_PDB = enet/CMakeFiles/enet.dir/enet.pdb
-  TARGET_PDB = enet/libenet.pdb
 
 build enet/CMakeFiles/enet.dir/list.c.o: C_COMPILER__enet enet/list.c || cmake_object_order_depends_target_enet
   DEFINES = -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETHOSTBYADDR_R=1 -DHAS_GETHOSTBYNAME_R=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1
   DEP_FILE = enet/CMakeFiles/enet.dir/list.c.o.d
   FLAGS = -Wno-error
-  INCLUDES = -Iext/json-develop/single_include -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -Ienet/include
   OBJECT_DIR = enet/CMakeFiles/enet.dir
   OBJECT_FILE_DIR = enet/CMakeFiles/enet.dir
-  TARGET_COMPILE_PDB = enet/CMakeFiles/enet.dir/enet.pdb
-  TARGET_PDB = enet/libenet.pdb
 
 build enet/CMakeFiles/enet.dir/packet.c.o: C_COMPILER__enet enet/packet.c || cmake_object_order_depends_target_enet
   DEFINES = -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETHOSTBYADDR_R=1 -DHAS_GETHOSTBYNAME_R=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1
   DEP_FILE = enet/CMakeFiles/enet.dir/packet.c.o.d
   FLAGS = -Wno-error
-  INCLUDES = -Iext/json-develop/single_include -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -Ienet/include
   OBJECT_DIR = enet/CMakeFiles/enet.dir
   OBJECT_FILE_DIR = enet/CMakeFiles/enet.dir
-  TARGET_COMPILE_PDB = enet/CMakeFiles/enet.dir/enet.pdb
-  TARGET_PDB = enet/libenet.pdb
 
 build enet/CMakeFiles/enet.dir/peer.c.o: C_COMPILER__enet enet/peer.c || cmake_object_order_depends_target_enet
   DEFINES = -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETHOSTBYADDR_R=1 -DHAS_GETHOSTBYNAME_R=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1
   DEP_FILE = enet/CMakeFiles/enet.dir/peer.c.o.d
   FLAGS = -Wno-error
-  INCLUDES = -Iext/json-develop/single_include -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -Ienet/include
   OBJECT_DIR = enet/CMakeFiles/enet.dir
   OBJECT_FILE_DIR = enet/CMakeFiles/enet.dir
-  TARGET_COMPILE_PDB = enet/CMakeFiles/enet.dir/enet.pdb
-  TARGET_PDB = enet/libenet.pdb
 
 build enet/CMakeFiles/enet.dir/protocol.c.o: C_COMPILER__enet enet/protocol.c || cmake_object_order_depends_target_enet
   DEFINES = -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETHOSTBYADDR_R=1 -DHAS_GETHOSTBYNAME_R=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1
   DEP_FILE = enet/CMakeFiles/enet.dir/protocol.c.o.d
   FLAGS = -Wno-error
-  INCLUDES = -Iext/json-develop/single_include -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -Ienet/include
   OBJECT_DIR = enet/CMakeFiles/enet.dir
   OBJECT_FILE_DIR = enet/CMakeFiles/enet.dir
-  TARGET_COMPILE_PDB = enet/CMakeFiles/enet.dir/enet.pdb
-  TARGET_PDB = enet/libenet.pdb
 
 build enet/CMakeFiles/enet.dir/unix.c.o: C_COMPILER__enet enet/unix.c || cmake_object_order_depends_target_enet
   DEFINES = -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETHOSTBYADDR_R=1 -DHAS_GETHOSTBYNAME_R=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1
   DEP_FILE = enet/CMakeFiles/enet.dir/unix.c.o.d
   FLAGS = -Wno-error
-  INCLUDES = -Iext/json-develop/single_include -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -Ienet/include
   OBJECT_DIR = enet/CMakeFiles/enet.dir
   OBJECT_FILE_DIR = enet/CMakeFiles/enet.dir
-  TARGET_COMPILE_PDB = enet/CMakeFiles/enet.dir/enet.pdb
-  TARGET_PDB = enet/libenet.pdb
 
 build enet/CMakeFiles/enet.dir/win32.c.o: C_COMPILER__enet enet/win32.c || cmake_object_order_depends_target_enet
   DEFINES = -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETHOSTBYADDR_R=1 -DHAS_GETHOSTBYNAME_R=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1
   DEP_FILE = enet/CMakeFiles/enet.dir/win32.c.o.d
   FLAGS = -Wno-error
-  INCLUDES = -Iext/json-develop/single_include -Ienet/include
+  INCLUDES = -Iext/json-develop/single_include -Iext/Nuklear-master -Ienet/include
   OBJECT_DIR = enet/CMakeFiles/enet.dir
   OBJECT_FILE_DIR = enet/CMakeFiles/enet.dir
-  TARGET_COMPILE_PDB = enet/CMakeFiles/enet.dir/enet.pdb
-  TARGET_PDB = enet/libenet.pdb
 
 
 # =============================================================================
@@ -2149,20 +1925,8 @@ build enet/libenet.a: C_STATIC_LIBRARY_LINKER__enet enet/CMakeFiles/enet.dir/cal
   OBJECT_DIR = enet/CMakeFiles/enet.dir
   POST_BUILD = :
   PRE_LINK = :
-  TARGET_COMPILE_PDB = enet/CMakeFiles/enet.dir/enet.pdb
   TARGET_FILE = enet/libenet.a
-  TARGET_PDB = enet/libenet.pdb
-
-
-#############################################
-# Utility command for edit_cache
-
-build enet/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/enet && /usr/local/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-  DESC = No interactive CMake dialog available...
-  restat = 1
-
-build enet/edit_cache: phony enet/CMakeFiles/edit_cache.util
+  TARGET_PDB = enet.a.dbg
 
 # =============================================================================
 # Target aliases.
@@ -2200,14 +1964,14 @@ default all
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindSDL2.cmake /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindSDL2_image.cmake /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindSDL2_mixer.cmake /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindWEBP.cmake /usr/local/share/cmake-3.16/Modules/CMakeCCompiler.cmake.in /usr/local/share/cmake-3.16/Modules/CMakeCCompilerABI.c /usr/local/share/cmake-3.16/Modules/CMakeCInformation.cmake /usr/local/share/cmake-3.16/Modules/CMakeCXXCompiler.cmake.in /usr/local/share/cmake-3.16/Modules/CMakeCXXCompilerABI.cpp /usr/local/share/cmake-3.16/Modules/CMakeCXXInformation.cmake /usr/local/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/local/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake /usr/local/share/cmake-3.16/Modules/CMakeCompilerIdDetection.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineCCompiler.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineCXXCompiler.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineCompileFeatures.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineCompilerABI.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineCompilerId.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineSystem.cmake /usr/local/share/cmake-3.16/Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake /usr/local/share/cmake-3.16/Modules/CMakeFindBinUtils.cmake /usr/local/share/cmake-3.16/Modules/CMakeFindCodeBlocks.cmake /usr/local/share/cmake-3.16/Modules/CMakeGenericSystem.cmake /usr/local/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake /usr/local/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake /usr/local/share/cmake-3.16/Modules/CMakeNinjaFindMake.cmake /usr/local/share/cmake-3.16/Modules/CMakeParseImplicitIncludeInfo.cmake /usr/local/share/cmake-3.16/Modules/CMakeParseImplicitLinkInfo.cmake /usr/local/share/cmake-3.16/Modules/CMakeSystem.cmake.in /usr/local/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake /usr/local/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake /usr/local/share/cmake-3.16/Modules/CMakeTestCCompiler.cmake /usr/local/share/cmake-3.16/Modules/CMakeTestCXXCompiler.cmake /usr/local/share/cmake-3.16/Modules/CMakeTestCompilerCommon.cmake /usr/local/share/cmake-3.16/Modules/CheckCSourceCompiles.cmake /usr/local/share/cmake-3.16/Modules/CheckCXXSourceCompiles.cmake /usr/local/share/cmake-3.16/Modules/CheckFunctionExists.c /usr/local/share/cmake-3.16/Modules/CheckFunctionExists.cmake /usr/local/share/cmake-3.16/Modules/CheckIncludeFile.c.in /usr/local/share/cmake-3.16/Modules/CheckIncludeFile.cmake /usr/local/share/cmake-3.16/Modules/CheckIncludeFileCXX.cmake /usr/local/share/cmake-3.16/Modules/CheckLibraryExists.cmake /usr/local/share/cmake-3.16/Modules/CheckStructHasMember.cmake /usr/local/share/cmake-3.16/Modules/CheckTypeSize.c.in /usr/local/share/cmake-3.16/Modules/CheckTypeSize.cmake /usr/local/share/cmake-3.16/Modules/Compiler/ADSP-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/ARMCC-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/ARMClang-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/AppleClang-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Borland-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Bruce-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Clang-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Clang-DetermineCompilerInternal.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Compaq-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Cray-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Embarcadero-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Fujitsu-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GHS-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GNU-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GNU-C.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GNU-FindBinUtils.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GNU.cmake /usr/local/share/cmake-3.16/Modules/Compiler/HP-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/HP-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/IAR-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake /usr/local/share/cmake-3.16/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Intel-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/MSVC-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/NVIDIA-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/PGI-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/PathScale-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/SCO-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/SDCC-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/SunPro-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/TI-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/TinyCC-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/VisualAge-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Watcom-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/XL-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/XL-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/XLClang-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/zOS-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/FindFreetype.cmake /usr/local/share/cmake-3.16/Modules/FindJPEG.cmake /usr/local/share/cmake-3.16/Modules/FindOpenGL.cmake /usr/local/share/cmake-3.16/Modules/FindPNG.cmake /usr/local/share/cmake-3.16/Modules/FindPackageHandleStandardArgs.cmake /usr/local/share/cmake-3.16/Modules/FindPackageMessage.cmake /usr/local/share/cmake-3.16/Modules/FindTIFF.cmake /usr/local/share/cmake-3.16/Modules/FindThreads.cmake /usr/local/share/cmake-3.16/Modules/FindZLIB.cmake /usr/local/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake /usr/local/share/cmake-3.16/Modules/Internal/FeatureTesting.cmake /usr/local/share/cmake-3.16/Modules/Platform/Linux-Determine-CXX.cmake /usr/local/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake /usr/local/share/cmake-3.16/Modules/Platform/Linux-GNU-CXX.cmake /usr/local/share/cmake-3.16/Modules/Platform/Linux-GNU.cmake /usr/local/share/cmake-3.16/Modules/Platform/Linux.cmake /usr/local/share/cmake-3.16/Modules/Platform/UnixPaths.cmake /usr/local/share/cmake-3.16/Modules/ProcessorCount.cmake /usr/local/share/cmake-3.16/Modules/SelectLibraryConfigurations.cmake CMakeCache.txt CMakeFiles/3.16.0-rc3/CMakeCCompiler.cmake CMakeFiles/3.16.0-rc3/CMakeCXXCompiler.cmake CMakeFiles/3.16.0-rc3/CMakeSystem.cmake CMakeFiles/CheckTypeSize/HAS_SOCKLEN_T.c CMakeLists.txt enet/CMakeLists.txt
+build build.ninja: RERUN_CMAKE | /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindSDL2.cmake /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindSDL2_image.cmake /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindSDL2_mixer.cmake /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindWEBP.cmake /usr/share/cmake-3.16/Modules/CMakeCInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.16/Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake /usr/share/cmake-3.16/Modules/CMakeFindCodeBlocks.cmake /usr/share/cmake-3.16/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.16/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.16/Modules/CheckCXXSourceCompiles.cmake /usr/share/cmake-3.16/Modules/CheckFunctionExists.cmake /usr/share/cmake-3.16/Modules/CheckIncludeFile.cmake /usr/share/cmake-3.16/Modules/CheckIncludeFileCXX.cmake /usr/share/cmake-3.16/Modules/CheckLibraryExists.cmake /usr/share/cmake-3.16/Modules/CheckStructHasMember.cmake /usr/share/cmake-3.16/Modules/CheckTypeSize.cmake /usr/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU-C.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU.cmake /usr/share/cmake-3.16/Modules/FindFreetype.cmake /usr/share/cmake-3.16/Modules/FindJPEG.cmake /usr/share/cmake-3.16/Modules/FindOpenGL.cmake /usr/share/cmake-3.16/Modules/FindPNG.cmake /usr/share/cmake-3.16/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.16/Modules/FindPackageMessage.cmake /usr/share/cmake-3.16/Modules/FindTIFF.cmake /usr/share/cmake-3.16/Modules/FindThreads.cmake /usr/share/cmake-3.16/Modules/FindZLIB.cmake /usr/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.16/Modules/Platform/Linux.cmake /usr/share/cmake-3.16/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.16/Modules/ProcessorCount.cmake /usr/share/cmake-3.16/Modules/SelectLibraryConfigurations.cmake CMakeCache.txt CMakeFiles/3.16.0-rc2/CMakeCCompiler.cmake CMakeFiles/3.16.0-rc2/CMakeCXXCompiler.cmake CMakeFiles/3.16.0-rc2/CMakeSystem.cmake CMakeLists.txt enet/CMakeLists.txt
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindSDL2.cmake /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindSDL2_image.cmake /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindSDL2_mixer.cmake /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindWEBP.cmake /usr/local/share/cmake-3.16/Modules/CMakeCCompiler.cmake.in /usr/local/share/cmake-3.16/Modules/CMakeCCompilerABI.c /usr/local/share/cmake-3.16/Modules/CMakeCInformation.cmake /usr/local/share/cmake-3.16/Modules/CMakeCXXCompiler.cmake.in /usr/local/share/cmake-3.16/Modules/CMakeCXXCompilerABI.cpp /usr/local/share/cmake-3.16/Modules/CMakeCXXInformation.cmake /usr/local/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/local/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake /usr/local/share/cmake-3.16/Modules/CMakeCompilerIdDetection.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineCCompiler.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineCXXCompiler.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineCompileFeatures.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineCompilerABI.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineCompilerId.cmake /usr/local/share/cmake-3.16/Modules/CMakeDetermineSystem.cmake /usr/local/share/cmake-3.16/Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake /usr/local/share/cmake-3.16/Modules/CMakeFindBinUtils.cmake /usr/local/share/cmake-3.16/Modules/CMakeFindCodeBlocks.cmake /usr/local/share/cmake-3.16/Modules/CMakeGenericSystem.cmake /usr/local/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake /usr/local/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake /usr/local/share/cmake-3.16/Modules/CMakeNinjaFindMake.cmake /usr/local/share/cmake-3.16/Modules/CMakeParseImplicitIncludeInfo.cmake /usr/local/share/cmake-3.16/Modules/CMakeParseImplicitLinkInfo.cmake /usr/local/share/cmake-3.16/Modules/CMakeSystem.cmake.in /usr/local/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake /usr/local/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake /usr/local/share/cmake-3.16/Modules/CMakeTestCCompiler.cmake /usr/local/share/cmake-3.16/Modules/CMakeTestCXXCompiler.cmake /usr/local/share/cmake-3.16/Modules/CMakeTestCompilerCommon.cmake /usr/local/share/cmake-3.16/Modules/CheckCSourceCompiles.cmake /usr/local/share/cmake-3.16/Modules/CheckCXXSourceCompiles.cmake /usr/local/share/cmake-3.16/Modules/CheckFunctionExists.c /usr/local/share/cmake-3.16/Modules/CheckFunctionExists.cmake /usr/local/share/cmake-3.16/Modules/CheckIncludeFile.c.in /usr/local/share/cmake-3.16/Modules/CheckIncludeFile.cmake /usr/local/share/cmake-3.16/Modules/CheckIncludeFileCXX.cmake /usr/local/share/cmake-3.16/Modules/CheckLibraryExists.cmake /usr/local/share/cmake-3.16/Modules/CheckStructHasMember.cmake /usr/local/share/cmake-3.16/Modules/CheckTypeSize.c.in /usr/local/share/cmake-3.16/Modules/CheckTypeSize.cmake /usr/local/share/cmake-3.16/Modules/Compiler/ADSP-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/ARMCC-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/ARMClang-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/AppleClang-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Borland-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Bruce-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Clang-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Clang-DetermineCompilerInternal.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Compaq-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Cray-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Embarcadero-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Fujitsu-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GHS-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GNU-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GNU-C.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GNU-FindBinUtils.cmake /usr/local/share/cmake-3.16/Modules/Compiler/GNU.cmake /usr/local/share/cmake-3.16/Modules/Compiler/HP-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/HP-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/IAR-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake /usr/local/share/cmake-3.16/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Intel-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/MSVC-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/NVIDIA-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/PGI-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/PathScale-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/SCO-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/SDCC-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/SunPro-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/TI-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/TinyCC-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/VisualAge-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/Watcom-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/XL-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/XL-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/XLClang-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/zOS-C-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake /usr/local/share/cmake-3.16/Modules/FindFreetype.cmake /usr/local/share/cmake-3.16/Modules/FindJPEG.cmake /usr/local/share/cmake-3.16/Modules/FindOpenGL.cmake /usr/local/share/cmake-3.16/Modules/FindPNG.cmake /usr/local/share/cmake-3.16/Modules/FindPackageHandleStandardArgs.cmake /usr/local/share/cmake-3.16/Modules/FindPackageMessage.cmake /usr/local/share/cmake-3.16/Modules/FindTIFF.cmake /usr/local/share/cmake-3.16/Modules/FindThreads.cmake /usr/local/share/cmake-3.16/Modules/FindZLIB.cmake /usr/local/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake /usr/local/share/cmake-3.16/Modules/Internal/FeatureTesting.cmake /usr/local/share/cmake-3.16/Modules/Platform/Linux-Determine-CXX.cmake /usr/local/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake /usr/local/share/cmake-3.16/Modules/Platform/Linux-GNU-CXX.cmake /usr/local/share/cmake-3.16/Modules/Platform/Linux-GNU.cmake /usr/local/share/cmake-3.16/Modules/Platform/Linux.cmake /usr/local/share/cmake-3.16/Modules/Platform/UnixPaths.cmake /usr/local/share/cmake-3.16/Modules/ProcessorCount.cmake /usr/local/share/cmake-3.16/Modules/SelectLibraryConfigurations.cmake CMakeCache.txt CMakeFiles/3.16.0-rc3/CMakeCCompiler.cmake CMakeFiles/3.16.0-rc3/CMakeCXXCompiler.cmake CMakeFiles/3.16.0-rc3/CMakeSystem.cmake CMakeFiles/CheckTypeSize/HAS_SOCKLEN_T.c CMakeLists.txt enet/CMakeLists.txt: phony
+build /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindSDL2.cmake /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindSDL2_image.cmake /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindSDL2_mixer.cmake /home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/cmake/FindWEBP.cmake /usr/share/cmake-3.16/Modules/CMakeCInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.16/Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake /usr/share/cmake-3.16/Modules/CMakeFindCodeBlocks.cmake /usr/share/cmake-3.16/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.16/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.16/Modules/CheckCXXSourceCompiles.cmake /usr/share/cmake-3.16/Modules/CheckFunctionExists.cmake /usr/share/cmake-3.16/Modules/CheckIncludeFile.cmake /usr/share/cmake-3.16/Modules/CheckIncludeFileCXX.cmake /usr/share/cmake-3.16/Modules/CheckLibraryExists.cmake /usr/share/cmake-3.16/Modules/CheckStructHasMember.cmake /usr/share/cmake-3.16/Modules/CheckTypeSize.cmake /usr/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU-C.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU.cmake /usr/share/cmake-3.16/Modules/FindFreetype.cmake /usr/share/cmake-3.16/Modules/FindJPEG.cmake /usr/share/cmake-3.16/Modules/FindOpenGL.cmake /usr/share/cmake-3.16/Modules/FindPNG.cmake /usr/share/cmake-3.16/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.16/Modules/FindPackageMessage.cmake /usr/share/cmake-3.16/Modules/FindTIFF.cmake /usr/share/cmake-3.16/Modules/FindThreads.cmake /usr/share/cmake-3.16/Modules/FindZLIB.cmake /usr/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.16/Modules/Platform/Linux.cmake /usr/share/cmake-3.16/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.16/Modules/ProcessorCount.cmake /usr/share/cmake-3.16/Modules/SelectLibraryConfigurations.cmake CMakeCache.txt CMakeFiles/3.16.0-rc2/CMakeCCompiler.cmake CMakeFiles/3.16.0-rc2/CMakeCXXCompiler.cmake CMakeFiles/3.16.0-rc2/CMakeSystem.cmake CMakeLists.txt enet/CMakeLists.txt: phony
 
 
 #############################################

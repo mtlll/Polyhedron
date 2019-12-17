@@ -271,25 +271,25 @@ static const struct guninfo { const char *name, *file, *vwep; int attacks[NUMACT
 #include "ai.h"
 
 // inherited by gameent and server clients
-struct gamestate
+struct EntityGameState
 {
     int health, maxhealth;
     int gunselect, gunwait;
     int ammo[NUMGUNS];
     int aitype, skill;
 
-    gamestate() : maxhealth(1), aitype(AI_NONE), skill(0) {}
+    EntityGameState() : maxhealth(1), aitype(AI_NONE), skill(0) {}
 
-    bool canpickup(int type)
+    bool CanPickup(int type)
     {
         return validitem(type);
     }
 
-    void pickup(int type)
+    void Pickup(int type)
     {
     }
 
-    void respawn()
+    void Respawn()
     {
         health = maxhealth;
         gunselect = GUN_RAIL;
@@ -297,7 +297,7 @@ struct gamestate
         loopi(NUMGUNS) ammo[i] = 0;
     }
 
-    void spawnstate(int gameMode)
+    void SpawnState(game::networking::GameMode gameMode)
     {
         if(m_rail)
         {
@@ -317,15 +317,15 @@ struct gamestate
     }
 
     // just subtract damage here, can set death, etc. later in code calling this
-    int dodamage(int damage)
+    int DoDamage(int damage)
     {
         health -= damage;
         return damage;
     }
 
-    int hasammo(int gun, int exclude = -1)
+    int HasAmmo(int gun, int exclude = -1)
     {
-        return validgun(gun) && gun != exclude && ammo[gun] > 0;
+        return ValidGun(gun) && gun != exclude && ammo[gun] > 0;
     }
 };
 
@@ -508,7 +508,7 @@ namespace game
     extern void StopFollowing();
     extern void CheckFollow();
     extern void NextFollow(int dir = 1);
-    extern void ClientDisconnected(int cn, bool notify = true);
+    extern void ClientDIsConnected(int cn, bool notify = true);
     extern void ClearClients(bool notify = true);
     extern void StartGame();
     extern void SpawnPlayer(gameent *);

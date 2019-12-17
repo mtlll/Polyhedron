@@ -1780,7 +1780,7 @@ static bool isallempty(cube &c)
 SCRIPTEXPORT void shrinkmap()
 {
     extern int nompedit;
-    if(noedit(true) || (nompedit && multiplayer())) return;
+    if(noedit(true) || (nompedit && game::networking::Multiplayer())) return;
     if(worldsize <= 1<<10) return;
 
     int octant = -1;
@@ -1812,7 +1812,7 @@ SCRIPTEXPORT void shrinkmap()
     conoutf("shrunk map to size %d", worldscale);
 }
 
-SCRIPTEXPORT void newmap(int *i) { bool force = !isconnected(); if(force) game::forceedit(""); if(emptymap(*i, force, NULL)) game::newmap(max(*i, 0)); }
+SCRIPTEXPORT void newmap(int *i) { bool force = !game::networking::IsConnected(); if(force) game::forceedit(""); if(emptymap(*i, force, NULL)) game::newmap(max(*i, 0)); }
 SCRIPTEXPORT void mapenlarge() { if(enlargemap(false)) game::newmap(-1); }
 
 SCRIPTEXPORT void mapname()

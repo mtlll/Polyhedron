@@ -1,4 +1,5 @@
 #include "game/game.h"
+
 namespace game
 {
     void parseoptions(vector<const char *> &args)
@@ -14,7 +15,7 @@ namespace game
     const char *gameident() { return "SchizoMania"; }
 }
 
-extern ENetAddress masteraddress;
+extern ENetAddress masterAddress;
 
 namespace server
 {
@@ -200,165 +201,178 @@ namespace server
         }
     };
 
+    struct ServerGame
     extern int gamemillis, nextexceeded;
+    
+    struct ServerClientInfo
+    {
+        int clientNumber = 0;
+        int ownerNumber = 0;
+        int connectedMilliseconds = 0;
+        int sessionID = 0;
+        int Overflow;
+        cubestr name;
+        cubestr mapvote;
+        int team = 0;
+        int playermodel = 0; 
+        int playercolor = 0;
+        int modevote = 0;
+        protocol::Priviliges privilege = Priviliges::None;
+        bool connected = false;
+        bool local = false;
+        bool timesync false;
+        int gameoffset = 0;
+        int lastevent = 0;
+        int pushed = 0; 
+        int exceeded = 0;
+        sessionID state;
+        vector<gameevent *> events;
+        vector<uchar> position, messages;
+        uchar *wsdata;
+        int wslen;
+        vector<clientinfo *> bots;
+        int ping, aireinit;
+        cubestr clientmap;
+        int mapcrc;
+        bool warned, gameclip;
+        ENetPacket *getdemo, *getmap, *clipboard;
+        int lastclipboard, needclipboard;
+        int connectauth;
+        uint authreq;
+        cubestr authname, authdesc;
+        void *authchallenge;
+        int authkickvictim;
+        char *authkickreason;
 
-    // struct clientinfo
-    // {
-    //     int clientnum, ownernum, connectmillis, sessionid, overflow;
-    //     cubestr name, mapvote;
-    //     int team, playermodel, playercolor;
-    //     int modevote;
-    //     int privilege;
-    //     bool connected, local, timesync;
-    //     int gameoffset, lastevent, pushed, exceeded;
-    //     servstate state;
-    //     vector<gameevent *> events;
-    //     vector<uchar> position, messages;
-    //     uchar *wsdata;
-    //     int wslen;
-    //     vector<clientinfo *> bots;
-    //     int ping, aireinit;
-    //     cubestr clientmap;
-    //     int mapcrc;
-    //     bool warned, gameclip;
-    //     ENetPacket *getdemo, *getmap, *clipboard;
-    //     int lastclipboard, needclipboard;
-    //     int connectauth;
-    //     uint authreq;
-    //     cubestr authname, authdesc;
-    //     void *authchallenge;
-    //     int authkickvictim;
-    //     char *authkickreason;
+        clientinfo() : getdemo(NULL), getmap(NULL), clipboard(NULL), authchallenge(NULL), authkickreason(NULL) { reset(); }
+        ~clientinfo() { events.deletecontents(); cleanclipboard(); cleanauth(); }
 
-    //     clientinfo() : getdemo(NULL), getmap(NULL), clipboard(NULL), authchallenge(NULL), authkickreason(NULL) { reset(); }
-    //     ~clientinfo() { events.deletecontents(); cleanclipboard(); cleanauth(); }
+        void addevent(gameevent *e)
+        {
+            if(state.state==CS_SPECTATOR || events.length()>100) delete e;
+            else events.add(e);
+        }
 
-    //     void addevent(gameevent *e)
-    //     {
-    //         if(state.state==CS_SPECTATOR || events.length()>100) delete e;
-    //         else events.add(e);
-    //     }
+        enum
+        {
+            PUSHMILLIS = 3000
+        };
 
-    //     enum
-    //     {
-    //         PUSHMILLIS = 3000
-    //     };
+        int calcpushrange()
+        {
+            ENetPeer *peer = getclientpeer(ownernum);
+            return PUSHMILLIS + (peer ? peer->roundTripTime + peer->roundTripTimeVariance : ENET_PEER_DEFAULT_ROUND_TRIP_TIME);
+        }
 
-    //     int calcpushrange()
-    //     {
-    //         ENetPeer *peer = getclientpeer(ownernum);
-    //         return PUSHMILLIS + (peer ? peer->roundTripTime + peer->roundTripTimeVariance : ENET_PEER_DEFAULT_ROUND_TRIP_TIME);
-    //     }
+        bool checkpushed(int millis, int range)
+        {
+            return millis >= pushed - range && millis <= pushed + range;
+        }
 
-    //     bool checkpushed(int millis, int range)
-    //     {
-    //         return millis >= pushed - range && millis <= pushed + range;
-    //     }
+        void scheduleexceeded()
+        {
+            if(state.state!=CS_ALIVE || !exceeded) return;
+            int range = calcpushrange();
+            if(!nextexceeded || exceeded + range < nextexceeded) nextexceeded = exceeded + range;
+        }
 
-    //     void scheduleexceeded()
-    //     {
-    //         if(state.state!=CS_ALIVE || !exceeded) return;
-    //         int range = calcpushrange();
-    //         if(!nextexceeded || exceeded + range < nextexceeded) nextexceeded = exceeded + range;
-    //     }
+        void setexceeded()
+        {
+            if(state.state==CS_ALIVE && !exceeded && !checkpushed(gamemillis, calcpushrange())) exceeded = gamemillis;
+            scheduleexceeded();
+        }
 
-    //     void setexceeded()
-    //     {
-    //         if(state.state==CS_ALIVE && !exceeded && !checkpushed(gamemillis, calcpushrange())) exceeded = gamemillis;
-    //         scheduleexceeded();
-    //     }
+        void setpushed()
+        {
+            pushed = max(pushed, gamemillis);
+            if(exceeded && checkpushed(exceeded, calcpushrange())) exceeded = 0;
+        }
 
-    //     void setpushed()
-    //     {
-    //         pushed = max(pushed, gamemillis);
-    //         if(exceeded && checkpushed(exceeded, calcpushrange())) exceeded = 0;
-    //     }
+        bool checkexceeded()
+        {
+            return state.state==CS_ALIVE && exceeded && gamemillis > exceeded + calcpushrange();
+        }
 
-    //     bool checkexceeded()
-    //     {
-    //         return state.state==CS_ALIVE && exceeded && gamemillis > exceeded + calcpushrange();
-    //     }
+        void mapchange()
+        {
+            mapvote[0] = 0;
+            modevote = INT_MAX;
+            state.reset();
+            events.deletecontents();
+            overflow = 0;
+            timesync = false;
+            lastevent = 0;
+            exceeded = 0;
+            pushed = 0;
+            clientmap[0] = '\0';
+            mapcrc = 0;
+            warned = false;
+            gameclip = false;
+        }
 
-    //     void mapchange()
-    //     {
-    //         mapvote[0] = 0;
-    //         modevote = INT_MAX;
-    //         state.reset();
-    //         events.deletecontents();
-    //         overflow = 0;
-    //         timesync = false;
-    //         lastevent = 0;
-    //         exceeded = 0;
-    //         pushed = 0;
-    //         clientmap[0] = '\0';
-    //         mapcrc = 0;
-    //         warned = false;
-    //         gameclip = false;
-    //     }
+        void reassign()
+        {
+            state.reassign();
+            events.deletecontents();
+            timesync = false;
+            lastevent = 0;
+        }
 
-    //     void reassign()
-    //     {
-    //         state.reassign();
-    //         events.deletecontents();
-    //         timesync = false;
-    //         lastevent = 0;
-    //     }
+        void cleanclipboard(bool fullclean = true)
+        {
+            if(clipboard) { if(--clipboard->referenceCount <= 0) enet_packet_destroy(clipboard); clipboard = NULL; }
+            if(fullclean) lastclipboard = 0;
+        }
 
-    //     void cleanclipboard(bool fullclean = true)
-    //     {
-    //         if(clipboard) { if(--clipboard->referenceCount <= 0) enet_packet_destroy(clipboard); clipboard = NULL; }
-    //         if(fullclean) lastclipboard = 0;
-    //     }
+        void cleanauthkick()
+        {
+            authkickvictim = -1;
+            DELETEA(authkickreason);
+        }
 
-    //     void cleanauthkick()
-    //     {
-    //         authkickvictim = -1;
-    //         DELETEA(authkickreason);
-    //     }
+        void cleanauth(bool full = true)
+        {
+            authreq = 0;
+            if(authchallenge) { freechallenge(authchallenge); authchallenge = NULL; }
+            if(full) cleanauthkick();
+        }
 
-    //     void cleanauth(bool full = true)
-    //     {
-    //         authreq = 0;
-    //         if(authchallenge) { freechallenge(authchallenge); authchallenge = NULL; }
-    //         if(full) cleanauthkick();
-    //     }
+        void reset()
+        {
+            name[0] = 0;
+            team = 0;
+            playermodel = -1;
+            playercolor = 0;
+            privilege = PRIV_NONE;
+            connected = local = false;
+            connectauth = 0;
+            position.setsize(0);
+            messages.setsize(0);
+            ping = 0;
+            aireinit = 0;
+            needclipboard = 0;
+            cleanclipboard();
+            cleanauth();
+            mapchange();
+        }
 
-    //     void reset()
-    //     {
-    //         name[0] = 0;
-    //         team = 0;
-    //         playermodel = -1;
-    //         playercolor = 0;
-    //         privilege = PRIV_NONE;
-    //         connected = local = false;
-    //         connectauth = 0;
-    //         position.setsize(0);
-    //         messages.setsize(0);
-    //         ping = 0;
-    //         aireinit = 0;
-    //         needclipboard = 0;
-    //         cleanclipboard();
-    //         cleanauth();
-    //         mapchange();
-    //     }
+        int geteventmillis(int servmillis, int clientmillis)
+        {
+            if(!timesync || (events.empty() && state.waitexpired(servmillis)))
+            {
+                timesync = true;
+                gameoffset = servmillis - clientmillis;
+                return servmillis;
+            }
+            else return gameoffset + clientmillis;
+        }
+    };
 
-    //     int geteventmillis(int servmillis, int clientmillis)
-    //     {
-    //         if(!timesync || (events.empty() && state.waitexpired(servmillis)))
-    //         {
-    //             timesync = true;
-    //             gameoffset = servmillis - clientmillis;
-    //             return servmillis;
-    //         }
-    //         else return gameoffset + clientmillis;
-    //     }
-    // };
-
-    // struct ban
-    // {
-    //     int time, expire;
-    //     uint ip;
-    // };
+    struct ban
+    {
+         int time, expire;
+         uint ip;
+    };
 
     namespace aiman
     {
@@ -376,47 +390,32 @@ namespace server
 
     #include "shared/networking/cl_sv.h"
 
-    #define MM_MODE 0xF
-    #define MM_AUTOAPPROVE 0x1000
-    #define MM_PRIVSERV (MM_MODE | MM_AUTOAPPROVE)
-    #define MM_PUBSERV ((1<<MM_OPEN) | (1<<MM_VETO))
-    #define MM_COOPSERV (MM_AUTOAPPROVE | MM_PUBSERV | (1<<MM_LOCKED))
-
-    bool notgotitems = true;        // true when map has changed and waiting for clients to send item
-    int gameMode = 0;
-    int gamemillis = 0, gamelimit = 0, nextexceeded = 0, gamespeed = 100;
-    bool gamepaused = false, shouldstep = true;
-
-    cubestr smapname = "";
-    int interm = 0;
-    enet_uint32 lastsend = 0;
-    int mastermode = MM_OPEN, mastermask = MM_PRIVSERV;
-    stream *mapdata = NULL;
-
-    vector<uint> allowedips;
-    vector<ban> bannedips;
+    //
+    // Server Game. wtf?
+    //
+    server::ServerGame serverGame;
 
     void addban(uint ip, int expire)
     {
-        allowedips.removeobj(ip);
+        serverGame.allowedIPs.removeobj(ip);
         ban b;
         b.time = ftsClient.totalMilliseconds;
         b.expire = ftsClient.totalMilliseconds + expire;
         b.ip = ip;
-        loopv(bannedips) if(bannedips[i].expire - b.expire > 0) { bannedips.insert(i, b); return; }
-        bannedips.add(b);
+        loopv(serverGame.bannedIPs) if(bannedIPs[i].expire - b.expire > 0) { bannedIPs.insert(i, b); return; }
+        serverGame.bannedIPs.add(b);
     }
 
     vector<entities::classes::BaseClientEntity *> connects, clients, bots;
 
-    void kickclients(uint ip, clientinfo *actor = NULL, int priv = PRIV_NONE)
+    void KickClients(uint ip, game::networking::ClientInfo *actor = NULL, game::networking::protocol::)
     {
         loopvrev(clients)
         {
             clientinfo &c = *clients[i];
-            if(c.state.aitype != AI_NONE || c.privilege >= PRIV_ADMIN || c.local) continue;
-            if(actor && ((c.privilege > priv && !actor->local) || c.clientnum == actor->clientnum)) continue;
-            if(getclientip(c.clientnum) == ip) disconnect_client(c.clientnum, DISC_KICK);
+            if(c.state.aitype != AI_NONE || c.privilige >= protocol::Priviliges::Admin || c.local) continue;
+            if(actor && ((c.privilege > priv && !actor->local) || c.clientNumber == actor->clientNumber)) continue;
+            if(GetClientIP(c.clientNumber) == ip) Disconnect_Client(c.clientNumber, DisconnectReason::Kick);
         }
     }
 
@@ -615,9 +614,9 @@ namespace server
     VARF(publicserver, 0, 0, 2, {
         switch(publicserver)
         {
-            case 0: default: mastermask = MM_PRIVSERV; break;
-            case 1: mastermask = MM_PUBSERV; break;
-            case 2: mastermask = MM_COOPSERV; break;
+            case 0: default: mastermask = protocol::MasterMask::PrivateServer; break;
+            case 1: mastermask = protocol::MasterMask::PublicServer; break;
+            case 2: mastermask = protocol::MasterMask::CoopServer; break;
         }
     });
     SVAR(servermotd, "");
@@ -709,7 +708,7 @@ namespace server
     }
 
     uint mcrc = 0;
-    vector<entity> ments;
+    vector<::entities::CoreEntity*> ments;
     vector<server_entity> sents;
     vector<savedscore> scores;
 
@@ -879,332 +878,332 @@ namespace server
         return true;
     }
 
-    static teaminfo teaminfos[MAXTEAMS];
+    // static teaminfo teaminfos[MAXTEAMS];
 
-    void clearteaminfo()
+    // void clearteaminfo()
+    // {
+    //     loopi(MAXTEAMS) teaminfos[i].reset();
+    // }
+
+    // clientinfo *choosebestclient(float &bestrank)
+    // {
+    //     clientinfo *best = NULL;
+    //     bestrank = -1;
+    //     loopv(clients)
+    //     {
+    //         clientinfo *ci = clients[i];
+    //         if(ci->state.timeplayed<0) continue;
+    //         float rank = ci->state.state!=CS_SPECTATOR ? ci->state.effectiveness/max(ci->state.timeplayed, 1) : -1;
+    //         if(!best || rank > bestrank) { best = ci; bestrank = rank; }
+    //     }
+    //     return best;
+    // }
+
+    // void autoteam()
+    // {
+    //     vector<clientinfo *> team[MAXTEAMS];
+    //     float teamrank[MAXTEAMS] = {0};
+    //     for(int round = 0, remaining = clients.length(); remaining>=0; round++)
+    //     {
+    //         int first = round&1, second = (round+1)&1, selected = 0;
+    //         while(teamrank[first] <= teamrank[second])
+    //         {
+    //             float rank;
+    //             clientinfo *ci = choosebestclient(rank);
+    //             if(!ci) break;
+    //             if(smode && smode->hidefrags()) rank = 1;
+    //             else if(selected && rank<=0) break;
+    //             ci->state.timeplayed = -1;
+    //             team[first].add(ci);
+    //             if(rank>0) teamrank[first] += rank;
+    //             selected++;
+    //             if(rank<=0) break;
+    //         }
+    //         if(!selected) break;
+    //         remaining -= selected;
+    //     }
+    //     loopi(MAXTEAMS) loopvj(team[i])
+    //     {
+    //         clientinfo *ci = team[i][j];
+    //         if(ci->team == 1+i) continue;
+    //         ci->team = 1+i;
+    //         sendf(-1, 1, "riiii", N_SETTEAM, ci->clientnum, ci->team, -1);
+    //     }
+    // }
+
+    // struct teamrank
+    // {
+    //     float rank;
+    //     int clients;
+
+    //     teamrank() : rank(0), clients(0) {}
+    // };
+
+    // int chooseworstteam(clientinfo *exclude = NULL)
+    // {
+    //     teamrank teamranks[MAXTEAMS];
+    //     loopv(clients)
+    //     {
+    //         clientinfo *ci = clients[i];
+    //         if(ci==exclude || ci->state.aitype!=AI_NONE || ci->state.state==CS_SPECTATOR || !validteam(ci->team)) continue;
+
+    //         ci->state.timeplayed += lastmillis - ci->state.lasttimeplayed;
+    //         ci->state.lasttimeplayed = lastmillis;
+
+    //         teamrank &ts = teamranks[ci->team-1];
+    //         ts.rank += ci->state.effectiveness/max(ci->state.timeplayed, 1);
+    //         ts.clients++;
+    //     }
+    //     teamrank *worst = &teamranks[0];
+    //     for(int i = 1; i < MAXTEAMS; i++)
+    //     {
+    //         teamrank &ts = teamranks[i];
+    //         if(smode && smode->hidefrags())
+    //         {
+    //             if(ts.clients < worst->clients || (ts.clients == worst->clients && ts.rank < worst->rank)) worst = &ts;
+    //         }
+    //         else if(ts.rank < worst->rank || (ts.rank == worst->rank && ts.clients < worst->clients)) worst = &ts;
+    //     }
+    //     return 1+int(worst-teamranks);
+    // // }
+
+    // void prunedemos(int extra = 0)
+    // {
+    //     int n = clamp(demos.length() + extra - maxdemos, 0, demos.length());
+    //     if(n <= 0) return;
+    //     loopi(n) delete[] demos[i].data;
+    //     demos.remove(0, n);
+    // }
+
+    // void adddemo()
+    // {
+    //     if(!demotmp) return;
+    //     int len = (int)min(demotmp->size(), stream::offset((maxdemosize<<20) + 0x10000));
+    //     demofile &d = demos.add();
+    //     time_t t = time(NULL);
+    //     char *timestr = ctime(&t), *trim = timestr + strlen(timestr);
+    //     while(trim>timestr && iscubespace(*--trim)) *trim = '\0';
+    //     formatcubestr(d.info, "%s: %s, %s, %.2f%s", timestr, modeprettyname(gameMode), smapname, len > 1024*1024 ? len/(1024*1024.f) : len/1024.0f, len > 1024*1024 ? "MB" : "kB");
+    //     sendservmsgf("demo \"%s\" recorded", d.info);
+    //     d.data = new uchar[len];
+    //     d.len = len;
+    //     demotmp->seek(0, SEEK_SET);
+    //     demotmp->read(d.data, len);
+    //     DELETEP(demotmp);
+    // }
+
+    // void enddemorecord()
+    // {
+    //     if(!demorecord) return;
+
+    //     DELETEP(demorecord);
+
+    //     if(!demotmp) return;
+    //     if(!maxdemos || !maxdemosize) { DELETEP(demotmp); return; }
+
+    //     prunedemos(1);
+    //     adddemo();
+    // }
+
+    // void writedemo(int chan, void *data, int len)
+    // {
+    //     if(!demorecord) return;
+    //     int stamp[3] = { gamemillis, chan, len };
+    //     lilswap(stamp, 3);
+    //     demorecord->write(stamp, sizeof(stamp));
+    //     demorecord->write(data, len);
+    //     if(demorecord->rawtell() >= (maxdemosize<<20)) enddemorecord();
+    // }
+
+    // void RecordPacket(int chan, void *data, int len)
+    // {
+    //     writedemo(chan, data, len);
+    // }
+
+    // int welcomepacket(packetbuf &p, clientinfo *ci);
+    // void sendwelcome(clientinfo *ci);
+
+    // void setupdemorecord()
+    // {
+    //     if(!m_mp(gameMode) || m_edit) return;
+
+    //     demotmp = opentempfile("demorecord", "w+b");
+    //     if(!demotmp) return;
+
+    //     stream *f = opengzfile(NULL, "wb", demotmp);
+    //     if(!f) { DELETEP(demotmp); return; }
+
+    //     sendservmsg("recording demo");
+
+    //     demorecord = f;
+
+    //     demoheader hdr;
+    //     memcpy(hdr.magic, DEMO_MAGIC, sizeof(hdr.magic));
+    //     hdr.version = DEMO_VERSION;
+    //     hdr.protocol = PROTOCOL_VERSION;
+    //     lilswap(&hdr.version, 2);
+    //     demorecord->write(&hdr, sizeof(demoheader));
+
+    //     packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
+    //     welcomepacket(p, NULL);
+    //     writedemo(1, p.buf, p.len);
+    // }
+
+    // void listdemos(int cn)
+    // {
+    //     packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
+    //     putint(p, N_SENDDEMOLIST);
+    //     putint(p, demos.length());
+    //     loopv(demos) sendcubestr(demos[i].info, p);
+    //     sendpacket(cn, 1, p.finalize());
+    // }
+
+    // void cleardemos(int n)
+    // {
+    //     if(!n)
+    //     {
+    //         loopv(demos) delete[] demos[i].data;
+    //         demos.shrink(0);
+    //         sendservmsg("cleared all demos");
+    //     }
+    //     else if(demos.inrange(n-1))
+    //     {
+    //         delete[] demos[n-1].data;
+    //         demos.remove(n-1);
+    //         sendservmsgf("cleared demo %d", n);
+    //     }
+    // }
+
+    // static void freegetmap(ENetPacket *packet)
+    // {
+    //     loopv(clients)
+    //     {
+    //         clientinfo *ci = clients[i];
+    //         if(ci->getMap == packet) ci->getMap = NULL;
+    //     }
+    // }
+
+    // static void freegetdemo(ENetPacket *packet)
+    // {
+    //     loopv(clients)
+    //     {
+    //         game::networking::ClientInfo *ci = clients[i];
+    //         if(ci->getDemo == packet) ci->getDemo = NULL;
+    //     }
+    // }
+
+    // void senddemo(game::networking::ClientInfo *ci, int num)
+    // {
+    //     if(ci->getdemo) return;
+    //     if(!num) num = demos.length();
+    //     if(!demos.inrange(num-1)) return;
+    //     demofile &d = demos[num-1];
+    //     if((ci->getdemo = sendf(ci->clientnum, 2, "rim", N_SENDDEMO, d.len, d.data)))
+    //         ci->getdemo->freeCallback = freegetdemo;
+    // }
+
+    // void enddemoplayback()
+    // {
+    //     if(!demoplayback) return;
+    //     DELETEP(demoplayback);
+
+    //     loopv(clients) sendf(clients[i]->clientnum, 1, "ri3", N_DEMOPLAYBACK, 0, clients[i]->clientnum);
+
+    //     sendservmsg("demo playback finished");
+
+    //     loopv(clients) sendwelcome(clients[i]);
+    // }
+
+    // void setupdemoplayback()
+    // {
+    //     if(demoplayback) return;
+    //     demoheader hdr;
+    //     cubestr msg;
+    //     msg[0] = '\0';
+    //     defformatcubestr(file, "%s.dmo", smapname);
+    //     demoplayback = opengzfile(file, "rb");
+    //     if(!demoplayback) formatcubestr(msg, "could not read demo \"%s\"", file);
+    //     else if(demoplayback->read(&hdr, sizeof(demoheader))!=sizeof(demoheader) || memcmp(hdr.magic, DEMO_MAGIC, sizeof(hdr.magic)))
+    //         formatcubestr(msg, "\"%s\" is not a demo file", file);
+    //     else
+    //     {
+    //         lilswap(&hdr.version, 2);
+    //         if(hdr.version!=DEMO_VERSION) formatcubestr(msg, "demo \"%s\" requires an %s version of Tesseract", file, hdr.version<DEMO_VERSION ? "older" : "newer");
+    //         else if(hdr.protocol!=PROTOCOL_VERSION) formatcubestr(msg, "demo \"%s\" requires an %s version of Tesseract", file, hdr.protocol<PROTOCOL_VERSION ? "older" : "newer");
+    //     }
+    //     if(msg[0])
+    //     {
+    //         DELETEP(demoplayback);
+    //         sendservmsg(msg);
+    //         return;
+    //     }
+
+    //     sendservmsgf("playing demo \"%s\"", file);
+
+    //     demomillis = 0;
+    //     sendf(-1, 1, "ri3", N_DEMOPLAYBACK, 1, -1);
+
+    //     if(demoplayback->read(&nextplayback, sizeof(nextplayback))!=sizeof(nextplayback))
+    //     {
+    //         enddemoplayback();
+    //         return;
+    //     }
+    //     lilswap(&nextplayback, 1);
+    // }
+
+    // void readdemo()
+    // {
+    //     if(!demoplayback) return;
+    //     demomillis += curtime;
+    //     while(demomillis>=nextplayback)
+    //     {
+    //         int chan, len;
+    //         if(demoplayback->read(&chan, sizeof(chan))!=sizeof(chan) ||
+    //            demoplayback->read(&len, sizeof(len))!=sizeof(len))
+    //         {
+    //             enddemoplayback();
+    //             return;
+    //         }
+    //         lilswap(&chan, 1);
+    //         lilswap(&len, 1);
+    //         ENetPacket *packet = enet_packet_create(NULL, len+1, 0);
+    //         if(!packet || demoplayback->read(packet->data+1, len)!=size_t(len))
+    //         {
+    //             if(packet) enet_packet_destroy(packet);
+    //             enddemoplayback();
+    //             return;
+    //         }
+    //         packet->data[0] = N_DEMOPACKET;
+    //         sendpacket(-1, chan, packet);
+    //         if(!packet->referenceCount) enet_packet_destroy(packet);
+    //         if(!demoplayback) break;
+    //         if(demoplayback->read(&nextplayback, sizeof(nextplayback))!=sizeof(nextplayback))
+    //         {
+    //             enddemoplayback();
+    //             return;
+    //         }
+    //         lilswap(&nextplayback, 1);
+    //     }
+    // }
+
+    // void stopdemo()
+    // {
+    //     if(m_demo) enddemoplayback();
+    //     else enddemorecord();
+    // }
+
+    void pausegame(bool val, game::networking::ClientInfo *ci = NULL)
     {
-        loopi(MAXTEAMS) teaminfos[i].reset();
-    }
-
-    clientinfo *choosebestclient(float &bestrank)
-    {
-        clientinfo *best = NULL;
-        bestrank = -1;
-        loopv(clients)
-        {
-            clientinfo *ci = clients[i];
-            if(ci->state.timeplayed<0) continue;
-            float rank = ci->state.state!=CS_SPECTATOR ? ci->state.effectiveness/max(ci->state.timeplayed, 1) : -1;
-            if(!best || rank > bestrank) { best = ci; bestrank = rank; }
-        }
-        return best;
-    }
-
-    void autoteam()
-    {
-        vector<clientinfo *> team[MAXTEAMS];
-        float teamrank[MAXTEAMS] = {0};
-        for(int round = 0, remaining = clients.length(); remaining>=0; round++)
-        {
-            int first = round&1, second = (round+1)&1, selected = 0;
-            while(teamrank[first] <= teamrank[second])
-            {
-                float rank;
-                clientinfo *ci = choosebestclient(rank);
-                if(!ci) break;
-                if(smode && smode->hidefrags()) rank = 1;
-                else if(selected && rank<=0) break;
-                ci->state.timeplayed = -1;
-                team[first].add(ci);
-                if(rank>0) teamrank[first] += rank;
-                selected++;
-                if(rank<=0) break;
-            }
-            if(!selected) break;
-            remaining -= selected;
-        }
-        loopi(MAXTEAMS) loopvj(team[i])
-        {
-            clientinfo *ci = team[i][j];
-            if(ci->team == 1+i) continue;
-            ci->team = 1+i;
-            sendf(-1, 1, "riiii", N_SETTEAM, ci->clientnum, ci->team, -1);
-        }
-    }
-
-    struct teamrank
-    {
-        float rank;
-        int clients;
-
-        teamrank() : rank(0), clients(0) {}
-    };
-
-    int chooseworstteam(clientinfo *exclude = NULL)
-    {
-        teamrank teamranks[MAXTEAMS];
-        loopv(clients)
-        {
-            clientinfo *ci = clients[i];
-            if(ci==exclude || ci->state.aitype!=AI_NONE || ci->state.state==CS_SPECTATOR || !validteam(ci->team)) continue;
-
-            ci->state.timeplayed += lastmillis - ci->state.lasttimeplayed;
-            ci->state.lasttimeplayed = lastmillis;
-
-            teamrank &ts = teamranks[ci->team-1];
-            ts.rank += ci->state.effectiveness/max(ci->state.timeplayed, 1);
-            ts.clients++;
-        }
-        teamrank *worst = &teamranks[0];
-        for(int i = 1; i < MAXTEAMS; i++)
-        {
-            teamrank &ts = teamranks[i];
-            if(smode && smode->hidefrags())
-            {
-                if(ts.clients < worst->clients || (ts.clients == worst->clients && ts.rank < worst->rank)) worst = &ts;
-            }
-            else if(ts.rank < worst->rank || (ts.rank == worst->rank && ts.clients < worst->clients)) worst = &ts;
-        }
-        return 1+int(worst-teamranks);
-    }
-
-    void prunedemos(int extra = 0)
-    {
-        int n = clamp(demos.length() + extra - maxdemos, 0, demos.length());
-        if(n <= 0) return;
-        loopi(n) delete[] demos[i].data;
-        demos.remove(0, n);
-    }
-
-    void adddemo()
-    {
-        if(!demotmp) return;
-        int len = (int)min(demotmp->size(), stream::offset((maxdemosize<<20) + 0x10000));
-        demofile &d = demos.add();
-        time_t t = time(NULL);
-        char *timestr = ctime(&t), *trim = timestr + strlen(timestr);
-        while(trim>timestr && iscubespace(*--trim)) *trim = '\0';
-        formatcubestr(d.info, "%s: %s, %s, %.2f%s", timestr, modeprettyname(gameMode), smapname, len > 1024*1024 ? len/(1024*1024.f) : len/1024.0f, len > 1024*1024 ? "MB" : "kB");
-        sendservmsgf("demo \"%s\" recorded", d.info);
-        d.data = new uchar[len];
-        d.len = len;
-        demotmp->seek(0, SEEK_SET);
-        demotmp->read(d.data, len);
-        DELETEP(demotmp);
-    }
-
-    void enddemorecord()
-    {
-        if(!demorecord) return;
-
-        DELETEP(demorecord);
-
-        if(!demotmp) return;
-        if(!maxdemos || !maxdemosize) { DELETEP(demotmp); return; }
-
-        prunedemos(1);
-        adddemo();
-    }
-
-    void writedemo(int chan, void *data, int len)
-    {
-        if(!demorecord) return;
-        int stamp[3] = { gamemillis, chan, len };
-        lilswap(stamp, 3);
-        demorecord->write(stamp, sizeof(stamp));
-        demorecord->write(data, len);
-        if(demorecord->rawtell() >= (maxdemosize<<20)) enddemorecord();
-    }
-
-    void RecordPacket(int chan, void *data, int len)
-    {
-        writedemo(chan, data, len);
-    }
-
-    int welcomepacket(packetbuf &p, clientinfo *ci);
-    void sendwelcome(clientinfo *ci);
-
-    void setupdemorecord()
-    {
-        if(!m_mp(gameMode) || m_edit) return;
-
-        demotmp = opentempfile("demorecord", "w+b");
-        if(!demotmp) return;
-
-        stream *f = opengzfile(NULL, "wb", demotmp);
-        if(!f) { DELETEP(demotmp); return; }
-
-        sendservmsg("recording demo");
-
-        demorecord = f;
-
-        demoheader hdr;
-        memcpy(hdr.magic, DEMO_MAGIC, sizeof(hdr.magic));
-        hdr.version = DEMO_VERSION;
-        hdr.protocol = PROTOCOL_VERSION;
-        lilswap(&hdr.version, 2);
-        demorecord->write(&hdr, sizeof(demoheader));
-
-        packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
-        welcomepacket(p, NULL);
-        writedemo(1, p.buf, p.len);
-    }
-
-    void listdemos(int cn)
-    {
-        packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
-        putint(p, N_SENDDEMOLIST);
-        putint(p, demos.length());
-        loopv(demos) sendcubestr(demos[i].info, p);
-        sendpacket(cn, 1, p.finalize());
-    }
-
-    void cleardemos(int n)
-    {
-        if(!n)
-        {
-            loopv(demos) delete[] demos[i].data;
-            demos.shrink(0);
-            sendservmsg("cleared all demos");
-        }
-        else if(demos.inrange(n-1))
-        {
-            delete[] demos[n-1].data;
-            demos.remove(n-1);
-            sendservmsgf("cleared demo %d", n);
-        }
-    }
-
-    static void freegetmap(ENetPacket *packet)
-    {
-        loopv(clients)
-        {
-            clientinfo *ci = clients[i];
-            if(ci->getmap == packet) ci->getmap = NULL;
-        }
-    }
-
-    static void freegetdemo(ENetPacket *packet)
-    {
-        loopv(clients)
-        {
-            clientinfo *ci = clients[i];
-            if(ci->getdemo == packet) ci->getdemo = NULL;
-        }
-    }
-
-    void senddemo(clientinfo *ci, int num)
-    {
-        if(ci->getdemo) return;
-        if(!num) num = demos.length();
-        if(!demos.inrange(num-1)) return;
-        demofile &d = demos[num-1];
-        if((ci->getdemo = sendf(ci->clientnum, 2, "rim", N_SENDDEMO, d.len, d.data)))
-            ci->getdemo->freeCallback = freegetdemo;
-    }
-
-    void enddemoplayback()
-    {
-        if(!demoplayback) return;
-        DELETEP(demoplayback);
-
-        loopv(clients) sendf(clients[i]->clientnum, 1, "ri3", N_DEMOPLAYBACK, 0, clients[i]->clientnum);
-
-        sendservmsg("demo playback finished");
-
-        loopv(clients) sendwelcome(clients[i]);
-    }
-
-    void setupdemoplayback()
-    {
-        if(demoplayback) return;
-        demoheader hdr;
-        cubestr msg;
-        msg[0] = '\0';
-        defformatcubestr(file, "%s.dmo", smapname);
-        demoplayback = opengzfile(file, "rb");
-        if(!demoplayback) formatcubestr(msg, "could not read demo \"%s\"", file);
-        else if(demoplayback->read(&hdr, sizeof(demoheader))!=sizeof(demoheader) || memcmp(hdr.magic, DEMO_MAGIC, sizeof(hdr.magic)))
-            formatcubestr(msg, "\"%s\" is not a demo file", file);
-        else
-        {
-            lilswap(&hdr.version, 2);
-            if(hdr.version!=DEMO_VERSION) formatcubestr(msg, "demo \"%s\" requires an %s version of Tesseract", file, hdr.version<DEMO_VERSION ? "older" : "newer");
-            else if(hdr.protocol!=PROTOCOL_VERSION) formatcubestr(msg, "demo \"%s\" requires an %s version of Tesseract", file, hdr.protocol<PROTOCOL_VERSION ? "older" : "newer");
-        }
-        if(msg[0])
-        {
-            DELETEP(demoplayback);
-            sendservmsg(msg);
-            return;
-        }
-
-        sendservmsgf("playing demo \"%s\"", file);
-
-        demomillis = 0;
-        sendf(-1, 1, "ri3", N_DEMOPLAYBACK, 1, -1);
-
-        if(demoplayback->read(&nextplayback, sizeof(nextplayback))!=sizeof(nextplayback))
-        {
-            enddemoplayback();
-            return;
-        }
-        lilswap(&nextplayback, 1);
-    }
-
-    void readdemo()
-    {
-        if(!demoplayback) return;
-        demomillis += curtime;
-        while(demomillis>=nextplayback)
-        {
-            int chan, len;
-            if(demoplayback->read(&chan, sizeof(chan))!=sizeof(chan) ||
-               demoplayback->read(&len, sizeof(len))!=sizeof(len))
-            {
-                enddemoplayback();
-                return;
-            }
-            lilswap(&chan, 1);
-            lilswap(&len, 1);
-            ENetPacket *packet = enet_packet_create(NULL, len+1, 0);
-            if(!packet || demoplayback->read(packet->data+1, len)!=size_t(len))
-            {
-                if(packet) enet_packet_destroy(packet);
-                enddemoplayback();
-                return;
-            }
-            packet->data[0] = N_DEMOPACKET;
-            sendpacket(-1, chan, packet);
-            if(!packet->referenceCount) enet_packet_destroy(packet);
-            if(!demoplayback) break;
-            if(demoplayback->read(&nextplayback, sizeof(nextplayback))!=sizeof(nextplayback))
-            {
-                enddemoplayback();
-                return;
-            }
-            lilswap(&nextplayback, 1);
-        }
-    }
-
-    void stopdemo()
-    {
-        if(m_demo) enddemoplayback();
-        else enddemorecord();
-    }
-
-    void pausegame(bool val, clientinfo *ci = NULL)
-    {
-        if(gamepaused==val) return;
-        gamepaused = val;
-        sendf(-1, 1, "riii", N_PAUSEGAME, gamepaused ? 1 : 0, ci ? ci->clientnum : -1);
+        if(serverGame.gamePaused==val) return;
+        serverGame.gamePaused = val;
+        sendf(-1, 1, "riii", game::networking::protocol::Events::PauseGame, serverGame.gamepaused ? 1 : 0, ci ? ci->clientNumber : -1);
     }
 
     void checkpausegame()
     {
-        if(!gamepaused) return;
+        if(!serverGame.gamePaused) return;
         int admins = 0;
-        loopv(clients) if(clients[i]->privilege >= (restrictpausegame ? PRIV_ADMIN : PRIV_MASTER) || clients[i]->local) admins++;
+        loopv(clients) if(clients[i]->privilege >= (restrictPauseGame ? game::networking::protocol::Priviliges::Admin : game::networking::protocol::Priviliges::Private) || clients[i]->local) admins++;
         if(!admins) pausegame(false);
     }
 
@@ -1213,14 +1212,14 @@ namespace server
         pausegame(paused);
     }
 
-    bool ispaused() { return gamepaused; }
+    bool ispaused() { return serverGame.paused; }
 
-    void changegamespeed(int val, clientinfo *ci = NULL)
+    void changegamespeed(int val, game::networking::ClientInfo *ci = NULL)
     {
         val = clamp(val, 10, 1000);
-        if(gamespeed==val) return;
-        gamespeed = val;
-        sendf(-1, 1, "riii", N_GAMESPEED, gamespeed, ci ? ci->clientnum : -1);
+        if(serverGame.gameSpeed==val) return;
+        serverGame.gameSpeed = val;
+        sendf(-1, 1, "riii", game::networking::protocol::Events::GameSpeed, serverGame.gameSpeed, ci ? ci->clientNumber : -1);
     }
 
     void forcegamespeed(int speed)
@@ -1228,43 +1227,43 @@ namespace server
         changegamespeed(speed);
     }
 
-    int scaletime(int t) { return t*gamespeed; }
+    int scaletime(int t) { return t*serverGame.gameSpeed; }
 
     SVAR(serverauth, "");
 
-    struct userkey
+    struct UserKey
     {
-        char *name;
+        chaUserKeyr *name;
         char *desc;
 
-        userkey() : name(NULL), desc(NULL) {}
-        userkey(char *name, char *desc) : name(name), desc(desc) {}
+        UserKey() : name(NULL), desc(NULL) {}
+        UserKey(char *name, char *desc) : name(name), desc(desc) {}
     };
 
-    static inline uint hthash(const userkey &k) { return ::hthash(k.name); }
-    static inline bool htcmp(const userkey &x, const userkey &y) { return !strcmp(x.name, y.name) && !strcmp(x.desc, y.desc); }
+    static inline uint hthash(const UserKey &k) { return ::hthash(k.name); }
+    static inline bool htcmp(const UserKey &x, const UserKey &y) { return !strcmp(x.name, y.name) && !strcmp(x.desc, y.desc); }
 
-    struct userinfo : userkey
+    struct UserInfo : UserKey
     {
         void *pubkey;
         int privilege;
 
-        userinfo() : pubkey(NULL), privilege(PRIV_NONE) {}
-        ~userinfo() { delete[] name; delete[] desc; if(pubkey) freepubkey(pubkey); }
+        UserInfo() : pubkey(NULL), privilege(PRIV_NONE) {}
+        ~UserInfo() { delete[] name; delete[] desc; if(pubkey) freepubkey(pubkey); }
     };
-    hashset<userinfo> users;
+    hashset<UserInfo> users;
 
-    void adduser(char *name, char *desc, char *pubkey, char *priv)
+    void AddUser(char *name, char *desc, char *pubkey, char *priv)
     {
         userkey key(name, desc);
-        userinfo &u = users[key];
+        UserInfo &u = users[key];
         if(u.pubkey) { freepubkey(u.pubkey); u.pubkey = NULL; }
         if(!u.name) u.name = newcubestr(name);
         if(!u.desc) u.desc = newcubestr(desc);
         u.pubkey = parsepubkey(pubkey);
         switch(priv[0])
         {
-            case 'a': case 'A': u.privilege = PRIV_ADMIN; break;
+            case 'a': case 'A': u.privilege = networking::protocol::priviliges::Admin; break;
             case 'm': case 'M': default: u.privilege = PRIV_AUTH; break;
             case 'n': case 'N': u.privilege = PRIV_NONE; break;
         }
@@ -1488,46 +1487,48 @@ namespace server
         return type;
     }
 
-    struct worldstate
+    //WorldState
+    // WorldState handling, per client.
+    //
+    struct WorldState
     {
-        int uses, len;
-        uchar *data;
+        int uses = 0;
+        len = 0;
+        uchar *data = nullptr;
 
-        worldstate() : uses(0), len(0), data(NULL) {}
-
-        void setup(int n) { len = n; data = new uchar[n]; }
-        void cleanup() { DELETEA(data); len = 0; }
-        bool contains(const uchar *p) const { return p >= data && p < &data[len]; }
+        void Setup(int n) { len = n; data = new uchar[n]; }
+        void Cleanup() { DELETEA(data); len = 0; }
+        bool Contains(const uchar *p) const { return p >= data && p < &data[len]; }
     };
-    vector<worldstate> worldstates;
-    bool reliablemessages = false;
+    vector<WorldState> worldStates;
+    bool reliableMessages = false;
 
-    void cleanworldstate(ENetPacket *packet)
+    void CleanWorldState(ENetPacket *packet)
     {
-        loopv(worldstates)
+        loopv(worldStates)
         {
-            worldstate &ws = worldstates[i];
-            if(!ws.contains(packet->data)) continue;
+            WorldState &ws = worldStates[i];
+            if(!ws.Contains(packet->data)) continue;
             ws.uses--;
             if(ws.uses <= 0)
             {
-                ws.cleanup();
+                ws.Cleanup();
                 worldstates.removeunordered(i);
             }
             break;
         }
     }
 
-    void flushclientposition(clientinfo &ci)
+    void FlushClientPosition(clientinfo &ci)
     {
-        if(ci.position.empty() || (!hasnonlocalclients() && !demorecord)) return;
+        if(ci.position.empty() || (!HasNonLocalClients() && !demorecord)) return;
         packetbuf p(ci.position.length(), 0);
         p.put(ci.position.getbuf(), ci.position.length());
         ci.position.setsize(0);
-        sendpacket(-1, 0, p.finalize(), ci.ownernum);
+        SendPacket(-1, 0, p.Finalize(), ci.ownerNumber);
     }
 
-    static void SendPositions(worldstate &ws, ucharbuf &wsbuf)
+    static void SendPositions(WorldState &ws, ucharbuf &wsbuf)
     {
         if(wsbuf.empty()) return;
         int wslen = wsbuf.length();
@@ -1535,21 +1536,21 @@ namespace server
         wsbuf.put(wsbuf.buf, wslen);
         loopv(clients)
         {
-            clientinfo &ci = *clients[i];
+            ClientInfo &ci = *clients[i];
             if(ci.state.aitype != AI_NONE) continue;
             uchar *data = wsbuf.buf;
             int size = wslen;
             if(ci.wsdata >= wsbuf.buf) { data = ci.wsdata + ci.wslen; size -= ci.wslen; }
             if(size <= 0) continue;
             ENetPacket *packet = enet_packet_create(data, size, ENET_PACKET_FLAG_NO_ALLOCATE);
-            sendpacket(ci.clientnum, 0, packet);
-            if(packet->referenceCount) { ws.uses++; packet->freeCallback = cleanworldstate; }
+            SendPacket(ci.clientNumber, 0, packet);
+            if(packet->referenceCount) { ws.uses++; packet->freeCallback = CleanWorldState; }
             else enet_packet_destroy(packet);
         }
         wsbuf.offset(wsbuf.length());
     }
 
-    static inline void addposition(worldstate &ws, ucharbuf &wsbuf, int mtu, clientinfo &bi, clientinfo &ci)
+    static inline void AddPosition(WorldState &ws, ucharbuf &wsbuf, int mtu, ClientInfo  &bi, ClientInfo &ci)
     {
         if(bi.position.empty()) return;
         if(wsbuf.length() + bi.position.length() > mtu) SendPositions(ws, wsbuf);
@@ -1561,7 +1562,7 @@ namespace server
         else ci.wslen += len;
     }
 
-    static void sendmessages(worldstate &ws, ucharbuf &wsbuf)
+    static void SendMessages(WorldState &ws, ucharbuf &wsbuf)
     {
         if(wsbuf.empty()) return;
         int wslen = wsbuf.length();
@@ -1583,7 +1584,7 @@ namespace server
         wsbuf.offset(wsbuf.length());
     }
 
-    static inline void addmessages(worldstate &ws, ucharbuf &wsbuf, int mtu, clientinfo &bi, clientinfo &ci)
+    static inline void AddMessages(worldstate &ws, ucharbuf &wsbuf, int mtu, clientinfo &bi, clientinfo &ci)
     {
         if(bi.messages.empty()) return;
         if(wsbuf.length() + 10 + bi.messages.length() > mtu) sendmessages(ws, wsbuf);
@@ -1614,9 +1615,9 @@ namespace server
             reliablemessages = false;
             return false;
         }
-        worldstate &ws = worldstates.add();
+        WorldState &ws = worldStates.add();
         ws.setup(2*wsmax);
-        int mtu = getservermtu() - 100;
+        int mtu = GetServerMTU() - 100;
         if(mtu <= 0) mtu = ws.len;
         ucharbuf wsbuf(ws.data, ws.len);
         loopv(clients)
@@ -1631,8 +1632,8 @@ namespace server
         {
             clientinfo &ci = *clients[i];
             if(ci.state.aitype != AI_NONE) continue;
-            addmessages(ws, wsbuf, mtu, ci, ci);
-            loopvj(ci.bots) addmessages(ws, wsbuf, mtu, *ci.bots[j], ci);
+            AddMessages(ws, wsbuf, mtu, ci, ci);
+            loopvj(ci.bots) AddMessages(ws, wsbuf, mtu, *ci.bots[j], ci);
         }
         sendmessages(ws, wsbuf);
         reliablemessages = false;
@@ -1644,7 +1645,7 @@ namespace server
 
     bool SendPackets(bool force)
     {
-        if(clients.empty() || (!hasnonlocalclients() && !demorecord)) return false;
+        if(clients.empty() || (!HasNonLocalClients() && !demorecord)) return false;
         enet_uint32 curtime = enet_time_get()-lastsend;
         if(curtime<40 && !force) return false;
         bool flush = buildworldstate();
@@ -1914,7 +1915,7 @@ namespace server
             ci->state.timeplayed += lastmillis - ci->state.lasttimeplayed;
         }
 
-        if(!m_mp(gameMode)) kicknonlocalclients(DISC_LOCAL);
+        if(!m_mp(gameMode)) KickNonLocalclients(DISC_LOCAL);
 
         sendf(-1, 1, "risii", N_MAPCHANGE, smapname, gameMode, 1);
 
@@ -2017,7 +2018,7 @@ namespace server
             if(idx < 0) return;
             map = maprotations[idx].map;
         }
-        if(hasnonlocalclients()) sendservmsgf("local player forced %s on map %s", modeprettyname(mode), map[0] ? map : "[new map]");
+        if(HasNonLocalClients()) sendservmsgf("local player forced %s on map %s", modeprettyname(mode), map[0] ? map : "[new map]");
         changemap(map, mode);
     }
 
@@ -2043,7 +2044,7 @@ namespace server
         if(ci->local || (ci->privilege && mastermode>=MM_VETO))
         {
             if(demorecord) enddemorecord();
-            if(!ci->local || hasnonlocalclients())
+            if(!ci->local || HasNonLocalClients())
                 sendservmsgf("%s forced %s on map %s", colorname(ci), modeprettyname(ci->modevote), ci->mapvote[0] ? ci->mapvote : "[new map]");
             changemap(ci->mapvote, ci->modevote);
         }
@@ -2300,7 +2301,7 @@ namespace server
         }
 
         while(bannedips.length() && bannedips[0].expire-ftsClient.totalMilliseconds <= 0) bannedips.remove(0);
-        loopv(connects) if(ftsClient.totalMilliseconds-connects[i]->connectmillis>15000) disconnect_client(connects[i]->clientnum, DISC_TIMEOUT);
+        loopv(connects) if(ftsClient.totalMilliseconds-connects[i]->connectmillis>15000) Disconnect_Client(connects[i]->clientnum, DISC_TIMEOUT);
 
         if(nextexceeded && gamemillis > nextexceeded && (!m_timed || gamemillis < gamelimit))
         {
@@ -2309,7 +2310,7 @@ namespace server
             {
                 clientinfo &c = *clients[i];
                 if(c.state.aitype != AI_NONE) continue;
-                if(c.checkexceeded()) disconnect_client(c.clientnum, DISC_MSGERR);
+                if(c.checkexceeded()) Disconnect_Client(c.clientnum, DISC_MSGERR);
                 else c.scheduleexceeded();
             }
         }
@@ -2522,7 +2523,7 @@ namespace server
         {
             clientinfo *ci = clients[i];
             if(ci->state.aitype != AI_NONE || ci->local || ci->privilege >= PRIV_ADMIN) continue;
-            if(checkbans(getclientip(ci->clientnum))) disconnect_client(ci->clientnum, DISC_IPBAN);
+            if(checkbans(getclientip(ci->clientnum))) Disconnect_Client(ci->clientnum, DISC_IPBAN);
         }
     }
 
@@ -2562,7 +2563,7 @@ namespace server
     {
         if(!ci) return;
         ci->cleanauth();
-        if(ci->connectauth) disconnect_client(ci->clientnum, ci->connectauth);
+        if(ci->connectauth) Disconnect_Client(ci->clientnum, ci->connectauth);
     }
 
     void authfailed(uint id)
@@ -2619,7 +2620,7 @@ namespace server
             sendf(ci->clientnum, 1, "ris", N_SERVMSG, "not connected to authentication server");
         }
         if(ci->authreq) return true;
-        if(ci->connectauth) disconnect_client(ci->clientnum, ci->connectauth);
+        if(ci->connectauth) Disconnect_Client(ci->clientnum, ci->connectauth);
         return false;
     }
 
@@ -2660,11 +2661,11 @@ namespace server
         return ci->authreq || !ci->connectauth;
     }
 
-    void masterconnected()
+    void MasterConnected()
     {
     }
 
-    void masterdisconnected()
+    void MasterDisconnected()
     {
         loopvrev(clients)
         {
@@ -2755,7 +2756,7 @@ namespace server
         if(ci && !ci->connected)
         {
             if(chan==0) return;
-            else if(chan!=1) { disconnect_client(sender, DISC_MSGERR); return; }
+            else if(chan!=1) { Disconnect_Client(sender, DISC_MSGERR); return; }
             else while(p.length() < p.maxlen) switch(checktype(getint(p), ci))
             {
                 case N_CONNECT:
@@ -2776,7 +2777,7 @@ namespace server
                     {
                         if(disc == DISC_LOCAL || !serverauth[0] || strcmp(serverauth, authdesc) || !tryauth(ci, authname, authdesc))
                         {
-                            disconnect_client(sender, disc);
+                            Disconnect_Client(sender, disc);
                             return;
                         }
                         ci->connectauth = disc;
@@ -2793,7 +2794,7 @@ namespace server
                     getcubestr(ans, p, sizeof(ans));
                     if(!answerchallenge(ci, id, ans, desc))
                     {
-                        disconnect_client(sender, ci->connectauth);
+                        Disconnect_Client(sender, ci->connectauth);
                         return;
                     }
                     break;
@@ -2804,7 +2805,7 @@ namespace server
                     break;
 
                 default:
-                    disconnect_client(sender, DISC_MSGERR);
+                    Disconnect_Client(sender, DISC_MSGERR);
                     return;
             }
             return;
@@ -2817,9 +2818,9 @@ namespace server
 
         if(p.packet->flags&ENET_PACKET_FLAG_RELIABLE) reliablemessages = true;
         #define QUEUE_AI clientinfo *cm = cq;
-        #define QUEUE_MSG { if(cm && (!cm->local || demorecord || hasnonlocalclients())) while(curmsg<p.length()) cm->messages.add(p.buf[curmsg++]); }
+        #define QUEUE_MSG { if(cm && (!cm->local || demorecord || HasNonLocalClients())) while(curmsg<p.length()) cm->messages.add(p.buf[curmsg++]); }
         #define QUEUE_BUF(body) { \
-            if(cm && (!cm->local || demorecord || hasnonlocalclients())) \
+            if(cm && (!cm->local || demorecord || HasNonLocalClients())) \
             { \
                 curmsg = p.length(); \
                 { body; } \
@@ -2855,7 +2856,7 @@ namespace server
                 }
                 if(cp)
                 {
-                    if((!ci->local || demorecord || hasnonlocalclients()) && (cp->state.state==CS_ALIVE || cp->state.state==CS_EDITING))
+                    if((!ci->local || demorecord || HasNonLocalClients()) && (cp->state.state==CS_ALIVE || cp->state.state==CS_EDITING))
                     {
                         if(!ci->local && !m_edit && max(vel.magnitude2(), (float)fabs(vel.z)) >= 180)
                             cp->setexceeded();
@@ -2874,7 +2875,7 @@ namespace server
                 int pcn = getint(p), teleport = getint(p), teledest = getint(p);
                 clientinfo *cp = getinfo(pcn);
                 if(cp && pcn != sender && cp->ownernum != sender) cp = NULL;
-                if(cp && (!ci->local || demorecord || hasnonlocalclients()) && (cp->state.state==CS_ALIVE || cp->state.state==CS_EDITING))
+                if(cp && (!ci->local || demorecord || HasNonLocalClients()) && (cp->state.state==CS_ALIVE || cp->state.state==CS_EDITING))
                 {
                     flushclientposition(*cp);
                     sendf(-1, 0, "ri4x", N_TELEPORT, pcn, teleport, teledest, cp->ownernum);
@@ -2887,7 +2888,7 @@ namespace server
                 int pcn = getint(p), jumppad = getint(p);
                 clientinfo *cp = getinfo(pcn);
                 if(cp && pcn != sender && cp->ownernum != sender) cp = NULL;
-                if(cp && (!ci->local || demorecord || hasnonlocalclients()) && (cp->state.state==CS_ALIVE || cp->state.state==CS_EDITING))
+                if(cp && (!ci->local || demorecord || HasNonLocalClients()) && (cp->state.state==CS_ALIVE || cp->state.state==CS_EDITING))
                 {
                     cp->setpushed();
                     flushclientposition(*cp);
@@ -3287,7 +3288,7 @@ namespace server
             }
 
             case N_FORCEINTERMISSION:
-                if(ci->local && !hasnonlocalclients()) startintermission();
+                if(ci->local && !HasNonLocalClients()) startintermission();
                 break;
 
             case N_RECORDDEMO:
@@ -3498,11 +3499,11 @@ namespace server
             case N_EDITVSLOT:
             {
                 int size = server::MessageSizeLookup(type);
-                if(size<=0) { disconnect_client(sender, DISC_MSGERR); return; }
+                if(size<=0) { Disconnect_Client(sender, DISC_MSGERR); return; }
                 loopi(size-1) getint(p);
-                if(p.remaining() < 2) { disconnect_client(sender, DISC_MSGERR); return; }
+                if(p.remaining() < 2) { Disconnect_Client(sender, DISC_MSGERR); return; }
                 int extra = lilswap(*(const ushort *)p.pad(2));
-                if(p.remaining() < extra) { disconnect_client(sender, DISC_MSGERR); return; }                
+                if(p.remaining() < extra) { Disconnect_Client(sender, DISC_MSGERR); return; }                
                 p.pad(extra); 
                 if(ci && ci->state.state!=CS_SPECTATOR) QUEUE_MSG;
                 break;
@@ -3517,7 +3518,7 @@ namespace server
                     if(packlen > 0) p.subbuf(packlen);
                     break;
                 }
-                if(p.remaining() < packlen) { disconnect_client(sender, DISC_MSGERR); return; }
+                if(p.remaining() < packlen) { Disconnect_Client(sender, DISC_MSGERR); return; }
                 packetbuf q(32 + packlen, ENET_PACKET_FLAG_RELIABLE);
                 putint(q, type);
                 putint(q, ci->clientnum);
@@ -3537,17 +3538,17 @@ namespace server
             #undef PARSEMESSAGES
 
             case -1:
-                disconnect_client(sender, DISC_MSGERR);
+                Disconnect_Client(sender, DISC_MSGERR);
                 return;
 
             case -2:
-                disconnect_client(sender, DISC_OVERFLOW);
+                Disconnect_Client(sender, DISC_OVERFLOW);
                 return;
 
             default: genericmsg:
             {
                 int size = server::MessageSizeLookup(type);
-                if(size<=0) { disconnect_client(sender, DISC_MSGERR); return; }
+                if(size<=0) { Disconnect_Client(sender, DISC_MSGERR); return; }
                 loopi(size-1) getint(p);
                 if(ci) switch(msgfilter[type])
                 {
@@ -3559,10 +3560,10 @@ namespace server
         }
     }
 
-    int LanInfoPort() { return TESSERACT_LANINFO_PORT; }
-    int ServerPort() { return TESSERACT_SERVER_PORT; }
-    const char *DefaultMaster() { return "master.tesseract.gg"; }
-    int MasterPort() { return TESSERACT_MASTER_PORT; }
+    int LanInfoPort() { return POLYHEDRON_LANINFO_PORT; }
+    int ServerPort() { return POLYHEDRON_SERVER_PORT; }
+    const char *DefaultMaster() { return "master.polyhedron.gg"; }
+    int MasterPort() { return POLYHEDRON_MASTER_PORT; }
     int GetGetNumChannels() { return 3; }
 
     #include "extinfo.h"

@@ -546,28 +546,28 @@ extern void preloadwatershaders(bool force = false);
 // server
 extern vector<const char *> gameargs;
 
-extern void initserver(bool listen, bool dedicated);
+extern void InitServer(bool listen, bool dedicated);
 extern void CleanupServer();
-extern void serverslice(bool dedicated, uint timeout);
-extern void updatetime();
+extern void ServerSlice(bool dedicated, uint timeout);
+extern void UpdateTime();
 
-extern ENetSocket connectmaster(bool wait);
-extern void localclienttoserver(int chan, ENetPacket *);
-extern void localconnect();
-extern bool serveroption(char *opt);
+extern ENetSocket ConnectMaster(bool wait);
+extern void LocalClientToServer(int chan, ENetPacket *);
+extern void LocalConnect();
+extern bool ServerOption(char *opt);
 
 // serverbrowser
-extern bool resolverwait(const char *name, ENetAddress *address);
-extern int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress &address);
-extern void addserver(const char *name, int port = 0, const char *password = NULL, bool keep = false);
-extern void writeservercfg();
+extern bool ResolverWait(const char *name, ENetAddress *address);
+extern int ConnectWithoutTimeout(ENetSocket sock, const char *hostname, const ENetAddress &address);
+extern void AddServer(const char *name, int port = 0, const char *password = NULL, bool keep = false);
+extern void WriteServerCfg();
 
 // client
 extern void LocalDisconnect(bool cleanup = true);
 extern void LocalServerToClient(int chan, ENetPacket *packet);
 extern void ConnectServ(const char *servername, int port, const char *serverpassword);
-extern void abortconnect();
-extern void clientkeepalive();
+extern void AbortConnect();
+extern void ClientKeepAlive();
 
 // command
 extern hashnameset<ident> idents;

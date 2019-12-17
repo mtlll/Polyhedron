@@ -1,9 +1,11 @@
 #pragma once
 
 #include "cube.h"
+#include "shared/networking/network.h"
 #include "shared/networking/cl_sv.h"
 
 namespace game {
+    
     namespace server
     {
         // Server time related functions
@@ -40,8 +42,9 @@ namespace game {
         // Master server related functions.
         extern const char *DefaultMaster();
         extern void ProcessMasterInput(const char *cmd, int cmdlen, const char *args);
-        extern void NasterConnected();
+        extern void MasterConnected();
         extern void MasterDisconnected();
+        extern void ConnectMaster();
 
         // Are servers compatible?
         extern bool servercompatible(char *name, char *sdec, char *map, int ping, const vector<int> &attr, int np);

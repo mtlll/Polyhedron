@@ -174,9 +174,9 @@ void toggleedit(bool force)
 
     if(!force)
     {
-        if(!isconnected()) return;
+        if(!game::networking::IsConnected()) return;
         if(player->state!=CS_ALIVE && player->state!=CS_DEAD && player->state!=CS_EDITING) return; // do not allow dead players to edit to avoid state confusion
-        if(!game::allowedittoggle()) return;         // not in most multiplayer modes
+        if(!game::allowedittoggle()) return;         // not in most Multiplayer modes
     }
     if(!(editmode = !editmode))
     {
@@ -845,7 +845,7 @@ void swapundo(undolist &a, undolist &b, int op)
     if(noedit()) return;
     if(a.empty()) { conoutf(CON_WARN, "nothing more to %s", op == EDIT_REDO ? "redo" : "undo"); return; }
     int ts = a.last->timestamp;
-    if(multiplayer(false))
+    if(game::networking::Multiplayer(false))
     {
         int n = 0, ops = 0;
         for(undoblock *u = a.last; u && ts==u->timestamp; u = u->prev)
@@ -854,7 +854,7 @@ void swapundo(undolist &a, undolist &b, int op)
             n += u->numents ? u->numents : countblock(u->block());
             if(ops > 10 || n > 500)
             {
-                if(nompedit) { multiplayer(); return; }
+                if(nompedit) { game::networking::Multiplayer(); return; }
                 op = -1;
                 break;
             }
@@ -1248,7 +1248,7 @@ SCRIPTEXPORT void delprefab(char *name)
 
 SCRIPTEXPORT void saveprefab(char *name)
 {
-    if(!name[0] || noedit(true) || (nompedit && multiplayer())) return;
+    if(!name[0] || noedit(true) || (nompedit && game::networking::Multiplayer())) return;
     prefab *b = prefabs.access(name);
     if(!b)
     {
@@ -1310,7 +1310,7 @@ prefab *loadprefab(const char *name, bool msg = true)
 
 SCRIPTEXPORT void pasteprefab(char *name)
 {
-    if(!name[0] || noedit() || (nompedit && multiplayer())) return;
+    if(!name[0] || noedit() || (nompedit && game::networking::Multiplayer())) return;
     prefab *b = loadprefab(name, true);
     if(b) pasteblock(*b->copy, sel, true);
 }
@@ -1949,7 +1949,7 @@ namespace hmap
 
 void edithmap(int dir, int mode)
 {
-    if((nompedit && multiplayer()) || !hmapsel) return;
+    if((nompedit && game::networking::Multiplayer()) || !hmapsel) return;
     hmap::run(dir, mode);
 }
 
@@ -2286,7 +2286,7 @@ SCRIPTEXPORT void vlayer(int *n)
     if(vslots.inrange(*n))
     {
         ds.layer = *n;
-        if(vslots[ds.layer]->changed && nompedit && multiplayer()) return;
+        if(vslots[ds.layer]->changed && nompedit && game::networking::Multiplayer()) return;
     }
     editingvslot(ds.layer);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);
@@ -2300,7 +2300,7 @@ SCRIPTEXPORT void vdetail(int *n)
     if(vslots.inrange(*n))
     {
         ds.detail = *n;
-        if(vslots[ds.detail]->changed && nompedit && multiplayer()) return;
+        if(vslots[ds.detail]->changed && nompedit && game::networking::Multiplayer()) return;
     }
     editingvslot(ds.detail);
     mpeditvslot(usevdelta, ds, allfaces, sel, true);

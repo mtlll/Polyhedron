@@ -1,27 +1,42 @@
+#include "cube.h"
+#include "ents.h"
+
 #include "game/game.h"
-#include "game/client/client.h"
 #include "game/server/server.h"
-#include "shared/networking/network.h"
+#include "game/client/client.h"
+
 #include "shared/networking/cl_sv.h"
+#include "shared/networking/network.h"
+#include "shared/networking/frametimestate.h"
 #include "shared/networking/protocol.h"
+
+#include "shared/entities/animinfo.h"
+#include "shared/entities/coreentity.h"
+#include "shared/entities/baseentity.h"
+#include "shared/entities/basephysicalentity.h"
+#include "shared/entities/basedynamicentity.h"
+#include "shared/entities/basecliententity.h"
 
 namespace game {
     namespace networking {
+        // Is a name a duplicate?
+        ServerGame serverGame;
+
         // Returns a coloured string of a name.
-        const char *GenerateClientColorName(&game::networking::ClientInfo *ci, const std::string &name) {
+        const char *GenerateClientColorName(game::networking::ClientInfo *ci, const std::string &name) {
             if (!ci) {
-                conoutfl("%s", "Invalid pointer reference to ClientInfo *ci: == NULL");
+                conoutfl(CON_WARN, "%s", "Invalid pointer reference to ClientInfo *ci: == NULL");
                 return "invalid_ref";
             }
 
             static cubestr cname[3];
             static int colorIndex = 0;
-            static int colorIndex = (colorIndex+1)%3;
+            colorIndex = (colorIndex+1)%3;
 
             if(name.size() < 260) // Stay below CubeStr its max value.
-                name = (name.empty() ? std::string(ci->name).substr(0, 32).c_str() : "unnamed" + "_#" std::to_str(cidx)); // Personally I find 32 chars enough.
+                name = (name.empty() ? std::string(ci->name).substr(0, 32).c_str() : (std::string("unnamed_#") + std::to_str(cidx)).c_str()); // Personally I find 32 chars enough.
 
-            if(name[0] && !duplicatename(ci, name.c_str()) && ci->state.aitype == AI_NONE) 
+            if(name[0] && !DuplicateName(ci, name, && ci->state.aitype == AI_NONE) 
                 return name.c_str();
             
             // Generate colour based on type of Client and client number.

@@ -67,7 +67,7 @@ namespace aiman
         return ci->clientnum >= 0 && ci->state.aitype == AI_NONE && (ci->state.state!=CS_SPECTATOR || ci->local || (ci->privilege && !ci->warned));
     }
 
-    clientinfo *findaiclient(clientinfo *exclude = NULL)
+    clientinfo *FindAIClient(clientinfo *exclude = NULL)
     {
         clientinfo *least = NULL;
         loopv(clients)
@@ -95,7 +95,7 @@ namespace aiman
             if(ci)
             { // reuse a slot that was going to removed
 
-                clientinfo *owner = findaiclient();
+                clientinfo *owner = FindAIClient();
                 ci->ownernum = owner ? owner->clientnum : -1;
                 if(owner) owner->bots.add(ci);
                 ci->aireinit = 2;
@@ -106,15 +106,15 @@ namespace aiman
         else { cn = bots.length(); bots.add(NULL); }
         int team = m_teammode ? chooseteam() : 0;
         if(!bots[cn]) bots[cn] = new clientinfo;
-        clientinfo *ci = bots[cn];
-        ci->clientnum = MAXCLIENTS + cn;
+        ClientInfo *ci = bots[cn];
+        ci->clientNumber = MAXCLIENTS + cn;
         ci->state.aitype = AI_BOT;
-        clientinfo *owner = findaiclient();
-        ci->ownernum = owner ? owner->clientnum : -1;
+        ClientInfo *owner = FindAIClient();
+        ci->ownerNumber = owner ? owner->clientNumber : -1;
         if(owner) owner->bots.add(ci);
         ci->state.skill = skill <= 0 ? rnd(50) + 51 : clamp(skill, 1, 101);
         clients.add(ci);
-        ci->state.lasttimeplayed = lastmillis;
+        ci->state.lastTimePlayed = ftsClient.Milliseconds;
         copycubestr(ci->name, "bot", MAXNAMELEN+1);
         ci->state.state = CS_DEAD;
         ci->team = team;
@@ -149,10 +149,10 @@ namespace aiman
         return false;
     }
 
-    void reinitai(clientinfo *ci)
+    void reinitai(game::networking::ClientInfo *ci)
     {
         if(ci->ownernum < 0) deleteai(ci);
-        else if(ci->aireinit >= 1)
+        else if(ci->aiReinit >= 1)
         {
             sendf(-1, 1, "ri8s", N_INITAI, ci->clientnum, ci->ownernum, ci->state.aitype, ci->state.skill, ci->playermodel, ci->playercolor, ci->team, ci->name);
             if(ci->aireinit == 2)
@@ -165,28 +165,28 @@ namespace aiman
         }
     }
 
-    void shiftai(clientinfo *ci, clientinfo *owner = NULL)
+    void shiftai(game::networking::ClientInfo *ci, game::networking::ClientInfo *owner = NULL)
     {
         if(ci->ownernum >= 0 && !ci->aireinit && smode) smode->leavegame(ci, true);
-        clientinfo *prevowner = (clientinfo *)getclientinfo(ci->ownernum);
+        game::networking::ClientInfo *prevowner = (game::networking::ClientInfo *)getclientinfo(ci->ownernum);
         if(prevowner) prevowner->bots.removeobj(ci);
         if(!owner) { ci->aireinit = 0; ci->ownernum = -1; }
-        else if(ci->ownernum != owner->clientnum) { ci->aireinit = 2; ci->ownernum = owner->clientnum; owner->bots.add(ci); }
+        else if(ci->ownernum != owner->clientnum) { ci->aiReinit = 2; ci->ownernum = owner->clientnum; owner->bots.add(ci); }
         dorefresh = true;
     }
 
-    void removeai(clientinfo *ci)
+    void removeai(game::networking::ClientInfo *ci)
     { // either schedules a removal, or someone else to assign to
 
-        loopvrev(ci->bots) shiftai(ci->bots[i], findaiclient(ci));
+        loopvrev(ci->bots) shiftai(ci->bots[i], FindAIClient(ci));
     }
 
     bool reassignai()
     {
-        clientinfo *hi = NULL, *lo = NULL;
+        game::networking::ClientInfo *hi = NULL, *lo = NULL;
         loopv(clients)
         {
-            clientinfo *ci = clients[i];
+            game::networking::ClientInfo *ci = clients[i];
             if(!validaiclient(ci)) continue;
             if(!lo || ci->bots.length() < lo->bots.length()) lo = ci;
             if(!hi || ci->bots.length() > hi->bots.length()) hi = ci;
@@ -226,19 +226,19 @@ namespace aiman
         else clearai();
     }
 
-    void reqadd(clientinfo *ci, int skill)
+    void reqadd(game::networking::ClientInfo *ci, int skill)
     {
         if(!ci->local && !ci->privilege) return;
         if(!addai(skill, !ci->local && ci->privilege < PRIV_ADMIN ? botlimit : -1)) sendf(ci->clientnum, 1, "ris", N_SERVMSG, "failed to create or assign bot");
     }
 
-    void reqdel(clientinfo *ci)
+    void reqdel(game::networking::ClientInfo *ci)
     {
         if(!ci->local && !ci->privilege) return;
         if(!deleteai()) sendf(ci->clientnum, 1, "ris", N_SERVMSG, "failed to remove any bots");
     }
 
-    void setbotlimit(clientinfo *ci, int limit)
+    void setbotlimit(game::networking::ClientInfo *ci, int limit)
     {
         if(ci && !ci->local && ci->privilege < PRIV_ADMIN) return;
         botlimit = clamp(limit, 0, MAXBOTS);
@@ -247,7 +247,7 @@ namespace aiman
         SendServMsg(msg);
     }
 
-    void setbotbalance(clientinfo *ci, bool balance)
+    void setbotbalance(game::networking::ClientInfo *ci, bool balance)
     {
         if(ci && !ci->local && !ci->privilege) return;
         botbalance = balance ? 1 : 0;
@@ -264,12 +264,12 @@ namespace aiman
         if(botbalance != (serverbotbalance != 0)) setbotbalance(NULL, serverbotbalance != 0);
     }
 
-    void AddClient(ClientInfo *ci)
+    void AddClient(game::networking::ClientInfo *ci)
     {
         if(ci->state.aitype == AI_NONE) dorefresh = true;
     }
 
-    void changeteam(ClientInfo *ci)
+    void changeteam(game::networking::ClientInfo *ci)
     {
         if(ci->state.aitype == AI_NONE) dorefresh = true;
     }

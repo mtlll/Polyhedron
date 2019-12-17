@@ -279,9 +279,9 @@ namespace game
     bool allowedittoggle()
     {
         if(editmode) return true;
-        if(isconnected() && multiplayer(false) && !m_edit)
+        if(IsConnected() && Multiplayer(false) && !m_edit)
         {
-            conoutf(CON_ERROR, "editing in multiplayer requires edit mode");
+            conoutf(CON_ERROR, "editing in Multiplayer requires edit mode");
             return false;
         }
         return execidentbool("allowedittoggle", true);
@@ -575,9 +575,9 @@ namespace game
 
     void changemapserv(const char *name, int mode)        // forced map change from the server
     {
-        if(multiplayer(false) && !m_mp(mode))
+        if(Multiplayer(false) && !m_mp(mode))
         {
-            conoutf(CON_ERROR, "mode %s (%d) not supported in multiplayer", server::modeprettyname(gameMode), gameMode);
+            conoutf(CON_ERROR, "mode %s (%d) not supported in Multiplayer", server::modeprettyname(gameMode), gameMode);
             loopi(NUMGAMEMODES) if(m_mp(STARTGAMEMODE + i)) { mode = STARTGAMEMODE + i; break; }
         }
 
@@ -595,9 +595,9 @@ namespace game
 
     void setmode(int mode)
     {
-        if(multiplayer(false) && !m_mp(mode))
+        if(Multiplayer(false) && !m_mp(mode))
         {
-            conoutf(CON_ERROR, "mode %s (%d) not supported in multiplayer",  server::modeprettyname(mode), mode);
+            conoutf(CON_ERROR, "mode %s (%d) not supported in Multiplayer",  server::modeprettyname(mode), mode);
             intret(0);
             return;
         }
@@ -631,7 +631,7 @@ namespace game
         if(!remote)
         {
             server::forcemap(name, mode);
-            if(!isconnected()) localconnect();
+            if(!IsConnected()) localconnect();
         }
         else if(player1->state!=CS_SPECTATOR || player1->privilege) addmsg(N_MAPVOTE, "rsi", name, mode);
     }
@@ -1076,7 +1076,7 @@ namespace game
             const char *mname = getclientmap();
             putint(p, N_MAPCRC);
             sendcubestr(mname, p);
-            putint(p, mname[0] ? getmapcrc() : 0);
+            putint(p, mname[0] ? GetMapCRC() : 0);
         }
         if(senditemstoserver)
         {
@@ -1433,7 +1433,7 @@ namespace game
             case N_INITCLIENT:            // another client either connected or changed name/team
             {
                 int cn = getint(p);
-                gameent *d = newclient(cn);
+                entities::classes::BaseClientEntity *d = game::newclient(cn);
                 if(!d)
                 {
                     getcubestr(text, p);
@@ -1496,7 +1496,7 @@ namespace game
             }
 
             case N_CDIS:
-                ClientDisconnected(getint(p));
+                ClientDIsConnected(getint(p));
                 break;
 
             case N_SPAWN:

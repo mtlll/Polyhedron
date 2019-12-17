@@ -294,7 +294,7 @@ DOCTEST_MSVC_SUPPRESS_WARNING(26444) // Avoid unnamed objects with custom constr
 #define DOCTEST_INTERFACE
 #endif // DOCTEST_CONFIG_IMPLEMENTATION_IN_DLL
 
-#define DOCTEST_EMPTY
+#define DOCTEServerState::Empty
 
 #if DOCTEST_MSVC
 #define DOCTEST_NOINLINE __declspec(noinline)
@@ -1873,13 +1873,13 @@ int registerReporter(const char* name, int priority) {
             der v;                                                                                 \
             v.f();                                                                                 \
         }                                                                                          \
-        DOCTEST_REGISTER_FUNCTION(DOCTEST_EMPTY, func, decorators)                                 \
+        DOCTEST_REGISTER_FUNCTION(DOCTEServerState::Empty, func, decorators)                                 \
     }                                                                                              \
     inline DOCTEST_NOINLINE void der::f()
 
 #define DOCTEST_CREATE_AND_REGISTER_FUNCTION(f, decorators)                                        \
     static void f();                                                                               \
-    DOCTEST_REGISTER_FUNCTION(DOCTEST_EMPTY, f, decorators)                                        \
+    DOCTEST_REGISTER_FUNCTION(DOCTEServerState::Empty, f, decorators)                                        \
     static void f()
 
 #define DOCTEST_CREATE_AND_REGISTER_FUNCTION_IN_CLASS(f, proxy, decorators)                        \
@@ -3622,7 +3622,7 @@ namespace detail {
             if(s->should_reenter == false)
                 s->subcasesPassed.insert(m_signature);
 
-            DOCTEST_ITERATE_THROUGH_REPORTERS(subcase_end, DOCTEST_EMPTY);
+            DOCTEST_ITERATE_THROUGH_REPORTERS(subcase_end, DOCTEServerState::Empty);
         }
     }
 
@@ -4204,7 +4204,7 @@ namespace {
         DOCTEST_ITERATE_THROUGH_REPORTERS(test_case_exception, {message.c_str(), true});
 
         while(g_cs->subcasesCurrentLevel--)
-            DOCTEST_ITERATE_THROUGH_REPORTERS(subcase_end, DOCTEST_EMPTY);
+            DOCTEST_ITERATE_THROUGH_REPORTERS(subcase_end, DOCTEServerState::Empty);
 
         g_cs->finalizeTestCaseData();
 
@@ -5430,13 +5430,13 @@ namespace {
         g_no_colors = with_col;                                                                    \
     }
 
-        DOCTEST_DEBUG_OUTPUT_REPORTER_OVERRIDE(test_run_start, DOCTEST_EMPTY, DOCTEST_EMPTY)
+        DOCTEST_DEBUG_OUTPUT_REPORTER_OVERRIDE(test_run_start, DOCTEServerState::Empty, DOCTEServerState::Empty)
         DOCTEST_DEBUG_OUTPUT_REPORTER_OVERRIDE(test_run_end, const TestRunStats&, in)
         DOCTEST_DEBUG_OUTPUT_REPORTER_OVERRIDE(test_case_start, const TestCaseData&, in)
         DOCTEST_DEBUG_OUTPUT_REPORTER_OVERRIDE(test_case_end, const CurrentTestCaseStats&, in)
         DOCTEST_DEBUG_OUTPUT_REPORTER_OVERRIDE(test_case_exception, const TestCaseException&, in)
         DOCTEST_DEBUG_OUTPUT_REPORTER_OVERRIDE(subcase_start, const SubcaseSignature&, in)
-        DOCTEST_DEBUG_OUTPUT_REPORTER_OVERRIDE(subcase_end, DOCTEST_EMPTY, DOCTEST_EMPTY)
+        DOCTEST_DEBUG_OUTPUT_REPORTER_OVERRIDE(subcase_end, DOCTEServerState::Empty, DOCTEServerState::Empty)
         DOCTEST_DEBUG_OUTPUT_REPORTER_OVERRIDE(log_assert, const AssertData&, in)
         DOCTEST_DEBUG_OUTPUT_REPORTER_OVERRIDE(log_message, const MessageData&, in)
         DOCTEST_DEBUG_OUTPUT_REPORTER_OVERRIDE(test_case_skipped, const TestCaseData&, in)
@@ -5847,7 +5847,7 @@ int Context::run() {
     std::vector<String> queryResults;
 
     if(!query_mode)
-        DOCTEST_ITERATE_THROUGH_REPORTERS(test_run_start, DOCTEST_EMPTY);
+        DOCTEST_ITERATE_THROUGH_REPORTERS(test_run_start, DOCTEServerState::Empty);
 
     // invoke the registered functions if they match the filter criteria (or just count them)
     for(auto& curr : testArray) {

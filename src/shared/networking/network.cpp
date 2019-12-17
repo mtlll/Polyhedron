@@ -1,158 +1,136 @@
-#include "shared/tools.h"
-#include "shared/networking/network.h"
+#include "cube.h"
+#include "ents.h"
+
+#include "game/game.h"
+#include "game/server/server.h"
+#include "game/client/client.h"
+
 #include "shared/networking/cl_sv.h"
+#include "shared/networking/network.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/networking/protocol.h"
 
-///////////////////////// network ///////////////////////
-// all network traffic is in 32bit ints, which are then compressed using the following simple scheme (assumes that most values are small).
-namespace networking {
-    
-    template<class T>
-    static inline void putint_(T &p, int n)
+#include "shared/entities/animinfo.h"
+#include "shared/entities/coreentity.h"
+#include "shared/entities/baseentity.h"
+#include "shared/entities/basephysicalentity.h"
+#include "shared/entities/basedynamicentity.h"
+#include "shared/entities/basecliententity.h"
+
+namespace game { namespace networking { 
+    game::networking::ClientInfo *FindAuth(uint id)
     {
-        if(n<128 && n>-127) p.put(n);
-        else if(n<0x8000 && n>=-0x8000) { p.put(0x80); p.put(n); p.put(n>>8); }
-        else { p.put(0x81); p.put(n); p.put(n>>8); p.put(n>>16); p.put(n>>24); }
-    }
-    void putint(ucharbuf &p, int n) { putint_(p, n); }
-    void putint(packetbuf &p, int n) { putint_(p, n); }
-    void putint(vector<uchar> &p, int n) { putint_(p, n); }
-    void putint()
-    int getint(ucharbuf &p)
-    {
-        int c = (char)p.get();
-        if(c==-128) { int n = p.get(); n |= char(p.get())<<8; return n; }
-        else if(c==-127) { int n = p.get(); n |= p.get()<<8; n |= p.get()<<16; return n|(p.get()<<24); }
-        else return c;
+        loopv(clients) if(clients[i]->authReq == id) return clients[i];
+        return NULL;
     }
 
-    // much smaller encoding for unsigned integers up to 28 bits, but can handle signed
-    template<class T>
-    static inline void putuint_(T &p, int n)
+    void authFailed(game::networking::ServerClientInfo *ci)
     {
-        if(n < 0 || n >= (1<<21))
+        if(!ci) return;
+        ci->CleanAuth();
+        if(ci->connectAuth) Disconnect_Client(ci->clientNumber, ci->connectAuth);
+    }
+
+    void AuthFailed(uint id)
+    {
+        AuthFailed(FindAuth(id));
+    }
+
+    void AuthSucceeded(uint id)
+    {
+        game::networking::server::ClientInfo *ci = FindAuth(id);
+        if(!ci) return;
+        ci->CleanAuth(ci->connectAuth!=0);
+        if(ci->connectAuth) Connected(ci);
+        if(ci->authKickVictim >= 0)
         {
-            p.put(0x80 | (n & 0x7F));
-            p.put(0x80 | ((n >> 7) & 0x7F));
-            p.put(0x80 | ((n >> 14) & 0x7F));
-            p.put(n >> 21);
+            if(SetMaster(ci, true, "", ci->authName, NULL, protocol::Priviliges::Auth, false, true))
+                TryKick(ci, ci->authKickVictim, ci->authKickReason, ci->authName, NULL, Priviliges::Auth);
+            ci->CleanAuthKick();
         }
-        else if(n < (1<<7)) p.put(n);
-        else if(n < (1<<14))
-        {
-            p.put(0x80 | (n & 0x7F));
-            p.put(n >> 7);
-        }
-        else
-        {
-            p.put(0x80 | (n & 0x7F));
-            p.put(0x80 | ((n >> 7) & 0x7F));
-            p.put(n >> 14);
-        }
+        else SetMaster(ci, true, "", ci->authName, NULL, game::networking::Priviliges::Auth);
     }
-    void putuint(ucharbuf &p, int n) { putuint_(p, n); }
-    void putuint(packetbuf &p, int n) { putuint_(p, n); }
-    void putuint(vector<uchar> &p, int n) { putuint_(p, n); }
 
-    int getuint(ucharbuf &p)
+    void AuthChallenged(uint id, const char *val, const char *desc = "")
     {
-        int n = p.get();
-        if(n & 0x80)
+        ServerClientInfo *ci = FindAuth(id);
+        if(!ci) return;
+        sendf(ci->clientNumber, 1, "risis", protocol::Events::AuthChallenge, desc, id, val);
+    }
+
+    uint nextAuthReq = 0;
+
+    bool TryAuth(game::networking::ClientInfo *ci, const char *user, const char *desc)
+    {
+        ci->CleanAuth();
+        if(!nextAuthReq) nextAuthReq = 1;
+        ci->authreq = nextAuthReq++;
+        filtertext(ci->authName, user, false, false, 100);
+        copycubestr(ci->authDesc, desc);
+        if(ci->authdesc[0])
         {
-            n += (p.get() << 7) - 0x80;
-            if(n & (1<<14)) n += (p.get() << 14) - (1<<14);
-            if(n & (1<<21)) n += (p.get() << 21) - (1<<21);
-            if(n & (1<<28)) n |= ~0U<<28;
-        }
-        return n;
-    }
-
-    template<class T>
-    static inline void putfloat_(T &p, float f)
-    {
-        lilswap(&f, 1);
-        p.put((uchar *)&f, sizeof(float));
-    }
-    void putfloat(ucharbuf &p, float f) { putfloat_(p, f); }
-    void putfloat(packetbuf &p, float f) { putfloat_(p, f); }
-    void putfloat(vector<uchar> &p, float f) { putfloat_(p, f); }
-
-    float getfloat(ucharbuf &p)
-    {
-        float f;
-        p.get((uchar *)&f, sizeof(float));
-        return lilswap(f);
-    }
-
-    template<class T>
-    static inline void sendcubestr_(const char *t, T &p)
-    {
-        while(*t) putint(p, *t++);
-        putint(p, 0);
-    }
-    void sendcubestr(const char *t, ucharbuf &p) { sendcubestr_(t, p); }
-    void sendcubestr(const char *t, packetbuf &p) { sendcubestr_(t, p); }
-    void sendcubestr(const char *t, vector<uchar> &p) { sendcubestr_(t, p); }
-
-    void getcubestr(char *text, ucharbuf &p, size_t len)
-    {
-        char *t = text;
-        do
-        {
-            if(t>=&text[len]) { text[len-1] = 0; return; }
-            if(!p.remaining()) { *t = 0; return; }
-            *t = getint(p);
-        }
-        while(*t++);
-    }
-
-    void ipmask::parse(const char *name)
-    {   
-        union { uchar b[sizeof(enet_uint32)]; enet_uint32 i; } ipconv, maskconv;
-        ipconv.i = 0;
-        maskconv.i = 0;
-        loopi(4)
-        {
-            char *end = NULL;
-            int n = strtol(name, &end, 10);
-            if(!end) break;
-            if(end > name) { ipconv.b[i] = n; maskconv.b[i] = 0xFF; }
-            name = end; 
-            while(int c = *name)
+            UserInfo *u = users.access(UserKey(ci->authName, ci->authDesc));
+            if(u)
             {
-                ++name; 
-                if(c == '.') break;
-                if(c == '/')
+                uint seed[3] = { ::hthash(serverAuth) + detrnd(size_t(ci) + size_t(user) + size_t(desc), 0x10000), uint(ftsClient.totalMilliseconds), randomMT() };
+                vector<char> buf;
+                ci->authChallenge = genchallenge(u->pubkey, seed, sizeof(seed), buf);
+                sendf(ci->clientNumber, 1, "risis", protocol::Events::AuthChallenge, desc, ci->authReq, buf.getbuf());
+            }
+            else ci->CleanAuth();
+        }
+        else if(!RequestMasterf("reqauth %u %s\n", ci->authReq, ci->authName))
+        {
+            ci->CleanAuth();
+            sendf(ci->clientNumber, 1, "ris", protocol::Events::ServerMessage, "not connected to authentication server");
+        }
+        if(ci->authReq) return true;
+        if(ci->connectAuth) Disconnect_Client(ci->clientNum, ci->connectAuth);
+        return false;
+    }
+
+    bool AnswerChallenge(ServerClientInfo *ci, uint id, char *val, const char *desc)
+    {
+        if(ci->authReq != id || strcmp(ci->authDesc, desc))
+        {
+            ci->CleanAuth();
+            return !ci->connectedAuth;
+        }
+        for(char *s = val; *s; s++)
+        {
+            if(!isxdigit(*s)) { *s = '\0'; break; }
+        }
+        if(desc[0])
+        {
+            if(ci->authChallenge && CheckChallenge(val, ci->authChallenge))
+            {
+                UserInfo *u = users.access(userkey(ci->authName, ci->authDesc));
+                if(u)
                 {
-                    int range = clamp(int(strtol(name, NULL, 10)), 0, 32);
-                    mask = range ? ENET_HOST_TO_NET_32(0xFFffFFff << (32 - range)) : maskconv.i;
-                    ip = ipconv.i & mask;
-                    return;
+                    if(ci->connectAuth) Connected(ci);
+                    if(ci->authKickVictim >= 0)
+                    {
+                        if(SetMaster(ci, true, "", ci->authName, ci->authDesc, u->privilege, false, true))
+                            TryKick(ci, ci->authkickvictim, ci->authKickReason, ci->authName, ci->authDesc, u->privilege);
+                    }
+                    else SetMaster(ci, true, "", ci->authName, ci->authDesc, u->privilege);
                 }
             }
+            ci->CleanAuth();
         }
-        ip = ipconv.i;
-        mask = maskconv.i;
+        else if(!RequestMasterf("confauth %u %s\n", id, val))
+        {
+            ci->CleanAuth();
+            sendf(ci->clientNumber, 1, "ris", NetClientMessage::Disconnect, "not connected to authentication server");
+        }
+        return ci->authReq || !ci->connectAuth;
     }
 
-    int ipmask::print(char *buf) const
+    bool DuplicateName(networking::ClientInfo *ci, const std::string &name)
     {
-        char *start = buf;
-        union { uchar b[sizeof(enet_uint32)]; enet_uint32 i; } ipconv, maskconv;
-        ipconv.i = ip;
-        maskconv.i = mask;
-        int lastdigit = -1;
-        loopi(4) if(maskconv.b[i])
-        {
-            if(lastdigit >= 0) *buf++ = '.';
-            loopj(i - lastdigit - 1) { *buf++ = '*'; *buf++ = '.'; }
-            buf += sprintf(buf, "%d", ipconv.b[i]);
-            lastdigit = i;
-        }
-        enet_uint32 bits = ~ENET_NET_TO_HOST_32(mask);
-        int range = 32;
-        for(; (bits&0xFF) == 0xFF; bits >>= 8) range -= 8;
-        for(; bits&1; bits >>= 1) --range;
-        if(!bits && range%8) buf += sprintf(buf, "/%d", range);
-        return int(buf-start);
+        if(!name) name = ci->name;
+        loopv(clients) if(clients[i]!= ci && name != std::string(clients[i]->name))) return true;
+        return false;
     }
-};
+}; // networking
+}; // game

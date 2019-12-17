@@ -23,19 +23,7 @@ namespace entities {
 namespace game {
     namespace networking {
         namespace protocol {
-            //
-            // Enum class copy MasterMode flags. Open to join, password, vote, locked etc.
-            //
-            enum struct MasterMode : int {
-                Authorize = 0,
-                Open,
-                Veto,
-                Locked,
-                Private,
-                Password,
-                Start = Authorize,
-                Invalid = Start - 1
-            };
+
         };
 
         //
@@ -77,9 +65,10 @@ namespace game {
     static const int teamscoreboardcolor[1+MAXTEAMS] = { 0, 0x3030C0, 0xC03030 };
     static const char * const teamblipcolor[1+MAXTEAMS] = { "_neutral", "_blue", "_red" };
     static inline int teamnumber(const char *name) { loopi(MAXTEAMS) if(!strcmp(teamnames[1+i], name)) return 1+i; return 0; }
-    #define validteam(n) ((n) >= 1 && (n) <= MAXTEAMS)
-    #define teamname(n) (teamnames[validteam(n) ? (n) : 0])
-        // network quantization scale
+    #define validteam(n) (static_cast<int>(n) >= 1 && static_cast<int>(n) <= MAXTEAMS)
+    #define teamname(n) (teamnames[validteam(n) ? static_cast<int>(n) : 0])
+
+    // network quantization scale
     #define DMF 8.0f                // for world locations
     #define DNF 100.0f              // for normalized vectors
     #define DVELF 1.0f              // for playerspeed based velocity vectors
@@ -114,7 +103,7 @@ namespace game {
     #define validact(n) ((n) >= 0 && (n) < NUMACTS)
     #define validatk(n) ((n) >= 0 && (n) < NUMATKS)
 
-    static struct gameModeinfo
+    static struct GameModeInfo
     {
         const char *name, *prettyname;
         networking::GameMode flags;
@@ -133,24 +122,24 @@ namespace game {
     #define STARTGAMEMODE (-1)
     #define NUMGAMEMODES ((int)(sizeof(game::gameModes)/sizeof(game::gameModes[0])))
 
-    #define m_valid(mode)          ((mode) >= STARTGAMEMODE && (mode) < STARTGAMEMODE + NUMGAMEMODES)
-    #define m_check(mode, flag)    (m_valid(mode) && game::gameModes[(mode) - STARTGAMEMODE].flags&(flag))
-    #define m_checknot(mode, flag) (m_valid(mode) && !(game::gameModes[(mode) - STARTGAMEMODE].flags&(flag)))
-    #define m_checkall(mode, flag) (m_valid(mode) && (game::gameModes[(mode) - STARTGAMEMODE].flags&(flag)) == (flag))
+    #define m_valid(mode)          (static_cast<int>(mode) >= STARTGAMEMODE && static_cast<int>(mode) < STARTGAMEMODE + NUMGAMEMODES)
+    #define m_check(mode, flag)    (static_cast<int>(m_valid(static_cast<int>(mode)) && static_cast<int>(game::gameModes[static_cast<int>(mode) - STARTGAMEMODE].flags&(flag))))
+    #define m_checknot(mode, flag) (static_cast<int>(m_valid(static_cast<int>(mode)) && !(static_cast<int>(game::gameModes[static_cast<int>(mode) - STARTGAMEMODE].flags&(flag)))))
+    #define m_checkall(mode, flag) (static_cast<int>(m_valid(static_cast<int>(mode)) && (static_cast<int>(game::gameModes[static_cast<int>(mode) - STARTGAMEMODE].flags&(flag)) == (flag))))
 
-    #define m_ctf          (m_check(game::gameMode, ::networking::GameMode::Ctf))
-    #define m_teammode     (m_check(game::gameMode, ::networking::GameMode::Team))
-    #define m_overtime     (m_check(game::gameMode, ::networking::GameMode::OverTime))
-    #define isteam(a,b)    (m_teammode && a==b)
-    #define m_rail         (m_check(game::gameMode, ::networking::GameMode::Rail))
-    #define m_pulse        (m_check(game::gameMode, ::networking::GameMode::Pulse))
+    #define m_ctf          (static_cast<int>(m_check(static_cast<int>(game::gameMode), static_cast<int>(game::networking::GameMode::Ctf))))
+    #define m_teammode     (static_cast<int>(m_check(static_cast<int>(game::gameMode), static_cast<int>(game::networking::GameMode::Team))))
+    #define m_overtime     (static_cast<int>(m_check(static_cast<int>(game::gameMode), static_cast<int>(game::networking::GameMode::OverTime))))
+    #define isteam(a,b)    (static_cast<int>(m_teammode) && static_cast<int>(a)==static_cast<int>(b))
+    #define m_rail         (m_check(static_cast<int>(game::gameMode), static_cast<int>(game::networking::GameMode::Rail)))
+    #define m_pulse        (m_check(static_cast<int>(game::gameMode), static_cast<int>(game::networking::GameMode::Pulse)))
 
-    #define m_demo         (m_check(game::gameMode, ::networking::GameMode::Demo))
-    #define m_edit         (m_check(game::gameMode, ::networking::GameMode::Edit))
-    #define m_lobby        (m_check(game::gameMode, ::networking::GameMode::Lobby))
-    #define m_timed        (m_checknot(game::gameMode, ::networking::GameMode::Demo|networking::GameMode::Edit|networking::GameMode::Local))
-    #define m_botmode      (m_checknot(game::gameMode, ::networking::GameMode::Demo|networking::GameMode::Local))
-    #define m_mp(mode)     (m_checknot(mode, ::networking::GameMode::Local))
+    #define m_demo         (m_check(static_cast<int>(game::gameMode), static_cast<int>(game::networking::GameMode::Demo))))
+    #define m_edit         (m_check(static_cast<int>(game::gameMode), static_cast<int>(game::networking::GameMode::Edit))))
+    #define m_lobby        (m_check(static_cast<int>(game::gameMode), static_cast<int>(game::networking::GameMode::Lobby))))
+    #define m_timed        (m_checknot(static_cast<int>(game::gameMode), static_cast<int>(game::networking::GameMode::Demo)|static_cast<int>(networking::GameMode::Edit) | static_cast<int>(networking::GameMode::Edit(networking::GameMode::Local)))))
+    #define m_botmode      (m_checknot(static_cast<int>(game::gameMode), static_cast<int>(game::networking::GameMode::Demo)|static_cast<int>(networking::GameMode::Local))))
+    #define m_mp(mode)     (m_checknot(static_cast<int>(mode), static_cast<int>(game::networking::GameMode::Local))))
 
 
 
@@ -215,7 +204,7 @@ namespace game {
     extern void StopFollowing();
     extern void CheckFollow();
     extern void NextFollow(int dir = 1);
-    extern void ClientDisconnected(int cn, bool notify = true);
+    extern void ClientDIsConnected(int cn, bool notify = true);
     extern void ClearClients(bool notify = true);
     extern void StartGame();
 }
@@ -231,7 +220,7 @@ namespace server
     extern void forcepaused(bool paused);
     extern void forcegamespeed(int speed);
     extern void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen = MAXSTRLEN);
-    extern int MessageSizeLookup(networking::protocol::NetClientMessage msg);
+    extern int MessageSizeLookup(game::networking::protocol::NetClientMessage msg);
     extern bool serveroption(const char *arg);
     extern bool delayspawn(int type);
 }

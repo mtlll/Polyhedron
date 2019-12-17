@@ -380,7 +380,7 @@ static inline void addstain(int type, const vec &center, const vec &surface, flo
 extern bool load_world(const char *mname, const char *cname = NULL);
 extern bool save_world(const char *mname, bool nolms = false);
 extern void fixmapname(char *name);
-extern uint getmapcrc();
+extern uint GetMapCRC();
 extern void clearmapcrc();
 extern bool loadents(const char *fname, vector<entities::classes::CoreEntity> &ents, uint *crc = NULL);
 
@@ -398,13 +398,13 @@ extern bool bounce(entities::classes::BasePhysicalEntity *d, float elasticity, f
 extern void avoidcollision(entities::classes::BasePhysicalEntity *d, const vec &dir, entities::classes::BasePhysicalEntity *obstacle, float space);
 extern bool overlapsdynent(const vec &o, float radius);
 extern bool movecamera(entities::classes::BasePhysicalEntity *pl, const vec &dir, float dist, float stepdist);
-extern void physicsframe();
+extern void PhysicsFrame();
 extern void dropenttofloor(entities::classes::CoreEntity *e);
 extern bool droptofloor(vec &o, float radius, float height);
 
 extern void vecfromyawpitch(float yaw, float pitch, int move, int strafe, vec &m);
 extern void vectoyawpitch(const vec &v, float &yaw, float &pitch);
-extern void updatephysstate(entities::classes::BasePhysicalEntity *d);
+extern void UpdatePhysState(entities::classes::BasePhysicalEntity *d);
 extern void cleardynentcache();
 extern void updatedynentcache(entities::classes::CoreEntity *d);
 extern bool entinmap(entities::classes::BasePhysicalEntity *d, bool avoidplayers = false);
@@ -457,7 +457,6 @@ extern void flushpreloadedmodels(bool msg = true);
 extern bool matchanim(const char *name, const char *pattern);
 
 // UI
-
 namespace UI
 {
     bool showui(const char *name);
@@ -473,6 +472,7 @@ extern void moveragdoll(entities::classes::BaseDynamicEntity *d);
 extern void cleanragdoll(entities::classes::BaseDynamicEntity *d);
 
 // server
+#define DEFAULTCLIENTS 3
 #define MAXCLIENTS 128                 // DO NOT set this any higher
 #define MAXTRANS 5000                  // max amount of data to swallow in 1 go
 
@@ -480,62 +480,53 @@ extern int maxclients;
 
 enum { DISC_NONE = 0, DISC_EOP, DISC_LOCAL, DISC_KICK, DISC_MSGERR, DISC_IPBAN, DISC_PRIVATE, DISC_MAXCLIENTS, DISC_TIMEOUT, DISC_OVERFLOW, DISC_PASSWORD, DISC_NUM };
 
-extern void *getclientinfo(int i);
-extern ENetPeer *getclientpeer(int i);
-extern ENetPacket *sendf(int cn, int chan, const char *format, ...);
-extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format = "", ...);
-extern void SendPacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
-extern void flushserver(bool force);
-extern int getservermtu();
-extern int GetNumClients();
-extern uint getclientip(int n);
-extern void localconnect();
-extern const char *disconnectreason(int reason);
-extern void disconnect_client(int n, int reason);
-extern void kicknonlocalclients(int reason = DISC_NONE);
-extern bool hasnonlocalclients();
-extern bool haslocalclients();
-extern void sendServerInfoReply(ucharbuf &p);
-extern bool requestmaster(const char *req);
-extern bool requestmasterf(const char *fmt, ...) PRINTFARGS(1, 2);
-extern bool isdedicatedserver();
-
 // serverbrowser
+namespace game {
+    namespace networking {
+        game::networking::ServerInfo *GetServerInfo(int i);
+        #define GetServerInfo(idx, si, body) do { \
+            ServerInfo *si = GetServerInfo(idx); \
+            if(si) \
+            { \
+                body; \
+            } \
+        } while(0)
+        #define GETSERVINFOATTR(idx, aidx, aval, body) \
+            GetServerInfo(idx, si, { if(si->attr.inrange(aidx)) { int aval = si->attr[aidx]; body; } })
+        // Server
+        extern void *GetClientInfo(int i);
+        extern ENetPeer *GetClientPeer(int i);
+        extern ENetPacket *sendf(int cn, int chan, const char *format, ...);
+        extern ENetPacket *SendFile(int cn, int chan, stream *file, const char *format = "", ...);
+        extern void SendPacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
+        extern void FlushServer(bool force);
+        extern int GetServerMTU();
+        extern int GetNumClients();
+        extern uint GetClientIP(int n);
+        extern void LocalConnect();
+        extern void Disconnect_Client(int n, protocol::DisconnectReason reason);
+        extern const char *DisconnectReason(protocol::DisconnectReason reason);
 
-struct servinfo
-{
-    cubestr name, map, desc;
-    int protocol, numplayers, maxplayers, ping;
-    vector<int> attr;
+        extern void KickNonLocalclients(protocol::DisconnectReason reason = protocol::DisconnectReason::Default);
+        extern bool HasNonLocalClients();
+        extern bool HasLocalClients();
+        extern void SendServerInfoReply(ucharbuf &p);
+        extern bool RequestMaster(const char *req);
+        extern bool RequestMasterf(const char *fmt, ...) PRINTFARGS(1, 2);
+        extern bool IsDedicatedServer();
 
-    servinfo() : protocol(INT_MIN), numplayers(0), maxplayers(0)
-    {
-        name[0] = map[0] = desc[0] = '\0';
-    }
+        // client
+        extern void SendClientPacket(ENetPacket *packet, int chan);
+        extern void FlushClient();
+        extern void Disconnect(bool async = false, bool cleanup = true);
+        extern bool IsConnected(bool attempt = false, bool local = true);
+        extern const ENetAddress *ConnectedPeer();
+        extern bool Multiplayer(bool msg = true);
+        extern void NetErr(const char *s, bool disc = true);
+        extern void GetS2C();
+        extern void NotifyWelcome();
+    };
 };
-
-extern servinfo *getservinfo(int i);
-
-#define GETSERVINFO(idx, si, body) do { \
-    servinfo *si = getservinfo(idx); \
-    if(si) \
-    { \
-        body; \
-    } \
-} while(0)
-#define GETSERVINFOATTR(idx, aidx, aval, body) \
-    GETSERVINFO(idx, si, { if(si->attr.inrange(aidx)) { int aval = si->attr[aidx]; body; } })
-
-// client
-extern void SendClientPacket(ENetPacket *packet, int chan);
-extern void flushclient();
-extern void disconnect(bool async = false, bool cleanup = true);
-extern bool isconnected(bool attempt = false, bool local = true);
-extern const ENetAddress *connectedpeer();
-extern bool multiplayer(bool msg = true);
-extern void neterr(const char *s, bool disc = true);
-extern void gets2c();
-extern void notifywelcome();
 
 // crypto
 extern void genprivkey(const char *seed, vector<char> &privstr, vector<char> &pubstr);
@@ -547,4 +538,3 @@ extern void freepubkey(void *pubkey);
 extern void *genchallenge(void *pubkey, const void *seed, int seedlen, vector<char> &challengestr);
 extern void freechallenge(void *answer);
 extern bool checkchallenge(const char *answerstr, void *correct);
-

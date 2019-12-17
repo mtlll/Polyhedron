@@ -31,13 +31,13 @@
 
     VAR(extinfoip, 0, 0, 1);
 
-    void extinfoplayer(ucharbuf &p, clientinfo *ci)
+    void extinfoplayer(ucharbuf &p, game::networking::ClientInfo *ci)
     {
         ucharbuf q = p;
         putint(q, EXT_PLAYERSTATS_RESP_STATS); // send player stats following
-        putint(q, ci->clientnum); //add player id
+        putint(q, ci->clientNumber); //add player id
         putint(q, ci->ping);
-        sendcubestr(ci->name, q);
+        sendcubestr(ci->name.c_str(), q);
         sendcubestr(teamname(m_teammode ? ci->team : 0), q);
         putint(q, ci->state.frags);
         putint(q, ci->state.flags);
@@ -49,7 +49,7 @@
         putint(q, ci->state.gunselect);
         putint(q, ci->privilege);
         putint(q, ci->state.state);
-        uint ip = extinfoip ? getclientip(ci->clientnum) : 0;
+        uint ip = extinfoip ? getclientip(ci->clientNumber) : 0;
         q.put((uchar*)&ip, 3);
         sendServerInfoReply(q);
     }

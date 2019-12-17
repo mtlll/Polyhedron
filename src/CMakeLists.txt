@@ -64,6 +64,7 @@ endif()
 add_definitions("-DGL_SILENCE_DEPRECATION")
 include_directories(
     ext/json-develop/single_include
+    ext/Nuklear-master
 )
 
 #The engine, server and shared sub projects
@@ -187,8 +188,6 @@ list(APPEND fileListSharedUtils
 )
 
 list(APPEND fileListGame
-    game/client/client.cpp
-    game/client/client.h
     game/commands.cpp
     game/commands.h
     game/entities.cpp
@@ -196,13 +195,14 @@ list(APPEND fileListGame
     game/game.cpp
     game/game.h
     game/render.cpp
-    game/server/server.cpp
-    game/server/server.h
 )
 
 list(APPEND fileListGameClient
     game/client/client.cpp
     game/client/client.h
+)
+
+list(APPEND fileListGameServer
     game/server/server.cpp
     game/server/server.h
 )
@@ -242,14 +242,16 @@ list(APPEND fileListSharedEntities
 
 list(APPEND fileList
     ${fileListEngine}
-    ${fileListShared}
-    ${fileListSharedEntities}
-    ${fileListSharedNetworking}
-    ${fileListSharedUtils}
     ${fileListGame}
+    ${fileListShared}
+    ${fileListSharedNetworking}
+
     ${fileListGameClient}
     ${fileListGameServer}
     ${fileListGameEntities}
+    ${fileListSharedEntities}
+    
+    ${fileListSharedUtils}
 )
 
 function(GenerateBindingFor input_file ide_folder)
@@ -317,48 +319,52 @@ endfunction()
 source_group("Sources\\Engine" FILES ${fileListEngine})
 source_group("Sources\\Shared" FILES ${fileListShared})
 source_group("Sources\\Game" FILES ${fileListGame})
-source_group("Sources\\Entities\\Shared" FILES ${fileListSharedEntities})
-source_group("Sources\\Entities\\Game" FILES ${fileListGameEntities})
 source_group("Sources\\Client\\Game" FILES ${fileListGameClient})
 source_group("Sources\\Server\\Game" FILES ${fileListGameServer})
+source_group("Sources\\Entities\\Shared" FILES ${fileListSharedEntities})
+source_group("Sources\\Entities\\Game" FILES ${fileListGameEntities})
 source_group("Sources\\Utils\\Shared" FILES ${fileListSharedUtils})
 source_group("Sources\\Networking\\Shared" FILES ${fileListSharedNetworking})
 # --- BINDINGS
+#
+# Generate Bindings for engine folders.
+#
 foreach(input_file ${fileListEngine})
     GenerateBindingFor(${input_file} "Generated\\\\Engine")
 endforeach()
 
-foreach(input_file ${fileListShared})
-    GenerateBindingFor(${input_file} "Generated\\\\Shared")
-endforeach()
-
-foreach(input_file ${fileListShared})
-    GenerateBindingFor(${input_file} "Generated\\Utils\\Shared")
-endforeach()
-
-foreach(input_file ${fileListShared})
-    GenerateBindingFor(${input_file} "Generated\\Networking\\Shared")
-endforeach()
-
+#
+# Generate Bindings for game folders.
+#
 foreach(input_file ${fileListGame})
     GenerateBindingFor(${input_file} "Generated\\\\Game")
 endforeach()
-
-foreach(input_file ${fileListSharedEntities})
-    GenerateBindingFor(${input_file} "Generated\\\\Entities\\\\Shared")
+foreach(input_file ${fileListGameClient})
+    GenerateBindingFor(${input_file} "Generated\\\\Client\\\\Game")
 endforeach()
-
+foreach(input_file ${fileListGameServer})
+    GenerateBindingFor(${input_file} "Generated\\\\Server\\\\Game")
+endforeach()
 foreach(input_file ${fileListGameEntities})
     GenerateBindingFor(${input_file} "Generated\\\\Entities\\\\Game")
 endforeach()
 
-foreach(input_file ${fileListGameClient})
-    GenerateBindingFor(${input_file} "Generated\\\\Client\\\\Game")
+#
+# Generate Bindings for shared folders.
+#
+foreach(input_file ${fileListShared})
+    GenerateBindingFor(${input_file} "Generated\\\\Shared")
+endforeach()
+foreach(input_file ${fileListSharedEntities})
+    GenerateBindingFor(${input_file} "Generated\\\\Entities\\\\Shared")
+endforeach()
+foreach(input_file ${fileListSharedUtils})
+    GenerateBindingFor(${input_file} "Generated\\\\Utils\\\\Shared")
+endforeach()
+foreach(input_file ${fileListSharedNetworking})
+    GenerateBindingFor(${input_file} "Generated\\\\Networking\\\\Shared")
 endforeach()
 
-foreach(input_file ${fileListGameServer})
-    GenerateBindingFor(${input_file} "Generated\\\\Server\\\\Game")
-endforeach()
 
 
 #Everything ready, now define the executables
@@ -438,7 +444,7 @@ endif()
 if (APPLE)
     set_property(TARGET Polyhedron PROPERTY MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_LIST_DIR}/xcode/tesseract.plist.in)
     set_target_properties(Polyhedron PROPERTIES RESOURCE "${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib")
-    target_compile_features(Polyhedron PUBLIC cxx_std_14)
+    target_compile_features(Polyhedron PUBLIC cxx_std_17)
 
     # set_source_files_properties(
     #     ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.nib/designable.nib

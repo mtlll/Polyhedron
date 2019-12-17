@@ -161,10 +161,10 @@ namespace game
 
     ICOMMAND(scoreboardshowfrags, "", (), intret(cmode && cmode->hidefrags() ? 0 : 1));
     ICOMMAND(scoreboardshowclientnum, "", (), intret(showclientnum || player1->privilege>=PRIV_MASTER ? 1 : 0));
-    ICOMMAND(scoreboardmultiplayer, "", (), intret(multiplayer(false) || demoplayback ? 1 : 0));
+    ICOMMAND(scoreboardMultiplayer, "", (), intret(Multiplayer(false) || demoplayback ? 1 : 0));
 
     ICOMMAND(scoreboardhighlight, "i", (int *cn),
-        intret(*cn == player1->clientnum && highlightscore && (multiplayer(false) || demoplayback || players.length() > 1) ? 0x808080 : 0));
+        intret(*cn == player1->clientnum && highlightscore && (Multiplayer(false) || demoplayback || players.length() > 1) ? 0x808080 : 0));
 
     ICOMMAND(scoreboardservinfo, "", (),
     {

@@ -86,11 +86,13 @@ namespace game
     }
 
     int _getplayercolor(entities::classes::BaseClientEntity *d, int color) {
-        return getplayercolor(d->ci.clientNumber, color);
+        if (!d || !game::players.inrange(d->ci.clientNumber)) {}
+            conoutf("Client index %i does not exist, can't retrieve color", d->ci->clientNumber);
+            return getplayercolor(d->ci.clientNumber, color);
     }
-
-    SCRIPTEXPORT_AS(getclientcolor) void GetClientColor(int ci, int color) {
-        intret(_getplayercolor(game::, color));
+    
+    SCRIPTEXPORT_AS(getclientcolor) void GetClientColor(int *cn, int *color) {
+        intret(_getplayercolor(dynamic_cast<entities::classes::BaseClientEntity*>(game::GetClient(*cn)), *color));
     }
 }   
 // >>>>>>>>>> SCRIPTBIND >>>>>>>>>>>>>> //

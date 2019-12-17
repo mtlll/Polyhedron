@@ -52,7 +52,7 @@ rule C_COMPILER__enet
 # Rule for linking C static library.
 
 rule C_STATIC_LIBRARY_LINKER__enet
-  command = $PRE_LINK && /usr/local/bin/cmake -E remove $TARGET_FILE && /usr/bin/ar qc $TARGET_FILE $LINK_FLAGS $in && /usr/bin/ranlib $TARGET_FILE && $POST_BUILD
+  command = $PRE_LINK && /usr/bin/cmake -E remove $TARGET_FILE && /usr/bin/ar qc $TARGET_FILE $LINK_FLAGS $in && /usr/bin/ranlib $TARGET_FILE && $POST_BUILD
   description = Linking C static library $TARGET_FILE
   restat = $RESTAT
 
@@ -61,7 +61,7 @@ rule C_STATIC_LIBRARY_LINKER__enet
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /usr/local/bin/cmake -S/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src -B/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src
+  command = /usr/bin/cmake -S/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src -B/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src
   description = Re-running CMake...
   generator = 1
 

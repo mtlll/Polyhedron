@@ -70,7 +70,7 @@ void menuprocess()
         lastmainmenu = mainmenu;
         execident("mainmenutoggled");
     }    
-    if(mainmenu && !isconnected(true) && !UI::hascursor()) 
+    if(mainmenu && !game::networking::IsConnected(true) && !UI::hascursor()) 
         UI::showui("main");
 }
 
@@ -79,7 +79,7 @@ VAR(mainmenu, 1, 1, 0);
 void clearmainmenu()
 {
     hidechanges = 0;
-    if(mainmenu && isconnected())
+    if(mainmenu && game::networking::IsConnected())
     {
         mainmenu = 0;
         UI::hideui(nullptr);

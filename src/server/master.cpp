@@ -48,7 +48,7 @@ SCRIPTEXPORT void clearusers()
     users.clear();
 }
 
-vector<ipmask> bans, servbans, gbans;
+vector<game::networking::IPMask> bans, servbans, gbans;
 
 SCRIPTEXPORT void clearbans()
 {
@@ -57,29 +57,29 @@ SCRIPTEXPORT void clearbans()
     gbans.shrink(0);
 }
 
-void addban(vector<ipmask> &bans, const char *name)
+void AddBan(vector<game::networking::IPMask> &bans, const char *name)
 {
-    ipmask ban;
+    IPMask ban;
     ban.parse(name);
     bans.add(ban); 
 }
 
-SCRIPTEXPORT void ban(char *name)
+SCRIPTEXPORT void Ban(char *name)
 {
-    addban(bans, name);
+    AddBan(bans, name);
 }
 
 SCRIPTEXPORT void servban(char *name)
 {
-    addban(servbans, name);
+    AddBan(servbans, name);
 }
 
 SCRIPTEXPORT void gban(char *name)
 {
-    addban(gbans, name);
+    AddBan(gbans, name);
 }
 
-bool checkban(vector<ipmask> &bans, enet_uint32 host)
+bool CheckBan(vector<game::networking::IPMask> &bans, enet_uint32 host)
 {
     loopv(bans) if(bans[i].check(host)) return true;
     return false;
@@ -592,31 +592,31 @@ bool checkclientinput(client &c)
 
 ENetSocketSet readset, writeset;
 
-void checkclients()
+void CheckClients()
 {
     ENetSocketSet readset, writeset;
-    ENetSocket maxsock = max(serversocket, pingsocket);
+    ENetSocket maxSock = max(serverSocket, pingSocket);
     ENET_SOCKETSET_EMPTY(readset);
     ENET_SOCKETSET_EMPTY(writeset);
-    ENET_SOCKETSET_ADD(readset, serversocket);
-    ENET_SOCKETSET_ADD(readset, pingsocket);
-    loopv(clients)
+    ENET_SOCKETSET_ADD(readset, serverSocket);
+    ENET_SOCKETSET_ADD(readset, pingSocket);
+    loopv(::clients)
     {
-        client &c = *clients[i];
+        client &c = *::clients[i];
         if(c.authreqs.length()) purgeauths(c);
         if(c.message || c.output.length()) ENET_SOCKETSET_ADD(writeset, c.socket);
         else ENET_SOCKETSET_ADD(readset, c.socket);
         maxsock = max(maxsock, c.socket);
     }
-    if(enet_socketset_select(maxsock, &readset, &writeset, 1000)<=0) return;
+    if(enet_socketset_select(maxSock, &readset, &writeset, 1000)<=0) return;
 
     if(ENET_SOCKETSET_CHECK(readset, pingsocket)) checkserverpongs();
     if(ENET_SOCKETSET_CHECK(readset, serversocket))
     {
         ENetAddress address;
-        ENetSocket clientsocket = enet_socket_accept(serversocket, &address);
-        if(clients.length()>=CLIENT_LIMIT || checkban(bans, address.host)) enet_socket_destroy(clientsocket);
-        else if(clientsocket!=ENET_SOCKET_NULL)
+        ENetSocket clientSocket = enet_socket_accept(serversocket, &address);
+        if(clients.length()>=CLIENT_LIMIT || checkban(bans, address.host)) enet_socket_destroy(clientSocket);
+        else if(clientSocket!=ENET_SOCKET_NULL)
         {
             int dups = 0, oldest = -1;
             loopv(clients) if(clients[i]->address.host == address.host)

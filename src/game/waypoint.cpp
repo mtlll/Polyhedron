@@ -532,7 +532,7 @@ namespace ai
     static inline bool shouldnavigate()
     {
         if(dropwaypoints) return true;
-        loopvrev(players) if(players[i]->aitype != AI_NONE) return true;
+        loopvrev(players) if(players[i]->aitype != ArtificialIntelligence::AI_NONE) return true;
         return false;
     }
 

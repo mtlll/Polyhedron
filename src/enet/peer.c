@@ -467,8 +467,8 @@ enet_peer_ping_interval (ENetPeer * peer, enet_uint32 pingInterval)
     packet is not acknowledge within some multiple of the average RTT plus a variance tolerance, 
     the timeout will be doubled until it reaches a set limit. If the timeout is thus at this
     limit and reliable packets have been sent but not acknowledged within a certain minimum time 
-    period, the peer will be disconnected. Alternatively, if reliable packets have been sent
-    but not acknowledged for a certain maximum time period, the peer will be disconnected regardless
+    period, the peer will be dIsConnected. Alternatively, if reliable packets have been sent
+    but not acknowledged for a certain maximum time period, the peer will be dIsConnected regardless
     of the current timeout limit value.
     
     @param peer the peer to adjust

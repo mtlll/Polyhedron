@@ -36,6 +36,7 @@
 					<Add option="-DHAS_MSGHDR_FLAGS=1"/>
 					<Add option="-DHAS_SOCKLEN_T=1"/>
 					<Add directory="/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/ext/json-develop/single_include"/>
+					<Add directory="/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/ext/Nuklear-master"/>
 					<Add directory="/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/enet/include"/>
 					<Add directory="/usr/include/c++/7"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
@@ -72,6 +73,7 @@
 					<Add option="-DHAS_MSGHDR_FLAGS=1"/>
 					<Add option="-DHAS_SOCKLEN_T=1"/>
 					<Add directory="/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/ext/json-develop/single_include"/>
+					<Add directory="/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/ext/Nuklear-master"/>
 					<Add directory="/home/watisdeze/Development/PyramidApexGames/Projects/Polyhedron/Branches/Polyhedron-NewMenu/src/enet/include"/>
 					<Add directory="/usr/include/c++/7"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>

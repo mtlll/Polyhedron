@@ -1,12 +1,26 @@
-#include "game.h"
-#include "shared/entities/basedynamicentity.h"
+#include "cube.h"
+#include "ents.h"
+
+#include "game/game.h"
+#include "game/server/server.h"
+#include "game/client/client.h"
+
+#include "shared/networking/cl_sv.h"
+#include "shared/networking/network.h"
+#include "shared/networking/frametimestate.h"
 #include "shared/networking/protocol.h"
 
+#include "shared/entities/animinfo.h"
+#include "shared/entities/coreentity.h"
+#include "shared/entities/baseentity.h"
+#include "shared/entities/basephysicalentity.h"
+#include "shared/entities/basedynamicentity.h"
+#include "shared/entities/basecliententity.h"
 namespace game
 {
     bool intermission = false;
-    int maptime = 0, maprealtime = 0, maplimit = -1;
-    int lasthit = 0, lastspawnattempt = 0;
+    int mapTime = 0, mapRealTime = 0, mapLimit = -1;
+    int lastHit = 0, lastSpawnAttempt = 0;
 
     gameent *player1 = NULL;         // our client
     vector<gameent *> players;       // other clients
@@ -222,7 +236,7 @@ namespace game
         if(!maptime) { maptime = lastmillis; maprealtime = ftsClient.totalMilliseconds; return; }
         if(!curtime) { gets2c(); if(player1->clientnum>=0) c2sinfo(); return; }
 
-        physicsframe();
+        PhysicsFrame();
         ai::navigate();
         updateweapons(curtime);
         otherplayers(curtime);
@@ -489,7 +503,7 @@ namespace game
         return clients.inrange(cn) ? clients[cn] : NULL;
     }
 
-    void ClientDisconnected(int cn, bool notify)
+    void ClientDIsConnected(int cn, bool notify)
     {
         if(!clients.inrange(cn)) return;
         unignore(cn);
@@ -515,7 +529,7 @@ namespace game
 
     void clearclients(bool notify)
     {
-        loopv(clients) if(clients[i]) ClientDisconnected(i, notify);
+        loopv(clients) if(clients[i]) ClientDIsConnected(i, notify);
     }
 
     void initclient()
@@ -846,10 +860,10 @@ namespace game
             }
         }));
     ICOMMAND(servinfoicon, "i", (int *i),
-        GETSERVINFO(*i, si,
+        GetServerInfo(*i, si,
         {
             int mm = si->attr.inrange(2) ? si->attr[2] : MM_INVALID;
-            result(si->maxplayers > 0 && si->numplayers >= si->maxplayers ? "serverfull" : mastermodeicon(mm, "serverunk"));
+            result(si->maxplayers > 0 && si->numberOfPlayers >= si->maxplayers ? "serverfull" : mastermodeicon(mm, "serverunk"));
         }));
 
     // any data written into this vector will get saved with the map data. Must take care to do own versioning, and endianess if applicable. Will not get called when loading maps from other games, so provide defaults.

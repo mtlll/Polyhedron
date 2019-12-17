@@ -1,7 +1,30 @@
 #pragma once
 
+#include "shared/utils/cubestr.h"
+
 namespace game {
     namespace networking {
+        static const int POLYHEDRON_PROTOCOL_VERSION    = 2;       // bump when protocol changes
+        static const int POLYHEDRON_SERVER_PORT         = 42000;
+        static const int POLYHEDRON_MASTER_PORT         = 41999;
+        static const int POLYHEDRON_LANINFO_PORT        = 41998;
+        static const int PROTOCOL_GAMEPLAYDEMO_VERSION      = 2;       // bump when demo format changes
+        static const char PROTOCOL_GAMEPLAYDEMO_MAGIC[16]   = "POLYHEDRONDEMO\0";
+
+        //
+        // ServerInfo
+        //
+        struct ServerInfo {
+            cubestr name;
+            cubestr map;
+            cubestr desc;
+            int protocol = INT_MIN;
+            int numberOfPlayers = 0;
+            int maxPlayers = 0;
+            int ping = 0;
+            vector<int> attr;
+        };
+
         //
         // Enum Class copy of GameMode flags.
         //
@@ -17,20 +40,10 @@ namespace game {
             Pulse      = 1<<8
         };
 
-        inline game::networking::GameMode operator | (const game::networking::GameMode &a, const game::networking::GameMode &b) {
-            return static_cast<game::networking::GameMode>((static_cast<int>(a) | static_cast<int>(b)));
-        };
-
-
-        // Networked versions of.
-        template<size_t N> static inline void getcubestr(char (&t)[N], ucharbuf &p) { game::networking::getcubestr(t, p, N); }
-        template<size_t N> static inline void filtertext(char (&dst)[N], const char *src, bool whitespace = true, bool forcespace = false) { game::networking::filtertext(dst, src, whitespace, forcespace, N-1); }
-
-         //
+        //
         // IPMask struct.
         //
-        struct ipmask
-        {
+        struct IPMask {
             enet_uint32 ip, mask;
 
             void parse(const char *name);
@@ -38,6 +51,7 @@ namespace game {
             bool check(enet_uint32 host) const { return (host & mask) == ip; }
         };
 
+        // The put and get functions for packet buffers.
         extern void putint(ucharbuf &p, int n);
         extern void putint(packetbuf &p, int n);
         extern void putint(vector<uchar> &p, int n);
@@ -54,5 +68,16 @@ namespace game {
         extern void sendcubestr(const char *t, packetbuf &p);
         extern void sendcubestr(const char *t, vector<uchar> &p);
         extern void getcubestr(char *t, ucharbuf &p, size_t len);
+
+        // Templated versions, used for networking.
+        template<size_t N> static inline void getcubestr(char (&t)[N], ucharbuf &p) { getcubestr(t, p, N); }
+        template<size_t N> static inline void filtertext(char (&dst)[N], const char *src, bool whitespace = true, bool forcespace = false) { ::filtertext(dst, src, whitespace, forcespace, N-1); }
+
+        // Operator belongs to mah mufuckin' thingy.
+        inline networking::GameMode operator | (const game::networking::GameMode &a, const game::networking::GameMode &b) {
+            return static_cast<game::networking::GameMode>((static_cast<int>(a) | static_cast<int>(b)));
+        };
+
+        
     };    
 };
