@@ -1,5 +1,5 @@
 {
-    "cmake.buildDirectory": "${workspaceFolder}/src/build",
+    "cmake.buildDirectory": "${workspaceFolder}/build",
     "cmake.configureOnOpen": true,
     "cmake.generator": "Ninja",
     "cmake.installPrefix": "/build/",
