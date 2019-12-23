@@ -9,7 +9,8 @@
 namespace game
 {
     // Global player entity pointer.
-    ::entities::classes::Player *player1 = NULL;
+    ::entities::classes::Player *clPlayer = NULL;
+    vector<::entities::classes::Player *> clPlayers;
 
     // List of connected players. (For future network usage.)
 	//vector<::entities::classes::Player*> players;
@@ -24,11 +25,11 @@ namespace game
 
     void updateworld() {
         // Update the map time. (First frame since maptime = 0.
-        if(!maptime) { maptime = lastmillis; maprealtime = totalmillis; return; }
+        if(!maptime) { maptime = lastmillis; maprealtime = ftsClient.totalMilliseconds; return; }
 
         // Escape this function if there is no currenttime yet from server to client. (Meaning it is 0.)
-        if(!curtime) return; //{ gets2c(); if (player1->) c2sinfo(); return; } //c2sinfo(); }///if(player1->clientnum>=0) c2sinfo(); return; }
-        //if(!curtime) return; //{ gets2c(); c2sinfo(); }///if(player1->clientnum>=0) c2sinfo(); return; }
+        if(!curtime) return; //{ gets2c(); if (clPlayer->) c2sinfo(); return; } //c2sinfo(); }///if(clPlayer->clientnum>=0) c2sinfo(); return; }
+        //if(!curtime) return; //{ gets2c(); c2sinfo(); }///if(clPlayer->clientnum>=0) c2sinfo(); return; }
 
 		// Update the physics.
         physicsframe();
@@ -41,13 +42,13 @@ namespace game
 
     void SpawnPlayer()   // place at random spawn
     {
-        if (player1)
+        if (clPlayer)
         {
-            player1->reset();
-            player1->respawn();
+            clPlayer->reset();
+            clPlayer->respawn();
         } else {
-            player1 = new entities::classes::Player();
-            player1->respawn();
+            clPlayer = new entities::classes::Player();
+            clPlayer->respawn();
         }
     }
 
@@ -64,8 +65,8 @@ namespace game
 
         }
 
-        if (game::player1)
-            game::player1->think();
+        if (game::clPlayer)
+            game::clPlayer->think();
     }
 
     void gameconnect(bool _remote)
@@ -149,7 +150,7 @@ namespace game
         SpawnPlayer();
 
         // Find our playerspawn.
-        findplayerspawn(player1);
+        findplayerspawn(clPlayer);
     }
     void loadingmap(const char *name) {
 
@@ -164,7 +165,7 @@ namespace game
         SpawnPlayer();
 
 		// Find player spawn point.
-		findplayerspawn(player1);
+		findplayerspawn(clPlayer);
 
         copycubestr(clientmap, name ? name : "");
         execident("mapstart");
@@ -175,7 +176,7 @@ namespace game
     }
 
     float abovegameplayhud(int w, int h) {
-        switch(player1->state)
+        switch(clPlayer->state)
         {
             case CS_EDITING:
                 return 1;
@@ -206,12 +207,12 @@ namespace game
 
     bool canjump()
     {
-        return player1->state!=CS_DEAD;
+        return clPlayer->state!=CS_DEAD;
     }
 
     bool cancrouch()
     {
-        return player1->state!=CS_DEAD;
+        return clPlayer->state!=CS_DEAD;
     }
 
     bool allowmove(entities::classes::BasePhysicalEntity *d)
@@ -223,7 +224,7 @@ namespace game
 
     entities::classes::CoreEntity *iterdynents(int i) {
         if (i == 0) {
-            return player1;
+            return clPlayer;
         } else {
             if (i < entities::getents().length()) {
                 return dynamic_cast<entities::classes::BaseEntity *>(entities::getents()[i]);
@@ -251,21 +252,21 @@ namespace game
     }
 
     int selectcrosshair(vec &color) {
-        if(player1->state==CS_DEAD) return -1;
+        if(clPlayer->state==CS_DEAD) return -1;
         return 0;
     }
 
     void setupcamera() {
-        entities::classes::BasePhysicalEntity *target = dynamic_cast<entities::classes::BasePhysicalEntity*>(player1);
+        entities::classes::BasePhysicalEntity *target = dynamic_cast<entities::classes::BasePhysicalEntity*>(clPlayer);
         assert(target);
         if(target)
         {
-            player1->strafe = target->strafe;
-            player1->move = target->move;
-            player1->yaw = target->yaw;
-            player1->pitch = target->state==CS_DEAD ? 0 : target->pitch;
-            player1->o = target->o;
-            player1->resetinterp();
+            clPlayer->strafe = target->strafe;
+            clPlayer->move = target->move;
+            clPlayer->yaw = target->yaw;
+            clPlayer->pitch = target->state==CS_DEAD ? 0 : target->pitch;
+            clPlayer->o = target->o;
+            clPlayer->resetinterp();
         }
     }
 
@@ -274,11 +275,11 @@ namespace game
     }
 
     bool detachcamera() {
-        return player1->state==CS_DEAD;
+        return clPlayer->state==CS_DEAD;
     }
 
     bool collidecamera() {
-        return player1->state!=CS_EDITING;
+        return clPlayer->state!=CS_EDITING;
     }
 
     void lighteffects(entities::classes::CoreEntity *e, vec&color, vec &dir) {
@@ -343,17 +344,17 @@ namespace game
     void physicstrigger(entities::classes::BasePhysicalEntity *d, bool local, int floorlevel, int waterlevel, int material)
     {
         // This function seems to be used for playing material audio. No worries about that atm.
-/*        if     (waterlevel>0) { if(material!=MAT_LAVA) playsound(S_SPLASHOUT, d==player1 ? NULL : &d->o); }
-        else if(waterlevel<0) playsound(material==MAT_LAVA ? S_BURN : S_SPLASHIN, d==player1 ? NULL : &d->o);
-        if     (floorlevel>0) { if(d==player1 || d->type!=ENT_PLAYER || ((gameent *)d)->ai) msgsound(S_JUMP, d); }
-        else if(floorlevel<0) { if(d==player1 || d->type!=ENT_PLAYER || ((gameent *)d)->ai) msgsound(S_LAND, d); }*/
+/*        if     (waterlevel>0) { if(material!=MAT_LAVA) playsound(S_SPLASHOUT, d==clPlayer ? NULL : &d->o); }
+        else if(waterlevel<0) playsound(material==MAT_LAVA ? S_BURN : S_SPLASHIN, d==clPlayer ? NULL : &d->o);
+        if     (floorlevel>0) { if(d==clPlayer || d->type!=ENT_PLAYER || ((gameent *)d)->ai) msgsound(S_JUMP, d); }
+        else if(floorlevel<0) { if(d==clPlayer || d->type!=ENT_PLAYER || ((gameent *)d)->ai) msgsound(S_LAND, d); }*/
     }
 
     void initclient() {
         // Setup the map time.
         maptime = 0;
 		SpawnPlayer();
-        findplayerspawn(player1);
+        findplayerspawn(clPlayer);
     }
 
     const char *gameident() {

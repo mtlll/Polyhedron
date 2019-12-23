@@ -1077,8 +1077,8 @@ struct timer
     float result, print;
 };
 static vector<timer> timers;
-static vector<int> timerorder;
-static int timercycle = 0;
+static vector<int> timerOrder;
+static int timerCycle = 0;
 
 extern int usetimers;
 
@@ -1086,11 +1086,11 @@ timer *findtimer(const char *name, bool gpu)
 {
     loopv(timers) if(!strcmp(timers[i].name, name) && timers[i].gpu == gpu)
     {
-        timerorder.removeobj(i);
-        timerorder.add(i);
+        timerOrder.removeobj(i);
+        timerOrder.add(i);
         return &timers[i];
     }
-    timerorder.add(timers.length());
+    timerOrder.add(timers.length());
     timer &t = timers.add();
     t.name = name;
     t.gpu = gpu;
@@ -1110,8 +1110,8 @@ timer *begintimer(const char *name, bool gpu)
     if(t->gpu)
     {
         deferquery++;
-        glBeginQuery_(GL_TIME_ELAPSED_EXT, t->query[timercycle]);
-        t->waiting |= 1<<timercycle;
+        glBeginQuery_(GL_TIME_ELAPSED_EXT, t->query[timerCycle]);
+        t->waiting |= 1<<timerCycle;
     }
     else t->starttime = getclockmillis();
     return t;
@@ -1130,20 +1130,20 @@ void endtimer(timer *t)
 
 void synctimers()
 {
-    timercycle = (timercycle + 1) % timer::MAXQUERY;
+    timerCycle = (timerCycle + 1) % timer::MAXQUERY;
 
     loopv(timers)
     {
         timer &t = timers[i];
-        if(t.waiting&(1<<timercycle))
+        if(t.waiting&(1<<timerCycle))
         {
             GLint available = 0;
             while(!available)
-                glGetQueryObjectiv_(t.query[timercycle], GL_QUERY_RESULT_AVAILABLE, &available);
+                glGetQueryObjectiv_(t.query[timerCycle], GL_QUERY_RESULT_AVAILABLE, &available);
             GLuint64EXT result = 0;
-            glGetQueryObjectui64v_(t.query[timercycle], GL_QUERY_RESULT, &result);
+            glGetQueryObjectui64v_(t.query[timerCycle], GL_QUERY_RESULT, &result);
             t.result = max(float(result) * 1e-6f, 0.0f);
-            t.waiting &= ~(1<<timercycle);
+            t.waiting &= ~(1<<timerCycle);
         }
         else t.result = -1;
     }
@@ -1157,35 +1157,35 @@ void cleanuptimers()
         if(t.gpu) glDeleteQueries_(timer::MAXQUERY, t.query);
     }
     timers.shrink(0);
-    timerorder.shrink(0);
+    timerOrder.shrink(0);
 }
 
 VARFN(timer, usetimers, 0, 0, 1, cleanuptimers());
 VAR(frametimer, 0, 0, 1);
-int framemillis = 0; // frame time (ie does not take into account the swap)
+int frameMilliseconds = 0; // frame time (ie does not take into account the swap)
 
 void printtimers(int conw, int conh)
 {
     if(!frametimer && !usetimers) return;
 
-    static int lastprint = 0;
+    static int lastPrint = 0;
     int offset = 0;
     if(frametimer)
     {
-        static int printmillis = 0;
-        if(totalmillis - lastprint >= 200) printmillis = framemillis;
-        draw_textf("frame time %i ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, printmillis);
+        static int printMilliseconds = 0;
+        if(ftsClient.totalMilliseconds - lastPrint >= 200) printMilliseconds = frameMilliseconds;
+        draw_textf("frame time %i ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, printMilliseconds);
         offset++;
     }
-    if(usetimers) loopv(timerorder)
+    if(usetimers) loopv(timerOrder)
     {
-        timer &t = timers[timerorder[i]];
-        if(t.print < 0 ? t.result >= 0 : totalmillis - lastprint >= 200) t.print = t.result;
-        if(t.print < 0 || (t.gpu && !(t.waiting&(1<<timercycle)))) continue;
+        timer &t = timers[timerOrder[i]];
+        if(t.print < 0 ? t.result >= 0 : ftsClient.totalMilliseconds - lastPrint >= 200) t.print = t.result;
+        if(t.print < 0 || (t.gpu && !(t.waiting&(1<<timerCycle)))) continue;
         draw_textf("%s%s %5.2f ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, t.name, t.gpu ? "" : " (cpu)", t.print);
         offset++;
     }
-    if(totalmillis - lastprint >= 200) lastprint = totalmillis;
+    if(ftsClient.totalMilliseconds - lastPrint >= 200) lastPrint = ftsClient.totalMilliseconds;
 }
 
 void gl_resize()
@@ -2749,10 +2749,10 @@ void gl_drawhud()
             if(showfps)
             {
                 static int lastfps = 0, prevfps[3] = { 0, 0, 0 }, curfps[3] = { 0, 0, 0 };
-                if(totalmillis - lastfps >= statrate)
+                if(ftsClient.totalMilliseconds - lastfps >= statrate)
                 {
                     memcpy(prevfps, curfps, sizeof(prevfps));
-                    lastfps = totalmillis - (totalmillis%statrate);
+                    lastfps = ftsClient.totalMilliseconds - (ftsClient.totalMilliseconds%statrate);
                 }
                 int nextfps[3];
                 getfps(nextfps[0], nextfps[1], nextfps[2]);
@@ -2766,8 +2766,8 @@ void gl_drawhud()
 
             if(wallclock)
             {
-                if(!walltime) { walltime = time(NULL); walltime -= totalmillis/1000; if(!walltime) walltime++; }
-                time_t walloffset = walltime + totalmillis/1000;
+                if(!walltime) { walltime = time(NULL); walltime -= ftsClient.totalMilliseconds/1000; if(!walltime) walltime++; }
+                time_t walloffset = walltime + ftsClient.totalMilliseconds/1000;
                 struct tm *localvals = localtime(&walloffset);
                 static cubestr buf;
                 if(localvals && strftime(buf, sizeof(buf), wallclocksecs ? (wallclock24 ? "%H:%M:%S" : "%I:%M:%S%p") : (wallclock24 ? "%H:%M" : "%I:%M%p"), localvals))
@@ -2813,7 +2813,7 @@ void gl_drawhud()
     if(frametimer)
     {
         glFinish();
-        framemillis = getclockmillis() - totalmillis;
+        framemillis = getclockmillis() - ftsClient.totalMilliseconds;
     }
 }
 

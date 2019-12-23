@@ -1,5 +1,4 @@
-#ifndef __ENTITIES_H__
-#define __ENTITIES_H__
+#pragma once 
 
 namespace entities
 {
@@ -32,5 +31,3 @@ namespace entities
     // Resets all the spawns.
     extern void resetspawns();
 }
-
-#endif // __ENTITIES_H__

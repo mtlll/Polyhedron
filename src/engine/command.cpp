@@ -2,6 +2,7 @@
 // is largely backwards compatible with the quake console language.
 
 #include "engine.h"
+#include "shared/networking/network.h"
 
 hashnameset<ident> idents; // contains ALL vars/commands/aliases
 vector<ident *> identmap;
@@ -3594,7 +3595,7 @@ ICOMMAND(stripcolors, "s", (char *s),
 {
     int len = strlen(s);
     char *d = newcubestr(len);
-    filtertext(d, s, true, false, len);
+    FilterText(d, s, true, false, len);
     cubestrret(d);
 }, "builtin");
 
@@ -4313,7 +4314,7 @@ void strsplice(const char *s, const char *vals, int *skip, int *count)
 COMMAND(strsplice, "ssii", "builtin");
 
 #ifndef STANDALONE
-ICOMMAND(getmillis, "i", (int *total), intret(*total ? totalmillis : lastmillis), "builtin");
+ICOMMAND(getmillis, "i", (int *total), intret(*total ? ftsClient.totalMilliseconds : ftsClient.lastMilliseconds), "builtin");
 
 struct sleepcmd
 {

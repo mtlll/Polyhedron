@@ -1,15 +1,25 @@
-#include "player.h"
 #include "cube.h"
-#include "game.h"
+#include "game/game.h"
+#include "game/entities/player.h"
+
+#include "shared/networking/cl_sv.h"
+#include "shared/networking/network.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/networking/protocol.h"
+
+#include "shared/entities/coreentity.h"
+#include "shared/entities/baseentity.h"
+#include "shared/entities/basedynamicentity.h"
+#include "shared/entities/basecliententity.h"
 
 namespace entities {
 namespace classes {
 
-Player::Player() : BaseDynamicEntity() {
+Player::Player() : BaseClientEntity() {
 	state = CS_ALIVE;
 	et_type = ET_GAMESPECIFIC;
 	ent_type = ENT_PLAYER;
-	game_type = PLAYER;
+	game_type = CLIENT_PLAYER;
 	collidetype = COLLIDE_OBB;
 	physstate = PHYS_FALL;
 	// Load in our player entity model.
@@ -17,8 +27,8 @@ Player::Player() : BaseDynamicEntity() {
 	preloadmodel("player/male");
 	// Reset.
 	setName("Player");
-//preloadmodel("player/female");
-	// Camera.
+
+	// Each client entity possesses over a camera member.
 	camera = new entities::classes::BasePhysicalEntity();
 }
 
@@ -34,7 +44,7 @@ void Player::preload() {
 	state = CS_ALIVE;
 	et_type = ET_GAMESPECIFIC;
 	ent_type = ENT_PLAYER;
-	game_type = PLAYER;
+	game_type = CLIENT_PLAYER;
 	collidetype = COLLIDE_OBB;
 	physstate = PHYS_FALL;
 }
@@ -90,8 +100,8 @@ bool Player::onTouch(const entities::classes::CoreEntity *otherEnt, const vec &d
 }
 
 void Player::reset() {
-	setName("PlayerStart");
-
+	// Reset it's name and unspawn.
+	setName("Player_#0");
 	setspawned(false);
 }
 
@@ -106,8 +116,7 @@ void Player::respawn() {
 }
 
 // Link entity class to the factory.
+ADD_ENTITY_TO_FACTORY_SERIALIZED(Player, "playerx", BaseClientEntity)
 
-} // classes
-} // entities
-
-ADD_ENTITY_TO_FACTORY_SERIALIZED(Player, "player", BaseDynamicEntity)
+}; // classes
+}; // entities

@@ -1,18 +1,21 @@
 #pragma once
 
+#include "shared/networking/cl_sv.h"
+#include "shared/networking/network.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/networking/protocol.h"
+
 #include "shared/entities/basedynamicentity.h"
+#include "shared/entities/basecliententity.h"
 
 struct vec;
 
 namespace entities {
     namespace classes {
-        class Player : public BaseDynamicEntity {
+        class Player : public entities::classes::BaseClientEntity {
             ENTITY_FACTORY_IMPL(Player)
         public:
-			//
-			// Constructors/Destructor.
-			//
-            Player();
+
 
 			//
 			// Base/Core entity functions.
@@ -41,6 +44,5 @@ namespace entities {
         private:
 
         };
-    } // classes
-} // entities
-
+    }; // classes
+}; // entities

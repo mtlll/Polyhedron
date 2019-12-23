@@ -991,14 +991,14 @@ void stoppaintblendmap()
 
 void trypaintblendmap()
 {
-    if(!paintingblendmap || totalmillis - paintingblendmap < paintblendmapdelay) return;
+    if(!paintingblendmap || ftsClient.totalMilliseconds - paintingblendmap < paintblendmapdelay) return;
     if(lastpaintblendmap)
     {
-        int diff = totalmillis - lastpaintblendmap;
+        int diff = ftsClient.totalMilliseconds - lastpaintblendmap;
         if(diff < paintblendmapinterval) return;
         lastpaintblendmap = (diff - diff%paintblendmapinterval) + lastpaintblendmap;
     }
-    else lastpaintblendmap = totalmillis;
+    else lastpaintblendmap = ftsClient.totalMilliseconds;
     paintblendmap(false);
 }
 
@@ -1006,7 +1006,7 @@ SCRIPTEXPORT_AS(paintblendmap) void paintblendmap_scriptimpl(int *isdown)
 {
     if(*isdown)
     {
-        if(!paintingblendmap) { paintblendmap(true); paintingblendmap = totalmillis; }
+        if(!paintingblendmap) { paintblendmap(true); paintingblendmap = ftsClient.totalMilliseconds; }
     }
     else stoppaintblendmap();
 }

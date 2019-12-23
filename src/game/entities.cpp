@@ -75,8 +75,8 @@ namespace entities
 		}
 
 		// Specifically load in the client player model.
-		if (game::player1 != nullptr) {
-			game::player1->preload();
+		if (game::clPlayer != nullptr) {
+			game::clPlayer->preload();
 		}
 	}
 
@@ -85,8 +85,8 @@ namespace entities
 			if (entities::getents().inrange(i) && entities::getents()[i] != nullptr)
 				entities::getents()[i]->clearspawned();
 
-		if (game::player1 != nullptr)
-			game::player1->clearspawned();
+		if (game::clPlayer != nullptr)
+			game::clPlayer->clearspawned();
 	}
 
 	void setspawn(int i, bool on) { if(entities::getents().inrange(i) && entities::getents()[i] != nullptr) entities::getents()[i]->setspawned(on); }
@@ -174,7 +174,7 @@ namespace entities
 	}
 	const char *entname(int i)
 	{
-		static const char * const entnames[MAXENTTYPES] =
+		static const char * const entnames[_MAXENTTYPES] =
 		{
 			"none?", "light", "mapmodel", "playerstart", "envmap", "particles", "sound", "spotlight", "decal",
 			"teleport", "teledest", "jumppad",

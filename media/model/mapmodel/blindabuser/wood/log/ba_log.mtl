@@ -1,0 +1,11 @@
+# mtl file of Cube 2 level
+
+newmtl slot47
+map_Kd "../../../../../../texture/blindabuser/ba_wood_bark.png"
+
+newmtl slot48
+map_Kd "../../../../../../texture/blindabuser/ba_wood_bark.png"
+
+newmtl slot49
+map_Kd "../../../../../../texture/blindabuser/ba_wood_ends.png"
+

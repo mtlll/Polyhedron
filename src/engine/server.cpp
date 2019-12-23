@@ -5,6 +5,11 @@
 #include "scriptexport.h"
 #include "log.h"
 
+#include "shared/networking/cl_sv.h"
+#include "shared/networking/network.h"
+#include "shared/networking/protocol.h"
+#include "shared/networking/frametimestate.h"
+
 #ifdef STANDALONE
 void fatal(const char *fmt, ...)
 {
@@ -47,8 +52,7 @@ void conoutf(int type, const char *fmt, ...)
 
 enum { ST_EMPTY, ST_LOCAL, ST_TCPIP };
 
-struct client                   // server side version of "dynent" type
-{
+struct PeerClient {                 // OLD Commentary: "// server side version of "dynent" type"
     int type;
     int num;
     ENetPeer *peer;
@@ -56,8 +60,11 @@ struct client                   // server side version of "dynent" type
     void *info;
 };
 
+//
+// The engine side of things is obviously storing a list of all the clients, only accessable through this file.
+//
 namespace {
-vector<client *> clients;
+    vector<PeerClient *> peerClients;
 }
 
 ENetHost *serverhost = NULL;
@@ -69,21 +76,21 @@ int localclients = 0, nonlocalclients = 0;
 bool hasnonlocalclients() { return nonlocalclients!=0; }
 bool haslocalclients() { return localclients!=0; }
 
-client &addclient(int type)
+PeerClient &addclient(int type)
 {
-    client *c = NULL;
-    loopv(clients) if(clients[i]->type==ST_EMPTY)
+    PeerClient *c = NULL;
+    loopv(peerClients) if(peerClients[i]->type==ST_EMPTY)
     {
-        c = clients[i];
+        c = peerClients[i];
         break;
     }
     if(!c)
     {
-        c = new client;
-        c->num = clients.length();
-        clients.add(c);
+        c = new PeerClient;
+        c->num = peerClients.length();
+        peerClients.add(c);
     }
-    c->info = server::newclientinfo();
+    c->info = ::server::newclientinfo();
     c->type = type;
     switch(type)
     {
@@ -93,7 +100,7 @@ client &addclient(int type)
     return *c;
 }
 
-void delclient(client *c)
+void delclient(PeerClient *c)
 {
     if(!c) return;
     switch(c->type)
@@ -106,7 +113,7 @@ void delclient(client *c)
     c->peer = NULL;
     if(c->info)
     {
-        server::deleteclientinfo(c->info);
+        ::server::deleteclientinfo(c->info);
         c->info = NULL;
     }
 }
@@ -127,24 +134,24 @@ void process(ENetPacket *packet, int sender, int chan);
 //void disconnect_client(int n, int reason);
 
 int getservermtu() { return serverhost ? serverhost->mtu : -1; }
-void *getclientinfo(int i) { return !clients.inrange(i) || clients[i]->type==ST_EMPTY ? NULL : clients[i]->info; }
-ENetPeer *getclientpeer(int i) { return clients.inrange(i) && clients[i]->type==ST_TCPIP ? clients[i]->peer : NULL; }
-int getnumclients()        { return clients.length(); }
-uint getclientip(int n)    { return clients.inrange(n) && clients[n]->type==ST_TCPIP ? clients[n]->peer->address.host : 0; }
+void *getclientinfo(int i) { return !peerClients.inrange(i) || peerClients[i]->type==ST_EMPTY ? NULL : peerClients[i]->info; }
+ENetPeer *GetClientPeer(int i) { return peerClients.inrange(i) && peerClients[i]->type==ST_TCPIP ? peerClients[i]->peer : NULL; }
+int getnumclients()        { return peerClients.length(); }
+uint getclientip(int n)    { return peerClients.inrange(n) && peerClients[n]->type==ST_TCPIP ? peerClients[n]->peer->address.host : 0; }
 
 void sendpacket(int n, int chan, ENetPacket *packet, int exclude)
 {
     if(n<0)
     {
         server::recordpacket(chan, packet->data, packet->dataLength);
-        loopv(clients) if(i!=exclude && server::allowbroadcast(i)) sendpacket(i, chan, packet);
+        loopv(peerClients) if(i!=exclude && server::allowbroadcast(i)) sendpacket(i, chan, packet);
         return;
     }
-    switch(clients[n]->type)
+    switch(peerClients[n]->type)
     {
         case ST_TCPIP:
         {
-            enet_peer_send(clients[n]->peer, chan, packet);
+            enet_peer_send(peerClients[n]->peer, chan, packet);
             break;
         }
 
@@ -174,23 +181,23 @@ ENetPacket *sendf(int cn, int chan, const char *format, ...)
         {
             int n = va_arg(args, int);
             int *v = va_arg(args, int *);
-            loopi(n) putint(p, v[i]);
+            loopi(n) shared::network::PutInt(p, v[i]);
             break;
         }
 
         case 'i':
         {
             int n = isdigit(*format) ? *format++-'0' : 1;
-            loopi(n) putint(p, va_arg(args, int));
+            loopi(n) shared::network::PutInt(p, va_arg(args, int));
             break;
         }
         case 'f':
         {
             int n = isdigit(*format) ? *format++-'0' : 1;
-            loopi(n) putfloat(p, (float)va_arg(args, double));
+            loopi(n) shared::network::PutFloat(p, (float)va_arg(args, double));
             break;
         }
-        case 's': sendcubestr(va_arg(args, const char *), p); break;
+        case 's': shared::network::SendCubeStr(va_arg(args, const char *), p); break;
         case 'm':
         {
             int n = va_arg(args, int);
@@ -212,7 +219,7 @@ ENetPacket *sendfile(int cn, int chan, stream *file, const char *format, ...)
         return NULL;
 #endif
     }
-    else if(!clients.inrange(cn)) return NULL;
+    else if(!peerClients.inrange(cn)) return NULL;
 
     int len = (int)min(file->size(), stream::offset(INT_MAX));
     if(len <= 0 || len > 16<<20) return NULL;
@@ -225,11 +232,11 @@ ENetPacket *sendfile(int cn, int chan, stream *file, const char *format, ...)
         case 'i':
         {
             int n = isdigit(*format) ? *format++-'0' : 1;
-            loopi(n) putint(p, va_arg(args, int));
+            loopi(n) shared::network::PutInt(p, va_arg(args, int));
             break;
         }
-        case 's': sendcubestr(va_arg(args, const char *), p); break;
-        case 'l': putint(p, len); break;
+        case 's': shared::network::SendCubeStr(va_arg(args, const char *), p); break;
+        case 'l': shared::network::PutInt(p, len); break;
     }
     va_end(args);
 
@@ -264,21 +271,21 @@ const char *disconnectreason(int reason)
 
 void disconnect_client(int n, int reason)
 {
-    if(!clients.inrange(n) || clients[n]->type!=ST_TCPIP) return;
-    enet_peer_disconnect(clients[n]->peer, reason);
+    if(!peerClients.inrange(n) || peerClients[n]->type!=ST_TCPIP) return;
+    enet_peer_disconnect(peerClients[n]->peer, reason);
     server::clientdisconnect(n);
-    delclient(clients[n]);
+    delclient(peerClients[n]);
     const char *msg = disconnectreason(reason);
     cubestr s;
-    if(msg) formatcubestr(s, "client (%s) disconnected because: %s", clients[n]->hostname, msg);
-    else formatcubestr(s, "client (%s) disconnected", clients[n]->hostname);
+    if(msg) formatcubestr(s, "Client (%s) disconnected because: %s", peerClients[n]->hostname, msg);
+    else formatcubestr(s, "Client (%s) disconnected.", peerClients[n]->hostname);
     logoutf("%s", s);
     server::sendservmsg(s);
 }
 
 void kicknonlocalclients(int reason)
 {
-    loopv(clients) if(clients[i]->type==ST_TCPIP) disconnect_client(i, reason);
+    loopv(peerClients) if(peerClients[i]->type==ST_TCPIP) disconnect_client(i, reason);
 }
 
 void process(ENetPacket *packet, int sender, int chan)   // sender may be -1
@@ -290,8 +297,8 @@ void process(ENetPacket *packet, int sender, int chan)   // sender may be -1
 
 void localclienttoserver(int chan, ENetPacket *packet)
 {
-    client *c = NULL;
-    loopv(clients) if(clients[i]->type==ST_LOCAL) { c = clients[i]; break; }
+    PeerClient *c = NULL;
+    loopv(peerClients) if(peerClients[i]->type==ST_LOCAL) { c = peerClients[i]; break; }
     if(c) process(packet, c->num, chan);
 }
 
@@ -341,7 +348,7 @@ ENetSocket connectmaster(bool wait)
     if(!mastername[0]) return ENET_SOCKET_NULL;
     if(masteraddress.host == ENET_HOST_ANY)
     {
-        if(isdedicatedserver()) logoutf("looking up %s...", mastername);
+        if(isdedicatedserver()) logoutf("Looking up %s...", mastername);
         masteraddress.port = masterport;
         if(!resolverwait(mastername, &masteraddress)) return ENET_SOCKET_NULL;
     }
@@ -371,7 +378,7 @@ bool requestmaster(const char *req)
     {
         mastersock = connectmaster(false);
         if(mastersock == ENET_SOCKET_NULL) return false;
-        lastconnectmaster = masterconnecting = totalmillis ? totalmillis : 1;
+        lastconnectmaster = masterconnecting = ftsClient.totalMilliseconds ? ftsClient.totalMilliseconds : 1;
     }
 
     if(masterout.length() >= 4096) return false;
@@ -401,9 +408,9 @@ void processmasterinput()
         while(args < end && iscubespace(*args)) args++;
 
         if(matchcubestr(input, cmdlen, "failreg"))
-            conoutf(CON_ERROR, "master server registration failed: %s", args);
+            conoutf(CON_ERROR, "Master server registration failed: %s", args);
         else if(matchcubestr(input, cmdlen, "succreg"))
-            conoutf("master server registration succeeded");
+            conoutf("Master server registration succeeded");
         else server::processmasterinput(input, cmdlen, args);
 
         end++;
@@ -421,9 +428,9 @@ void processmasterinput()
 
 void flushmasteroutput()
 {
-    if(masterconnecting && totalmillis - masterconnecting >= 60000)
+    if(masterconnecting && ftsClient.totalMilliseconds - masterconnecting >= 60000)
     {
-        logoutf("could not connect to master server");
+        logoutf("Could not connect to master server");
         disconnectmaster();
     }
     if(masterout.empty() || !masterconnected) return;
@@ -514,13 +521,13 @@ void checkserversockets()        // reply all server info requests
                 int error = 0;
                 if(enet_socket_get_option(mastersock, ENET_SOCKOPT_ERROR, &error) < 0 || error)
                 {
-                    logoutf("could not connect to master server");
+                    logoutf("Could not connect to master server");
                     disconnectmaster();
                 }
                 else
                 {
                     masterconnecting = 0;
-                    masterconnected = totalmillis ? totalmillis : 1;
+                    masterconnected = ftsClient.totalMilliseconds ? ftsClient.totalMilliseconds : 1;
                     server::masterconnected();
                 }
             }
@@ -544,14 +551,15 @@ SVAR(serverip, "");
 VARF(serverport, 0, server::serverport(), 0xFFFF, { if(!serverport) serverport = server::serverport(); });
 
 #ifdef STANDALONE
+shared::network::FrameStateTime fstClient; // WatIsDeze: Mike: TODO: Should this not be fstServer? Hehehe
 int curtime = 0, lastmillis = 0, elapsedtime = 0, totalmillis = 0;
 #endif
 
 void updatemasterserver()
 {
-    if(!masterconnected && lastconnectmaster && totalmillis-lastconnectmaster <= 5*60*1000) return;
+    if(!masterconnected && lastconnectmaster && ftsClient.totalMilliseconds-lastconnectmaster <= 5*60*1000) return;
     if(mastername[0] && allowupdatemaster) requestmasterf("regserv %d\n", serverport);
-    lastupdatemaster = totalmillis ? totalmillis : 1;
+    lastupdatemaster = ftsClient.totalMilliseconds ? ftsClient.totalMilliseconds : 1;
 }
 
 uint totalsecs = 0;
@@ -559,9 +567,9 @@ uint totalsecs = 0;
 void updatetime()
 {
     static int lastsec = 0;
-    if(totalmillis - lastsec >= 1000)
+    if(ftsClient.totalMilliseconds - lastsec >= 1000)
     {
-        int cursecs = (totalmillis - lastsec) / 1000;
+        int cursecs = (ftsClient.totalMilliseconds - lastsec) / 1000;
         totalsecs += cursecs;
         lastsec += cursecs * 1000;
     }
@@ -581,14 +589,14 @@ void serverslice(bool dedicated, uint timeout)   // main server update, called f
     if(dedicated)
     {
         int millis = (int)enet_time_get();
-        elapsedtime = millis - totalmillis;
+        ftsClient.elapsedTime = millis - ftsClient.totalMilliseconds;
         static int timeerr = 0;
-        int scaledtime = server::scaletime(elapsedtime) + timeerr;
-        curtime = scaledtime/100;
+        int scaledtime = server::scaletime(ftsClient.elapsedTime) + timeerr;
+        ftsClient.currentTime = scaledtime/100;
         timeerr = scaledtime%100;
-        if(server::ispaused()) curtime = 0;
-        lastmillis += curtime;
-        totalmillis = millis;
+        if(server::ispaused()) ftsClient.currentTime = 0;
+        ftsClient.lastMilliseconds += ftsClient.currentTime;
+        ftsClient.totalMilliseconds = millis;
         updatetime();
     }
     server::serverupdate();
@@ -596,12 +604,12 @@ void serverslice(bool dedicated, uint timeout)   // main server update, called f
     flushmasteroutput();
     checkserversockets();
 
-    if(!lastupdatemaster || totalmillis-lastupdatemaster>60*60*1000)       // send alive signal to masterserver every hour of uptime
+    if(!lastupdatemaster || ftsClient.totalMilliseconds-lastupdatemaster>60*60*1000)       // send alive signal to masterserver every hour of uptime
         updatemasterserver();
 
-    if(totalmillis-laststatus>60*1000)   // display bandwidth stats, useful for server ops
+    if(ftsClient.totalMilliseconds-laststatus>60*1000)   // display bandwidth stats, useful for server ops
     {
-        laststatus = totalmillis;
+        laststatus = ftsClient.totalMilliseconds;
         if(nonlocalclients || serverhost->totalSentData || serverhost->totalReceivedData) logoutf("status: %d remote clients, %.1f send, %.1f rec (K/sec)", nonlocalclients, serverhost->totalSentData/60.0f/1024, serverhost->totalReceivedData/60.0f/1024);
         serverhost->totalSentData = serverhost->totalReceivedData = 0;
     }
@@ -619,28 +627,28 @@ void serverslice(bool dedicated, uint timeout)   // main server update, called f
         {
             case ENET_EVENT_TYPE_CONNECT:
             {
-                client &c = addclient(ST_TCPIP);
+                PeerClient &c = addclient(ST_TCPIP);
                 c.peer = event.peer;
                 c.peer->data = &c;
                 cubestr hn;
                 copycubestr(c.hostname, (enet_address_get_host_ip(&c.peer->address, hn, sizeof(hn))==0) ? hn : "unknown");
-                logoutf("client connected (%s)", c.hostname);
+                logoutf("Client connected (%s)", c.hostname);
                 int reason = server::clientconnect(c.num, c.peer->address.host);
                 if(reason) disconnect_client(c.num, reason);
                 break;
             }
             case ENET_EVENT_TYPE_RECEIVE:
             {
-                client *c = (client *)event.peer->data;
+                PeerClient *c = (PeerClient *)event.peer->data;
                 if(c) process(event.packet, c->num, event.channelID);
                 if(event.packet->referenceCount==0) enet_packet_destroy(event.packet);
                 break;
             }
             case ENET_EVENT_TYPE_DISCONNECT:
             {
-                client *c = (client *)event.peer->data;
+                PeerClient *c = (PeerClient *)event.peer->data;
                 if(!c) break;
-                logoutf("disconnected client (%s)", c->hostname);
+                logoutf("Disconnected client ^f4 (%s)", c->hostname);
                 server::clientdisconnect(c->num);
                 delclient(c);
                 break;
@@ -661,10 +669,10 @@ void flushserver(bool force)
 void localdisconnect(bool cleanup)
 {
     bool disconnected = false;
-    loopv(clients) if(clients[i]->type==ST_LOCAL)
+    loopv(peerClients) if(peerClients[i]->type==ST_LOCAL)
     {
         server::localdisconnect(i);
-        delclient(clients[i]);
+        delclient(peerClients[i]);
         disconnected = true;
     }
     if(!disconnected) return;
@@ -674,7 +682,7 @@ void localdisconnect(bool cleanup)
 
 void localconnect()
 {
-    client &c = addclient(ST_LOCAL);
+    PeerClient &c = addclient(ST_LOCAL);
     copycubestr(c.hostname, "local");
     game::gameconnect(false);
     server::localconnect(c.num);

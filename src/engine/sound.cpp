@@ -614,8 +614,8 @@ int playsound(int n, const vec *loc, entities::classes::CoreEntity *ent, int fla
 
         // avoid bursts of sounds with heavy packetloss and in sp
         static int soundsatonce = 0, lastsoundmillis = 0;
-        if(totalmillis == lastsoundmillis) soundsatonce++; else soundsatonce = 1;
-        lastsoundmillis = totalmillis;
+        if(ftsClient.totalMilliseconds == lastsoundmillis) soundsatonce++; else soundsatonce = 1;
+        lastsoundmillis = ftsClient.totalMilliseconds;
         if(maxsoundsatonce && soundsatonce > maxsoundsatonce) return -1;
     }
 

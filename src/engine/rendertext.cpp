@@ -399,7 +399,7 @@ void draw_text(const char *str, float left, float top, int r, int g, int b, int 
 	TEXTSKELETON
 	TEXTEND(cursor)
 	xtraverts += gle::end();
-	if(cursor >= 0 && (totalmillis/250)&1)
+	if(cursor >= 0 && (ftsClient.totalMilliseconds/250)&1)
 	{
 		gle::color(color, a);
 		if(maxwidth >= 0 && cx >= maxwidth && cx > 0) { cx = 0; cy += FONTH; }

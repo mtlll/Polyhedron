@@ -14,7 +14,7 @@ option(SCHIZOMANIA_BUILD_CLIENT "Build the game client" ON)
 option(SCHIZOMANIA_BUILD_SERVER "Build the game server" OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -27,8 +27,8 @@ if (APPLE)
     list(INSERT CMAKE_FIND_LIBRARY_SUFFIXES 0 ".dylib" )
 
     set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
-    set(CMAKE_XCODE_ATTRIBUTE_CLANG_LANGUAGE_STANDARD "c++14")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++14")
+    set(CMAKE_XCODE_ATTRIBUTE_CLANG_LANGUAGE_STANDARD "c++17")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++17")
 endif()
 
 #Libraries
@@ -47,6 +47,7 @@ find_package(SDL2_mixer REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(OpenGL REQUIRED)
 
+
 if (APPLE)
     find_library(COREAUDIO CoreAudio REQUIRED)
     find_library(AVFOUNDATION AVFoundation REQUIRED)
@@ -64,6 +65,7 @@ endif()
 add_definitions("-DGL_SILENCE_DEPRECATION")
 include_directories(
     ext/json-develop/single_include
+   # ext
 )
 
 #The engine, server and shared sub projects
@@ -139,6 +141,55 @@ list(APPEND fileListEngine
     engine/worldio.cpp
 )
 
+#
+# GAME - ... - FILELIST
+#
+list(APPEND fileListGame
+    game/entities.cpp
+    game/game.cpp
+    game/game.h
+    game/render.cpp
+    game/server.cpp
+    game/commands.cpp
+)
+
+#
+# GAME - CLIENT - FILELIST
+#
+list(APPEND fileListGameClient
+    game/client/client.cpp
+    game/client/client.h
+)
+
+#
+# GAME - SERVER - FILELIST
+#
+list(APPEND fileListGameServer
+    game/server/server.cpp 
+    game/server/server.h
+)
+
+#
+# GAME - ENTITIES - FILELIST
+#
+list(APPEND fileListGameEntities
+    game/entities/basemapmodel.cpp
+    game/entities/basemapmodel.h
+    game/entities/door.cpp
+    game/entities/door.h
+    game/entities/dynamiclight.cpp
+    game/entities/dynamiclight.h
+    game/entities/basemonster.cpp
+    game/entities/basemonster.h
+    game/entities/playerstart.cpp
+    game/entities/playerstart.h
+    game/entities/player.cpp
+    game/entities/player.h
+)
+
+#
+# SHARED - ... - FILELIST
+#
 list(APPEND fileListShared
     shared/command.h
     shared/crypto.cpp
@@ -159,30 +210,9 @@ list(APPEND fileListShared
     shared/zip.cpp
 )
 
-list(APPEND fileListGame
-    game/entities.cpp
-    game/game.cpp
-    game/game.h
-    game/render.cpp
-    game/server.cpp
-    game/commands.cpp
-)
-
-list(APPEND fileListGameEntities
-    game/entities/basemapmodel.cpp
-    game/entities/basemapmodel.h
-    game/entities/door.cpp
-    game/entities/door.h
-    game/entities/dynamiclight.cpp
-    game/entities/dynamiclight.h
-    game/entities/basemonster.cpp
-    game/entities/basemonster.h
-    game/entities/playerstart.cpp
-    game/entities/playerstart.h
-    game/entities/player.cpp
-    game/entities/player.h
-)
-
+#
+# SHARED - ENTITIES - FILELIST
+#
 list(APPEND fileListSharedEntities
     shared/entities/animinfo.h
     shared/entities/attributes.h
@@ -201,12 +231,42 @@ list(APPEND fileListSharedEntities
     shared/entities/entityfactory.cpp
 )
 
+#
+# SHARED - NETWORKING - FILELIST
+#
+list(APPEND fileListSharedNetworking
+    shared/networking/cl_sv.cpp
+    shared/networking/cl_sv.h
+    shared/networking/frametimestate.h 
+    shared/networking/network.cpp
+    shared/networking/network.h
+    shared/networking/protocol.h
+)
+
+#
+# SHARED - NETWORKING - FILELIST
+#
+list(APPEND fileListSharedUtils
+    shared/utils/cubectype.h
+    shared/utils/cubestr.cpp
+    shared/utils/databuf.h
+    shared/utils/endianness.h 
+    shared/utils/hashbase.h 
+    shared/utils/hashset.h 
+)
+
 list(APPEND fileList
     ${fileListEngine}
-    ${fileListShared}
+
     ${fileListGame}
-    ${fileListSharedEntities}
+    ${fileListGameClient}
+    ${fileListGameServer}
     ${fileListGameEntities}
+    
+    ${fileListShared}
+    ${fileListSharedUtils}
+    ${fileListSharedEntities}
+    ${fileListSharedNetworking}
 )
 
 function(GenerateBindingFor input_file ide_folder)
@@ -271,33 +331,55 @@ function(StoreCompileFlagsFor input_file)
     endif()
 endfunction()
 
+# Engine source groups.
 source_group("Sources\\Engine" FILES ${fileListEngine})
-source_group("Sources\\Shared" FILES ${fileListShared})
-source_group("Sources\\Game" FILES ${fileListGame})
-source_group("Sources\\Entities\\Shared" FILES ${fileListSharedEntities})
-source_group("Sources\\Entities\\Game" FILES ${fileListGameEntities})
 
-# --- BINDINGS
+# Shared source groups.
+source_group("Sources\\Shared" FILES ${fileListShared})
+source_group("Sources\\Shared\\Utils" FILES ${fileListSharedUtils})
+source_group("Sources\\Shared\\Entities" FILES ${fileListSharedEntities})
+
+# Game source groups.
+source_group("Sources\\Game" FILES ${fileListGame})
+source_group("Sources\\Game\\Client" FILES ${fileListGameClient})
+source_group("Sources\\Game\\Server" FILES ${fileListGameServer})
+source_group("Sources\\Game\\Entities" FILES ${fileListGameEntities})
+
+#
+# ENGINE --- BINDINGS
+#
 foreach(input_file ${fileListEngine})
     GenerateBindingFor(${input_file} "Generated\\\\Engine")
 endforeach()
 
+#
+# SHARED --- BINDINGS
+#
 foreach(input_file ${fileListShared})
     GenerateBindingFor(${input_file} "Generated\\\\Shared")
 endforeach()
+foreach(input_file ${fileListSharedUtils})
+    GenerateBindingFor(${input_file} "Generated\\\\Shared\\\\Utils")
+endforeach()
+foreach(input_file ${fileListSharedEntities})
+    GenerateBindingFor(${input_file} "Generated\\\\Shared\\\\Entities")
+endforeach()
 
+#
+# GAME --- BINDINGS
+#
 foreach(input_file ${fileListGame})
     GenerateBindingFor(${input_file} "Generated\\\\Game")
 endforeach()
-
-foreach(input_file ${fileListSharedEntities})
-    GenerateBindingFor(${input_file} "Generated\\\\Entities\\\\Shared")
+foreach(input_file ${fileListGameClient})
+    GenerateBindingFor(${input_file} "Generated\\\\Game\\\\Client")
 endforeach()
-
+foreach(input_file ${fileListGameServer})
+    GenerateBindingFor(${input_file} "Generated\\\\Game\\\\Server")
+endforeach()
 foreach(input_file ${fileListGameEntities})
-    GenerateBindingFor(${input_file} "Generated\\\\Entities\\\\Game")
+    GenerateBindingFor(${input_file} "Generated\\\\Game\\\\Entities")
 endforeach()
-
 
 #Everything ready, now define the executables
 if (APPLE)
@@ -364,6 +446,7 @@ if (APPLE)
 else()
     target_link_libraries(Polyhedron
         enet
+        rt
         ${SDL2_LIBRARIES}
 		${SDL2_MIXER_LIBRARIES}
 		${SDL2_IMAGE_LIBRARIES}

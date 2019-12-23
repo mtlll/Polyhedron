@@ -1873,10 +1873,10 @@ static int invalidatedmerges = 0;
 
 void invalidatemerges(cube &c, const ivec &co, int size, bool msg)
 {
-    if(msg && invalidatedmerges!=totalmillis)
+    if(msg && invalidatedmerges!=ftsClient.totalMilliseconds)
     {
         renderprogress(0, "invalidating merged surfaces...");
-        invalidatedmerges = totalmillis;
+        invalidatedmerges = ftsClient.totalMilliseconds;
     }
     invalidatemerges(c);
 }

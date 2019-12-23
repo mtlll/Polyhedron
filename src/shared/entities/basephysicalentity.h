@@ -1,11 +1,13 @@
 #pragma once
+
 #include "baseentity.h"
+#include "shared/networking/cl_sv.h"
 
 namespace entities
 {
     namespace classes {
-        // PhysicalEntity: Used for objects such as crates, etc.
-        class BasePhysicalEntity : public BaseEntity
+        // PhysicalEntity: Used for objects such as crates, as well as the player etc.
+        class BasePhysicalEntity : public BaseEntity, public shared::network::ClientInfo
         {
             ENTITY_FACTORY_IMPL(BasePhysicalEntity);
         public:
@@ -31,16 +33,17 @@ namespace entities
             float yradius = 1.67;
             float zmargin = 0;
 
-            int inwater = 0;
-            int timeinair = 0;
-            bool jumping = false;
-            char strafe = 0;
-            char move = 0;
-            char crouching = 0;
             uchar physstate = PHYS_FLOOR;
             vec vel = vec(0, 0, 0);
             vec falling = vec(0, 0, 0);
             vec floor = vec(0, 0, 1);
+            int inwater = 0;
+            int timeinair = 0;
+            char strafe = 0;
+            char move = 0;
+            char crouching = 0;
+            bool jumping = false;
+
             uchar state = CS_ALIVE;
             uchar editstate = CS_ALIVE;
             uchar collidetype = COLLIDE_ELLIPSE;

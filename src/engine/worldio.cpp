@@ -848,20 +848,20 @@ bool load_world(const char *mname, const char *cname)        // Does not support
 	
     if(hdr.numents > MAXENTS)
     {
-        conoutf(CON_WARN, "warning: map has %d entities", hdr.numents);
+        conoutf(CON_WARN, "Warning: map has %d entities", hdr.numents);
         // TODO: What to do here?
         //f->seek((hdr.numents-MAXENTS)*(samegame ? sizeof(entities::classes::CoreEntity) + einfosize : eif), SEEK_CUR);
     }
 
-    renderprogress(0, "loading slots...");
+    renderprogress(0, "Loading slots...");
     loadvslots(f, hdr.numvslots);
 
-    renderprogress(0, "loading octree...");
+    renderprogress(0, "Loading octree...");
     bool failed = false;
     worldroot = loadchildren(f, ivec(0, 0, 0), hdr.worldsize>>1, failed);
-    if(failed) conoutf(CON_ERROR, "garbage in map");
+    if(failed) conoutf(CON_ERROR, "Garbage in map");
 
-    renderprogress(0, "validating...");
+    renderprogress(0, "Validating...");
     validatec(worldroot, hdr.worldsize>>1);
 
     if(!failed)

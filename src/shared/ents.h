@@ -1,5 +1,4 @@
-#ifndef ENTS_H
-#define ENTS_H
+#pragma once
 
 // This file defines static map entities ("entity") and includes the basic entities:
 // (dynamic entities (players/monsters, "dynent"), and static(No AI, or Input) entities(barrels, etc, "physent")
@@ -45,26 +44,27 @@ enum { COLLIDE_NONE = 0, COLLIDE_ELLIPSE, COLLIDE_OBB, COLLIDE_TRI };
 
 enum                              // static entity types
 {
-    NOTUSED = ET_EMPTY,           // entity slot not in use in map
-    LIGHT = ET_LIGHT,             // lightsource, attr1 = radius, attr2 = intensity
-    MAPMODEL = ET_MAPMODEL,       // modelfilename = attr1 index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
-    PLAYERSTART = ET_PLAYERSTART, // attr1 = angle, attr2 = team
-    ENVMAP = ET_ENVMAP,           // attr1 = radius
-    PARTICLES = ET_PARTICLES,
-    MAPSOUND = ET_SOUND,
-    SPOTLIGHT = ET_SPOTLIGHT,
-    DECAL = ET_DECAL,
+    NOTUSED = ET_EMPTY,             // entity slot not in use in map
+    LIGHT = ET_LIGHT,               // lightsource, attr1 = radius, attr2 = intensity
+    MAPMODEL = ET_MAPMODEL,         // modelfilename = attr1 index, attr2 = yaw, attr3 = pitch, attr4 = roll, attr5 = scale
+    PLAYERSTART = ET_PLAYERSTART,   // attr1 = angle, attr2 = team
+    ENVMAP = ET_ENVMAP,             // attr1 = radius
+    PARTICLES = ET_PARTICLES,       // Particles... sparkling beautiful and bright, fireworks all night.
+    MAPSOUND = ET_SOUND,            // An area sound effect.
+    SPOTLIGHT = ET_SPOTLIGHT,       // Spotlights are attached to a normal light, but as such can be used to create flashlights etc.
+    DECAL = ET_DECAL,               // Decals, blood splatters and alike!
 
 	// SchizoMania entity types. (game_type values, all should be >= ET_GAMEENTITY
 	// Anyhting >= GAMEENTITY usese classname is...
 	GAMEENTITY = ET_GAMESPECIFIC, // classname = game entity class type, attributes list is what it is, and can be accessed in any derived BaseEntity class.
-	PLAYER,
-	NPC_BASIC,
-	AI_BASIC,
+	CLIENT_BASIC,                   // A basic client entity type. Thus something connected to the server, and also partially resides on the server.
+    CLIENT_PLAYER,                  // A basic player entity, just like CLIENT_PLAYER, also has certain data residing on the server.
+	CLIENT_NPC,                     // A basic NPC client entity type.
+	CLIENT_AI,                      // A basic AI client entity type.
 
 	// Objects.
 	BUTTON,
-	MAXENTTYPES,
+	_MAXENTTYPES,
 
 	//new entities
 	DOOR,
@@ -116,6 +116,3 @@ namespace entities
         class BaseDynamicEntity;
     } // classes
 } // entities
-
-
-#endif // ENTS_H

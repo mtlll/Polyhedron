@@ -10,13 +10,14 @@ namespace entities
 	{
 		class Player;
 		class BaseEntity;
+        class BaseClientEntity;
 	}
 }
 
 namespace game
 {
     // Extern variables.
-    extern entities::classes::Player *player1;  // Main player entity in the game code.
+    extern entities::classes::Player *clPlayer;  // Main player entity in the game code.
     extern int maptime, maprealtime;            // Times.
     extern cubestr clientmap;                   // The map the client is currently running or loading.
 

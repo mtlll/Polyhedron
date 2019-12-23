@@ -2486,7 +2486,7 @@ namespace UI
 
         void press(float cx, float cy)
         {
-            laststep = totalmillis + 2*uislidersteptime;
+            laststep = ftsClient.totalMilliseconds + 2*uislidersteptime;
 
             Slider *slider = (Slider *)findsibling(Slider::typestr());
             if(slider) slider->arrowscroll(stepdir);
@@ -2494,9 +2494,9 @@ namespace UI
 
         void hold(float cx, float cy)
         {
-            if(totalmillis < laststep + uislidersteptime)
+            if(ftsClient.totalMilliseconds < laststep + uislidersteptime)
                 return;
-            laststep = totalmillis;
+            laststep = ftsClient.totalMilliseconds;
 
             Slider *slider = (Slider *)findsibling(Slider::typestr());
             if(slider) slider->arrowscroll(stepdir);
@@ -3028,9 +3028,9 @@ namespace UI
             {
                 if(!slot.thumbnail)
                 {
-                    if(totalmillis - lastthumbnail < uislotviewtime) return;
+                    if(ftsClient.totalMilliseconds - lastthumbnail < uislotviewtime) return;
                     slot.loadthumbnail();
-                    lastthumbnail = totalmillis;
+                    lastthumbnail = ftsClient.totalMilliseconds;
                 }
                 if(slot.thumbnail != notexture) t = slot.thumbnail;
                 else return;

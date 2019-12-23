@@ -1,4 +1,6 @@
 #include "engine.h"
+#include "shared/networking/network.h"
+#include "shared/networking/protocol.h"
 
 struct resolverthread
 {
@@ -35,7 +37,7 @@ int resolverloop(void * data)
         SDL_LockMutex(resolvermutex);
         while(resolverqueries.empty()) SDL_CondWait(querycond, resolvermutex);
         rt->query = resolverqueries.pop();
-        rt->starttime = totalmillis;
+        rt->starttime = ftsClient.totalMilliseconds;
         SDL_UnlockMutex(resolvermutex);
 
         ENetAddress address = { ENET_HOST_ANY, ENET_PORT_ANY };
@@ -127,7 +129,7 @@ bool resolvercheck(const char **name, ENetAddress *address)
     else loopv(resolverthreads)
     {
         resolverthread &rt = resolverthreads[i];
-        if(rt.query && totalmillis - rt.starttime > RESOLVERLIMIT)
+        if(rt.query && ftsClient.totalMilliseconds - rt.starttime > RESOLVERLIMIT)
         {
             resolverstop(rt);
             *name = rt.query;
@@ -310,9 +312,9 @@ struct serverinfo : servinfo, pingattempts
 
     void checkdecay(int decay)
     {
-        if(lastping >= 0 && totalmillis - lastping >= decay)
+        if(lastping >= 0 && ftsClient.totalMilliseconds - lastping >= decay)
             cleanup();
-        if(lastping < 0) lastping = totalmillis;
+        if(lastping < 0) lastping = ftsClient.totalMilliseconds;
     }
 
     void calcping()
@@ -418,7 +420,7 @@ template<size_t N> static inline void buildping(ENetBuffer &buf, uchar (&ping)[N
 {
     ucharbuf p(ping, N);
     p.put(0xFF); p.put(0xFF);
-    putint(p, a.addattempt(totalmillis));
+    shared::network::PutInt(p, a.addattempt(ftsClient.totalMilliseconds));
     buf.data = ping;
     buf.dataLength = p.length();
 }
@@ -430,7 +432,7 @@ void pingservers()
         pingsock = enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM);
         if(pingsock == ENET_SOCKET_NULL)
         {
-            lastinfo = totalmillis;
+            lastinfo = ftsClient.totalMilliseconds;
             return;
         }
         enet_socket_set_option(pingsock, ENET_SOCKOPT_NONBLOCK, 1);
@@ -462,7 +464,7 @@ void pingservers()
         buildping(buf, ping, lanpings);
         enet_socket_send(pingsock, &address, &buf, 1);
     }
-    lastinfo = totalmillis;
+    lastinfo = ftsClient.totalMilliseconds;
 }
 
 void checkresolver()
@@ -515,7 +517,7 @@ void checkpings()
         int len = enet_socket_receive(pingsock, &addr, &buf, 1);
         if(len <= 0) return;
         ucharbuf p(ping, len);
-        int millis = getint(p);
+        int millis = shared::network::GetInt(p);
         serverinfo *si = NULL;
         loopv(servers) if(addr.host == servers[i]->address.host && addr.port == servers[i]->address.port) { si = servers[i]; break; }
         if(si)
@@ -529,18 +531,18 @@ void checkpings()
             si = newserver(NULL, addr.port, addr.host);
             millis = lanpings.decodeping(millis);
         }
-        int rtt = clamp(totalmillis - millis, 0, min(servpingdecay, totalmillis));
+        int rtt = clamp(ftsClient.totalMilliseconds - millis, 0, min(servpingdecay, ftsClient.totalMilliseconds));
         if(millis >= lastreset && rtt < servpingdecay) si->addping(rtt, millis);
-        si->protocol = getint(p);
-        si->numplayers = getint(p);
-        si->maxplayers = getint(p);
-        int numattr = getint(p);
+        si->protocol = shared::network::GetInt(p);
+        si->numplayers = shared::network::GetInt(p);
+        si->maxplayers = shared::network::GetInt(p);
+        int numattr = shared::network::GetInt(p);
         si->attr.setsize(0);
-        loopj(numattr) { int attr = getint(p); if(p.overread()) break; si->attr.add(attr); }
-        getcubestr(text, p);
-        filtertext(si->map, text, false);
-        getcubestr(text, p);
-        filtertext(si->desc, text);
+        loopj(numattr) { int attr = shared::network::GetInt(p); if(p.overread()) break; si->attr.add(attr); }
+        shared::network::GetCubeStr<MAXTRANS>(text, p);
+        shared::network::FilterText<260>(si->map, text, false, false);
+        shared::network::GetCubeStr<MAXTRANS>(text, p);
+        shared::network::FilterText<260>(si->desc, text, false, false);
     }
 }
 
@@ -555,17 +557,17 @@ VARP(autoupdateservers, 0, 1, 1);
 SCRIPTEXPORT void refreshservers()
 {
     static int lastrefresh = 0;
-    if(lastrefresh==totalmillis) return;
-    if(totalmillis - lastrefresh > 1000)
+    if(lastrefresh==ftsClient.totalMilliseconds) return;
+    if(ftsClient.totalMilliseconds - lastrefresh > 1000)
     {
         loopv(servers) servers[i]->reset();
-        lastreset = totalmillis;
+        lastreset = ftsClient.totalMilliseconds;
     }
-    lastrefresh = totalmillis;
+    lastrefresh = ftsClient.totalMilliseconds;
 
     checkresolver();
     checkpings();
-    if(totalmillis - lastinfo >= servpingrate/(maxservpings ? max(1, (servers.length() + maxservpings - 1) / maxservpings) : 1)) pingservers();
+    if(ftsClient.totalMilliseconds - lastinfo >= servpingrate/(maxservpings ? max(1, (servers.length() + maxservpings - 1) / maxservpings) : 1)) pingservers();
     if(autosortservers) sortservers();
 }
 

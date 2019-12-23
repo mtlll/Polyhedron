@@ -11,7 +11,7 @@ namespace classes {
 // Stop movement.
 void BaseDynamicEntity::stopmoving()
 {
-    k_left = k_right = k_up = k_down = jumping = false;
+    jumping = false;
     move = strafe = crouching = 0;
 }
 

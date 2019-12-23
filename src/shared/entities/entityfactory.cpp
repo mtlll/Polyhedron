@@ -37,12 +37,12 @@ entities::classes::CoreEntity* entities::EntityFactory::constructEntity(const st
 
 	if (factoryList.find(classname) == factoryList.end())
 	{
-		conoutf(CON_WARN, "Entity Factory for class '%s' missing!", classname.c_str());
+		conoutf(CON_WARN, "Entity Factory for classname type: ^f4 '%s' is missing!", classname.c_str());
 		return factoryList.at(fallbackEntityType)();
 	}
 	else
 	{
-		conoutf("Constructed class: %s", classname.c_str());
+		conoutf("Constructed entity class: ^f4 '%s'", classname.c_str());
 		return factoryList.at(classname)();
 	}
 }

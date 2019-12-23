@@ -12,13 +12,13 @@ namespace game
             //if (ent->et_type != ET_PLAYERSTART && ent->et_type != ET_EMPTY && ent->et_type != ET_LIGHT && ent->et_type != ET_SPOTLIGHT && ent->et_type != ET_SOUND)
 
             // Ensure we only render player entities if it isn't our own player 1 entity. (Otherwise we'd render it double.)
-            if (ent != nullptr && (ent != game::player1))
+            if (ent != nullptr && (ent != game::clPlayer))
                 ent->render();
         }
 
         // Render our client player.
-        if (game::player1 != nullptr)
-            game::player1->render();
+        if (game::clPlayer != nullptr)
+            game::clPlayer->render();
     }
 
     VARP(hudgun, 0, 1, 1);
@@ -79,7 +79,7 @@ SCRIPTEXPORT int getplayercolor(int team, int color)
     {
         case 1: return 0x0000FF;
         case 2: return 0xFF0000;
-        default: return 0xFFFF77;
+        default: return 0xFFEE77;
     }
 }
 

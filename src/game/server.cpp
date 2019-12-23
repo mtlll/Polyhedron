@@ -1,30 +1,54 @@
-#include "game.h"
-#include "server.h"
+#include "engine/engine.h"
+
+#include "game/game.h"
+#include "game/client/client.h"
+#include "game/server/server.h"
+
+#include "shared/networking/protocol.h"
+#include "shared/networking/network.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_sv.h"
 
 // This file only servers as an empty basic server implementation.
 namespace server
 {
 	void *newclientinfo() {
-		return NULL;
+		return new shared::network::ClientInfo;
 	}
 
 	void deleteclientinfo(void *ci) {
-
+		shared::network::ClientInfo info = dynamic_cast<shared::network::ClientInfo*>(ci);
+		delete info; ci = nullptr;
 	}
 	void serverinit() {
 
 	}
 	int reserveclients() {
-		return 0;
+		return 3;
 	}
 	int numchannels() {
 		return 0;
 	}
-	void clientdisconnect(int n) {
+	
+	shared::network::ClientInfo *GetInfo(int cn)
+    {
+        if(cn < MAXCLIENTS) return (ClientInfo *)GetClientInfo(cn);
+        cn -= MAXCLIENTS;
+        return bots.inrange(n) ? bots[ccn] : NULL;
+    }
+	void clientdisconnect(int cn) {
+        shared::network::ClientInfo *ci = GetInfo(cn);
+        ci->clientNumber = ci->ownerNumber = cn;
+        ci->connectedMilliseconds = fstClient.totalMilliseconds;
+        ci->sessionID = (rnd(0x1000000)*((fstClient.totalMilliseconds%10000)+1))&0xFFFFFF;
 
+        connects.add(ci);
+        if(!m_mp(gamemode)) return shared::network::protocol::DisconnectReason::Local;
+        sendservinfo(ci);
+        return shared::network::protocol::DisconnectReason::Default;
 	}
 	int clientconnect(int n, uint ip) {
-		return DISC_NONE;
+		return shared::network::protocol::DisconnectReason;
 	}
 	void localdisconnect(int n) {
 

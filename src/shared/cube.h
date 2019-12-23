@@ -52,17 +52,21 @@
 #include <zlib.h>
 
 // C++ STD Lib.
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 #include <string>
 #include <memory>
+#include <iomanip>
+#include <iostream>
+#include <fstream>
 #include <functional>
+#include <type_traits>
+#include <set>
+#include <map>
 
 // Libraries from the ext folder.
 #include <nlohmann/json.hpp>
 
 // Engine and game related includes.
+#include "shared/config.h"
 #include "tools.h"
 #include "geom.h"
 #include "command.h"

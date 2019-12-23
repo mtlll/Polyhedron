@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include "../game/entities/player.h"
+#include "shared/networking/frametimestate.h"
 
 extern void cleargamma();
 
@@ -80,7 +81,11 @@ int screenw = 0, screenh = 0;
 SDL_Window *screen = NULL;
 SDL_GLContext glcontext = NULL;
 
-int curtime = 0, lastmillis = 1, elapsedtime = 0, totalmillis = 1;
+// Main client frame state(s) and timers, encapsulated neatly in a struct.
+shared::network::FrameStateTime fstClient;
+int curtime = 0;
+int lastmillis = 1;
+int elapsedtime = 0; //totalmillis = 1;
 
 entities::classes::Player *player = NULL;
 
@@ -363,7 +368,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
 	gettextres(w, h);
 
 	extern int mesa_swap_bug, curvsync;
-	bool forcebackground = progressbackground || (mesa_swap_bug && (curvsync || totalmillis==1));
+	bool forcebackground = progressbackground || (mesa_swap_bug && (curvsync || ftsClient.totalMilliseconds==1));
 	if(background || forcebackground) restorebackground(w, h, forcebackground);
 
 	renderprogressview(w, h, bar, text);
@@ -1003,7 +1008,7 @@ static bool findarg(int argc, char **argv, const char *str)
 }
 
 static int clockrealbase = 0, clockvirtbase = 0;
-static void clockreset() { clockrealbase = SDL_GetTicks(); clockvirtbase = totalmillis; }
+static void clockreset() { clockrealbase = SDL_GetTicks(); clockvirtbase = ftsClient.totalMilliseconds; }
 VARFP(clockerror, 990000, 1000000, 1010000, clockreset());
 VARFP(clockfix, 0, 0, 1, clockreset());
 
@@ -1012,7 +1017,7 @@ int getclockmillis()
 	int millis = SDL_GetTicks() - clockrealbase;
 	if(clockfix) millis = int(millis*(double(clockerror)/1000000));
 	millis += clockvirtbase;
-	return max(millis, totalmillis);
+	return max(millis, ftsClient.totalMilliseconds);
 }
 
 VAR(numcpus, 1, 1, 16);
@@ -1244,17 +1249,17 @@ int main(int argc, char **argv)
 	for(;;)
 	{
 		static int frames = 0;
-		int millis = getclockmillis();
-		limitfps(millis, totalmillis);
-		elapsedtime = millis - totalmillis;
+		int clockMilliseconds = getclockmillis();
+		limitfps(clockMilliseconds, ftsClient.totalMillisecondsillis);
+		ftsClient.elapsedTime = clockMilliseconds - ftsClient.totalMilliseconds;
 		static int timeerr = 0;
-		int scaledtime = game::scaletime(elapsedtime) + timeerr;
-		curtime = scaledtime/100;
-		timeerr = scaledtime%100;
+		int scaledTime = game::scaletime(ftsClient.elapsedTime) + timeerr;
+		ftsClient = scaledTime/100;
+		ftsClient.currentTime = scaledTime%100;
 		if(!multiplayer(false) && curtime>200) curtime = 200;
 		if(game::ispaused()) curtime = 0;
-		lastmillis += curtime;
-		totalmillis = millis;
+		ftsClient.lastMilliseconds += ftsClient.currentTime;
+		ftsClient.totalMilliseconds = clockMilliseconds;
 		updatetime();
 
 		checkinput();
