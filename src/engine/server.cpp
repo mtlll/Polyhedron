@@ -378,7 +378,7 @@ bool requestmaster(const char *req)
     {
         mastersock = connectmaster(false);
         if(mastersock == ENET_SOCKET_NULL) return false;
-        lastconnectmaster = masterconnecting = ftsClient.totalMilliseconds ? ftsClient.totalMilliseconds : 1;
+        lastconnectmaster = masterconnecting = shared::network::ftsClient.totalMilliseconds ? shared::network::ftsClient.totalMilliseconds : 1;
     }
 
     if(masterout.length() >= 4096) return false;
@@ -428,7 +428,7 @@ void processmasterinput()
 
 void flushmasteroutput()
 {
-    if(masterconnecting && ftsClient.totalMilliseconds - masterconnecting >= 60000)
+    if(masterconnecting && shared::network::ftsClient.totalMilliseconds - masterconnecting >= 60000)
     {
         logoutf("Could not connect to master server");
         disconnectmaster();
@@ -527,7 +527,7 @@ void checkserversockets()        // reply all server info requests
                 else
                 {
                     masterconnecting = 0;
-                    masterconnected = ftsClient.totalMilliseconds ? ftsClient.totalMilliseconds : 1;
+                    masterconnected = shared::network::ftsClient.totalMilliseconds ? shared::network::ftsClient.totalMilliseconds : 1;
                     server::masterconnected();
                 }
             }
@@ -557,9 +557,9 @@ int curtime = 0, lastmillis = 0, elapsedtime = 0, totalmillis = 0;
 
 void updatemasterserver()
 {
-    if(!masterconnected && lastconnectmaster && ftsClient.totalMilliseconds-lastconnectmaster <= 5*60*1000) return;
+    if(!masterconnected && lastconnectmaster && shared::network::ftsClient.totalMilliseconds-lastconnectmaster <= 5*60*1000) return;
     if(mastername[0] && allowupdatemaster) requestmasterf("regserv %d\n", serverport);
-    lastupdatemaster = ftsClient.totalMilliseconds ? ftsClient.totalMilliseconds : 1;
+    lastupdatemaster = shared::network::ftsClient.totalMilliseconds ? shared::network::ftsClient.totalMilliseconds : 1;
 }
 
 uint totalsecs = 0;
@@ -567,9 +567,9 @@ uint totalsecs = 0;
 void updatetime()
 {
     static int lastsec = 0;
-    if(ftsClient.totalMilliseconds - lastsec >= 1000)
+    if(shared::network::ftsClient.totalMilliseconds - lastsec >= 1000)
     {
-        int cursecs = (ftsClient.totalMilliseconds - lastsec) / 1000;
+        int cursecs = (shared::network::ftsClient.totalMilliseconds - lastsec) / 1000;
         totalsecs += cursecs;
         lastsec += cursecs * 1000;
     }
@@ -589,14 +589,14 @@ void serverslice(bool dedicated, uint timeout)   // main server update, called f
     if(dedicated)
     {
         int millis = (int)enet_time_get();
-        ftsClient.elapsedTime = millis - ftsClient.totalMilliseconds;
+        shared::network::ftsClient.elapsedTime = millis - shared::network::ftsClient.totalMilliseconds;
         static int timeerr = 0;
-        int scaledtime = server::scaletime(ftsClient.elapsedTime) + timeerr;
-        ftsClient.currentTime = scaledtime/100;
+        int scaledtime = server::scaletime(shared::network::ftsClient.elapsedTime) + timeerr;
+        shared::network::ftsClient.currentTime = scaledtime/100;
         timeerr = scaledtime%100;
-        if(server::ispaused()) ftsClient.currentTime = 0;
-        ftsClient.lastMilliseconds += ftsClient.currentTime;
-        ftsClient.totalMilliseconds = millis;
+        if(server::ispaused()) shared::network::ftsClient.currentTime = 0;
+        shared::network::ftsClient.lastMilliseconds += shared::network::ftsClient.currentTime;
+        shared::network::ftsClient.totalMilliseconds = millis;
         updatetime();
     }
     server::serverupdate();
@@ -604,12 +604,12 @@ void serverslice(bool dedicated, uint timeout)   // main server update, called f
     flushmasteroutput();
     checkserversockets();
 
-    if(!lastupdatemaster || ftsClient.totalMilliseconds-lastupdatemaster>60*60*1000)       // send alive signal to masterserver every hour of uptime
+    if(!lastupdatemaster || shared::network::ftsClient.totalMilliseconds-lastupdatemaster>60*60*1000)       // send alive signal to masterserver every hour of uptime
         updatemasterserver();
 
-    if(ftsClient.totalMilliseconds-laststatus>60*1000)   // display bandwidth stats, useful for server ops
+    if(shared::network::ftsClient.totalMilliseconds-laststatus>60*1000)   // display bandwidth stats, useful for server ops
     {
-        laststatus = ftsClient.totalMilliseconds;
+        laststatus = shared::network::ftsClient.totalMilliseconds;
         if(nonlocalclients || serverhost->totalSentData || serverhost->totalReceivedData) logoutf("status: %d remote clients, %.1f send, %.1f rec (K/sec)", nonlocalclients, serverhost->totalSentData/60.0f/1024, serverhost->totalReceivedData/60.0f/1024);
         serverhost->totalSentData = serverhost->totalReceivedData = 0;
     }

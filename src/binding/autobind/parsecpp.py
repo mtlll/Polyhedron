@@ -130,7 +130,7 @@ class CppParser:
                         return CxxClass(cursor, parent)
                     elif cursor.spelling == 'CoreEntity':
                         if "coreentity.cpp" in file or "coreentity.h" in file:
-                            print(">>> class {} IS CoreEntty!".format(cursor.spelling), file=sys.stderr)
+                            print(">>> class {} IS CoreEntity!".format(cursor.spelling), file=sys.stderr)
                             return CxxClass(cursor, parent)
             if type(parent) == CxxClass:
                 if self.cursor_is_part_of_file_or_header(cursor, file):

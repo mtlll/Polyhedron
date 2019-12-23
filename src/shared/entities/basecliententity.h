@@ -28,7 +28,6 @@ namespace entities
             //
 			// Entity member variables.
 			//
-            shared::network::protocol::Priviliges privilige = shared::network::protocol::Priviliges::None;
             // WatIsDeze: Mike: These are there for the actual client entities. (Those who are bots, and real players on our screen.)
             DONTSERIALIZE bool k_left = false;
             DONTSERIALIZE bool k_right = false;

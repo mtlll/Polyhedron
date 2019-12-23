@@ -65,7 +65,7 @@ namespace entities {
             virtual std::string onAttributeGet(const std::string &key) { return ""; }
             virtual std::vector<std::string> onAttributeList() { return {}; }
             
-            void setName(const std::string &str = "coreentity");
+            void setEntityName(const std::string &str = "coreentity");
             
             virtual bool getBoundingBox(int entselradius, ivec &minbb, ivec &maxbb) const;
             virtual void renderForEdit();
@@ -78,12 +78,13 @@ namespace entities {
             // CoreEntity data.
             //
             // Entity Name. (Used for trigger events.)
-            std::string name = "coreentity_unnamed";
+            std::string entityName = "coreentity_unnamed";
 
             //
             // CoreEntity utility functions.
             //
             // Sets the name of the entity.
+            std::string name = "coreentity_unnamed";
         };
         
 		void from_json(const nlohmann::json& document,  entities::classes::CoreEntity* entity_ptr);

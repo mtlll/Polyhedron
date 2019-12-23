@@ -2,6 +2,10 @@
 #include "engine.h"
 #include "textedit.h"
 #include "shared/entities/animinfo.h"
+#include "shared/networking/protocol.h"
+#include "shared/networking/network.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_sv.h"
 
 namespace UI
 {
@@ -2486,7 +2490,7 @@ namespace UI
 
         void press(float cx, float cy)
         {
-            laststep = ftsClient.totalMilliseconds + 2*uislidersteptime;
+            laststep = shared::network::ftsClient.totalMilliseconds + 2*uislidersteptime;
 
             Slider *slider = (Slider *)findsibling(Slider::typestr());
             if(slider) slider->arrowscroll(stepdir);
@@ -2494,9 +2498,9 @@ namespace UI
 
         void hold(float cx, float cy)
         {
-            if(ftsClient.totalMilliseconds < laststep + uislidersteptime)
+            if(shared::network::ftsClient.totalMilliseconds < laststep + uislidersteptime)
                 return;
-            laststep = ftsClient.totalMilliseconds;
+            laststep = shared::network::ftsClient.totalMilliseconds;
 
             Slider *slider = (Slider *)findsibling(Slider::typestr());
             if(slider) slider->arrowscroll(stepdir);
@@ -3028,9 +3032,9 @@ namespace UI
             {
                 if(!slot.thumbnail)
                 {
-                    if(ftsClient.totalMilliseconds - lastthumbnail < uislotviewtime) return;
+                    if(shared::network::ftsClient.totalMilliseconds - lastthumbnail < uislotviewtime) return;
                     slot.loadthumbnail();
-                    lastthumbnail = ftsClient.totalMilliseconds;
+                    lastthumbnail = shared::network::ftsClient.totalMilliseconds;
                 }
                 if(slot.thumbnail != notexture) t = slot.thumbnail;
                 else return;

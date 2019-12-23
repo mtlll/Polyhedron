@@ -1173,19 +1173,19 @@ void printtimers(int conw, int conh)
     if(frametimer)
     {
         static int printMilliseconds = 0;
-        if(ftsClient.totalMilliseconds - lastPrint >= 200) printMilliseconds = frameMilliseconds;
+        if(shared::network::ftsClient.totalMilliseconds - lastPrint >= 200) printMilliseconds = frameMilliseconds;
         draw_textf("frame time %i ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, printMilliseconds);
         offset++;
     }
     if(usetimers) loopv(timerOrder)
     {
         timer &t = timers[timerOrder[i]];
-        if(t.print < 0 ? t.result >= 0 : ftsClient.totalMilliseconds - lastPrint >= 200) t.print = t.result;
+        if(t.print < 0 ? t.result >= 0 : shared::network::ftsClient.totalMilliseconds - lastPrint >= 200) t.print = t.result;
         if(t.print < 0 || (t.gpu && !(t.waiting&(1<<timerCycle)))) continue;
         draw_textf("%s%s %5.2f ms", conw-20*FONTH, conh-FONTH*3/2-offset*9*FONTH/8, t.name, t.gpu ? "" : " (cpu)", t.print);
         offset++;
     }
-    if(ftsClient.totalMilliseconds - lastPrint >= 200) lastPrint = ftsClient.totalMilliseconds;
+    if(shared::network::ftsClient.totalMilliseconds - lastPrint >= 200) lastPrint = shared::network::ftsClient.totalMilliseconds;
 }
 
 void gl_resize()
@@ -2749,10 +2749,10 @@ void gl_drawhud()
             if(showfps)
             {
                 static int lastfps = 0, prevfps[3] = { 0, 0, 0 }, curfps[3] = { 0, 0, 0 };
-                if(ftsClient.totalMilliseconds - lastfps >= statrate)
+                if(shared::network::ftsClient.totalMilliseconds - lastfps >= statrate)
                 {
                     memcpy(prevfps, curfps, sizeof(prevfps));
-                    lastfps = ftsClient.totalMilliseconds - (ftsClient.totalMilliseconds%statrate);
+                    lastfps = shared::network::ftsClient.totalMilliseconds - (shared::network::ftsClient.totalMilliseconds%statrate);
                 }
                 int nextfps[3];
                 getfps(nextfps[0], nextfps[1], nextfps[2]);
@@ -2766,8 +2766,8 @@ void gl_drawhud()
 
             if(wallclock)
             {
-                if(!walltime) { walltime = time(NULL); walltime -= ftsClient.totalMilliseconds/1000; if(!walltime) walltime++; }
-                time_t walloffset = walltime + ftsClient.totalMilliseconds/1000;
+                if(!walltime) { walltime = time(NULL); walltime -= shared::network::ftsClient.totalMilliseconds/1000; if(!walltime) walltime++; }
+                time_t walloffset = walltime + shared::network::ftsClient.totalMilliseconds/1000;
                 struct tm *localvals = localtime(&walloffset);
                 static cubestr buf;
                 if(localvals && strftime(buf, sizeof(buf), wallclocksecs ? (wallclock24 ? "%H:%M:%S" : "%I:%M:%S%p") : (wallclock24 ? "%H:%M" : "%I:%M%p"), localvals))
@@ -2813,7 +2813,7 @@ void gl_drawhud()
     if(frametimer)
     {
         glFinish();
-        framemillis = getclockmillis() - ftsClient.totalMilliseconds;
+        frameMilliseconds = getclockmillis() - shared::network::ftsClient.totalMilliseconds;
     }
 }
 

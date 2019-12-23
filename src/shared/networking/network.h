@@ -2,10 +2,9 @@
 
 #include "shared/utils/cubestr.h"
 
-#include "shared/networking/cl_sv.h"
-#include "shared/networking/network.h"
 #include "shared/networking/protocol.h"
 #include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_sv.h"
 
 namespace shared {
     namespace network {
@@ -45,13 +44,12 @@ namespace shared {
             Pulse      = 1<<8
         };
         // Operator belongs to GameMode.
-        inline shared::network::protocol::GameMode operator | (const shared::network::protocol::GameMode &a, const shared::network::protocol::GameMode &b) {
-            return static_cast<shared::network::protocol::GameMode>((static_cast<int>(a) | static_cast<int>(b)));
+        inline shared::network::GameMode operator | (const shared::network::GameMode &a, const shared::network::GameMode &b) {
+            return static_cast<shared::network::GameMode>((static_cast<int>(a) | static_cast<int>(b)));
         };
 
         //
         // IPMask struct.
-        //
         struct IPMask {
             enet_uint32 ip, mask;
 

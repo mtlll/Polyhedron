@@ -4314,7 +4314,7 @@ void strsplice(const char *s, const char *vals, int *skip, int *count)
 COMMAND(strsplice, "ssii", "builtin");
 
 #ifndef STANDALONE
-ICOMMAND(getmillis, "i", (int *total), intret(*total ? ftsClient.totalMilliseconds : ftsClient.lastMilliseconds), "builtin");
+ICOMMAND(getmillis, "i", (int *total), intret(*total ? shared::network::ftsClient.totalMilliseconds : shared::network::ftsClient.lastMilliseconds), "builtin");
 
 struct sleepcmd
 {

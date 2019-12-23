@@ -8,6 +8,12 @@
 //   kino - ok
 
 #include "engine.h"
+
+#include "shared/networking/protocol.h"
+#include "shared/networking/network.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_sv.h"
+
 #ifdef __APPLE__
   #include "SDL_mixer.h"
 #else
@@ -843,7 +849,7 @@ namespace recorder
 
     int gettime()
     {
-        return inbetweenframes ? getclockmillis() : ftsClient.totalMilliseconds;
+        return inbetweenframes ? getclockmillis() : shared::network::ftsClient.totalMilliseconds;
     }
 
     int videoencoder(void *data) // runs on a separate thread

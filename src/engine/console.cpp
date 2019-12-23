@@ -25,7 +25,7 @@ void conline(int type, const char *sf)        // add a line to the console buffe
     cline &cl = conlines.add();
     cl.line = buf;
     cl.type = type;
-    cl.outtime = ftsClient.totalMilliseconds;                // for how long to keep line on screen
+    cl.outtime = shared::network::ftsClient.totalMilliseconds;                // for how long to keep line on screen
     copycubestr(cl.line, sf, CONSTRLEN);
 }
 
@@ -146,7 +146,7 @@ float drawconlines(int conskip, int confade, float conwidth, float conheight, fl
         if(!conskip)
         {
             numl = 0;
-            loopvrev(conlines) if(ftsClient.totalMilliseconds-conlines[i].outtime < confade*1000) { numl = i+1; break; }
+            loopvrev(conlines) if(shared::network::ftsClient.totalMilliseconds-conlines[i].outtime < confade*1000) { numl = i+1; break; }
         }
         else offset--;
     }
@@ -364,7 +364,7 @@ SCRIPTEXPORT void clearallbinds()
 
 SCRIPTEXPORT void inputcommand(char *init, char *action = NULL, char *prompt = NULL, char *flags = NULL) // turns input to the command line on or off
 {
-    commandmillis = init ? ftsClient.totalMilliseconds : -1;
+    commandmillis = init ? shared::network::ftsClient.totalMilliseconds : -1;
     textinput(commandmillis >= 0, TI_CONSOLE);
     keyrepeat(commandmillis >= 0, KR_CONSOLE);
     copycubestr(commandbuf, init ? init : "");
@@ -745,7 +745,7 @@ struct filesval
         listfiles(dir, ext, files);
         files.sort();
         loopv(files) if(i && !strcmp(files[i], files[i-1])) delete[] files.remove(i--);
-        millis = ftsClient.totalMilliseconds;
+        millis = shared::network::ftsClient.totalMilliseconds;
     }
 };
 

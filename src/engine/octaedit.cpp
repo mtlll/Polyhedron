@@ -1,5 +1,10 @@
 #include "engine.h"
-#include "../game/entities/player.h"
+#include "game/entities/player.h"
+
+#include "shared/networking/network.h"
+#include "shared/networking/protocol.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_sv.h"
 
 extern int outline;
 
@@ -796,7 +801,7 @@ undoblock *newundocube(const selinfo &s)
 void addundo(undoblock *u)
 {
     u->size = undosize(u);
-    u->timestamp = ftsClient.totalMilliseconds;
+    u->timestamp = shared::network::ftsClient.totalMilliseconds;
     undos.add(u);
     totalundos += u->size;
     pruneundos(undomegs<<20);
@@ -864,7 +869,7 @@ void swapundo(undolist &a, undolist &b, int op)
         if(r)
         {
             r->size = u->size;
-            r->timestamp = ftsClient.totalMilliseconds;
+            r->timestamp = shared::network::ftsClient.totalMilliseconds;
             b.add(r);
         }
         pasteundo(u);
@@ -2198,7 +2203,7 @@ void mpeditvslot(int delta, VSlot &ds, int allfaces, selinfo &sel, bool local)
     if(local && findedit)
     {
         lasttex = findedit->index;
-        lasttexmillis = ftsClient.totalMilliseconds;
+        lasttexmillis = shared::network::ftsClient.totalMilliseconds;
         curtexindex = texmru.find(lasttex);
         if(curtexindex < 0)
         {
@@ -2431,7 +2436,7 @@ void compactmruvslots()
 void edittex(int i, bool save = true)
 {
     lasttex = i;
-    lasttexmillis = ftsClient.totalMilliseconds;
+    lasttexmillis = shared::network::ftsClient.totalMilliseconds;
     if(save)
     {
         loopvj(texmru) if(texmru[j]==lasttex) { curtexindex = j; break; }

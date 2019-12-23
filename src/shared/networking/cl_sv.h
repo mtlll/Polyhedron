@@ -5,10 +5,9 @@
 
 #include "game/game.h"
 
-#include "shared/networking/cl_sv.h"
 #include "shared/networking/network.h"
-#include "shared/networking/frametimestate.h"
 #include "shared/networking/protocol.h"
+#include "shared/networking/frametimestate.h"
 
 namespace shared {
     // Networking
@@ -16,21 +15,22 @@ namespace shared {
         // Protocol predefinitions.
         namespace protocol {
             enum struct Messages : int;
-            enum struct Priviliges : int;
             enum struct NetClientMessage : int;
             enum struct ConsoleMessage : short;            
             enum struct DisconnectReason : int;
-            enum struct GameMode : int;
-            enum struct MasterMode : int;
+
+            //
+            // A class enum copy of the old default priviliges
+            //
+            enum struct Priviliges : int { 
+                None = 0, Master, Auth, Admin
+            };       
+
             //
             // Master Mode Masks.
             //
             enum struct MasterMask : int {
-                Mode = 0xF,
-                AutoApprove = 0x1000,
-                PrivateServer = (Mode | AutoApprove),
-                PublicServer = ((1 << static_cast<int>(shared::network::protocol::MasterMode::Open)) | (1 << static_cast<int>(shared::network::protocol::MasterMode::Veto))),
-                CoopServer = (AutoApprove | PublicServer | (1 << static_cast<int>(shared::network::protocol::MasterMode::Locked)))
+                Auth = -1, OpenServer, Cooperative, Veto, Locked, PrivateServer, Password, Start = Auth
             };
         };
         
@@ -38,9 +38,7 @@ namespace shared {
         // ServerState, empty, local, or TcpIP.
         //
         enum class ServerState : int {
-            Empty = 0,
-            Local,
-            TcpIP 
+            Empty = 0, Local,TcpIP 
         };
 
         //
@@ -138,7 +136,7 @@ namespace shared {
             int playerColor = 0;            // Player Model Color.
 
             // Client personal relations.
-            cubestr name;
+            std::string nickname = "unnamed_ci";
             shared::network::protocol::Priviliges privilege = shared::network::protocol::Priviliges::None;
             bool connected = false;
             bool local = false;

@@ -37,7 +37,7 @@ int resolverloop(void * data)
         SDL_LockMutex(resolvermutex);
         while(resolverqueries.empty()) SDL_CondWait(querycond, resolvermutex);
         rt->query = resolverqueries.pop();
-        rt->starttime = ftsClient.totalMilliseconds;
+        rt->starttime = shared::network::ftsClient.totalMilliseconds;
         SDL_UnlockMutex(resolvermutex);
 
         ENetAddress address = { ENET_HOST_ANY, ENET_PORT_ANY };
@@ -129,7 +129,7 @@ bool resolvercheck(const char **name, ENetAddress *address)
     else loopv(resolverthreads)
     {
         resolverthread &rt = resolverthreads[i];
-        if(rt.query && ftsClient.totalMilliseconds - rt.starttime > RESOLVERLIMIT)
+        if(rt.query && shared::network::ftsClient.totalMilliseconds - rt.starttime > RESOLVERLIMIT)
         {
             resolverstop(rt);
             *name = rt.query;
@@ -312,9 +312,9 @@ struct serverinfo : servinfo, pingattempts
 
     void checkdecay(int decay)
     {
-        if(lastping >= 0 && ftsClient.totalMilliseconds - lastping >= decay)
+        if(lastping >= 0 && shared::network::ftsClient.totalMilliseconds - lastping >= decay)
             cleanup();
-        if(lastping < 0) lastping = ftsClient.totalMilliseconds;
+        if(lastping < 0) lastping = shared::network::ftsClient.totalMilliseconds;
     }
 
     void calcping()
@@ -420,7 +420,7 @@ template<size_t N> static inline void buildping(ENetBuffer &buf, uchar (&ping)[N
 {
     ucharbuf p(ping, N);
     p.put(0xFF); p.put(0xFF);
-    shared::network::PutInt(p, a.addattempt(ftsClient.totalMilliseconds));
+    shared::network::PutInt(p, a.addattempt(shared::network::ftsClient.totalMilliseconds));
     buf.data = ping;
     buf.dataLength = p.length();
 }
@@ -432,7 +432,7 @@ void pingservers()
         pingsock = enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM);
         if(pingsock == ENET_SOCKET_NULL)
         {
-            lastinfo = ftsClient.totalMilliseconds;
+            lastinfo = shared::network::ftsClient.totalMilliseconds;
             return;
         }
         enet_socket_set_option(pingsock, ENET_SOCKOPT_NONBLOCK, 1);
@@ -464,7 +464,7 @@ void pingservers()
         buildping(buf, ping, lanpings);
         enet_socket_send(pingsock, &address, &buf, 1);
     }
-    lastinfo = ftsClient.totalMilliseconds;
+    lastinfo = shared::network::ftsClient.totalMilliseconds;
 }
 
 void checkresolver()
@@ -531,7 +531,7 @@ void checkpings()
             si = newserver(NULL, addr.port, addr.host);
             millis = lanpings.decodeping(millis);
         }
-        int rtt = clamp(ftsClient.totalMilliseconds - millis, 0, min(servpingdecay, ftsClient.totalMilliseconds));
+        int rtt = clamp(shared::network::ftsClient.totalMilliseconds - millis, 0, min(servpingdecay, shared::network::ftsClient.totalMilliseconds));
         if(millis >= lastreset && rtt < servpingdecay) si->addping(rtt, millis);
         si->protocol = shared::network::GetInt(p);
         si->numplayers = shared::network::GetInt(p);
@@ -557,17 +557,17 @@ VARP(autoupdateservers, 0, 1, 1);
 SCRIPTEXPORT void refreshservers()
 {
     static int lastrefresh = 0;
-    if(lastrefresh==ftsClient.totalMilliseconds) return;
-    if(ftsClient.totalMilliseconds - lastrefresh > 1000)
+    if(lastrefresh==shared::network::ftsClient.totalMilliseconds) return;
+    if(shared::network::ftsClient.totalMilliseconds - lastrefresh > 1000)
     {
         loopv(servers) servers[i]->reset();
-        lastreset = ftsClient.totalMilliseconds;
+        lastreset = shared::network::ftsClient.totalMilliseconds;
     }
-    lastrefresh = ftsClient.totalMilliseconds;
+    lastrefresh = shared::network::ftsClient.totalMilliseconds;
 
     checkresolver();
     checkpings();
-    if(ftsClient.totalMilliseconds - lastinfo >= servpingrate/(maxservpings ? max(1, (servers.length() + maxservpings - 1) / maxservpings) : 1)) pingservers();
+    if(shared::network::ftsClient.totalMilliseconds - lastinfo >= servpingrate/(maxservpings ? max(1, (servers.length() + maxservpings - 1) / maxservpings) : 1)) pingservers();
     if(autosortservers) sortservers();
 }
 

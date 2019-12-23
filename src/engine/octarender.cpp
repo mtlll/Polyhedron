@@ -1080,7 +1080,7 @@ void gencubeedges(cube &c, const ivec &co, int size)
 
 void gencubeedges(cube *c = worldroot, const ivec &co = ivec(0, 0, 0), int size = worldsize>>1)
 {
-    progress("fixing t-joints...");
+    progress("Fixing t-joints...");
     neighbourstack[++neighbourdepth] = c;
     loopi(8)
     {

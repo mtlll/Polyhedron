@@ -2,6 +2,10 @@
 
 #include "engine.h"
 
+#include "shared/networking/network.h"
+#include "shared/networking/protocol.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_sv.h"
 static struct emptycube : cube
 {
     emptycube()
@@ -1873,10 +1877,10 @@ static int invalidatedmerges = 0;
 
 void invalidatemerges(cube &c, const ivec &co, int size, bool msg)
 {
-    if(msg && invalidatedmerges!=ftsClient.totalMilliseconds)
+    if(msg && invalidatedmerges!=shared::network::ftsClient.totalMilliseconds)
     {
         renderprogress(0, "invalidating merged surfaces...");
-        invalidatedmerges = ftsClient.totalMilliseconds;
+        invalidatedmerges = shared::network::ftsClient.totalMilliseconds;
     }
     invalidatemerges(c);
 }

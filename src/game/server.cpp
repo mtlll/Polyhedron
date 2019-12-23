@@ -12,12 +12,77 @@
 // This file only servers as an empty basic server implementation.
 namespace server
 {
+	//
+	// Unwillingly, who cares for demos, some do... But one thing is true
+	// they'll at least allow me to test shit.
+	//
+    struct DemoFile
+    {
+        cubestr info;
+        uchar *data;
+        int len;
+    };
+	// Vector of "demoFiles"
+    vector<DemoFile> demoFiles;
+
+	// Demo playback and recording streams and states.
+    bool demoNextMatch = false;
+    stream *demoTemp = NULL, *demoRecord = NULL, *demoPlayback = NULL;
+    int nextPlayback = 0, demoMilliseconds = 0;
+
+	// Server demo settings.
+    VAR(maxdemos, 0, 5, 25);
+    VAR(maxdemosize, 0, 16, 64);
+    VAR(restrictdemos, 0, 1, 1);
+
+	// Server restrictions.
+    VAR(restrictpausegame, 0, 1, 1);
+    VAR(restrictgamespeed, 0, 1, 1);
+
+	// Should be a struct, server frame time state.
+	struct ServerFrameTimeState {
+		int gameMode = 0;
+		int gameMilliseconds = 0;
+		int gameLimit = 0;
+		int nextExceeded = 0;
+		int gameSpeed = 100;
+
+		bool gamePaused = false;
+		bool shouldstep = true;
+		bool notgotitems = true;        // true when map has changed and waiting for clients to send item
+
+		int intermission = 0;
+		enet_uint32 lastSend = 0;
+
+		string serverMapName = "";
+		stream *mapData = NULL;
+
+	}; ServerFrameTimeState ftsServer;
+
+	// Base server settings (description, password, adminpassword, public or...)
+    SVAR(serverdesc, "");
+    SVAR(serverpass, "");
+    SVAR(adminpass, "");
+    VARF(publicserver, 0, 0, 2, {
+		switch(publicserver)
+		{
+			case 0: default: masterMask = shared::network::protocol::MasterMask::PrivateServer; break;
+			case 1: masterMask = shared::network::protocol::MasterMask::OpenServer; break;
+			case 2: masterMask = shared::network::protocol::MasterMask::Cooperative; break;
+		}
+	});
+    SVAR(servermotd, "");
+
+	// Default master mode and mask.
+	shared::network::protocol::MasterMode masterMode = shared::network::protocol::MasterMode::Open;
+	shared::network::protocol::MasterMask masterMask = shared::network::protocol::MasterMask::PrivateServer;
+
 	void *newclientinfo() {
 		return new shared::network::ClientInfo;
 	}
 
 	void deleteclientinfo(void *ci) {
-		shared::network::ClientInfo info = dynamic_cast<shared::network::ClientInfo*>(ci);
+		shared::network::ClientInfo *info = static_cast<shared::network::ClientInfo*>(ci);
 		delete info; ci = nullptr;
 	}
 	void serverinit() {
@@ -27,36 +92,40 @@ namespace server
 		return 3;
 	}
 	int numchannels() {
-		return 0;
+		return 3;
 	}
 	
 	shared::network::ClientInfo *GetInfo(int cn)
     {
-        if(cn < MAXCLIENTS) return (ClientInfo *)GetClientInfo(cn);
+        if(cn < MAXCLIENTS) return (shared::network::ClientInfo *)GetClientInfo(cn));
         cn -= MAXCLIENTS;
-        return bots.inrange(n) ? bots[ccn] : NULL;
+
+		return NULL;
+        //return bots.inrange(n) ? dynamic_cast<shared::network::ClientInfo*>(bots[ccn]) : NULL;
     }
-	void clientdisconnect(int cn) {
+	shared::network::protocol::DisconnectReason clientdisconnect(int cn) {
+		// Idk why the fuck this is... clientdisconnect?
         shared::network::ClientInfo *ci = GetInfo(cn);
         ci->clientNumber = ci->ownerNumber = cn;
-        ci->connectedMilliseconds = fstClient.totalMilliseconds;
-        ci->sessionID = (rnd(0x1000000)*((fstClient.totalMilliseconds%10000)+1))&0xFFFFFF;
+        ci->connectedMilliseconds = shared::network::ftsClient.totalMilliseconds;
+        ci->sessionID = (rnd(0x1000000)*((shared::network::ftsClient.totalMilliseconds%10000)+1))&0xFFFFFF;
 
-        connects.add(ci);
+		// Add client to the server client list.
+        game::server::svClients.connected.add(ci);
         if(!m_mp(gamemode)) return shared::network::protocol::DisconnectReason::Local;
         sendservinfo(ci);
         return shared::network::protocol::DisconnectReason::Default;
 	}
-	int clientconnect(int n, uint ip) {
-		return shared::network::protocol::DisconnectReason;
+	shared::network::protocol::DisconnectReason clientconnect(int n, uint ip) {
+		return shared::network::protocol::DisconnectReason::Default;
 	}
-	void localdisconnect(int n) {
+	void LocalDisconnect(int n) {
 
 	}
-	void localconnect(int n) {
+	void LocalConnect(int n) {
 
 	}
-	bool allowbroadcast(int n) {
+	bool AllowBroadcast(int n) {
 		return true;
 	}
 	void recordpacket(int chan, void *data, int len) {
@@ -71,6 +140,10 @@ namespace server
 	bool sendpackets(bool force) {
 		return false;
 	}
+	void sendservinfo(shared::network::ClientInfo *ci)
+    {
+        sendf(ci->clientnum, 1, "ri5ss", N_SERVINFO, ci->clientNumber, shared::network::POLYHEDRON_PROTOCOL_VERSION, ci->sessionID, serverpass[0] ? 1 : 0, serverdesc, serverauth);
+    }
 	void serverinforeply(ucharbuf &req, ucharbuf &p) {
 
 	}

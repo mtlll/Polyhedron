@@ -127,7 +127,7 @@ SCRIPTEXPORT_AS(connect) void connectserv(const char *servername, int serverport
 
     connpeer = enet_host_connect(clienthost, &address, server::numchannels(), 0);
     enet_host_flush(clienthost);
-    connmillis = fts.totalMilliseconds;
+    connmillis = shared::network::ftsClient.totalMilliseconds;
     connattempts = 0;
 
     game::connectattempt(servername ? servername : "", serverpassword ? serverpassword : "", address);
@@ -152,7 +152,7 @@ void disconnect(bool async, bool cleanup)
         {
             enet_peer_disconnect(curpeer, DISC_NONE);
             enet_host_flush(clienthost);
-            discmillis = fstClient.totalMilliseconds;
+            discmillis = shared::network::ftsClient.totalMilliseconds;
         }
         if(curpeer->state!=ENET_PEER_STATE_DISCONNECTED)
         {
@@ -243,10 +243,10 @@ void gets2c()           // get updates from the server
 {
     ENetEvent event;
     if(!clienthost) return;
-    if(connpeer && fstClient.totalMilliseconds/3000 > connmillis/3000)
+    if(connpeer && shared::network::ftsClient.totalMilliseconds/3000 > connmillis/3000)
     {
         conoutf("Attempting to connect...");
-        connmillis = fstClient.totalMilliseconds;
+        connmillis = shared::network::ftsClient.totalMilliseconds;
         ++connattempts;
         if(connattempts > 3)
         {
@@ -287,7 +287,7 @@ void gets2c()           // get updates from the server
                 if(!discmillis || event.data)
                 {
                     const char *msg = disconnectreason(event.data);
-                    if(msg) conoutf("\f3server network error, disconnecting (%s) ...", msg);
+                    if(msg) conoutf("\f3Server network error, disconnecting (%s) ...", msg);
                     else conoutf("\f3Server network error, disconnecting...");
                 }
                 disconnect();

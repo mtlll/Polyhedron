@@ -1,5 +1,10 @@
 #include "engine.h"
 
+#include "shared/networking/cl_sv.h"
+#include "shared/networking/network.h"
+#include "shared/networking/protocol.h"
+#include "shared/networking/frametimestate.h"
+
 static hashnameset<font> fonts;
 static font *fontdef = NULL;
 static int fontdeftex = 0;
@@ -399,7 +404,7 @@ void draw_text(const char *str, float left, float top, int r, int g, int b, int 
 	TEXTSKELETON
 	TEXTEND(cursor)
 	xtraverts += gle::end();
-	if(cursor >= 0 && (ftsClient.totalMilliseconds/250)&1)
+	if(cursor >= 0 && (shared::network::ftsClient.totalMilliseconds/250)&1)
 	{
 		gle::color(color, a);
 		if(maxwidth >= 0 && cx >= maxwidth && cx > 0) { cx = 0; cy += FONTH; }

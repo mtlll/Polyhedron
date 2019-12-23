@@ -103,8 +103,8 @@ namespace server
     extern void serverinit();
     extern int reserveclients();
     extern int numchannels();
-    extern void clientdisconnect(int n);
-    extern int clientconnect(int n, uint ip);
+    extern shared::network::protocol::DisconnectReason clientdisconnect(int n);
+    extern shared::network::protocol::DisconnectReason clientconnect(int n, uint ip);
     extern void localdisconnect(int n);
     extern void localconnect(int n);
     extern bool allowbroadcast(int n);

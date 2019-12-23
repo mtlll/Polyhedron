@@ -25,7 +25,7 @@ namespace game
 
     void updateworld() {
         // Update the map time. (First frame since maptime = 0.
-        if(!maptime) { maptime = lastmillis; maprealtime = ftsClient.totalMilliseconds; return; }
+        if(!maptime) { maptime = lastmillis; maprealtime = shared::network::ftsClient.totalMilliseconds; return; }
 
         // Escape this function if there is no currenttime yet from server to client. (Meaning it is 0.)
         if(!curtime) return; //{ gets2c(); if (clPlayer->) c2sinfo(); return; } //c2sinfo(); }///if(clPlayer->clientnum>=0) c2sinfo(); return; }

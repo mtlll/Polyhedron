@@ -1,5 +1,11 @@
 #include "engine.h"
 
+#include "shared/networking/network.h"
+#include "shared/networking/protocol.h"
+#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_sv.h"
+
+
 enum
 {
     BM_BRANCH = 0,
@@ -991,14 +997,14 @@ void stoppaintblendmap()
 
 void trypaintblendmap()
 {
-    if(!paintingblendmap || ftsClient.totalMilliseconds - paintingblendmap < paintblendmapdelay) return;
+    if(!paintingblendmap || shared::network::ftsClient.totalMilliseconds - paintingblendmap < paintblendmapdelay) return;
     if(lastpaintblendmap)
     {
-        int diff = ftsClient.totalMilliseconds - lastpaintblendmap;
+        int diff = shared::network::ftsClient.totalMilliseconds - lastpaintblendmap;
         if(diff < paintblendmapinterval) return;
         lastpaintblendmap = (diff - diff%paintblendmapinterval) + lastpaintblendmap;
     }
-    else lastpaintblendmap = ftsClient.totalMilliseconds;
+    else lastpaintblendmap = shared::network::ftsClient.totalMilliseconds;
     paintblendmap(false);
 }
 
@@ -1006,7 +1012,7 @@ SCRIPTEXPORT_AS(paintblendmap) void paintblendmap_scriptimpl(int *isdown)
 {
     if(*isdown)
     {
-        if(!paintingblendmap) { paintblendmap(true); paintingblendmap = ftsClient.totalMilliseconds; }
+        if(!paintingblendmap) { paintblendmap(true); paintingblendmap = shared::network::ftsClient.totalMilliseconds; }
     }
     else stoppaintblendmap();
 }

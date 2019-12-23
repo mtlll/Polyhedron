@@ -15,8 +15,8 @@ option(SCHIZOMANIA_BUILD_SERVER "Build the game server" OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED OFF)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 
@@ -159,6 +159,8 @@ list(APPEND fileListGame
 list(APPEND fileListGameClient
     game/client/client.cpp
     game/client/client.h
+    game/client/authorizationkey.cpp
+    game/client/authorizationkey.h 
 )
 
 #
@@ -444,6 +446,11 @@ if (APPLE)
         # ${COREFOUNDATION}
     )
 else()
+    set_target_properties(Polyhedron PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED ON
+        CXX_EXTENSIONS OFF
+    )
     target_link_libraries(Polyhedron
         enet
         rt

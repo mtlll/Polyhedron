@@ -1,9 +1,5 @@
 #pragma once
 
-#include "shared/networking/network.h"
-#include "shared/networking/frametimestate.h"
-#include "shared/networking/cl_sv.h"
-
 namespace shared {
     namespace network {
         namespace protocol {
@@ -97,16 +93,6 @@ namespace shared {
 
                 // Maximum of network client messages.
                 MaxNetClientMsg
-            };
-
-            //
-            // A class enum copy of the old default priviliges
-            //
-            enum struct Priviliges : int { 
-                None = 0, 
-                Master,
-                Auth,
-                Admin
             };
 
             //
@@ -207,7 +193,7 @@ namespace shared {
                 MessageSize{shared::network::protocol::Messages::ServerCommand, 0},
                 MessageSize{shared::network::protocol::Messages::DemoPacket, 0},
                 // // Or invalid, -1
-                // MessageSize{shared::network::protocol::Messages::NumberOfMessages, -1}
+                MessageSize{shared::network::protocol::Messages::NumberOfMessages, -1}
             };
 
             //

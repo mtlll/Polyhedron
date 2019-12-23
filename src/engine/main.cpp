@@ -1,8 +1,12 @@
 // main.cpp: initialisation & main loop
 
 #include "engine.h"
-#include "../game/entities/player.h"
+#include "game/entities/player.h"
+
+#include "shared/networking/network.h"
+#include "shared/networking/protocol.h"
 #include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_sv.h"
 
 extern void cleargamma();
 
@@ -82,7 +86,8 @@ SDL_Window *screen = NULL;
 SDL_GLContext glcontext = NULL;
 
 // Main client frame state(s) and timers, encapsulated neatly in a struct.
-shared::network::FrameStateTime fstClient;
+// WatIsDeze: Mike: Clean up.
+namespace shared { namespace network { FrameTimeState ftsClient; }};
 int curtime = 0;
 int lastmillis = 1;
 int elapsedtime = 0; //totalmillis = 1;
@@ -368,7 +373,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
 	gettextres(w, h);
 
 	extern int mesa_swap_bug, curvsync;
-	bool forcebackground = progressbackground || (mesa_swap_bug && (curvsync || ftsClient.totalMilliseconds==1));
+	bool forcebackground = progressbackground || (mesa_swap_bug && (curvsync || shared::network::ftsClient.totalMilliseconds==1));
 	if(background || forcebackground) restorebackground(w, h, forcebackground);
 
 	renderprogressview(w, h, bar, text);
@@ -1008,7 +1013,7 @@ static bool findarg(int argc, char **argv, const char *str)
 }
 
 static int clockrealbase = 0, clockvirtbase = 0;
-static void clockreset() { clockrealbase = SDL_GetTicks(); clockvirtbase = ftsClient.totalMilliseconds; }
+static void clockreset() { clockrealbase = SDL_GetTicks(); clockvirtbase = shared::network::ftsClient.totalMilliseconds; }
 VARFP(clockerror, 990000, 1000000, 1010000, clockreset());
 VARFP(clockfix, 0, 0, 1, clockreset());
 
@@ -1017,7 +1022,7 @@ int getclockmillis()
 	int millis = SDL_GetTicks() - clockrealbase;
 	if(clockfix) millis = int(millis*(double(clockerror)/1000000));
 	millis += clockvirtbase;
-	return max(millis, ftsClient.totalMilliseconds);
+	return max(millis, shared::network::ftsClient.totalMilliseconds);
 }
 
 VAR(numcpus, 1, 1, 16);
@@ -1250,16 +1255,16 @@ int main(int argc, char **argv)
 	{
 		static int frames = 0;
 		int clockMilliseconds = getclockmillis();
-		limitfps(clockMilliseconds, ftsClient.totalMillisecondsillis);
-		ftsClient.elapsedTime = clockMilliseconds - ftsClient.totalMilliseconds;
+		limitfps(clockMilliseconds, shared::network::ftsClient.totalMilliseconds);
+		shared::network::ftsClient.elapsedTime = clockMilliseconds - shared::network::ftsClient.totalMilliseconds;
 		static int timeerr = 0;
-		int scaledTime = game::scaletime(ftsClient.elapsedTime) + timeerr;
-		ftsClient = scaledTime/100;
-		ftsClient.currentTime = scaledTime%100;
+		int scaledTime = game::scaletime(shared::network::ftsClient.elapsedTime) + timeerr;
+		shared::network::ftsClient.currentTime = scaledTime/100;
+		timeerr = scaledTime%100;
 		if(!multiplayer(false) && curtime>200) curtime = 200;
 		if(game::ispaused()) curtime = 0;
-		ftsClient.lastMilliseconds += ftsClient.currentTime;
-		ftsClient.totalMilliseconds = clockMilliseconds;
+		shared::network::ftsClient.lastMilliseconds += shared::network::ftsClient.currentTime;
+		shared::network::ftsClient.totalMilliseconds = clockMilliseconds;
 		updatetime();
 
 		checkinput();

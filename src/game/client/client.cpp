@@ -1,5 +1,7 @@
+#include "engine/engine.h"
+
 #include "shared/cube.h"
-#include <string>
+#include "shared/command.h"
 #include "shared/utils/cubestr.h"
 
 #include "shared/networking/cl_sv.h"
@@ -48,17 +50,17 @@ namespace game {
         void SwitchName(const char *name) {
             char nickname[MAX_CLIENT_NAME_LENGTH]; // Temp method to avoid filtertext std::string issues.
             FilterText(nickname, name, false, false, MAX_CLIENT_NAME_LENGTH);
-            game::clPlayer->name = nickname;
-            if(game::clPlayer->name.empty())
-                game::clPlayer->name = "n00bnamed";
-            AddMessages(shared::network::protocol::Messages::SwitchName, "rs", game::clPlayer->name);
+            game::clPlayer->nickname = nickname;
+            if(game::clPlayer->nickname.empty())
+                game::clPlayer->nickname = "n00bnamed";
+            AddMessages(shared::network::protocol::Messages::SwitchName, "rs", game::clPlayer->nickname);
         }
         void PrintName() {
-            conoutf("Your name is: %s", game::client::GenerateClientColorName(game::clPlayer, game::clPlayer->name));
+            conoutf("Your name is: %s", game::client::GenerateClientColorName(game::clPlayer, game::clPlayer->nickname));
         }
         // // Returns a coloured string of a name.
         const char *GenerateClientColorName(entities::classes::BaseEntity *c, const std::string &name) {
-            entities::classes::BaseClientEntity *ce = dynamic_cast<entities::classes::BaseClientEntity>(c);
+            entities::classes::BaseClientEntity *ce = dynamic_cast<entities::classes::BaseClientEntity*>(c);
             if (!ce) {
                 conoutf(CON_WARN, "%s", "Invalid pointer reference to ClientInfo *ci: == %d", *ce);
                 return "invalid_ref";
@@ -69,10 +71,10 @@ namespace game {
             colorIndex = (colorIndex+1)%3;
 
             if(name.size() < 260) // Stay below CubeStr its max value.
-                name = (name.empty() ? std::string(ce->name).substr(0, 32).c_str() : (std::string("unnamed_#") + std::to_str(colorIndex)).c_str()); // Personally I find 32 chars enough.
+                name = (name.empty() ? std::string(ce->nickname).substr(0, 32).c_str() : (std::string("unnamed_#") + std::to_str(colorIndex)).c_str()); // Personally I find 32 chars enough.
 
         
-            if(!name.empty() && !shared::network::HasClientDuplicateName(ce, name);//&& ce->state.aitype == 0)  // It used to be that.
+            if(!name.empty() && !shared::network::HasClientDuplicateName(ce, name));//&& ce->state.aitype == 0)  // It used to be that.
                 return name.c_str();
             
             // Generate colour based on type of Client and client number.
@@ -84,9 +86,9 @@ namespace game {
         {
             if(*numargs > 0) SwitchName(s);
             else if(!*numargs) PrintName();
-            else cubestrret(ClientColorName(game::clPlayer->name.c_str()));
+            else cubestrret(ClientColorName(game::clPlayer->nickname.c_str()));
         }, "Changes the player's name.");
-        ICOMMAND(getname, "", (), cubestrret(game::clPlayer->name.c_str()), "Returns the player's name.");
+        ICOMMAND(getname, "", (), cubestrret((char*)game::clPlayer->nickname.c_str()), "Returns the player's name.");
 
         void SendMapInfo()
         {
@@ -97,7 +99,7 @@ namespace game {
 
         void WriteClientInfo(stream *f)
         {
-            f->printf("name %s\n", escapecubestr(clPlayer->name.c_str()));
+            f->printf("name %s\n", escapecubestr(clPlayer->nickname.c_str()));
         }
 
         //

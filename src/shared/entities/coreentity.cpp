@@ -32,8 +32,8 @@ void CoreEntity::clearspawned() {
     flags &= ~entities::EntityFlags::EF_SPAWNED;
 }
 
-void CoreEntity::setName(const std::string &str) {
-    name = str;
+void CoreEntity::setEntityName(const std::string &str) {
+    entityName = str;
 }
 
 void CoreEntity::saveToJsonImpl(nlohmann::json& document)

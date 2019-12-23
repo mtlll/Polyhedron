@@ -29,7 +29,7 @@ BaseMapModel::BaseMapModel()
     physstate = PHYS_FALL;
     collidetype = COLLIDE_TRI;
 
-    setName("model");
+    setEntityName("base_map_model");
 }
 
 BaseMapModel::BaseMapModel(const std::string &filename) : BaseMapModel() {
