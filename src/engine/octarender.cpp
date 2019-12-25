@@ -1739,9 +1739,9 @@ void precachetextures()
 
 void allchanged(bool load)
 {
-    if(mainmenu && !isconnected()) load = false;
+    if(mainmenu && !engine::server::isconnected()) load = false;
     if(load) initlights();
-    renderprogress(0, "clearing vertex arrays...");
+    renderprogress(0, "Clearing vertex arrays...");
     clearvas(worldroot);
     resetqueries();
     resetclipplanes();

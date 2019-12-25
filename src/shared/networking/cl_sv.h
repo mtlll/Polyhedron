@@ -24,7 +24,7 @@ namespace shared {
             //
             enum struct Priviliges : int { 
                 None = 0, Master, Auth, Admin
-            };       
+            };
 
             //
             // Master Mode Masks.

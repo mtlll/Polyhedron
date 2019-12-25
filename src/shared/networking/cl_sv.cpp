@@ -28,7 +28,6 @@ namespace shared {
             return false;
         }
 
-
         //
         // ServerDynamicEntInfo, maybe placae into another file?
         //

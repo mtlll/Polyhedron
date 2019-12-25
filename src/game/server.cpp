@@ -60,11 +60,11 @@ namespace server
 	}; ServerFrameTimeState ftsServer;
 
 	// Base server settings (description, password, adminpassword, public or...)
-    SVAR(serverdesc, "");
+    SVAR(serverdesc, "Empty server description - n00b!");
     SVAR(serverpass, "");
     SVAR(adminpass, "");
     VARF(publicserver, 0, 0, 2, {
-		switch(publicserver)
+		switch(publicServer)
 		{
 			case 0: default: masterMask = shared::network::protocol::MasterMask::PrivateServer; break;
 			case 1: masterMask = shared::network::protocol::MasterMask::OpenServer; break;

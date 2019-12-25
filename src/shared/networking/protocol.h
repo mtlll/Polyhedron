@@ -16,7 +16,8 @@ namespace shared {
                 Private,
                 MaximumClients,
                 TimeOut,
-                Password
+                Password,
+                NumberOfReasons
             };
 
             //

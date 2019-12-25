@@ -22,33 +22,33 @@ namespace game {
 
 namespace server
 {
-    void *newclientinfo();
-    void deleteclientinfo(void *ci);
-    void serverinit();
-    int reserveclients();
-    int numchannels();
-    void clientdisconnect(int n);
-    int clientconnect(int n, uint ip);
-    void localdisconnect(int n);
-    void localconnect(int n);
-    bool allowbroadcast(int n);
-    void recordpacket(int chan, void *data, int len);
-    void parsepacket(int sender, int chan, packetbuf &p);
-    void sendservmsg(const char *s);
-    bool sendpackets(bool force);
-    void serverinforeply(ucharbuf &req, ucharbuf &p);
-    void serverupdate();
-    bool servercompatible(char *name, char *sdec, char *map, int ping, const vector<int> &attr, int np);
+    void *NewClientInfo();
+    void DeleteClientInfo(void *ci);
+    void ServerInit();
+    int ReserveClients();
+    int NumChannels();
+    extern shared::network::protocol::DisconnectReason ClientDisconnect(int n);
+    extern shared::network::protocol::DisconnectReason ClientConnect(int n, uint ip); // Returns Default aka None when properly connected.
+    void LocalDisconnect(int n);
+    void LocalConnect(int n);
+    bool AllowBroadcast(int n);
+    void RecordPacket(int chan, void *data, int len);
+    void ParsePacket(int sender, int chan, packetbuf &p);
+    void SendServerMessage(const char *s);
+    bool SendPackets(bool force);
+    void ServerInfoReply(ucharbuf &req, ucharbuf &p);
+    void ServerUpdate();
+    bool ServerCompatible(char *name, char *sdec, char *map, int ping, const vector<int> &attr, int np);
 
-    int protocolversion();
-    int serverinfoport(int servport);
-    int serverport();
-    const char *defaultmaster();
-    int masterport();
-    int laninfoport();
-    void processmasterinput(const char *cmd, int cmdlen, const char *args);
-    void masterconnected();
-    void masterdisconnected();
-    bool ispaused();
-    int scaletime(int t);
+    int ProtocolVersion();
+    int ServerInfoPort(int servport);
+    int ServerPort();
+    const char *DefaultNaster();
+    int MasterPort();
+    int LanInfoPort();
+    void ProcessMasterInput(const char *cmd, int cmdlen, const char *args);
+    void MasterConnected();
+    void MasterDisconnected();
+    bool IsPaused();
+    int ScaleTime(int t);
 };

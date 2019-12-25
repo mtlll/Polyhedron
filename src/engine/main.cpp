@@ -37,9 +37,9 @@ SCRIPTEXPORT void quit()                     // normal exit
 {
 	writeinitcfg();
 	writeservercfg();
-	abortconnect();
-	disconnect();
-	localdisconnect();
+	engine::client::AbortConnection();
+	engine::server::Disconnect();
+	engine::client::LocalDisconnect();
 	writecfg();
 	cleanup();
 	exit(EXIT_SUCCESS);
@@ -72,7 +72,8 @@ void fatal(const char *s, ...)    // failure exit
 				#endif
 			}
 			SDL_Quit();
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SchizoMania fatal error", msg, NULL);
+			std::string messageBoxTitle = (std::string(ENGINE_NAME) + "(" + std::string(GAME_NAME) + std::string(") - fatal error"));
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, messageBoxTitle.c_str(), msg, NULL);
 		}
 	}
 
@@ -361,7 +362,7 @@ void renderprogress(float bar, const char *text, bool background)   // also used
 		lastprogress = ticks;
 	}
 
-	clientkeepalive();      // make sure our connection doesn't time out while loading maps etc.
+	engine::client::ClientKeepAlive();      // make sure our connection doesn't time out while loading maps etc.
 
 	#ifdef __APPLE__
 	interceptkey(SDLK_UNKNOWN); // keep the event queue awake to avoid 'beachball' cursor
@@ -1091,7 +1092,7 @@ int main(int argc, char **argv)
                 break;
             }
             case 'x': initscript = &argv[i][2]; break;
-            default: if(!serveroption(argv[i])) gameargs.add(argv[i]); break;
+            default: if(!engine::client::ServerOption(argv[i])) gameargs.add(argv[i]); break;
         }
         else gameargs.add(argv[i]);
     }
@@ -1232,7 +1233,7 @@ int main(int argc, char **argv)
 	// TODO: Not sure wtf this is for.
 	//if(execfile("once.cfg", false)) remove(findfile("once.cfg", "rb"));
 	
-	localconnect();
+	engine::server::localconnect();
 	if(load)
 	{
 		// Since we are loading a map as a background, we best start doing a local connect.
@@ -1261,7 +1262,7 @@ int main(int argc, char **argv)
 		int scaledTime = game::scaletime(shared::network::ftsClient.elapsedTime) + timeerr;
 		shared::network::ftsClient.currentTime = scaledTime/100;
 		timeerr = scaledTime%100;
-		if(!multiplayer(false) && curtime>200) curtime = 200;
+		if(!engine::server::multiplayer(false) && curtime>200) curtime = 200;
 		if(game::ispaused()) curtime = 0;
 		shared::network::ftsClient.lastMilliseconds += shared::network::ftsClient.currentTime;
 		shared::network::ftsClient.totalMilliseconds = clockMilliseconds;

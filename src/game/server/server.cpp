@@ -82,21 +82,21 @@ namespace server
 	shared::network::protocol::MasterMode masterMode = shared::network::protocol::MasterMode::Open;
 	shared::network::protocol::MasterMask masterMask = shared::network::protocol::MasterMask::PrivateServer;
 
-	void *newclientinfo() {
+	void *NewClientInfo() {
 		return new shared::network::ClientInfo;
 	}
 
-	void deleteclientinfo(void *ci) {
+	void DeleteClientInfo(void *ci) {
 		shared::network::ClientInfo *info = static_cast<shared::network::ClientInfo*>(ci);
 		delete info; ci = nullptr;
 	}
-	void serverinit() {
+	void ServerInit() {
 
 	}
-	int reserveclients() {
+	int ReserveClients() {
 		return 3;
 	}
-	int numchannels() {
+	int NumChannels() {
 		return 3;
 	}
 	
@@ -117,7 +117,9 @@ namespace server
 
 		// Add client to the server client list.
         game::server::svClients.connected.add(ci);
-        if(!m_mp(gamemode)) return shared::network::protocol::DisconnectReason::Local;
+        if(!m_mp(gamemode)) 
+            return shared::network::protocol::DisconnectReason::Local;
+            
         sendservinfo(ci);
         return shared::network::protocol::DisconnectReason::Default;
 	}

@@ -22,61 +22,61 @@ namespace game {
         //
         // Server initializing and shutdown
         //
-        void ServerInit();
-        void ServerUpdate();
+        extern void ServerInit();
+        extern void ServerUpdate();
 
         //
         // ClientInfo functionality.
         //
-        void *NewClientInfo();
-        void DeleteClientInfo(void *ci);
+        extern void *NewClientInfo();
+        extern void DeleteClientInfo(void *ci);
         
         // Number of 
-        int ReserveClients();
-        int NumberOfChannels(); // Client channels? 
-        bool AllowBroadcast(int n);
+        extern int ReserveClients();
+        extern int NumberOfChannels(); // Client channels? 
+        extern bool AllowBroadcast(int n);
 
         //
         // Server status functionality. (Paused, time etc)
         //
-        bool IsPaused();
-        int ScaleTime(int t);
+        extern bool IsPaused();
+        extern int ScaleTime(int t);
 
         //
         // Packet management. 
         //
-        void ParsePacket(int sender, int chan, packetbuf &p);
-        void SendServerMessage(const char *s);
-        bool SendPackets(bool force);
-        void ServerInfoReply(ucharbuf &req, ucharbuf &p);
-        bool ServerCompatible(char *name, char *sdec, char *map, int ping, const vector<int> &attr, int np);
+        extern void ParsePacket(int sender, int chan, packetbuf &p);
+        extern void SendServerMessage(const char *s);
+        extern bool SendPackets(bool force);
+        extern void ServerInfoReply(ucharbuf &req, ucharbuf &p);
+        extern bool ServerCompatible(char *name, char *sdec, char *map, int ping, const vector<int> &attr, int np);
 
         //
         // Demo Packet management(So I assume)
         //
-        void RecordPacket(int chan, void *data, int len);
+        extern void RecordPacket(int chan, void *data, int len);
 
         //
         // Client connect and Disconnect.
         //
-        void ClientDisconnect(int n);
-        int ClientConnect(int n, uint ip);
+        extern shared::network::protocol::DisconnectReason ClientDisconnect(int n);
+        extern shared::network::protocol::DisconnectReason ClientConnect(int n, uint ip); // Returns Default aka None when properly connected.
 
         //
         // Port/default information functionality.
         //
-        int ProtocolVersion();
-        int ServerInfoPort(int servport);
-        int ServerPort();
-        int LanInfoPort();
-        int MasterPort();
-        const char *DefaultMaster();
+        extern int ProtocolVersion();
+        extern int ServerInfoPort(int servport);
+        extern int ServerPort();
+        extern int LanInfoPort();
+        extern int MasterPort();
+        extern const char *DefaultMaster();
 
         //
         // Master functionality.
         //
-        void ProcessMasterInput(const char *cmd, int cmdlen, const char *args);
-        void MasterConnected();
-        void MasterDisconnected();
+        extern void ProcessMasterInput(const char *cmd, int cmdlen, const char *args);
+        extern void MasterConnected();
+        extern void MasterDisconnected();
     };
 };

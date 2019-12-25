@@ -103,19 +103,33 @@ namespace game {
         }
 
         //
-        // Collect all the client to server(c2s) messages conveniently
+        // "Collect all the client to server(c2s) messages conveniently in a struct. Cleaner vs
+        // the original code. It actually has c2s in some of its func/var names. Wwhich I find 
+        // to be a mutulation for a variable name but whatever.  I'll stop ranting, and get back
+        // to programming.
         //
-        vector<uchar> messages;
-        int messageClientNumber = -1, messageReliable = false;
-        
+        // Wait, be honest, so here I am: "I guess, it is readable and keeps it related to its past.""
+        // 
+        // Yeah, I got a bit emotional and all that above there." -- WatIsDeze : Mike.
+        //
+        struct CL2SVMessages {
+            vector<uchar> messages;    
+            int messageClientNumber = -1;
+            int messageReliable = false;
+        } CL2SVMessages Cl2SvMessages;
+
+        // Variadic templates! Screw the old vararg method, This allows for so much more! :) <3 -- WatIsDeze : Mike        
         template<typename... Args> bool AddMessages(shared::network::protocol::Messages type, const char * fmt, Args... args) {
             if(!connected) 
                 return false;
 
             static uchar buf[MAXTRANS];
-            ucharbuf p(buf, sizeof(buf));
-            shared::network::PutMessage(p, type);
-            int numi = 1, numf = 0, nums = 0, mcn = -1;
+            ucharbuf p(buf, sizeof(buf)); // Buffer mang, let's do this.
+            shared::network::PutMessage(p, type); // Put the message cuz we do this shit.
+            int numi = 1; // Number of integer variables (lol, they do not resemble humans) given.
+            int numf = 0; // Number of FLOAT FUCKS GIVEN.
+            int nums = 0; // Number of strings,
+            int mcn = -1; // Multiplayer Client Number(It is but..? Or Master client number? This code supposed has had to be readable.)
             bool reliable = false;
             if(fmt)
             {
@@ -161,18 +175,18 @@ namespace game {
                 va_end(args);
             }
             int num = nums || numf ? 0 : numi, messageSize = shared::network::protocol::MessageSizeLookup(type);
-            if(messageSize && num!=messageSize) { fatal("inconsistent msg size for %d (%d != %d)", static_cast<int>(type), num, messageSize); }
-            if(reliable) messageReliable = true;
-            if(mcn != messageClientNumber)
+            if(messageSize && num != messageSize) { fatal("Inconsistent msg size for %d (%d != %d)", static_cast<int>(type), num, messageSize); }
+            if(reliable) Cl2SvMessages.messageReliable = true;
+            if(mcn != Cl2SvMessages.messageClientNumber)
             {
                 static uchar mbuf[16];
                 ucharbuf m(mbuf, sizeof(mbuf));
                 shared::network::PutMessage(m, shared::network::protocol::Messages::FromAI);
                 shared::network::PutInt(m, mcn);
-                messages.put(mbuf, m.length());
-                messageClientNumber = mcn;
+                Cl2SvMessages.messages.put(mbuf, m.length());
+                Cl2SvMessages.messageClientNumber = mcn;
             }
-            messages.put(buf, p.length());
+            Cl2SvMessages.messages.put(buf, p.length());
             return true;
         }
     };

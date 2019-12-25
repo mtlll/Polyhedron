@@ -150,7 +150,7 @@ namespace game
         SpawnPlayer();
 
         // Find our playerspawn.
-        findplayerspawn(clPlayer);
+        FindPlayerSpawn(clPlayer);
     }
     void loadingmap(const char *name) {
 
@@ -165,7 +165,7 @@ namespace game
         SpawnPlayer();
 
 		// Find player spawn point.
-		findplayerspawn(clPlayer);
+		FindPlayerSpawn(clPlayer);
 
         copycubestr(clientmap, name ? name : "");
         execident("mapstart");
@@ -331,8 +331,12 @@ namespace game
     }
     void connectfail() {}
     void parsepacketclient(int chan, packetbuf &p) {}
+
+    // Edit related. (/editor folder or in /client? Not sure)
     bool allowedittoggle() { return true; }
     void edittoggled(bool on) {}
+
+    // Networking related. (Should place in /client?)
     void writeclientinfo(stream *f) {}
     void toserver(char *text) {}
     bool ispaused() { return false; }

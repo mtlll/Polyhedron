@@ -551,10 +551,15 @@ extern void cleanupserver();
 extern void serverslice(bool dedicated, uint timeout);
 extern void updatetime();
 
-extern ENetSocket connectmaster(bool wait);
-extern void localclienttoserver(int chan, ENetPacket *);
-extern void localconnect();
-extern bool serveroption(char *opt);
+// Temporarily
+namespace engine { 
+    namespace client {
+        extern ENetSocket ConnectNaster(bool wait);
+        extern void LocalClientToServer(int chan, ENetPacket *);
+        extern void LocalConnect();
+        extern bool ServerOption(char *opt);
+    }
+};
 
 // serverbrowser
 extern bool resolverwait(const char *name, ENetAddress *address);
@@ -563,11 +568,15 @@ extern void addserver(const char *name, int port = 0, const char *password = NUL
 extern void writeservercfg();
 
 // client
-extern void localdisconnect(bool cleanup = true);
-extern void localservertoclient(int chan, ENetPacket *packet);
-extern void connectserv(const char *servername, int port, const char *serverpassword);
-extern void abortconnect();
-extern void clientkeepalive();
+namespace engine {
+    namespace client {
+        extern void LocalDisconnect(bool cleanup = true);
+        extern void LocalServerToClient(int chan, ENetPacket *packet);
+        extern void ConnectToServer(const char *servername, int port, const char *serverpassword);
+        extern void AbortConnection();
+        extern void ClientKeepAlive();
+    };
+};
 
 // command
 extern hashnameset<ident> idents;

@@ -214,38 +214,38 @@ int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress 
     return -1;
 }
 
-struct pingattempts
+struct PingAttempts
 {
     enum { MAXATTEMPTS = 2 };
 
     int offset, attempts[MAXATTEMPTS];
 
-    pingattempts() : offset(0) { clearattempts(); }
+    PingAttempts() : offset(0) { ClearAttempts(); }
 
-    void clearattempts() { memset(attempts, 0, sizeof(attempts)); }
+    void ClearAttempts() { memset(attempts, 0, sizeof(attempts)); }
 
-    void setoffset() { offset = 1 + rnd(0xFFFFFF); }
+    void SetOffset() { offset = 1 + rnd(0xFFFFFF); }
 
-    int encodeping(int millis)
+    int EncodePing(int millis)
     {
         millis += offset;
         return millis ? millis : 1;
     }
 
-    int decodeping(int val)
+    int DecodePing(int val)
     {
         return val - offset;
     }
 
-    int addattempt(int millis)
+    int AddAttempt(int millis)
     {
-        int val = encodeping(millis);
+        int val = EncodePing(millis);
         loopk(MAXATTEMPTS-1) attempts[k+1] = attempts[k];
         attempts[0] = val;
         return val;
     }
 
-    bool checkattempt(int val, bool del = true)
+    bool CheckAttempt(int val, bool del = true)
     {
         if(val) loopk(MAXATTEMPTS) if(attempts[k] == val)
         {
@@ -257,11 +257,11 @@ struct pingattempts
 
 };
 
-static int currentprotocol = server::protocolversion();
+static int currentprotocol = game::server::ProtocolVersion();
 
 enum { UNRESOLVED = 0, RESOLVING, RESOLVED };
 
-struct serverinfo : servinfo, pingattempts
+struct serverinfo : servinfo, PingAttempts
 {
     enum
     {
@@ -336,8 +336,8 @@ struct serverinfo : servinfo, pingattempts
     {
         if(address.host == ENET_HOST_ANY) return "[unknown host]";
         if(ping == WAITING) return "[waiting for response]";
-        if(protocol < currentprotocol) return "[older protocol]";
-        if(protocol > currentprotocol) return "[newer protocol]";
+        if(this->protocol < currentprotocol) return "[older protocol]";
+        if(this->protocol > currentprotocol) return "[newer protocol]";
         return NULL;
     }
 

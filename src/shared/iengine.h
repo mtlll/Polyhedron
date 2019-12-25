@@ -15,6 +15,7 @@ namespace classes {
     class BaseEntity;
     class BasePhysicalEntity;
     class BaseDynamicEntity;
+    class BaseClientEntity;
     class BaseMapModel;
     class DynamicLight;
     class Player;
@@ -415,7 +416,7 @@ extern void cleardynentcache();
 extern void updatedynentcache(entities::classes::CoreEntity *d);
 extern bool entinmap(entities::classes::BasePhysicalEntity *d, bool avoidplayers = false);
 
-extern void findplayerspawn(entities::classes::Player *d, int forceent = -1, int tag = 0);
+extern void FindPlayerSpawn(entities::classes::Player *d, int forceent = -1, int tag = 0);
 
 // sound
 enum
@@ -479,6 +480,10 @@ extern void moveragdoll(entities::classes::BaseDynamicEntity *d);
 extern void cleanragdoll(entities::classes::BaseDynamicEntity *d);
 
 // server
+// WatIsDeze : Mike - Temporarily
+#include "shared/networking/protocol.h"
+namespace engine {
+namespace server {
 #define MAXCLIENTS 128                 // DO NOT set this any higher
 #define MAXTRANS 5000                  // max amount of data to swallow in 1 go
 
@@ -496,9 +501,9 @@ extern int getservermtu();
 extern int getnumclients();
 extern uint getclientip(int n);
 extern void localconnect();
-extern const char *disconnectreason(int reason);
+extern const char *disconnectreason(shared::network::protocol::DisconnectReason reason);
 extern void disconnect_client(int n, int reason);
-extern void kicknonlocalclients(int reason = DISC_NONE);
+extern void kicknonlocalclients(shared::network::protocol::DisconnectReason reason = shared::network::protocol::DisconnectReason::Default);
 extern bool hasnonlocalclients();
 extern bool haslocalclients();
 extern void sendserverinforeply(ucharbuf &p);
@@ -535,13 +540,15 @@ extern servinfo *getservinfo(int i);
 // client
 extern void sendclientpacket(ENetPacket *packet, int chan);
 extern void flushclient();
-extern void disconnect(bool async = false, bool cleanup = true);
+extern void Disconnect(bool async = false, bool cleanup = true);
 extern bool isconnected(bool attempt = false, bool local = true);
 extern const ENetAddress *connectedpeer();
 extern bool multiplayer(bool msg = true);
 extern void neterr(const char *s, bool disc = true);
 extern void gets2c();
 extern void notifywelcome();
+};
+};
 
 // crypto
 extern void genprivkey(const char *seed, vector<char> &privstr, vector<char> &pubstr);

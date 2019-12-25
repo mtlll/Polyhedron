@@ -949,7 +949,7 @@ extern int nompedit;
 
 bool canpaintblendmap(bool brush = true, bool sel = false, bool msg = true)
 {
-    if(noedit(!sel, msg) || (nompedit && multiplayer())) return false;
+    if(noedit(!sel, msg) || (nompedit && engine::server::multiplayer())) return false;
     if(!blendpaintmode)
     {
         if(msg) conoutf(CON_ERROR, "operation only allowed in blend paint mode");
@@ -1019,7 +1019,7 @@ SCRIPTEXPORT_AS(paintblendmap) void paintblendmap_scriptimpl(int *isdown)
 
 SCRIPTEXPORT void clearblendmapsel()
 {
-    if(noedit(false) || (nompedit && multiplayer())) return;
+    if(noedit(false) || (nompedit && engine::server::multiplayer())) return;
     extern selinfo sel;
     int x1 = sel.o.x>>BM_SCALE, y1 = sel.o.y>>BM_SCALE,
         x2 = (sel.o.x+sel.s.x*sel.grid+(1<<BM_SCALE)-1)>>BM_SCALE,
@@ -1031,7 +1031,7 @@ SCRIPTEXPORT void clearblendmapsel()
 
 SCRIPTEXPORT void invertblendmapsel()
 {
-    if(noedit(false) || (nompedit && multiplayer())) return;
+    if(noedit(false) || (nompedit && engine::server::multiplayer())) return;
     extern selinfo sel;
     int x1 = sel.o.x>>BM_SCALE, y1 = sel.o.y>>BM_SCALE,
         x2 = (sel.o.x+sel.s.x*sel.grid+(1<<BM_SCALE)-1)>>BM_SCALE,
@@ -1044,27 +1044,27 @@ SCRIPTEXPORT void invertblendmapsel()
 
 SCRIPTEXPORT_AS(invertblendmap) void invertblendmap_scriptimpl()
 {
-    if(noedit(false) || (nompedit && multiplayer())) return;
+    if(noedit(false) || (nompedit && engine::server::multiplayer())) return;
     invertblendmap(0, 0, worldsize>>BM_SCALE, worldsize>>BM_SCALE);
     previewblends(ivec(0, 0, 0), ivec(worldsize, worldsize, worldsize));
 }
 
 SCRIPTEXPORT void showblendmap()
 {
-    if(noedit(true) || (nompedit && multiplayer())) return;
+    if(noedit(true) || (nompedit && engine::server::multiplayer())) return;
     previewblends(ivec(0, 0, 0), ivec(worldsize, worldsize, worldsize));
 }
 
 SCRIPTEXPORT void clearblendmap()
 {
-    if(noedit(true) || (nompedit && multiplayer())) return;
+    if(noedit(true) || (nompedit && engine::server::multiplayer())) return;
     resetblendmap();
     showblendmap();
 }
 
 SCRIPTEXPORT_AS(moveblendmap) void moveblendmap_scriptimpl(int *dx, int *dy)
 {
-    if(noedit(true) || (nompedit && multiplayer())) return;
+    if(noedit(true) || (nompedit && engine::server::multiplayer())) return;
     if(*dx%(BM_IMAGE_SIZE<<BM_SCALE) || *dy%(BM_IMAGE_SIZE<<BM_SCALE))
     {
         conoutf(CON_ERROR, "blendmap movement must be in multiples of %d", BM_IMAGE_SIZE<<BM_SCALE);

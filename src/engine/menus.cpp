@@ -70,7 +70,7 @@ void menuprocess()
         lastmainmenu = mainmenu;
         execident("mainmenutoggled");
     }    
-    if(mainmenu && !isconnected(true) && !UI::hascursor()) UI::showui("main");
+    if(mainmenu && !engine::server::isconnected(true) && !UI::hascursor()) UI::showui("main");
 }
 
 VAR(mainmenu, 1, 1, 0);
@@ -78,7 +78,7 @@ VAR(mainmenu, 1, 1, 0);
 void clearmainmenu()
 {
     hidechanges = 0;
-    if(mainmenu && isconnected())
+    if(mainmenu && engine::server::isconnected())
     {
         mainmenu = 0;
         UI::hideui(nullptr);

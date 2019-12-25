@@ -1512,7 +1512,7 @@ int findentity_byclass(const std::string &classname)
 
 
 // We do not need forceent = -1 anymore atm, neither do we need tag = 0 for now. But it's here for backwards reasons.
-void findplayerspawn(entities::classes::Player *d, int forceent, int tag) // Place at spawn (some day, random spawn).
+void FindPlayerSpawn(entities::classes::Player *d, int forceent, int tag) // Place at spawn (some day, random spawn).
 {
 	auto startEntity = getentitybytype<entities::classes::PlayerStart>();
 
@@ -1778,7 +1778,7 @@ static bool isallempty(cube &c)
 SCRIPTEXPORT void shrinkmap()
 {
     extern int nompedit;
-    if(noedit(true) || (nompedit && multiplayer())) return;
+    if(noedit(true) || (nompedit && engine::server::multiplayer())) return;
     if(worldsize <= 1<<10) return;
 
     int octant = -1;
@@ -1807,10 +1807,10 @@ SCRIPTEXPORT void shrinkmap()
 
     allchanged();
 
-    conoutf("shrunk map to size %d", worldscale);
+    conoutf("Shrunk map to size %d", worldscale);
 }
 
-SCRIPTEXPORT void newmap(int *i) { bool force = !isconnected(); if(force) game::forceedit(""); if(emptymap(*i, force, NULL)) game::newmap(max(*i, 0)); }
+SCRIPTEXPORT void newmap(int *i) { bool force = !engine::server::isconnected(); if(force) game::forceedit(""); if(emptymap(*i, force, NULL)) game::newmap(max(*i, 0)); }
 SCRIPTEXPORT void mapenlarge() { if(enlargemap(false)) game::newmap(-1); }
 
 SCRIPTEXPORT void mapname()
