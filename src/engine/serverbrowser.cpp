@@ -261,7 +261,7 @@ static int currentprotocol = game::server::ProtocolVersion();
 
 enum { UNRESOLVED = 0, RESOLVING, RESOLVED };
 
-struct serverinfo : servinfo, PingAttempts
+struct ServerInfo : engine::server::ServInfo, PingAttempts
 {
     enum
     {
@@ -270,69 +270,69 @@ struct serverinfo : servinfo, PingAttempts
         MAXPINGS = 3
     };
 
-    int resolved, lastping, nextping;
+    int resolved, lastPing, nextPing;
     int pings[MAXPINGS];
     ENetAddress address;
     bool keep;
     const char *password;
 
-    serverinfo()
+    ServerInfo()
      : resolved(UNRESOLVED), keep(false), password(NULL)
     {
-        clearpings();
-        setoffset();
+        ClearPings();
+        SetOffset();
     }
 
-    ~serverinfo()
+    ~ServerInfo()
     {
         DELETEA(password);
     }
 
-    void clearpings()
+    void ClearPings()
     {
         ping = WAITING;
         loopk(MAXPINGS) pings[k] = WAITING;
-        nextping = 0;
-        lastping = -1;
-        clearattempts();
+        nextPing = 0;
+        lastPing = -1;
+        ClearAttempts();
     }
 
-    void cleanup()
+    void Cleanup()
     {
-        clearpings();
-        protocol = -1;
-        numplayers = maxplayers = 0;
+        ClearPings();
+        this->protocol = -1;
+        numberOfPlayers = maximumOfPlayers = 0;
         attr.setsize(0);
     }
 
-    void reset()
+    void Reset()
     {
-        lastping = -1;
+        lastPing = -1;
     }
 
-    void checkdecay(int decay)
+    void CheckDecay(int decay)
     {
-        if(lastping >= 0 && shared::network::ftsClient.totalMilliseconds - lastping >= decay)
-            cleanup();
-        if(lastping < 0) lastping = shared::network::ftsClient.totalMilliseconds;
+        if(lastPing >= 0 && shared::network::ftsClient.totalMilliseconds - lastPing >= decay)
+            Cleanup();
+        if(lastPing < 0) lastPing = shared::network::ftsClient.totalMilliseconds;
     }
 
-    void calcping()
+    void CalcPing()
     {
-        int numpings = 0, totalpings = 0;
-        loopk(MAXPINGS) if(pings[k] != WAITING) { totalpings += pings[k]; numpings++; }
-        ping = numpings ? totalpings/numpings : WAITING;
+        int numPings = 0, totalPings = 0;
+        loopk(MAXPINGS) if(pings[k] != WAITING) { totalPings += pings[k]; numPings++; }
+        ping = numPings ? totalPings/numPings : WAITING;
     }
 
-    void addping(int rtt, int millis)
+    void AddPing(int rtt, int millis)
     {
-        if(millis >= lastping) lastping = -1;
-        pings[nextping] = rtt;
-        nextping = (nextping+1)%MAXPINGS;
-        calcping();
+        if(millis >= lastPing) lastPing = -1;
+        pings[nextPing] = rtt;
+        nextPing = (nextPing+1)%MAXPINGS;
+        CalcPing();
     }
 
-    const char *status() const
+    const char *Status() const
     {
         if(address.host == ENET_HOST_ANY) return "[unknown host]";
         if(ping == WAITING) return "[waiting for response]";
@@ -341,9 +341,9 @@ struct serverinfo : servinfo, PingAttempts
         return NULL;
     }
 
-    bool valid() const { return !status(); }
+    bool Valid() const { return !Status(); }
 
-    static bool compare(serverinfo *a, serverinfo *b)
+    static bool compare(ServerInfo *a, ServerInfo *b)
     {
         if(a->protocol == currentprotocol)
         {
@@ -352,8 +352,8 @@ struct serverinfo : servinfo, PingAttempts
         else if(b->protocol == currentprotocol) return false;
         if(a->keep > b->keep) return true;
         if(a->keep < b->keep) return false;
-        if(a->numplayers < b->numplayers) return false;
-        if(a->numplayers > b->numplayers) return true;
+        if(a->numberOfPlayers < b->numberOfPlayers) return false;
+        if(a->numberOfPlayers > b->numberOfPlayers) return true;
         if(a->ping > b->ping) return false;
         if(a->ping < b->ping) return true;
         int cmp = strcmp(a->name, b->name);
@@ -364,13 +364,13 @@ struct serverinfo : servinfo, PingAttempts
     }
 };
 
-vector<serverinfo *> servers;
+vector<ServerInfo *> servers;
 ENetSocket pingsock = ENET_SOCKET_NULL;
 int lastinfo = 0;
 
-static serverinfo *newserver(const char *name, int port, uint ip = ENET_HOST_ANY)
+static ServerInfo *newserver(const char *name, int port, uint ip = ENET_HOST_ANY)
 {
-    serverinfo *si = new serverinfo;
+    ServerInfo *si = new ServerInfo;
     si->address.host = ip;
     si->address.port = port;
     if(ip!=ENET_HOST_ANY) si->resolved = RESOLVED;
@@ -390,10 +390,10 @@ static serverinfo *newserver(const char *name, int port, uint ip = ENET_HOST_ANY
 
 void addserver(const char *name, int port, const char *password, bool keep)
 {
-    if(port <= 0) port = server::serverport();
+    if(port <= 0) port = game::server::ServerPort();
     loopv(servers)
     {
-        serverinfo *s = servers[i];
+        ServerInfo *s = servers[i];
         if(strcmp(s->name, name) || s->address.port != port) continue;
         if(password && (!s->password || strcmp(s->password, password)))
         {
@@ -403,7 +403,7 @@ void addserver(const char *name, int port, const char *password, bool keep)
         if(keep && !s->keep) s->keep = true;
         return;
     }
-    serverinfo *s = newserver(name, port);
+    ServerInfo *s = newserver(name, port);
     if(!s) return;
     if(password) s->password = newcubestr(password);
     s->keep = keep;
@@ -414,13 +414,13 @@ VARMP(servpingrate, 1, 5, 60, 1000);
 VARMP(servpingdecay, 1, 15, 60, 1000);
 VARP(maxservpings, 0, 10, 1000);
 
-pingattempts lanpings;
+PingAttempts lanpings;
 
-template<size_t N> static inline void buildping(ENetBuffer &buf, uchar (&ping)[N], pingattempts &a)
+template<size_t N> static inline void buildping(ENetBuffer &buf, uchar (&ping)[N], PingAttempts &a)
 {
     ucharbuf p(ping, N);
     p.put(0xFF); p.put(0xFF);
-    shared::network::PutInt(p, a.addattempt(shared::network::ftsClient.totalMilliseconds));
+    shared::network::PutInt(p, a.AddAttempt(shared::network::ftsClient.totalMilliseconds));
     buf.data = ping;
     buf.dataLength = p.length();
 }
@@ -438,7 +438,7 @@ void pingservers()
         enet_socket_set_option(pingsock, ENET_SOCKOPT_NONBLOCK, 1);
         enet_socket_set_option(pingsock, ENET_SOCKOPT_BROADCAST, 1);
 
-        lanpings.setoffset();
+        lanpings.SetOffset();
     }
 
     ENetBuffer buf;
@@ -448,19 +448,19 @@ void pingservers()
     if(lastping >= servers.length()) lastping = 0;
     loopi(maxservpings ? min(servers.length(), maxservpings) : servers.length())
     {
-        serverinfo &si = *servers[lastping];
+        ServerInfo &si = *servers[lastping];
         if(++lastping >= servers.length()) lastping = 0;
         if(si.address.host == ENET_HOST_ANY) continue;
         buildping(buf, ping, si);
         enet_socket_send(pingsock, &si.address, &buf, 1);
 
-        si.checkdecay(servpingdecay);
+        si.CheckDecay(servpingdecay);
     }
     if(searchlan)
     {
         ENetAddress address;
         address.host = ENET_HOST_BROADCAST;
-        address.port = server::laninfoport();
+        address.port = game::server::LanInfoPort();
         buildping(buf, ping, lanpings);
         enet_socket_send(pingsock, &address, &buf, 1);
     }
@@ -472,7 +472,7 @@ void checkresolver()
     int resolving = 0;
     loopv(servers)
     {
-        serverinfo &si = *servers[i];
+        ServerInfo &si = *servers[i];
         if(si.resolved == RESOLVED) continue;
         if(si.address.host == ENET_HOST_ANY)
         {
@@ -489,7 +489,7 @@ void checkresolver()
         if(!resolvercheck(&name, &addr)) break;
         loopv(servers)
         {
-            serverinfo &si = *servers[i];
+            ServerInfo &si = *servers[i];
             if(name == si.name)
             {
                 si.resolved = RESOLVED;
@@ -518,24 +518,24 @@ void checkpings()
         if(len <= 0) return;
         ucharbuf p(ping, len);
         int millis = shared::network::GetInt(p);
-        serverinfo *si = NULL;
+        ServerInfo *si = NULL;
         loopv(servers) if(addr.host == servers[i]->address.host && addr.port == servers[i]->address.port) { si = servers[i]; break; }
         if(si)
         {
-            if(!si->checkattempt(millis)) continue;
-            millis = si->decodeping(millis);
+            if(!si->CheckAttempt(millis)) continue;
+            millis = si->DecodePing(millis);
         }
-        else if(!searchlan || !lanpings.checkattempt(millis, false)) continue;
+        else if(!searchlan || !lanpings.CheckAttempt(millis, false)) continue;
         else
         {
             si = newserver(NULL, addr.port, addr.host);
-            millis = lanpings.decodeping(millis);
+            millis = lanpings.DecodePing(millis);
         }
         int rtt = clamp(shared::network::ftsClient.totalMilliseconds - millis, 0, min(servpingdecay, shared::network::ftsClient.totalMilliseconds));
-        if(millis >= lastreset && rtt < servpingdecay) si->addping(rtt, millis);
+        if(millis >= lastreset && rtt < servpingdecay) si->AddPing(rtt, millis);
         si->protocol = shared::network::GetInt(p);
-        si->numplayers = shared::network::GetInt(p);
-        si->maxplayers = shared::network::GetInt(p);
+        si->numberOfPlayers = shared::network::GetInt(p);
+        si->maximumOfPlayers = shared::network::GetInt(p);
         int numattr = shared::network::GetInt(p);
         si->attr.setsize(0);
         loopj(numattr) { int attr = shared::network::GetInt(p); if(p.overread()) break; si->attr.add(attr); }
@@ -548,7 +548,7 @@ void checkpings()
 
 SCRIPTEXPORT void sortservers()
 {
-    servers.sort(serverinfo::compare);
+    servers.sort(ServerInfo::compare);
 }
 
 VARP(autosortservers, 0, 1, 1);
@@ -560,7 +560,7 @@ SCRIPTEXPORT void refreshservers()
     if(lastrefresh==shared::network::ftsClient.totalMilliseconds) return;
     if(shared::network::ftsClient.totalMilliseconds - lastrefresh > 1000)
     {
-        loopv(servers) servers[i]->reset();
+        loopv(servers) servers[i]->Reset();
         lastreset = shared::network::ftsClient.totalMilliseconds;
     }
     lastrefresh = shared::network::ftsClient.totalMilliseconds;
@@ -579,21 +579,21 @@ SCRIPTEXPORT void numservers()
 #define GETSERVERINFO_(idx, si, body) \
     if(servers.inrange(idx)) \
     { \
-        serverinfo &si = *servers[idx]; \
+        ServerInfo &si = *servers[idx]; \
         body; \
     }
-#define GETSERVERINFO(idx, si, body) GETSERVERINFO_(idx, si, if(si.valid()) { body; })
+#define GETSERVERINFO(idx, si, body) GETSERVERINFO_(idx, si, if(si.Valid()) { body; })
 
 SCRIPTEXPORT void servinfovalid(int *i)
 {
-    GETSERVERINFO_(*i, si, intret(si.valid() ? 1 : 0));
+    GETSERVERINFO_(*i, si, intret(si.Valid() ? 1 : 0));
 }
 
 SCRIPTEXPORT void servinfodesc(int *i)
 {
     GETSERVERINFO_(*i, si,
     {
-        const char *status = si.status();
+        const char *status = si.Status();
         result(status ? status : si.desc);
     });
 }
@@ -630,20 +630,20 @@ SCRIPTEXPORT void servinfoping(int *i)
 
 SCRIPTEXPORT void servinfonumplayers(int *i)
 {
-    GETSERVERINFO(*i, si, intret(si.numplayers));
+    GETSERVERINFO(*i, si, intret(si.numberOfPlayers));
 }
 
 SCRIPTEXPORT void servinfomaxplayers(int *i)
 {
-    GETSERVERINFO(*i, si, intret(si.maxplayers));
+    GETSERVERINFO(*i, si, intret(si.maximumOfPlayers));
 }
 
 SCRIPTEXPORT void servinfoplayers(int *i)
 {
     GETSERVERINFO(*i, si,
     {
-        if(si.maxplayers <= 0) intret(si.numplayers);
-        else result(tempformatcubestr(si.numplayers >= si.maxplayers ? "\f3%d/%d" : "%d/%d", si.numplayers, si.maxplayers));
+        if(si.maximumOfPlayers <= 0) intret(si.numberOfPlayers);
+        else result(tempformatcubestr(si.numberOfPlayers >= si.maximumOfPlayers ? "\f3%d/%d" : "%d/%d", si.numberOfPlayers, si.maximumOfPlayers));
     });
 }
 
@@ -657,7 +657,7 @@ SCRIPTEXPORT void connectservinfo(int *i, char *pw)
     GETSERVERINFO_(*i, si, connectserv(si.name, si.address.port, pw[0] ? pw : si.password));
 }
 
-servinfo *getservinfo(int i)
+ServInfo *getservinfo(int i)
 {
     return servers.inrange(i) && servers[i]->valid() ? servers[i] : NULL;
 }
@@ -673,7 +673,7 @@ void clearservers(bool full = false)
 
 void retrieveservers(vector<char> &data)
 {
-    ENetSocket sock = connectmaster(true);
+    ENetSocket sock = engine::client::ConnectMaster(true);
     if(sock == ENET_SOCKET_NULL) return;
 
     extern char *mastername;
@@ -769,7 +769,7 @@ void writeservercfg()
     int kept = 0;
     loopv(servers)
     {
-        serverinfo *s = servers[i];
+        ServerInfo *s = servers[i];
         if(s->keep)
         {
             if(!kept) f->printf("// servers that should never be cleared from the server list\n\n");
@@ -782,7 +782,7 @@ void writeservercfg()
     f->printf("// servers connected to are added here automatically\n\n");
     loopv(servers)
     {
-        serverinfo *s = servers[i];
+        ServerInfo *s = servers[i];
         if(!s->keep)
         {
             if(s->password) f->printf("addserver %s %d %s\n", escapeid(s->name), s->address.port, escapecubestr(s->password));

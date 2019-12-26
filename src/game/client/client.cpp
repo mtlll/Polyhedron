@@ -74,7 +74,7 @@ namespace game {
                 name = (name.empty() ? std::string(ce->nickname).substr(0, 32).c_str() : (std::string("unnamed_#") + std::to_str(colorIndex)).c_str()); // Personally I find 32 chars enough.
 
         
-            if(!name.empty() && !shared::network::HasClientDuplicateName(ce, name));//&& ce->state.aitype == 0)  // It used to be that.
+            if(!name.empty() && !shared::network::HasClientDuplicateName(ce, name))//&& ce->state.aitype == 0)  // It used to be that.
                 return name.c_str();
             
             // Generate colour based on type of Client and client number.
@@ -86,9 +86,9 @@ namespace game {
         {
             if(*numargs > 0) SwitchName(s);
             else if(!*numargs) PrintName();
-            else cubestrret(ClientColorName(game::clPlayer->nickname.c_str()));
+            //else cubestrret(ClientColorName(game::clPlayer->nickname));
         }, "Changes the player's name.");
-        ICOMMAND(getname, "", (), cubestrret((char*)game::clPlayer->nickname.c_str()), "Returns the player's name.");
+        ICOMMAND(getname, "", (), {cubestrret((char*)game::clPlayer->nickname.c_str())}, "Returns the player's name.");
 
         void SendMapInfo()
         {

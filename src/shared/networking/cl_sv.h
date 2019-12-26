@@ -14,10 +14,10 @@ namespace shared {
     namespace network {
         // Protocol predefinitions.
         namespace protocol {
-            enum struct Messages : int;
-            enum struct NetClientMessage : int;
-            enum struct ConsoleMessage : short;            
-            enum struct DisconnectReason : int;
+            enum struct Messages : enet_uint32;
+            enum struct NetClientMessage : enet_uint32;
+            enum struct ConsoleMessage : enet_uint32;            
+            enum struct DisconnectReason : enet_uint32;
 
             //
             // A class enum copy of the old default priviliges

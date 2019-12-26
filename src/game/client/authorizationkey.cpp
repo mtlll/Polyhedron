@@ -2,6 +2,7 @@
 
 #include "game/client/client.h"
 #include "game/client/authorizationkey.h"
+#include "game/entities/player.h"
 
 #include "shared/networking/cl_sv.h"
 #include "shared/networking/network.h"
@@ -15,8 +16,13 @@ namespace game {
 
         AuthorizationKey *FindAuthorizationKey(const char *desc = "")
         {
-            loopv(authorizationKeys) if(!strcmp(authorizationKeys[i]->desc, desc) && !strcasecmp(authorizationKeys[i]->name, clPlayer->name)) return authkeys[i];
-            loopv(authorizationKeys) if(!strcmp(authorizationKeys[i]->desc, desc)) return authorizationKeys[i];
+            loopv(authorizationKeys) {
+                if(authorizationKeys[i]->desc == std::string_view(desc) && (authorizationKeys[i]->name == std::string_view(clPlayer->nickname))) 
+                                return authorizationKeys[i];
+            }
+            loopv(authorizationKeys) {
+                if(authorizationKeys[i]->desc == std::string_view(desc)) return authorizationKeys[i];
+            }
             return NULL;
         }
 
@@ -24,10 +30,14 @@ namespace game {
 
         void AddAuthorizationKey(const char *name, const char *key, const char *desc)
         {
-            loopvrev(authorizationKeys) if(!strcmp(authorizationKeys[i]->desc, desc) && !strcmp(authorizationKeys[i]->name, name)) delete authorizationKeys.remove(i);
-            if(name[0] && key[0]) authorizationKeys.add(new authkey(name, key, desc));
+            loopvrev(authorizationKeys) {
+                if((authorizationKeys[i]->desc == desc) && authorizationKeys[i]->name == std::string_view(name)) 
+                    delete authorizationKeys.remove(i);
+            } 
+            if(name[0] && key[0]) 
+                authorizationKeys.add(new AuthorizationKey(name, key, desc));
         }
-        ICOMMAND(authkey, "sss", (char *name, char *key, char *desc), AddAuthKey(name, key, desc));
+        ICOMMAND(authkey, "sss", (char *name, char *key, char *desc), AddAuthorizationKey(name, key, desc));
 
         bool HasAuthorizationKey(const std::string &authName, const std::string &authDesc) {
             if(authName.empty() && authDesc.empty()) 
@@ -48,8 +58,8 @@ namespace game {
             if(secret.empty()) { conoutf(CON_ERROR, "You must specify a secret password"); return; }
             vector<char> privateKey, publicKey;
             genprivkey(secret, privateKey, publicKey);
-            conoutf("private key: %s", privateKey.getbuf());
-            conoutf("public key: %s", publicKey.getbuf());
+            conoutf("Private key: %s", privateKey.getbuf());
+            conoutf("Public key: %s", publicKey.getbuf());
             result(privateKey.getbuf());
         }
         ICOMMAND(genauthkey, "s", (char *secret), return(GenerateAuthorizationKey(secret), "Returns a newly generated Authorization Key"));

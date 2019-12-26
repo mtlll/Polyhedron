@@ -1167,21 +1167,21 @@ int main(int argc, char **argv)
 	inbetweenframes = true;
 
 	// Render the background letting the user know it is Initializing.
-	renderbackground("initializing...");
+	renderbackground("Initializing...");
 
 	// Initialize our world, this'll be the mainmenu map.
-	logoutf("init: world");
+	logoutf("Init: world");
 	player = dynamic_cast<entities::classes::Player*>(game::iterdynents(0));
 	camera1 = player->camera;
 	//emptymap(0, true, NULL, false); // This is the old original variant.
 	emptymap(false, false, "mainmenu.ogz");
 
 	// Initialize the sound system.
-	logoutf("init: sound");
+	logoutf("Init: sound");
 	initsound();
 
 	// Load in all configuration files, such as our keymap, game config, the UI etc.
-	logoutf("init: cfg");
+	logoutf("Init: cfg");
 	initing = INIT_LOAD;
 	execfile("config/keymap.cfg");
 	execfile("config/stdedit.cfg");
@@ -1228,16 +1228,16 @@ int main(int argc, char **argv)
 	identflags |= IDF_PERSIST;
 
 	// Initialize the main game loop.
-	logoutf("init: mainloop");
+	logoutf("Init: mainloop");
 
 	// TODO: Not sure wtf this is for.
 	//if(execfile("once.cfg", false)) remove(findfile("once.cfg", "rb"));
 	
-	engine::server::localconnect();
+	engine::server::LocalConnect();
 	if(load)
 	{
 		// Since we are loading a map as a background, we best start doing a local connect.
-		logoutf("init: localconnect");
+		logoutf("Init: LocalConnect");
 		game::changemap(load);
 	}
 	
@@ -1262,7 +1262,7 @@ int main(int argc, char **argv)
 		int scaledTime = game::scaletime(shared::network::ftsClient.elapsedTime) + timeerr;
 		shared::network::ftsClient.currentTime = scaledTime/100;
 		timeerr = scaledTime%100;
-		if(!engine::server::multiplayer(false) && curtime>200) curtime = 200;
+		if(!engine::server::Multiplayer(false) && curtime>200) curtime = 200;
 		if(game::ispaused()) curtime = 0;
 		shared::network::ftsClient.lastMilliseconds += shared::network::ftsClient.currentTime;
 		shared::network::ftsClient.totalMilliseconds = clockMilliseconds;

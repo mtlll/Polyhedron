@@ -1867,7 +1867,7 @@ int compactvslots(bool cull)
 SCRIPTEXPORT_AS(compactvslots) void compactvslots_scriptimpl(int *cull)
 {
     extern int nompedit;
-    if(nompedit && engine::server::multiplayer()) return;
+    if(nompedit && engine::server::Nultiplayer()) return;
     compactvslots(*cull!=0);
     allchanged();
 }
@@ -2246,7 +2246,7 @@ static void fixinsidefaces(cube *c, const ivec &o, int size, int tex)
 SCRIPTEXPORT_AS(fixinsidefaces) void fixinsidefaces_scriptimpl(int *tex)
 {
     extern int nompedit;
-    if(noedit(true) || (nompedit && engine::server::multiplayer())) return;
+    if(noedit(true) || (nompedit && engine::server::Multiplayer())) return;
     fixinsidefaces(worldroot, ivec(0, 0, 0), worldsize>>1, *tex && vslots.inrange(*tex) ? *tex : DEFAULT_GEOM);
     allchanged();
 }

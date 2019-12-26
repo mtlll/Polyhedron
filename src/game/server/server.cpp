@@ -59,10 +59,14 @@ namespace server
 		int intermission = 0;
 		enet_uint32 lastSend = 0;
 
-		string serverMapName = "";
+		cubestr serverMapName = "";
 		stream *mapData = NULL;
 
 	}; ServerFrameTimeState ftsServer;
+
+	// Default master mode and mask.
+	shared::network::protocol::MasterMode masterMode = shared::network::protocol::MasterMode::Open;
+	shared::network::protocol::MasterMask masterMask = shared::network::protocol::MasterMask::PrivateServer;
 
 	// Base server settings (description, password, adminpassword, public or...)
     SVAR(serverdesc, "");
@@ -76,11 +80,7 @@ namespace server
 			case 2: masterMask = shared::network::protocol::MasterMask::Cooperative; break;
 		}
 	});
-    SVAR(servermotd, "");
-
-	// Default master mode and mask.
-	shared::network::protocol::MasterMode masterMode = shared::network::protocol::MasterMode::Open;
-	shared::network::protocol::MasterMask masterMask = shared::network::protocol::MasterMask::PrivateServer;
+    SVAR(servermotd, "Server Message of the damn Day!");
 
 	void *NewClientInfo() {
 		return new shared::network::ClientInfo;

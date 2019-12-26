@@ -1778,7 +1778,7 @@ static bool isallempty(cube &c)
 SCRIPTEXPORT void shrinkmap()
 {
     extern int nompedit;
-    if(noedit(true) || (nompedit && engine::server::multiplayer())) return;
+    if(noedit(true) || (nompedit && engine::server::Multiplayer())) return;
     if(worldsize <= 1<<10) return;
 
     int octant = -1;

@@ -89,7 +89,7 @@ namespace game
     SCRIPTEXPORT void changemap(const char *name)
     {
         // Are we connected? If not, connect locally.
-        if(!connected) localconnect();
+        if(!connected) engine::server::LocalConnect();
 
         // Toggle edit mode if required.
         if(editmode)
@@ -358,7 +358,7 @@ namespace game
         // Setup the map time.
         maptime = 0;
 		SpawnPlayer();
-        findplayerspawn(clPlayer);
+        FindPlayerSpawn(clPlayer);
     }
 
     const char *gameident() {

@@ -106,7 +106,7 @@ namespace game {
         extern int ReserveClients();
         extern int NumChannels();
         extern shared::network::protocol::DisconnectReason ClientDisconnect(int n);
-        extern shared::network::protocol::DisconnectReason ClientConnect(int n, uint ip);
+        extern shared::network::protocol::DisconnectReason ClientConnect(int n, enet_uint32 ip);
         extern void LocalDisconnect(int n);
         extern void LocalConnect(int n);
         extern bool AllowBroadcast(int n);

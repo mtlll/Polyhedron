@@ -15,9 +15,9 @@ ENetHost *clienthost = NULL;
 ENetPeer *curpeer = NULL, *connpeer = NULL;
 int connmillis = 0, connattempts = 0, discmillis = 0;
 
-bool multiplayer(bool msg)
+bool Multiplayer(bool msg)
 {
-    bool val = curpeer || engine::server::hasnonlocalclients();
+    bool val = curpeer || engine::server::HasNonLocalClients();
     if (val && msg)
         conoutf(CON_ERROR, "Operation not available in multiplayer");
     return val;
@@ -48,7 +48,7 @@ void throttle()
 
 bool isconnected(bool attempt, bool local)
 {
-    return curpeer || (attempt && connpeer) || (local && engine::server::haslocalclients());
+    return curpeer || (attempt && connpeer) || (local && engine::server::HasLocalClients());
 }
 
 SCRIPTEXPORT_AS(isconnected)
@@ -200,7 +200,7 @@ void trydisconnect(bool local)
         conoutf("Attempting to disconnect...");
         engine::server::Disconnect(!discmillis);
     }
-    else if (local && engine::server::haslocalclients())
+    else if (local && engine::server::HasLocalClients())
         engine::client::LocalDisconnect();
     else
         conoutf("Not connected");
@@ -229,7 +229,7 @@ void localconnect_scriptimpl() //!!!!
 SCRIPTEXPORT_AS(localdisconnect)
 void localdisconnect_scriptimpl()
 {
-    if (engine::server::haslocalclients())
+    if (engine::server::HasLocalClients())
     {
         engine::client::LocalDisconnect();
     }
@@ -321,7 +321,7 @@ void gets2c() // get updates from the server
             {
                 if (!discmillis || event.data)
                 {
-                    const char *msg = engine::server::disconnectreason(static_cast<shared::network::protocol::DisconnectReason>(event.data));
+                    const char *msg = engine::server::DisconnectReason(static_cast<shared::network::protocol::DisconnectReason>(event.data));
                     if (msg)
                     {
                         conoutf("\f3Server network error, disconnecting (%s) ...", msg);

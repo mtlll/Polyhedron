@@ -13,7 +13,7 @@ void BaseMonster::preload() {
 
 void BaseMonster::think() {
     //moveplayer(this, 10, true);
-}
+}z
 
 void BaseMonster::render() {
     // TODO: Fix this.

@@ -6,7 +6,7 @@ namespace shared {
             //
             // Disconnect message types (reasons for having been dIsConnected).
             //
-            enum class DisconnectReason : int {
+            enum class DisconnectReason : enet_uint32 {
                 Default = 0,
                 EndOfPacket,
                 Local,
@@ -39,8 +39,8 @@ namespace shared {
             //
             // Enum class copy MasterMode flags. Open to join, password, vote, locked etc.
             //
-            enum struct MasterMode : int {
-                Authorize = 0,
+            enum struct MasterMode : enet_uint8 {
+                Authorize = 1,
                 Open,
                 Veto,
                 Locked,
@@ -53,7 +53,7 @@ namespace shared {
             //
             // Enum Class copy of GameMode flags.
             //            
-            enum struct GameMode : int {
+            enum struct GameMode : enet_uint32 {
                 Team       = 1<<0,
                 Ctf        = 1<<1,
                 OverTime   = 1<<2,
@@ -68,7 +68,7 @@ namespace shared {
             //
             // Console message types
             //
-            enum class ConsoleMessage : short
+            enum class ConsoleMessage : enet_uint32
             {
                 Chat            = 1<<8,
                 TeamChat        = 1<<9,
@@ -81,7 +81,7 @@ namespace shared {
             //
             // This enum is used for client to server message types.
             //
-            enum struct ClientMessage : int {
+            enum struct ClientMessage : enet_uint32 {
                 Connect = 1,
                 Disconnect,
                 Ping,
@@ -100,7 +100,7 @@ namespace shared {
             // A class enum copy of the old default network message codes.
             // Network messages codes, c2s, c2c, s2c)
             //
-            enum struct Messages : int
+            enum struct Messages : enet_uint32
             {
                 Connect = 0, ServerInfo, Welcome, InitClient, Position, Text, Sound, ClientDisconnect,
                 Shoot, Explode, Suicide,
@@ -129,7 +129,7 @@ namespace shared {
             };
             
             // Message size value.
-            typedef std::pair<shared::network::protocol::Messages, int> MessageSize;
+            typedef std::pair<shared::network::protocol::Messages, enet_uint32> MessageSize;
             typedef std::vector<MessageSize> MessageSizes;
 
             // Structure with a comparison function for messageSizes set array.

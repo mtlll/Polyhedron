@@ -4,10 +4,10 @@
 #include "game/client/client.h"
 #include "game/server/server.h"
 
-#include "shared/networking/protocol.h"
+#include "shared/networking/cl_sv.h"
 #include "shared/networking/network.h"
 #include "shared/networking/frametimestate.h"
-#include "shared/networking/cl_sv.h"
+#include "shared/networking/protocol.h"
 
 // This file only servers as an empty basic server implementation.
 namespace server
@@ -54,28 +54,28 @@ namespace server
 		int intermission = 0;
 		enet_uint32 lastSend = 0;
 
-		string serverMapName = "";
+		std::string serverMapName = "";
 		stream *mapData = NULL;
 
 	}; ServerFrameTimeState ftsServer;
+
+	// Default master mode and mask.
+	shared::network::protocol::MasterMode masterMode = shared::network::protocol::MasterMode::Open;
+	shared::network::protocol::MasterMask masterMask = shared::network::protocol::MasterMask::PrivateServer;
 
 	// Base server settings (description, password, adminpassword, public or...)
     SVAR(serverdesc, "Empty server description - n00b!");
     SVAR(serverpass, "");
     SVAR(adminpass, "");
     VARF(publicserver, 0, 0, 2, {
-		switch(publicServer)
+		switch(publicserver)
 		{
 			case 0: default: masterMask = shared::network::protocol::MasterMask::PrivateServer; break;
 			case 1: masterMask = shared::network::protocol::MasterMask::OpenServer; break;
 			case 2: masterMask = shared::network::protocol::MasterMask::Cooperative; break;
 		}
 	});
-    SVAR(servermotd, "");
-
-	// Default master mode and mask.
-	shared::network::protocol::MasterMode masterMode = shared::network::protocol::MasterMode::Open;
-	shared::network::protocol::MasterMask masterMask = shared::network::protocol::MasterMask::PrivateServer;
+    SVAR(servermotd, "Server Message of the damn Day!");
 
 	void *newclientinfo() {
 		return new shared::network::ClientInfo;
@@ -97,7 +97,7 @@ namespace server
 	
 	shared::network::ClientInfo *GetInfo(int cn)
     {
-        if(cn < MAXCLIENTS) return (shared::network::ClientInfo *)GetClientInfo(cn));
+        if(cn < MAXCLIENTS) return (shared::network::ClientInfo *)engine::server::GetClientInfo(cn);
         cn -= MAXCLIENTS;
 
 		return NULL;
@@ -112,8 +112,8 @@ namespace server
 
 		// Add client to the server client list.
         game::server::svClients.connected.add(ci);
-        if(!m_mp(gamemode)) return shared::network::protocol::DisconnectReason::Local;
-        sendservinfo(ci);
+        if(!m_mp(ftsServer.gameMode)) return shared::network::protocol::DisconnectReason::Local;
+        SendServInfo(ci);
         return shared::network::protocol::DisconnectReason::Default;
 	}
 	shared::network::protocol::DisconnectReason clientconnect(int n, uint ip) {
@@ -137,48 +137,48 @@ namespace server
 	void sendservmsg(const char *s) {
 
 	}
-	bool sendpackets(bool force) {
+	bool SendPackets(bool force) {
 		return false;
 	}
-	void sendservinfo(shared::network::ClientInfo *ci)
+	void SendServInfo(shared::network::ClientInfo *ci)
     {
-        sendf(ci->clientnum, 1, "ri5ss", N_SERVINFO, ci->clientNumber, shared::network::POLYHEDRON_PROTOCOL_VERSION, ci->sessionID, serverpass[0] ? 1 : 0, serverdesc, serverauth);
+        Sendf(ci->clientNumber, 1, "ri5ss", N_SERVINFO, ci->clientNumber, shared::network::POLYHEDRON_PROTOCOL_VERSION, ci->sessionID, serverpass[0] ? 1 : 0, serverdesc, serverAuth);
     }
 	void serverinforeply(ucharbuf &req, ucharbuf &p) {
 
 	}
-	void serverupdate() {
+	void ServerUpdate() {
 
 	}
-	bool servercompatible(char *name, char *sdec, char *map, int ping, const vector<int> &attr, int np) {
+	bool ServerCompatible(char *name, char *sdec, char *map, int ping, const vector<int> &attr, int np) {
 		return true;
 	}
 
-	int protocolversion() {
+	int ProtocolVersion() {
 		return 1;
 	}
-	int serverinfoport(int servport) {
+	int ServerInfoPort(int servport) {
 		return 0;
 	}
-	int serverport() {
+	int ServerPort() {
 		return 0;
 	}
-	const char *defaultmaster() {
+	const char *DefaultMaster() {
 		return "";
 	}
-	int masterport() {
+	int MasterPort() {
 		return 0;
 	}
-	int laninfoport() {
+	int LanInfoPort() {
 		return 0;
 	}
-	void processmasterinput(const char *cmd, int cmdlen, const char *args) {
+	void ProcessMasterInput(const char *cmd, int cmdlen, const char *args) {
 
 	}
-	void masterconnected() {
+	void MasterConnected() {
 
 	}
-	void masterdisconnected() {
+	void MasterDisconnected() {
 
 	}
 	bool ispaused() {

@@ -491,44 +491,45 @@ extern int maxclients;
 
 enum { DISC_NONE = 0, DISC_EOP, DISC_LOCAL, DISC_KICK, DISC_MSGERR, DISC_IPBAN, DISC_PRIVATE, DISC_MAXCLIENTS, DISC_TIMEOUT, DISC_OVERFLOW, DISC_PASSWORD, DISC_NUM };
 
-extern void *getclientinfo(int i);
+extern void *GetClientInfo(int i);
 extern ENetPeer *GetClientPeer(int i);
-extern ENetPacket *sendf(int cn, int chan, const char *format, ...);
-extern ENetPacket *sendfile(int cn, int chan, stream *file, const char *format = "", ...);
-extern void sendpacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
-extern void flushserver(bool force);
-extern int getservermtu();
-extern int getnumclients();
-extern uint getclientip(int n);
-extern void localconnect();
-extern const char *disconnectreason(shared::network::protocol::DisconnectReason reason);
-extern void disconnect_client(int n, int reason);
-extern void kicknonlocalclients(shared::network::protocol::DisconnectReason reason = shared::network::protocol::DisconnectReason::Default);
-extern bool hasnonlocalclients();
-extern bool haslocalclients();
-extern void sendserverinforeply(ucharbuf &p);
-extern bool requestmaster(const char *req);
-extern bool requestmasterf(const char *fmt, ...) PRINTFARGS(1, 2);
-extern bool isdedicatedserver();
+extern ENetPacket *Sendf(int cn, int chan, const char *format, ...);
+extern ENetPacket *SendFile(int cn, int chan, stream *file, const char *format = "", ...);
+extern void SendPacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
+extern void FlushServer(bool force);
+extern int GetServerMTU();
+extern int GetNumClients();
+extern uint GetClientIP(int n);
+extern void LocalConnect();
+extern const char *DisconnectReason(shared::network::protocol::DisconnectReason reason);
+extern void Disconnect_Client(int n, int reason);
+extern void KickNonLocalClients(shared::network::protocol::DisconnectReason reason = shared::network::protocol::DisconnectReason::Default);
+extern bool HasNonLocalClients();
+extern bool HasLocalClients();
+extern void SendServerInfoReply(ucharbuf &p);
+extern bool RequestMaster(const char *req);
+extern bool RequestMasterf(const char *fmt, ...) PRINTFARGS(1, 2);
+extern bool IsDedicatedServer();
 
 // serverbrowser
 
-struct servinfo
+struct ServInfo
 {
     cubestr name, map, desc;
-    int protocol, numplayers, maxplayers, ping;
+    int protocol;
+    int numberOfPlayers, maximumOfPlayers, ping;
     vector<int> attr;
 
-    servinfo() : protocol(INT_MIN), numplayers(0), maxplayers(0)
+    ServInfo() : protocol(INT_MIN), numberOfPlayers(0), maximumOfPlayers(0)
     {
         name[0] = map[0] = desc[0] = '\0';
     }
 };
 
-extern servinfo *getservinfo(int i);
+extern ServInfo *GetServInfo(int i);
 
 #define GETSERVINFO(idx, si, body) do { \
-    servinfo *si = getservinfo(idx); \
+    ServInfo *si = GetServInfo(idx); \
     if(si) \
     { \
         body; \
@@ -538,15 +539,15 @@ extern servinfo *getservinfo(int i);
     GETSERVINFO(idx, si, { if(si->attr.inrange(aidx)) { int aval = si->attr[aidx]; body; } })
 
 // client
-extern void sendclientpacket(ENetPacket *packet, int chan);
-extern void flushclient();
+extern void SendClientPacket(ENetPacket *packet, int chan);
+extern void FlushClient();
 extern void Disconnect(bool async = false, bool cleanup = true);
 extern bool isconnected(bool attempt = false, bool local = true);
-extern const ENetAddress *connectedpeer();
-extern bool multiplayer(bool msg = true);
-extern void neterr(const char *s, bool disc = true);
-extern void gets2c();
-extern void notifywelcome();
+extern const ENetAddress *ConnectedPeer();
+extern bool Multiplayer(bool msg = true);
+extern void NetErr(const char *s, bool disc = true);
+extern void GetS2C();
+extern void NotifyWelcome();
 };
 };
 
