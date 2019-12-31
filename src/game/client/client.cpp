@@ -6,7 +6,8 @@
 
 #include "shared/networking/cl_sv.h"
 #include "shared/networking/network.h"
-#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_frametimestate.h"
+#include "shared/networking/sv_frametimestate.h"
 #include "shared/networking/protocol.h"
 
 #include "shared/entities/coreentity.h"
@@ -41,28 +42,31 @@ namespace game {
         //
         // ServerDescription - TODO: Struct, std::stringify
         //
-        cubestr servdesc = "";
-        cubestr servauth = "";
-        cubestr connectpass = "";
+        struct ServAuthentication {
+            cubestr servdesc = "";
+            cubestr servauth = "";
+            cubestr connectpass = "";
+        };
+        ServAuthentication svAuthentication;
 
         VARP(deadpush, 1, 2, 20);
 
         void SwitchName(const char *name) {
             char nickname[MAX_CLIENT_NAME_LENGTH]; // Temp method to avoid filtertext std::string issues.
             FilterText(nickname, name, false, false, MAX_CLIENT_NAME_LENGTH);
-            game::clPlayer->nickname = nickname;
-            if(game::clPlayer->nickname.empty())
-                game::clPlayer->nickname = "n00bnamed";
-            AddMessages(shared::network::protocol::Messages::SwitchName, "rs", game::clPlayer->nickname);
+            game::clPlayer->clientInformation.nickname = nickname;
+            if(game::clPlayer->clientInformation.nickname.empty())
+                game::clPlayer->clientInformation.nickname = "n00bnamed";
+            AddMessages(shared::network::protocol::Messages::SwitchName, "rs", game::clPlayer->clientInformation.nickname.c_str());
         }
         void PrintName() {
-            conoutf("Your name is: %s", game::client::GenerateClientColorName(game::clPlayer, game::clPlayer->nickname));
+            conoutf("Your name is: %s", game::client::GenerateClientColorName(game::clPlayer, game::clPlayer->clientInformation.nickname));
         }
         // // Returns a coloured string of a name.
-        const char *GenerateClientColorName(entities::classes::BaseEntity *c, const std::string &name) {
+        const char *GenerateClientColorName(entities::classes::BaseEntity *c, const std::string &nick) {
             entities::classes::BaseClientEntity *ce = dynamic_cast<entities::classes::BaseClientEntity*>(c);
             if (!ce) {
-                conoutf(CON_WARN, "%s", "Invalid pointer reference to ClientInfo *ci: == %d", *ce);
+                conoutf(CON_WARN, "%s", "Invalid pointer reference to ClientInfo *ci: == %d", (void*)&ce->clientInformation);
                 return "invalid_ref";
             }
 
@@ -70,16 +74,21 @@ namespace game {
             static int colorIndex = 0;
             colorIndex = (colorIndex+1)%3;
 
-            if(name.size() < 260) // Stay below CubeStr its max value.
-                name = (name.empty() ? std::string(ce->nickname).substr(0, 32).c_str() : (std::string("unnamed_#") + std::to_str(colorIndex)).c_str()); // Personally I find 32 chars enough.
+            std::string nickname = "unnamed_#" + std::to_string(colorIndex);
+            if(nick.size() < 260) { // Stay below CubeStr its max value.
+                if (nick.empty()) {
+                    nickname = std::string(ce->clientInformation.nickname).substr(0, 32);
+                } else {
+                    nickname = "unnamed_#" + std::to_string(colorIndex);
+                }
+            }
 
-        
-            if(!name.empty() && !shared::network::HasClientDuplicateName(ce, name))//&& ce->state.aitype == 0)  // It used to be that.
-                return name.c_str();
+            if(!nick.empty() && !shared::network::HasClientDuplicateName(ce, nick))//&& ce->state.aitype == 0)  // It used to be that.
+                return nick.c_str();
             
             // Generate colour based on type of Client and client number.
             // WatIsDeze: TODO: This is ancient code. ci->state.aitype??? Not now, maybe later.
-            formatcubestr(cname[colorIndex], "%s \fs\f5[%d]\fr", name.c_str(), ce->clientNumber);
+            formatcubestr(cname[colorIndex], "%s \fs\f5[%d]\fr", nick.c_str(), ce->clientNumber);
             return cname[colorIndex];
         }
         ICOMMAND(name, "sN", (char *s, int *numargs),
@@ -88,18 +97,18 @@ namespace game {
             else if(!*numargs) PrintName();
             //else cubestrret(ClientColorName(game::clPlayer->nickname));
         }, "Changes the player's name.");
-        ICOMMAND(getname, "", (), {cubestrret((char*)game::clPlayer->nickname.c_str())}, "Returns the player's name.");
+        ICOMMAND(getname, "", (), {cubestrret((char*)game::clPlayer->clientInformation.nickname.c_str()); }, "Returns the player's name.");
 
         void SendMapInfo()
         {
             if(!connected) return;
             sendcrc = true;
-            if(game::clPlayer->state!=CS_SPECTATOR || game::clPlayer->privilege || !remote) senditemstoserver = true;
+            if(game::clPlayer->state!=CS_SPECTATOR || static_cast<bool>(game::clPlayer->clientInformation.privilege) || !remote) senditemstoserver = true;
         }
 
         void WriteClientInfo(stream *f)
         {
-            f->printf("name %s\n", escapecubestr(clPlayer->nickname.c_str()));
+            f->printf("name %s\n", escapecubestr(clPlayer->clientInformation.nickname.c_str()));
         }
 
         //
@@ -116,10 +125,11 @@ namespace game {
             vector<uchar> messages;    
             int messageClientNumber = -1;
             int messageReliable = false;
-        } CL2SVMessages Cl2SvMessages;
+        }; 
+        CL2SVMessages Cl2SvMessages;
 
-        // Variadic templates! Screw the old vararg method, This allows for so much more! :) <3 -- WatIsDeze : Mike        
-        template<typename... Args> bool AddMessages(shared::network::protocol::Messages type, const char * fmt, Args... args) {
+        // TODO: Variadic templates! Screw the old vararg method, This allows for so much more! :) <3 -- WatIsDeze : Mike        
+        bool AddMessages(shared::network::protocol::Messages type, const char * fmt, ...) {
             if(!connected) 
                 return false;
 
@@ -144,7 +154,7 @@ namespace game {
                             va_arg(args, entities::classes::BaseClientEntity *)
                         );
 
-                        mcn = !d || d == clPlayer ? -1 : d->clientNumber;
+                        mcn = !d || d == clPlayer ? -1 : d->clientInformation.clientNumber;
                         break;
                     }
                     case 'v':

@@ -6,14 +6,15 @@
 #include "game/game.h"
 
 #include "shared/networking/network.h"
-#include "shared/networking/protocol.h"
-#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_frametimestate.h"
+#include "shared/networking/sv_frametimestate.h"
 
 namespace shared {
     // Networking
     namespace network {
         // Protocol predefinitions.
         namespace protocol {
+
             enum struct Messages : enet_uint32;
             enum struct NetClientMessage : enet_uint32;
             enum struct ConsoleMessage : enet_uint32;            
@@ -25,6 +26,9 @@ namespace shared {
             enum struct Priviliges : int { 
                 None = 0, Master, Auth, Admin
             };
+            inline bool operator!(Priviliges e) {
+                return e == static_cast<Priviliges>(0);
+            }
 
             //
             // Master Mode Masks.
@@ -115,6 +119,67 @@ namespace shared {
         //
         // Server side client info.
         //
+        struct GameState {  
+            vec o;
+            int state = CS_DEAD;
+            int editState = CS_DEAD;
+            int lastDeath = 0;
+            int deadFlush = 0;
+            int lastSpawn = 0;
+            int lifeSequence = 0;
+            int lastShot = 0;
+            int frags = 0;
+            int deaths = 0;
+            int teamKills = 0;
+            int shotDamage = 0;
+            int damage = 0;
+            int lastTimePlayed = 0;
+            int timePlayed = 0;
+            int gunWait = 0;
+            int maxHealth = 100;
+            
+            float effectiveness = 0.0f;
+
+            bool IsAlive(int gameMilliseconds)
+            {
+                #define DEATHMILLIS 3000
+                return state==CS_ALIVE || (state==CS_DEAD && ftsServer.gameMilliseconds - lastDeath <= DEATHMILLIS);
+            }
+
+            bool WaitExpired(int gameMilliseconds)
+            {
+                return ftsServer.gameMilliseconds - lastShot >= gunWait;
+            }
+
+            void Reset()
+            {
+                if(state!=CS_SPECTATOR) state = editState = CS_DEAD;
+                maxHealth = 100;
+
+                timePlayed = 0;
+                effectiveness = 0;
+                frags = deaths = teamKills = shotDamage = damage = 0;
+
+                lastDeath = 0;
+
+                Respawn();
+            }
+
+            void Respawn()
+            {
+                o = vec(-1e10f, -1e10f, -1e10f);
+                deadFlush = 0;
+                lastSpawn = -1;
+                lastShot = 0;
+                
+            }
+
+            void Reassign()
+            {
+                Respawn();
+            }
+        };
+
         //
         // Client Info.
         //
@@ -143,11 +208,13 @@ namespace shared {
             bool timeSync = false;
             
             // Time related.
-            int gameOffset = 0;
-            int lastEvent = 0;
-            int pushed = 0;
-            int exceeded = 0;
-            int state = 0;
+            int timeGameOffset = 0;
+            int timeLastEvent = 0;
+            int timePushed = 0;
+            int timeExceeded = 0;
+            
+            // Gamestate of this client.
+            GameState state;
 
             vector<GameEvent *> events; // GameEvents vector for this ClientInfo
             vector<uchar> position;     // TODO: unsigned char position?
@@ -169,15 +236,15 @@ namespace shared {
             bool warned = false;        // Client has been warned
             bool gameClip = false;      // I suppose this means, noclip.
             
-            int lastClipboard = 0;      // No fucking idea.
+            int lastClipboard = 0;      // No fucking idea. Supposedly used for ctrl+c/v ?
             int needClipboard = 0;      // No fucking idea.
             
             ENetPacket *getDemo;        // An ENetPacket for receiving a demo.
             ENetPacket *getMap;         // An ENetPacket for receiving a map.
             ENetPacket *clipboard;      // An ENetPacket for receiving these "I have no fucking idea" things with.
 
-            cubestr authName;
-            cubestr authDesc;
+            cubestr authName;           // Authorization Name
+            cubestr authDesc;           //
             
             uint authReq = 0;           // Authentication required?
             int connectAuth = 0;        // Connected to Auth?
@@ -193,17 +260,13 @@ namespace shared {
                 PUSHMILLIS = 3000
             };
 
+            bool CheckPushed(int millis, int range);
+            void SetPushed();
             int CalcPushRange();
 
-            bool CheckPushed(int millis, int range);
-
-            void ScheduleExceeded();
-
-            void SetExceeded();
-
-            void SetPushed();
-
             bool CheckExceeded();
+            void ScheduleExceeded();
+            void SetExceeded();
 
             void MapChange();
 
@@ -212,15 +275,13 @@ namespace shared {
             void CleanClipboard(bool fullclean = true);
 
             void CleanAuthKick();
-
             void CleanAuth(bool full = true);
 
+            // Reset the event.
             void Reset();
 
+            // Assume this returns the delta of it all.
             int GetEventMilliseconds(int serverMilliseconds, int clientMilliseconds);
         };
-
-        // // Returns a coloured string of a name.
-        
     }; // server
 }; // game

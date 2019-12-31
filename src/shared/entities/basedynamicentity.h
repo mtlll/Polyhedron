@@ -9,11 +9,9 @@ namespace entities
 {
     namespace classes {
 
-        class BaseDynamicEntity : public BasePhysicalEntity
-        {
+        class BaseDynamicEntity : public BasePhysicalEntity {
             ENTITY_FACTORY_IMPL(BaseDynamicEntity)
         public:
-
             // Stop this entity from moving.
             virtual void stopmoving();
 
@@ -29,6 +27,7 @@ namespace entities
 
             // Allow for this entity to have a camera member, which can be used to follow the entity. (Imagine cutscenes, or multiplayer modes)
             DONTSERIALIZE entities::classes::BasePhysicalEntity *camera;
+            
 		protected:
         };
     } // classes

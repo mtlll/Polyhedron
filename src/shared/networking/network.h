@@ -3,7 +3,8 @@
 #include "shared/utils/cubestr.h"
 
 #include "shared/networking/protocol.h"
-#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_frametimestate.h"
+#include "shared/networking/sv_frametimestate.h"
 #include "shared/networking/cl_sv.h"
 
 namespace shared {
@@ -57,6 +58,34 @@ namespace shared {
             int Print(char *buf) const;
             bool Check(enet_uint32 host) const { return (host & mask) == ip; }
         };
+
+        //
+        // UserKey
+        //
+        struct UserKey
+        {
+            char *name;
+            char *desc;
+            
+            UserKey() : name(NULL), desc(NULL) {}
+            UserKey(char *name, char *desc) : name(name), desc(desc) {}
+        };
+
+        //
+        // UserInfo
+        //
+        struct UserInfo : UserKey
+        {
+            void *pubkey = NULL;
+            int privilege = 0; // TODO: Has to be the official priviliges enum....
+
+            ~UserInfo() { 
+                delete[] name; 
+                delete[] desc; 
+                if(pubkey) 
+                    freepubkey(pubkey); 
+            }
+        }; extern hashset<shared::network::UserInfo> users;
 
         // The put and get functions for packet buffers.
         extern void PutInt(ucharbuf &p, int n);

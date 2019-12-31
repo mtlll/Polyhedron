@@ -13,6 +13,22 @@ namespace game {
     namespace network {
         namespace protocol {
             //
+            // The disconnection reasons to string map mapper.
+            //
+            DisconnectedToStringMapper {
+                {DisconnectReason::Default, ""},
+                {DisconnectReason::EndOfPacket, "End of Packet"},
+                {DisconnectReason::Local, "The server is in Local Mode"},
+                {DisconnectReason::Kick, "Kicked or Banned"},
+                {DisconnectReason::MessageError, "Message Error"},
+                {DisconnectReason::IPBan, "Your IP is banned"},
+                {DisconnectReason::Private, "This server is in Private Mode"},
+                {DisconnectReason::MaximumClients, "This server has reached the maximum amount of clients"},
+                {DisconnectReason::TimeOut, "Connection timed out"},
+                {DisconnectReason::Password, "Invalid Password"}
+            };
+
+            //
             // Return -1 in case the willing to send message happens to be invalid.
             //
             int MessageSizeLookup(const shared::network::protocol::Messages &message);

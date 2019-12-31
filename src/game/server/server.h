@@ -6,77 +6,113 @@
 #include "shared/networking/cl_sv.h"
 #include "shared/networking/network.h"
 #include "shared/networking/protocol.h"
-#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_frametimestate.h"
+#include "shared/networking/sv_frametimestate.h"
 
 namespace game {
     namespace server {
-        //
-        // Neatly ordered into a struct for variable svClients.
-        //
+        // Externize it.
+        extern shared::network::ServerFrameTimeState ftsServer;
+
+        // Neatly ordered into a struct for variable svClients.       
         struct ServerClients {
             vector<shared::network::ClientInfo *> connected;
             vector<shared::network::ClientInfo *> clients;
             vector<shared::network::ClientInfo *> bots;
         }; extern ServerClients svClients;
 
+        SVAR(serverauth, "");
+        struct ServInfo
+        {
+            cubestr name, map, desc;
+            int protocol;
+            int numberOfPlayers, maximumOfPlayers, ping;
+            vector<int> attr;
+
+            ServInfo() : protocol(INT_MIN), numberOfPlayers(0), maximumOfPlayers(0)
+            {
+                name[0] = map[0] = desc[0] = '\0';
+            }
+        };
+
+        extern ServInfo *GetServInfo(int i);
+
+        #define GETSERVINFO(idx, si, body) do { \
+            ServInfo *si = GetServInfo(idx); \
+            if(si) \
+            { \
+                body; \
+            } \
+        } while(0)
+        #define GETSERVINFOATTR(idx, aidx, aval, body) \
+            GETSERVINFO(idx, si, { if(si->attr.inrange(aidx)) { int aval = si->attr[aidx]; body; } })
+
         //
-        // Server initializing and shutdown
+        // Server init, uupdate etc functions.
         //
-        extern void ServerInit();
-        extern void ServerUpdate();
+        void ServerInit();
+        void ServerUpdate();
+        void ServerInfoReply(ucharbuf &req, ucharbuf &p);
+        bool ServerCompatible(char *name, char *sdec, char *map, int ping, const vector<int> &attr, int np);
+
+        //
+        // Client connect and Disconnect functions.
+        //
+        shared::network::protocol::DisconnectReason ClientDisconnect(int n);
+        shared::network::protocol::DisconnectReason ClientConnect(int n, uint ip); // Returns Default aka None when properly connected.
+	
+        void LocalDisconnect(int n);
+		void LocalConnect(int n);
+    
 
         //
         // ClientInfo functionality.
         //
-        extern void *NewClientInfo();
-        extern void DeleteClientInfo(void *ci);
+        void *NewClientInfo();
+        void DeleteClientInfo(void *ci);
+		int ReserveClients();
         
-        // Number of 
-        extern int ReserveClients();
-        extern int NumberOfChannels(); // Client channels? 
-        extern bool AllowBroadcast(int n);
+        //
+        // General functions. 
+        //
+        int NumberOfChannels(); // Client channels? 
+        bool AllowBroadcast(int n);
 
         //
         // Server status functionality. (Paused, time etc)
         //
-        extern bool IsPaused();
-        extern int ScaleTime(int t);
+        bool IsPaused();
+        int ScaleTime(int t);
 
         //
         // Packet management. 
         //
-        extern void ParsePacket(int sender, int chan, packetbuf &p);
-        extern void SendServerMessage(const char *s);
-        extern bool SendPackets(bool force);
-        extern void ServerInfoReply(ucharbuf &req, ucharbuf &p);
-        extern bool ServerCompatible(char *name, char *sdec, char *map, int ping, const vector<int> &attr, int np);
-
+        void ParsePacket(int sender, int chan, packetbuf &p);
+        void SendServerMessage(const char *s);
+        void SendServInfo(shared::network::ClientInfo *ci);
+        bool SendPackets(bool force = false);
+        
+        
         //
         // Demo Packet management(So I assume)
         //
         extern void RecordPacket(int chan, void *data, int len);
 
         //
-        // Client connect and Disconnect.
+        // Information functionality.
         //
-        extern shared::network::protocol::DisconnectReason ClientDisconnect(int n);
-        extern shared::network::protocol::DisconnectReason ClientConnect(int n, uint ip); // Returns Default aka None when properly connected.
-
-        //
-        // Port/default information functionality.
-        //
-        extern int ProtocolVersion();
-        extern int ServerInfoPort(int servport);
-        extern int ServerPort();
-        extern int LanInfoPort();
-        extern int MasterPort();
-        extern const char *DefaultMaster();
+        int ProtocolVersion();
+        int ServerInfoPort(int servport);
+        int ServerPort();
+        int LanInfoPort();
+        int MasterPort();
+        const char *DefaultMaster();
 
         //
         // Master functionality.
         //
-        extern void ProcessMasterInput(const char *cmd, int cmdlen, const char *args);
-        extern void MasterConnected();
-        extern void MasterDisconnected();
+        void ProcessMasterInput(const char *cmd, int cmdlen, const char *args);
+        void MasterConnected();
+        void MasterDisconnected();
     };
 };

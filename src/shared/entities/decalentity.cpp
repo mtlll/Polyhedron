@@ -1,3 +1,7 @@
+#include "cube.h"
+#include "engine/engine.h"
+#include "game/game.h"
+#include "shared/networking/protocol.h"
 #include "decalentity.h"
 #include "engine/texture.h"
 #include "engine/engine.h"

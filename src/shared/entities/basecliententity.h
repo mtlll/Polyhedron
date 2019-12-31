@@ -24,7 +24,12 @@ namespace entities
         public:
             virtual void stopmoving();
             virtual vec abovehead();
-            
+
+            //
+            // Client variables.
+            //
+            DONTSERIALIZE shared::network::ClientInfo clientInformation;
+        
             //
 			// Entity member variables.
 			//

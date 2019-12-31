@@ -1,7 +1,8 @@
 // command.cpp: implements the parsing and execution of a tiny script language which
 // is largely backwards compatible with the quake console language.
 
-#include "engine.h"
+#include "engine/engine.h"
+#include "engine/command.h"
 #include "shared/networking/network.h"
 
 hashnameset<ident> idents; // contains ALL vars/commands/aliases

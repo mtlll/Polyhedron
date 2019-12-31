@@ -1739,7 +1739,7 @@ void precachetextures()
 
 void allchanged(bool load)
 {
-    if(mainmenu && !engine::server::isconnected()) load = false;
+    if(mainmenu && !engine::client::IsConnected()) load = false;
     if(load) initlights();
     renderprogress(0, "Clearing vertex arrays...");
     clearvas(worldroot);

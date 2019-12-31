@@ -543,40 +543,58 @@ extern void loadcaustics(bool force = false);
 extern void renderwaterfog(int mat, float blend);
 extern void preloadwatershaders(bool force = false);
 
-// server
-extern vector<const char *> gameargs;
-
-extern void initserver(bool listen, bool dedicated);
-extern void cleanupserver();
-extern void serverslice(bool dedicated, uint timeout);
-extern void updatetime();
-
 // Temporarily
 namespace engine { 
+    // Defines.
+    #define MAXCLIENTS 128                 // DO NOT set this any higher
+    #define MAXTRANS 5000                  // max amount of data to swallow in 1 go
+
+    // Game Arguments.
+    extern vector<const char *> gameargs;
+    extern int maxclients;
+
+    // Still here in case of...
+    enum { DISC_NONE = 0,
+        DISC_EOP, 
+        DISC_LOCAL, 
+        DISC_KICK, 
+        DISC_MSGERR, 
+        DISC_IPBAN, 
+        DISC_PRIVATE, 
+        DISC_MAXCLIENTS, 
+        DISC_TIMEOUT, 
+        DISC_OVERFLOW, 
+        DISC_PASSWORD, 
+        DISC_NUM 
+    };
+    
     namespace client {
-        extern ENetSocket ConnectNaster(bool wait);
-        extern void LocalClientToServer(int chan, ENetPacket *);
-        extern void LocalConnect();
-        extern bool ServerOption(char *opt);
-    }
-};
+        ENetSocket ConnectMaster(bool wait);
+        void LocalConnect();
+        void LocalDisconnect(bool cleanup = true);
+        void LocalClientToServer(int chan, ENetPacket *);
+        bool ServerOption(char *opt);
+        void ConnectToServer(const char *servername, int port, const char *serverpassword);
+        void AbortConnection();
+        void ClientKeepAlive();
+
+        void SendClientPacket(ENetPacket *packet, int chan);
+        void FlushClient();
+        void Disconnect(bool async = false, bool cleanup = true);
+        bool IsConnected(bool attempt = false, bool local = true);
+        const ENetAddress *ConnectedPeer();
+        bool Multiplayer(bool msg = true);
+        void NetErr(const char *s, bool disc = true);
+        void GetS2C();
+        void NotifyWelcome();
+    }; // client
+}; // engine
 
 // serverbrowser
 extern bool resolverwait(const char *name, ENetAddress *address);
 extern int connectwithtimeout(ENetSocket sock, const char *hostname, const ENetAddress &address);
 extern void addserver(const char *name, int port = 0, const char *password = NULL, bool keep = false);
 extern void writeservercfg();
-
-// client
-namespace engine {
-    namespace client {
-        extern void LocalDisconnect(bool cleanup = true);
-        extern void LocalServerToClient(int chan, ENetPacket *packet);
-        extern void ConnectToServer(const char *servername, int port, const char *serverpassword);
-        extern void AbortConnection();
-        extern void ClientKeepAlive();
-    };
-};
 
 // command
 extern hashnameset<ident> idents;

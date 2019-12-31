@@ -484,70 +484,31 @@ extern void cleanragdoll(entities::classes::BaseDynamicEntity *d);
 #include "shared/networking/protocol.h"
 namespace engine {
 namespace server {
-#define MAXCLIENTS 128                 // DO NOT set this any higher
-#define MAXTRANS 5000                  // max amount of data to swallow in 1 go
 
-extern int maxclients;
-
-enum { DISC_NONE = 0, DISC_EOP, DISC_LOCAL, DISC_KICK, DISC_MSGERR, DISC_IPBAN, DISC_PRIVATE, DISC_MAXCLIENTS, DISC_TIMEOUT, DISC_OVERFLOW, DISC_PASSWORD, DISC_NUM };
-
-extern void *GetClientInfo(int i);
-extern ENetPeer *GetClientPeer(int i);
-extern ENetPacket *Sendf(int cn, int chan, const char *format, ...);
-extern ENetPacket *SendFile(int cn, int chan, stream *file, const char *format = "", ...);
-extern void SendPacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
-extern void FlushServer(bool force);
-extern int GetServerMTU();
-extern int GetNumClients();
-extern uint GetClientIP(int n);
-extern void LocalConnect();
-extern const char *DisconnectReason(shared::network::protocol::DisconnectReason reason);
-extern void Disconnect_Client(int n, int reason);
-extern void KickNonLocalClients(shared::network::protocol::DisconnectReason reason = shared::network::protocol::DisconnectReason::Default);
-extern bool HasNonLocalClients();
-extern bool HasLocalClients();
-extern void SendServerInfoReply(ucharbuf &p);
-extern bool RequestMaster(const char *req);
-extern bool RequestMasterf(const char *fmt, ...) PRINTFARGS(1, 2);
-extern bool IsDedicatedServer();
+// extern void *GetClientInfo(int i);
+// extern ENetPeer *GetClientPeer(int i);
+// extern ENetPacket *Sendf(int cn, int chan, const char *format, ...);
+// extern ENetPacket *SendFile(int cn, int chan, stream *file, const char *format = "", ...);
+// extern void SendPacket(int cn, int chan, ENetPacket *packet, int exclude = -1);
+// extern void FlushServer(bool force);
+// extern int GetServerMTU();
+// extern int GetNumClients();
+// extern uint GetClientIP(int n);
+// extern void LocalConnect();
+// extern const char *DisconnectReason(shared::network::protocol::DisconnectReason reason);
+// extern void Disconnect_Client(int n, int reason);
+// extern void KickNonLocalClients(shared::network::protocol::DisconnectReason reason = shared::network::protocol::DisconnectReason::Default);
+// extern bool HasNonLocalClients();
+// extern bool HasLocalClients();
+// extern void SendServerInfoReply(ucharbuf &p);
+// extern bool RequestMaster(const char *req);
+// extern bool RequestMasterf(const char *fmt, ...) PRINTFARGS(1, 2);
+// extern bool IsDedicatedServer();
 
 // serverbrowser
 
-struct ServInfo
-{
-    cubestr name, map, desc;
-    int protocol;
-    int numberOfPlayers, maximumOfPlayers, ping;
-    vector<int> attr;
-
-    ServInfo() : protocol(INT_MIN), numberOfPlayers(0), maximumOfPlayers(0)
-    {
-        name[0] = map[0] = desc[0] = '\0';
-    }
-};
-
-extern ServInfo *GetServInfo(int i);
-
-#define GETSERVINFO(idx, si, body) do { \
-    ServInfo *si = GetServInfo(idx); \
-    if(si) \
-    { \
-        body; \
-    } \
-} while(0)
-#define GETSERVINFOATTR(idx, aidx, aval, body) \
-    GETSERVINFO(idx, si, { if(si->attr.inrange(aidx)) { int aval = si->attr[aidx]; body; } })
 
 // client
-extern void SendClientPacket(ENetPacket *packet, int chan);
-extern void FlushClient();
-extern void Disconnect(bool async = false, bool cleanup = true);
-extern bool isconnected(bool attempt = false, bool local = true);
-extern const ENetAddress *ConnectedPeer();
-extern bool Multiplayer(bool msg = true);
-extern void NetErr(const char *s, bool disc = true);
-extern void GetS2C();
-extern void NotifyWelcome();
 };
 };
 

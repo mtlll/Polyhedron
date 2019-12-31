@@ -3,7 +3,7 @@
 #include "shared/cube.h"
 
 #include "shared/utils/stream.h"
-#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_frametimestate.h"
 #include "shared/networking/protocol.h"
 #include "shared/entities/coreentity.h"
 
@@ -20,6 +20,6 @@ namespace game {
         extern void PrintName();
 
         // Messages
-        template<typename... Args> bool AddMessages(shared::network::protocol::Messages type, const char * fmt, Args... args);
+        bool AddMessages(shared::network::protocol::Messages type, const char * fmt = NULL, ...);
     }; // client
 }; // game

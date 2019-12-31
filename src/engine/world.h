@@ -52,6 +52,8 @@ enum
 
 struct vertex { vec pos; bvec4 norm; vec tc; bvec4 tangent; };
 
+namespace entities { extern vector<entities::classes::CoreEntity *> &getents(); };
+
 template <class ET>
 ET* getentitybytype(int searchStartIndex = 0)
 {

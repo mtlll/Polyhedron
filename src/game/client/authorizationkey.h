@@ -1,7 +1,8 @@
 #pragma once
 
 #include "shared/cube.h"
-#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_frametimestate.h"
+#include "shared/networking/sv_frametimestate.h"
 
 namespace game {
     namespace client {

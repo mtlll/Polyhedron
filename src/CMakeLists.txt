@@ -77,7 +77,8 @@ list(APPEND fileListEngine
     engine/bih.cpp
     engine/bih.h
     engine/blend.cpp
-    engine/client.cpp
+    engine/client/client.cpp
+    engine/client/client.h
     engine/command.cpp
     engine/console.cpp
     engine/dynlight.cpp
@@ -123,7 +124,8 @@ list(APPEND fileListEngine
     engine/renderva.cpp
     engine/scriptexport.h
     engine/scriptexport.cpp
-    engine/server.cpp
+    engine/server/server.cpp
+    engine/server/server.h
     engine/serverbrowser.cpp
     engine/shader.cpp
     engine/skelmodel.h
@@ -149,7 +151,7 @@ list(APPEND fileListGame
     game/game.cpp
     game/game.h
     game/render.cpp
-    game/server.cpp
+    #game/server.cpp
     game/commands.cpp
 )
 
@@ -239,7 +241,8 @@ list(APPEND fileListSharedEntities
 list(APPEND fileListSharedNetworking
     shared/networking/cl_sv.cpp
     shared/networking/cl_sv.h
-    shared/networking/frametimestate.h 
+    shared/networking/cl_frametimestate.h 
+    shared/networking/sv_frametimestate.h 
     shared/networking/network.cpp
     shared/networking/network.h
     shared/networking/protocol.h

@@ -2,6 +2,7 @@
 #include "ents.h"
 #include "game.h"
 #include "ents.h"
+#include "shared/networking/protocol.h"
 #include "baseentity.h"
 #include "coreentity.h"
 #include "entityfactory.h"

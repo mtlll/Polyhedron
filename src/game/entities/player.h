@@ -2,7 +2,8 @@
 
 #include "shared/networking/cl_sv.h"
 #include "shared/networking/network.h"
-#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_frametimestate.h"
+#include "shared/networking/sv_frametimestate.h"
 #include "shared/networking/protocol.h"
 
 #include "shared/entities/basedynamicentity.h"
@@ -15,7 +16,7 @@ namespace entities {
         class Player : public entities::classes::BaseClientEntity {
             ENTITY_FACTORY_IMPL(Player)
         public:
-
+            Player();
 
 			//
 			// Base/Core entity functions.
@@ -35,11 +36,6 @@ namespace entities {
 			//
             bool onTrigger(const entities::classes::CoreEntity *otherEnt, const vec &dir);
             bool onTouch(const entities::classes::CoreEntity *otherEnt, const vec &dir);
-
-			//
-			// Entity member variables.
-			//
-            DONTSERIALIZE entities::classes::BasePhysicalEntity *camera;
 			
         private:
 

@@ -1,5 +1,11 @@
-#include "engine/engine.h"
+#include "cube.h"
 #include "game/game.h"
+
+#include "shared/networking/cl_sv.h"
+#include "shared/networking/cl_frametimestate.h"
+#include "shared/networking/sv_frametimestate.h"
+#include "shared/networking/protocol.h"
+#include "shared/networking/network.h"
 
 #include "basemapmodel.h"
 #include "shared/entities/entityfactory.h"

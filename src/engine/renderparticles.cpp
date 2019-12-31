@@ -1,6 +1,8 @@
 // renderparticles.cpp
 
 #include "engine.h"
+
+#include "game/entities.h"
 #include "shared/entities/basephysicalentity.h"
 
 

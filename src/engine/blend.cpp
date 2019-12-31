@@ -2,7 +2,8 @@
 
 #include "shared/networking/network.h"
 #include "shared/networking/protocol.h"
-#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_frametimestate.h"
+#include "shared/networking/sv_frametimestate.h"
 #include "shared/networking/cl_sv.h"
 
 
@@ -899,10 +900,10 @@ SCRIPTEXPORT void addblendbrush(const char *name, const char *imgname)
     delblendbrush(name);
 
     ImageData s;
-    if(!loadimage(imgname, s)) { conoutf(CON_ERROR, "could not load blend brush image %s", imgname); return; }
+    if(!loadimage(imgname, s)) { conoutf(CON_ERROR, "Could not load blend brush image %s", imgname); return; }
     if(max(s.w, s.h) > (1<<12))
     {
-        conoutf(CON_ERROR, "blend brush image size exceeded %dx%d pixels: %s", 1<<12, 1<<12, imgname);
+        conoutf(CON_ERROR, "Blend brush image size exceeded %dx%d pixels: %s", 1<<12, 1<<12, imgname);
         return;
     }
 
@@ -949,15 +950,15 @@ extern int nompedit;
 
 bool canpaintblendmap(bool brush = true, bool sel = false, bool msg = true)
 {
-    if(noedit(!sel, msg) || (nompedit && engine::server::Multiplayer())) return false;
+    if(noedit(!sel, msg) || (nompedit && engine::client::Multiplayer())) return false;
     if(!blendpaintmode)
     {
-        if(msg) conoutf(CON_ERROR, "operation only allowed in blend paint mode");
+        if(msg) conoutf(CON_ERROR, "Operation only allowed in blend paint mode");
         return false;
     }
     if(brush && !brushes.inrange(curbrush))
     {
-        if(msg) conoutf(CON_ERROR, "no blend brush selected");
+        if(msg) conoutf(CON_ERROR, "No blend brush selected");
         return false;
     }
     return true;
@@ -1019,7 +1020,7 @@ SCRIPTEXPORT_AS(paintblendmap) void paintblendmap_scriptimpl(int *isdown)
 
 SCRIPTEXPORT void clearblendmapsel()
 {
-    if(noedit(false) || (nompedit && engine::server::Multiplayer())) return;
+    if(noedit(false) || (nompedit && engine::client::Multiplayer())) return;
     extern selinfo sel;
     int x1 = sel.o.x>>BM_SCALE, y1 = sel.o.y>>BM_SCALE,
         x2 = (sel.o.x+sel.s.x*sel.grid+(1<<BM_SCALE)-1)>>BM_SCALE,
@@ -1031,7 +1032,7 @@ SCRIPTEXPORT void clearblendmapsel()
 
 SCRIPTEXPORT void invertblendmapsel()
 {
-    if(noedit(false) || (nompedit && engine::server::Multiplayer())) return;
+    if(noedit(false) || (nompedit && engine::client::Multiplayer())) return;
     extern selinfo sel;
     int x1 = sel.o.x>>BM_SCALE, y1 = sel.o.y>>BM_SCALE,
         x2 = (sel.o.x+sel.s.x*sel.grid+(1<<BM_SCALE)-1)>>BM_SCALE,
@@ -1044,30 +1045,30 @@ SCRIPTEXPORT void invertblendmapsel()
 
 SCRIPTEXPORT_AS(invertblendmap) void invertblendmap_scriptimpl()
 {
-    if(noedit(false) || (nompedit && engine::server::Multiplayer())) return;
+    if(noedit(false) || (nompedit && engine::client::Multiplayer())) return;
     invertblendmap(0, 0, worldsize>>BM_SCALE, worldsize>>BM_SCALE);
     previewblends(ivec(0, 0, 0), ivec(worldsize, worldsize, worldsize));
 }
 
 SCRIPTEXPORT void showblendmap()
 {
-    if(noedit(true) || (nompedit && engine::server::Multiplayer())) return;
+    if(noedit(true) || (nompedit && engine::client::Multiplayer())) return;
     previewblends(ivec(0, 0, 0), ivec(worldsize, worldsize, worldsize));
 }
 
 SCRIPTEXPORT void clearblendmap()
 {
-    if(noedit(true) || (nompedit && engine::server::Multiplayer())) return;
+    if(noedit(true) || (nompedit && engine::client::Multiplayer())) return;
     resetblendmap();
     showblendmap();
 }
 
 SCRIPTEXPORT_AS(moveblendmap) void moveblendmap_scriptimpl(int *dx, int *dy)
 {
-    if(noedit(true) || (nompedit && engine::server::Multiplayer())) return;
+    if(noedit(true) || (nompedit && engine::client::Multiplayer())) return;
     if(*dx%(BM_IMAGE_SIZE<<BM_SCALE) || *dy%(BM_IMAGE_SIZE<<BM_SCALE))
     {
-        conoutf(CON_ERROR, "blendmap movement must be in multiples of %d", BM_IMAGE_SIZE<<BM_SCALE);
+        conoutf(CON_ERROR, "Blendmap movement must be in multiples of %d", BM_IMAGE_SIZE<<BM_SCALE);
         return;
     }
     if(*dx <= -worldsize || *dx >= worldsize || *dy <= -worldsize || *dy >= worldsize)

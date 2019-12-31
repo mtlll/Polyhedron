@@ -1,4 +1,5 @@
 #include "basedynamicentity.h"
+#include "shared/networking/protocol.h"
 
 namespace {
 	float aboveeye = 1.0f;

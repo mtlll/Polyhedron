@@ -3,18 +3,18 @@
 
 namespace entities {
     namespace classes {
-        class BaseMonster : public BaseEntity {
-			ENTITY_FACTORY_IMPL(BaseMonster);
-        public:
-            BaseMonster();
+        // class BaseMonster : public BaseEntity {
+		// 	ENTITY_FACTORY_IMPL(BaseMonster);
+        // public:
+        //     BaseMonster();
 
-            void preload();
-            void think();
-            void render();
+        //     void preload();
+        //     void think();
+        //     void render();
 
-        private:
+        // private:
 
-        };
+        // };
     } // classes
 } // entities
 

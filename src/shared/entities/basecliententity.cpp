@@ -15,40 +15,44 @@
 namespace entities {
 namespace classes {
 
-BaseClientEntity::BaseClientEntity() : BaseDynamicEntity(), shared::network::ClientInfo() {
+BaseClientEntity::BaseClientEntity() : BaseDynamicEntity() {
 	state = CS_ALIVE;
 	et_type = ET_GAMESPECIFIC;
 	ent_type = ENT_PLAYER;
 	game_type = CLIENT_BASIC;
 	collidetype = COLLIDE_OBB;
 	physstate = PHYS_FALL;
+
 	// Load in our player entity model.
 	conoutf("%s", "Preloading base client  entity");
 	preloadmodel("player/male");
-	// Reset.
-	setName("ClientInfo");
+	
+	// This should NOT occure..
+	clientInformation->nickname = "BaseClient";
 }
 
-namespace entities {
-namespace classes {
-	void BaseClientEntity::stopmoving()
-	{
-		// First call its predesecsor.
-		BaseDynamicEntity::stopmoving();
+void BaseClientEntity::SetNickName(const std::string &nick) {
+	clientInformation.nickname = nick;
+}
 
-		// No keyboard directions. Turn them off.
-		k_left = k_right = k_up = k_down = false;
-	}
+void BaseClientEntity::stopmoving()
+{
+	// First call its predesecsor.
+	BaseDynamicEntity::stopmoving();
 
-	vec BaseClientEntity::abovehead() {
-		// First call its predesecsor.
-		BaseDynamicEntity::abovehead();
+	// No keyboard directions. Turn them off.
+	k_left = k_right = k_up = k_down = false;
+}
 
-    	// WatIsDeze: Seems to determine to which lengths the camera and the character are allowed to go when jumping or crouching through a tunnel etc.
-   		return vec(o).addz(aboveeye+4);
-	}
+vec BaseClientEntity::abovehead() {
+	// First call its predesecsor.
+	BaseDynamicEntity::abovehead();
 
-} // classes
-} // entities
+	// WatIsDeze: Seems to determine to which lengths the camera and the character are allowed to go when jumping or crouching through a tunnel etc.
+	return vec(o).addz(aboveeye+4);
+}
 
-ADD_ENTITY_TO_FACTORY(BaseClientEntity, "base_client_entity", BaseDynamicEntity);
+}; // classes
+}; // entities
+
+ADD_ENTITY_TO_FACTORY_SERIALIZED(BaseClientEntity, "base_client_entity", BaseDynamicEntity);

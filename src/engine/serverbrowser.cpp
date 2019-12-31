@@ -1,6 +1,14 @@
 #include "engine.h"
+
+#include "game/game.h"
+#include "game/client/client.h"
+#include "game/server/server.h"
+
+#include "shared/networking/cl_sv.h"
 #include "shared/networking/network.h"
 #include "shared/networking/protocol.h"
+#include "shared/networking/cl_frametimestate.h"
+#include "shared/networking/sv_frametimestate.h"
 
 struct resolverthread
 {
@@ -261,7 +269,7 @@ static int currentprotocol = game::server::ProtocolVersion();
 
 enum { UNRESOLVED = 0, RESOLVING, RESOLVED };
 
-struct ServerInfo : engine::server::ServInfo, PingAttempts
+struct ServerInfo : game::server::ServInfo, PingAttempts
 {
     enum
     {
@@ -654,12 +662,12 @@ SCRIPTEXPORT void servinfoattr(int *i, int *n)
 
 SCRIPTEXPORT void connectservinfo(int *i, char *pw)
 {
-    GETSERVERINFO_(*i, si, connectserv(si.name, si.address.port, pw[0] ? pw : si.password));
+    GETSERVERINFO_(*i, si, engine::client::ConnectToServer(si.name, si.address.port, pw[0] ? pw : si.password));
 }
 
-ServInfo *getservinfo(int i)
+game::server::ServInfo *getservinfo(int i)
 {
-    return servers.inrange(i) && servers[i]->valid() ? servers[i] : NULL;
+    return servers.inrange(i) && servers[i]->Valid() ? servers[i] : NULL;
 }
 
 void clearservers(bool full = false)

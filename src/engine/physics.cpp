@@ -7,7 +7,9 @@
 #include "mpr.h"
 #include "ents.h"
 
-#include "../game/entities/player.h"
+#include "game/server/server.h"
+#include "game/entities.h"
+#include "game/entities/player.h"
 
 const int MAXCLIPOFFSET = 4;
 const int MAXCLIPPLANES = 1024;
@@ -1929,7 +1931,7 @@ void physicsframe()          // optimally schedule physics frames inside the gra
     if(diff <= 0) physsteps = 0;
     else
     {
-        physframetime = clamp(game::scaletime(PHYSFRAMETIME)/100, 1, PHYSFRAMETIME);
+        physframetime = clamp(game::server::ScaleTime(PHYSFRAMETIME)/100, 1, PHYSFRAMETIME);
         physsteps = (diff + physframetime - 1)/physframetime;
         lastphysframe += physsteps * physframetime;
     }

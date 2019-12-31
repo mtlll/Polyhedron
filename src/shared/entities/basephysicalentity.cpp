@@ -1,3 +1,12 @@
+#include "cube.h"
+#include "game/game.h"
+
+#include "shared/networking/cl_sv.h"
+#include "shared/networking/network.h"
+#include "shared/networking/cl_frametimestate.h"
+#include "shared/networking/sv_frametimestate.h"
+#include "shared/networking/protocol.h"
+
 #include "basephysicalentity.h"
 
 namespace entities

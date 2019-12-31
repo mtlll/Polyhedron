@@ -99,5 +99,5 @@ namespace entities {
 	virtual std::string currentClassname();\
 	static CoreEntity *Construct();\
 	virtual void fromJsonImpl(const nlohmann::json& document);\
-    virtual void saveToJsonImpl(nlohmann::json& document); \
-    virtual ~LOCALNAME() = default;
+    virtual void saveToJsonImpl(nlohmann::json& document);
+    //virtual ~LOCALNAME() = default;

@@ -41,22 +41,22 @@ static void fixent(entities::classes::CoreEntity *e, int version)
 
 static bool loadmapheader(stream *f, const char *ogzname, mapheader &hdr, octaheader &ohdr)
 {
-    if(f->read(&hdr, 3*sizeof(int)) != 3*sizeof(int)) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
+    if(f->read(&hdr, 3*sizeof(int)) != 3*sizeof(int)) { conoutf(CON_ERROR, "Map %s has malformatted header", ogzname); return false; }
     lilswap(&hdr.version, 2);
 
     if(!memcmp(hdr.magic, "SCMA", 4))
     {
-        if(hdr.version>MAPVERSION) { conoutf(CON_ERROR, "map %s requires a newer version of SchizoMania", ogzname); return false; }
+        if(hdr.version>MAPVERSION) { conoutf(CON_ERROR, "Map %s requires a newer version of SchizoMania", ogzname); return false; }
         if(f->read(&hdr.worldsize, 6*sizeof(int)) != 6*sizeof(int)) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
         lilswap(&hdr.worldsize, 6);
-        if(hdr.worldsize <= 0|| hdr.numents < 0) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
+        if(hdr.worldsize <= 0|| hdr.numents < 0) { conoutf(CON_ERROR, "Map %s has malformatted header", ogzname); return false; }
     }
     else if(!memcmp(hdr.magic, "OCTA", 4))
     {
-        if(hdr.version!=OCTAVERSION) { conoutf(CON_ERROR, "map %s uses an unsupported map format version", ogzname); return false; }
-        if(f->read(&ohdr.worldsize, 7*sizeof(int)) != 7*sizeof(int)) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
+        if(hdr.version!=OCTAVERSION) { conoutf(CON_ERROR, "Map %s uses an unsupported map format version", ogzname); return false; }
+        if(f->read(&ohdr.worldsize, 7*sizeof(int)) != 7*sizeof(int)) { conoutf(CON_ERROR, "Map %s has malformatted header", ogzname); return false; }
         lilswap(&ohdr.worldsize, 7);
-        if(ohdr.worldsize <= 0|| ohdr.numents < 0) { conoutf(CON_ERROR, "map %s has malformatted header", ogzname); return false; }
+        if(ohdr.worldsize <= 0|| ohdr.numents < 0) { conoutf(CON_ERROR, "Map %s has malformatted header", ogzname); return false; }
         memcpy(hdr.magic, "SCMA", 4);
         hdr.version = 0;
         hdr.headersize = sizeof(hdr);
@@ -599,17 +599,17 @@ bool save_world(const char *mname, bool nolms)
     setmapfilenames(*mname ? mname : "untitled");
     if(savebak) backup(ogzname, bakname);
     stream *f = opengzfile(ogzname, "wb");
-    if(!f) { conoutf(CON_WARN, "could not write map to %s", ogzname); return false; }
+    if(!f) { conoutf(CON_WARN, "Could not write map to %s", ogzname); return false; }
 
     int numvslots = vslots.length();
-    if(!nolms && !engine::server::Multiplayer(false))
+    if(!nolms && !engine::client::Multiplayer(false))
     {
         numvslots = compactvslots();
         allchanged();
     }
 
     savemapprogress = 0;
-    renderprogress(0, "saving map...");
+    renderprogress(0, "Saving map...");
 
     mapheader hdr;
     memcpy(hdr.magic, "SCMA", 4);
@@ -639,30 +639,30 @@ bool save_world(const char *mname, bool nolms)
         switch(id.type)
         {
             case ID_VAR:
-                if(dbgvars) conoutf(CON_DEBUG, "wrote var %s: %d", id.name, *id.storage.i);
+                if(dbgvars) conoutf(CON_DEBUG, "Wrote var %s: %d", id.name, *id.storage.i);
                 f->putlil<int>(*id.storage.i);
                 break;
 
             case ID_FVAR:
-                if(dbgvars) conoutf(CON_DEBUG, "wrote fvar %s: %f", id.name, *id.storage.f);
+                if(dbgvars) conoutf(CON_DEBUG, "Wrote fvar %s: %f", id.name, *id.storage.f);
                 f->putlil<float>(*id.storage.f);
                 break;
 
             case ID_SVAR:
-                if(dbgvars) conoutf(CON_DEBUG, "wrote svar %s: %s", id.name, *id.storage.s);
+                if(dbgvars) conoutf(CON_DEBUG, "Wrote svar %s: %s", id.name, *id.storage.s);
                 f->putlil<ushort>(strlen(*id.storage.s));
                 f->write(*id.storage.s, strlen(*id.storage.s));
                 break;
         }
     });
 
-    if(dbgvars) conoutf(CON_DEBUG, "wrote %d vars", hdr.numvars);
+    if(dbgvars) conoutf(CON_DEBUG, "Wrote %d vars", hdr.numvars);
 
     f->putchar((int)strlen(game::gameident()));
     f->write(game::gameident(), (int)strlen(game::gameident())+1);
     //f->putlil<ushort>(entities::extraentinfosize());
     vector<char> extras;
-    game::writegamedata(extras);
+    //game::writegamedata(extras);
     f->putlil<ushort>(extras.length());
     f->write(extras.getbuf(), extras.length());
 

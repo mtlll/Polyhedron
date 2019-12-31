@@ -1,5 +1,6 @@
 #include "engine.h"
 #include "ents.h"
+#include "shared/networking/protocol.h"
 #include "shared/entities/basephysicalentity.h"
 
 extern vec hitsurface;

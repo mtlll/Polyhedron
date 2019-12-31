@@ -1,9 +1,16 @@
 // world.cpp: core map management stuff
-#include "engine.h"
-#include "../shared/ents.h"
-#include "../game/entities/player.h"
-#include "../game/entities/playerstart.h"
 #include <cassert>
+
+#include "engine/engine.h"
+#include "engine/server/server.h"
+#include "engine/client/client.h"
+
+#include "game/entities.h"
+#include "game/entities/player.h"
+#include "game/entities/playerstart.h"
+
+
+#include "shared/ents.h"
 
 VARR(mapversion, 1, MAPVERSION, 0);
 VARNR(mapscale, worldscale, 1, 0, 0);
@@ -1778,7 +1785,7 @@ static bool isallempty(cube &c)
 SCRIPTEXPORT void shrinkmap()
 {
     extern int nompedit;
-    if(noedit(true) || (nompedit && engine::server::Multiplayer())) return;
+    if(noedit(true) || (nompedit && engine::client::Multiplayer())) return;
     if(worldsize <= 1<<10) return;
 
     int octant = -1;
@@ -1810,7 +1817,7 @@ SCRIPTEXPORT void shrinkmap()
     conoutf("Shrunk map to size %d", worldscale);
 }
 
-SCRIPTEXPORT void newmap(int *i) { bool force = !engine::server::isconnected(); if(force) game::forceedit(""); if(emptymap(*i, force, NULL)) game::newmap(max(*i, 0)); }
+SCRIPTEXPORT void newmap(int *i) { bool force = !engine::client::IsConnected(); if(force) game::forceedit(""); if(emptymap(*i, force, NULL)) game::newmap(max(*i, 0)); }
 SCRIPTEXPORT void mapenlarge() { if(enlargemap(false)) game::newmap(-1); }
 
 SCRIPTEXPORT void mapname()

@@ -1,7 +1,9 @@
-#include "entityfactory.h"
 #include "cube.h"
-#include "game.h"
+#include "engine/engine.h"
+#include "game/game.h"
 #include "ents.h"
+#include "shared/networking/protocol.h"
+#include "entityfactory.h"
 #include "coreentity.h"
 #include "baseentity.h"
 

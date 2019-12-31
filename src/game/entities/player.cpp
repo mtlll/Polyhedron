@@ -1,21 +1,25 @@
 #include "cube.h"
 #include "game/game.h"
-#include "game/entities/player.h"
+#include "game/entities.h"
 
 #include "shared/networking/cl_sv.h"
 #include "shared/networking/network.h"
-#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_frametimestate.h"
+#include "shared/networking/sv_frametimestate.h"
 #include "shared/networking/protocol.h"
 
+#include "shared/entities/animinfo.h"
 #include "shared/entities/coreentity.h"
 #include "shared/entities/baseentity.h"
 #include "shared/entities/basedynamicentity.h"
 #include "shared/entities/basecliententity.h"
 
+#include "game/entities/player.h"
+
 namespace entities {
 namespace classes {
 
-Player::Player() : BaseClientEntity() {
+Player::Player() : entities::classes::BaseClientEntity() {
 	state = CS_ALIVE;
 	et_type = ET_GAMESPECIFIC;
 	ent_type = ENT_PLAYER;
@@ -25,8 +29,9 @@ Player::Player() : BaseClientEntity() {
 	// Load in our player entity model.
 	conoutf("%s", "Preloading player entity");
 	preloadmodel("player/male");
+
 	// Reset.
-	setName("Player");
+	clientInformation.nickname = "Player_#" + std::to_string(clientInformation.clientNumber);
 
 	// Each client entity possesses over a camera member.
 	camera = new entities::classes::BasePhysicalEntity();
@@ -101,7 +106,7 @@ bool Player::onTouch(const entities::classes::CoreEntity *otherEnt, const vec &d
 
 void Player::reset() {
 	// Reset it's name and unspawn.
-	setName("Player_#0");
+	clientInformation.nickname = "Player_#" + std::to_string(clientInformation.clientNumber);
 	setspawned(false);
 }
 
@@ -115,8 +120,9 @@ void Player::respawn() {
 	}
 }
 
-// Link entity class to the factory.
-ADD_ENTITY_TO_FACTORY_SERIALIZED(Player, "playerx", BaseClientEntity)
-
 }; // classes
 }; // entities
+
+
+// Link entity class to the factory.
+ADD_ENTITY_TO_FACTORY_SERIALIZED(Player, "player", BaseClientEntity)

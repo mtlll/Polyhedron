@@ -1,11 +1,16 @@
 // main.cpp: initialisation & main loop
 
-#include "engine.h"
+#include "engine/engine.h"
+#include "engine/server/server.h"
+
+#include "game/game.h"
+#include "game/server/server.h"
 #include "game/entities/player.h"
 
 #include "shared/networking/network.h"
 #include "shared/networking/protocol.h"
-#include "shared/networking/frametimestate.h"
+#include "shared/networking/cl_frametimestate.h"
+#include "shared/networking/sv_frametimestate.h"
 #include "shared/networking/cl_sv.h"
 
 extern void cleargamma();
@@ -13,7 +18,7 @@ extern void cleargamma();
 void cleanup()
 {
 	recorder::stop();
-	cleanupserver();
+	engine::server::CleanupServer();
 	SDL_ShowCursor(SDL_TRUE);
 	SDL_SetRelativeMouseMode(SDL_FALSE);
 	if(screen) SDL_SetWindowGrab(screen, SDL_FALSE);
@@ -38,7 +43,7 @@ SCRIPTEXPORT void quit()                     // normal exit
 	writeinitcfg();
 	writeservercfg();
 	engine::client::AbortConnection();
-	engine::server::Disconnect();
+	engine::client::Disconnect();
 	engine::client::LocalDisconnect();
 	writecfg();
 	cleanup();
@@ -1092,9 +1097,9 @@ int main(int argc, char **argv)
                 break;
             }
             case 'x': initscript = &argv[i][2]; break;
-            default: if(!engine::client::ServerOption(argv[i])) gameargs.add(argv[i]); break;
+            default: if(!engine::client::ServerOption(argv[i])) engine::gameargs.add(argv[i]); break;
         }
-        else gameargs.add(argv[i]);
+        else engine::gameargs.add(argv[i]);
     }
 
     // Fetch the amount of CPU's the hardware has.
@@ -1119,12 +1124,12 @@ int main(int argc, char **argv)
     logoutf("init: game");
 
     // Parse the game options(Although there are none atm to my knowledge.) And initialize the local server.
-    game::parseoptions(gameargs);
+    game::parseoptions(engine::gameargs);
     // initserver(dedicated>0, dedicated>1);  // never returns if dedicated
     ASSERT(dedicated <= 1)
 
     // Last but not least, initialize our own client.
-    game::initclient();
+    game::InitClient();
 
     // Initialize the SDL Video, with certain specific settings.
     logoutf("init: video");
@@ -1259,25 +1264,25 @@ int main(int argc, char **argv)
 		limitfps(clockMilliseconds, shared::network::ftsClient.totalMilliseconds);
 		shared::network::ftsClient.elapsedTime = clockMilliseconds - shared::network::ftsClient.totalMilliseconds;
 		static int timeerr = 0;
-		int scaledTime = game::scaletime(shared::network::ftsClient.elapsedTime) + timeerr;
+		int scaledTime = game::server::ScaleTime(shared::network::ftsClient.elapsedTime) + timeerr;
 		shared::network::ftsClient.currentTime = scaledTime/100;
 		timeerr = scaledTime%100;
-		if(!engine::server::Multiplayer(false) && curtime>200) curtime = 200;
-		if(game::ispaused()) curtime = 0;
+		if(!engine::client::Multiplayer(false) && curtime>200) curtime = 200;
+		if(game::server::IsPaused()) curtime = 0;
 		shared::network::ftsClient.lastMilliseconds += shared::network::ftsClient.currentTime;
 		shared::network::ftsClient.totalMilliseconds = clockMilliseconds;
-		updatetime();
+		engine::server::UpdateTime();
 
 		checkinput();
 		UI::update();
 		menuprocess();
 		tryedit();
 
-		if(lastmillis) game::updateworld();
+		if(lastmillis) game::UpdateWorld();
 
 		checksleep(lastmillis);
 
-		serverslice(false, 0);
+		engine::server::ServerSlice(false, 0);
 
 		if(frames) updatefpshistory(elapsedtime);
 		frames++;

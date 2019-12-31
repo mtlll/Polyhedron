@@ -1,3 +1,5 @@
+#include "engine/engine.h"
+#include "shared/networking/protocol.h"
 #include "baseentity.h"
 
 namespace entities {

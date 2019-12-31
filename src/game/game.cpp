@@ -1,8 +1,14 @@
-#include "game.h"
-#include "entities.h"
-#include "entities/playerstart.h"
-#include "entities/player.h"
+#include "engine/engine.h"
+#include "engine/client/client.h"
+#include "engine/server/server.h"
 #include "engine/scriptexport.h"
+
+#include "game/game.h"
+
+#include "game/entities.h"
+#include "game/entities/playerstart.h"
+#include "game/entities/player.h"
+
 
 
 
@@ -10,10 +16,11 @@ namespace game
 {
     // Global player entity pointer.
     ::entities::classes::Player *clPlayer = NULL;
-    vector<::entities::classes::Player *> clPlayers;
-
+    
     // List of connected players. (For future network usage.)
-	//vector<::entities::classes::Player*> players;
+	vector<::entities::classes::Player *> clPlayers;
+    
+    //vector<::entities::classes::Player*> players;
 
     // Networking State properties.
     bool connected = false;
@@ -23,9 +30,13 @@ namespace game
     int maptime = 0;            // Frame time.
     int maprealtime = 0;        // Total time.
 
-    void updateworld() {
+    void UpdateWorld() {
         // Update the map time. (First frame since maptime = 0.
-        if(!maptime) { maptime = lastmillis; maprealtime = shared::network::ftsClient.totalMilliseconds; return; }
+        if(!maptime) { 
+            maptime = lastmillis;
+            maprealtime = shared::network::ftsClient.totalMilliseconds; 
+            return; 
+        }
 
         // Escape this function if there is no currenttime yet from server to client. (Meaning it is 0.)
         if(!curtime) return; //{ gets2c(); if (clPlayer->) c2sinfo(); return; } //c2sinfo(); }///if(clPlayer->clientnum>=0) c2sinfo(); return; }
@@ -89,7 +100,8 @@ namespace game
     SCRIPTEXPORT void changemap(const char *name)
     {
         // Are we connected? If not, connect locally.
-        if(!connected) engine::server::LocalConnect();
+        if(!connected)
+            engine::client::LocalConnect();
 
         // Toggle edit mode if required.
         if(editmode)
@@ -329,18 +341,22 @@ namespace game
         // Will need this to even join a game.
         //copycubestr(connectpass, password);
     }
-    void connectfail() {}
-    void parsepacketclient(int chan, packetbuf &p) {}
+    void connectfail() {
+        
+    }
+    void parsepacketclient(int chan, packetbuf &p) {
+
+    }
 
     // Edit related. (/editor folder or in /client? Not sure)
-    bool allowedittoggle() { return true; }
-    void edittoggled(bool on) {}
+    bool AllowEdittoggle() { return true; }
+    void EditToggled(bool on) {}
 
     // Networking related. (Should place in /client?)
-    void writeclientinfo(stream *f) {}
-    void toserver(char *text) {}
-    bool ispaused() { return false; }
-    int scaletime(int t) { return t*100; }
+    void WriteClientInfo(stream *f) {}
+    void ToServer(char *text) {}
+    bool IsPaused() { return false; }
+    int ScaleTime(int t) { return t*100; }
     bool allowmouselook() { return true; }
 
     //---------------------------------------------------------------

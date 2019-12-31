@@ -1,7 +1,10 @@
-#include "../game.h"
-// #include "baseentity.h"
-#include "dynamiclight.h"
+#include "engine/engine.h"
+#include "game/game.h"
+
+#include "shared/networking/protocol.h"
+
 #include "shared/entities/entityfactory.h"
+#include "game/entities/dynamiclight.h"
 
 namespace entities {
 namespace classes {
@@ -12,7 +15,7 @@ DynamicLight::DynamicLight() : BasePhysicalEntity() {
     et_type = ET_GAMESPECIFIC;
     game_type = GAMEENTITY;
 
-    setName("DynamicLight");
+    //setName("DynamicLight");
 }
 
 

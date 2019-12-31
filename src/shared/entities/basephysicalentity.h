@@ -1,6 +1,7 @@
 #pragma once
 
 #include "baseentity.h"
+#include "shared/networking/protocol.h"
 #include "shared/networking/cl_sv.h"
 
 namespace entities
