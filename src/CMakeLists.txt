@@ -245,6 +245,13 @@ list(APPEND fileListSharedUtils
 )
 
 #
+# SHARED - NUKLEAR - FILELIST
+#
+list(APPEND fileListSharedNuklear
+    shared/Nuklear/nuklear.h
+)
+
+#
 # FINAL - FILELIST
 #
 list(APPEND fileList

@@ -1098,19 +1098,19 @@ int main(int argc, char **argv)
     // If it isnt a dedicated server run, initialize SDL.
     if(dedicated <= 1)
     {
-        logoutf("init: sdl");
+        logoutf("Init: SDL");
         if(SDL_Init(SDL_INIT_TIMER|SDL_INIT_VIDEO|SDL_INIT_AUDIO)<0)
             fatal("Unable to initialize SDL: %s", SDL_GetError());
     }
 
     // Initialize the enet networking module.
-    logoutf("init: net");
+    logoutf("Init: Net");
     if(enet_initialize()<0) fatal("Unable to initialise network module");
     atexit(enet_deinitialize);
     enet_time_set(0);
 
     // Last but not least, we can now initialize the game itself.
-    logoutf("init: game");
+    logoutf("Init: Game");
 
     // Parse the game options(Although there are none atm to my knowledge.) And initialize the local server.
     game::parseoptions(gameargs);
@@ -1121,7 +1121,7 @@ int main(int argc, char **argv)
     game::initclient();
 
     // Initialize the SDL Video, with certain specific settings.
-    logoutf("init: video");
+    logoutf("Init: Video");
     SDL_SetHint(SDL_HINT_GRAB_KEYBOARD, "0");
     #if !defined(WIN32) && !defined(__APPLE__)
     SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
@@ -1137,22 +1137,22 @@ int main(int argc, char **argv)
 	SDL_StopTextInput(); // workaround for spurious text-input events getting sent on first text input toggle?
 
 	// Legitly initialize the OpenGL extensions.
-	logoutf("init: gl_checkextensions");
+	logoutf("Init: gl_checkextensions");
 	gl_checkextensions();
 
 	// Initialize the default settings of the OpenGL renderer.
-	logoutf("init: gl_init");
+	logoutf("Init: gl_init");
 	gl_init();
 
 	// Very important: notexture is required to load, if it fails, all fails.
 	notexture = textureload("media/texture/game/notexture.png");
-	if(!notexture) fatal("could not find core textures");
+	if(!notexture) fatal("Could not find core textures");
 
 	// Initialize our console and execute the stdlib.cfg, and font.cfg files.
-	logoutf("init: console");
-	if(!execfile("config/stdlib.cfg", false)) fatal("cannot find data files (you are running from the wrong folder, try .bat file in the main folder)");   // this is the first file we load.
-	if(!execfile("config/font.cfg", false)) fatal("cannot find font definitions");
-	if(!setfont("default")) fatal("no default font specified");
+	logoutf("init: Console");
+	if(!execfile("config/stdlib.cfg", false)) fatal("Cannot find data files (you are running from the wrong folder, try .bat file in the main folder)");   // this is the first file we load.
+	if(!execfile("config/font.cfg", false)) fatal("Cannot find font definitions");
+	if(!setfont("default")) fatal("No default font specified");
 
 	// Setup the User Interface.
 	UI::setup();
@@ -1161,21 +1161,21 @@ int main(int argc, char **argv)
 	inbetweenframes = true;
 
 	// Render the background letting the user know it is Initializing.
-	renderbackground("initializing...");
+	renderbackground("Initializing...");
 
 	// Initialize our world, this'll be the mainmenu map.
-	logoutf("init: world");
+	logoutf("Init: World");
 	player = dynamic_cast<entities::classes::Player*>(game::iterdynents(0));
 	camera1 = player->camera;
 	//emptymap(0, true, NULL, false); // This is the old original variant.
 	emptymap(false, false, "mainmenu.ogz");
 
 	// Initialize the sound system.
-	logoutf("init: sound");
+	logoutf("Init: Sound");
 	initsound();
 
 	// Load in all configuration files, such as our keymap, game config, the UI etc.
-	logoutf("init: cfg");
+	logoutf("Init: CFG");
 	initing = INIT_LOAD;
 	execfile("config/keymap.cfg");
 	execfile("config/stdedit.cfg");
@@ -1210,7 +1210,7 @@ int main(int argc, char **argv)
 	initing = NOT_INITING;
 
 	// Time to initialize the rest of our rendering data. Speaks for itself.
-	logoutf("init: render");
+	logoutf("Init: Render");
 	restoregamma();
 	restorevsync();
 	initgbuffer();
@@ -1222,7 +1222,7 @@ int main(int argc, char **argv)
 	identflags |= IDF_PERSIST;
 
 	// Initialize the main game loop.
-	logoutf("init: mainloop");
+	logoutf("Init: Mainloop");
 
 	// TODO: Not sure wtf this is for.
 	//if(execfile("once.cfg", false)) remove(findfile("once.cfg", "rb"));
@@ -1231,7 +1231,7 @@ int main(int argc, char **argv)
 	if(load)
 	{
 		// Since we are loading a map as a background, we best start doing a local connect.
-		logoutf("init: localconnect");
+		logoutf("Init: LocalConnect");
 		game::changemap(load);
 	}
 	

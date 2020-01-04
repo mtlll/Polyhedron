@@ -9,7 +9,8 @@
           "${workspaceFolder}/src/shared",
           "${workspaceFolder}/src/game",
           "${workspaceFolder}/src/engine",
-          "${workspaceFolder}/src/tools"
+          "${workspaceFolder}/src/tools",
+          "${workspaceFolder}/src/ext/Nuklear"
         ],
         "defines": [
           "DEBUG"
