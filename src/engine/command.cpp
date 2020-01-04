@@ -3594,7 +3594,7 @@ ICOMMAND(stripcolors, "s", (char *s),
 {
     int len = strlen(s);
     char *d = newcubestr(len);
-    filtertext(d, s, true, false, len);
+    FilterText(d, s, true, false, len);
     cubestrret(d);
 }, "builtin");
 

@@ -5,7 +5,7 @@
 
 namespace game
 {
-    __attribute__((optimize("O0"))) void RenderGameEntities()
+    void RenderGameEntities()
     {
         loopv(entities::getents()) {
             entities::classes::BaseEntity *ent = dynamic_cast<entities::classes::BaseEntity*>(entities::getents()[i]);

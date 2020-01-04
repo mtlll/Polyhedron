@@ -14,9 +14,9 @@ option(SCHIZOMANIA_BUILD_CLIENT "Build the game client" ON)
 option(SCHIZOMANIA_BUILD_SERVER "Build the game server" OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED OFF)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 
@@ -27,8 +27,8 @@ if (APPLE)
     list(INSERT CMAKE_FIND_LIBRARY_SUFFIXES 0 ".dylib" )
 
     set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
-    set(CMAKE_XCODE_ATTRIBUTE_CLANG_LANGUAGE_STANDARD "c++14")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++14")
+    set(CMAKE_XCODE_ATTRIBUTE_CLANG_LANGUAGE_STANDARD "c++17")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++17")
 endif()
 
 #Libraries
@@ -66,9 +66,13 @@ include_directories(
     ext/json-develop/single_include
 )
 
-#The engine, server and shared sub projects
+# The engine, server and shared sub projects
 add_subdirectory(enet)
 
+
+#
+# ENGINE - GENERAL FOLDER - FILELIST
+#
 list(APPEND fileListEngine
     engine/aa.cpp
     engine/animmodel.h
@@ -139,6 +143,9 @@ list(APPEND fileListEngine
     engine/worldio.cpp
 )
 
+#
+# SHARED - GENERAL FOLDER - FILELIST
+#
 list(APPEND fileListShared
     shared/command.h
     shared/crypto.cpp
@@ -159,15 +166,36 @@ list(APPEND fileListShared
     shared/zip.cpp
 )
 
+#
+# GAME - GENERAL FOLDER - FILELIST
+#
 list(APPEND fileListGame
     game/entities.cpp
     game/game.cpp
     game/game.h
     game/render.cpp
-    game/server.cpp
     game/commands.cpp
 )
 
+#
+# GAME - CLIENT - FILELIST
+#
+list(APPEND fileListGameClient
+    game/client/client.cpp
+    game/client/client.h
+)
+
+#
+# GAME - SERVER - FILELIST
+#
+list(APPEND fileListGameServer
+    game/server/server.cpp
+    game/server/server.h
+)
+
+#
+# GAME - ENTITIES - FILELIST
+#
 list(APPEND fileListGameEntities
     game/entities/basemapmodel.cpp
     game/entities/basemapmodel.h
@@ -183,6 +211,9 @@ list(APPEND fileListGameEntities
     game/entities/player.h
 )
 
+#
+# SHARED - ENTITIES - FILELIST
+#
 list(APPEND fileListSharedEntities
     shared/entities/animinfo.h
     shared/entities/attributes.h
@@ -201,11 +232,31 @@ list(APPEND fileListSharedEntities
     shared/entities/entityfactory.cpp
 )
 
+#
+# SHARED - NETWORKING - FILELIST
+#
+list(APPEND fileListSharedUtils
+    shared/utils/cubectype.h
+    shared/utils/cubestr.cpp
+    shared/utils/databuf.h
+    shared/utils/endianness.h 
+    shared/utils/hashbase.h 
+    shared/utils/hashset.h 
+)
+
+#
+# FINAL - FILELIST
+#
 list(APPEND fileList
     ${fileListEngine}
+
     ${fileListShared}
-    ${fileListGame}
+    ${fileListSharedUtils}
     ${fileListSharedEntities}
+
+    ${fileListGame}
+    ${fileListGameClient}
+    ${fileListGameServer}
     ${fileListGameEntities}
 )
 
@@ -276,6 +327,8 @@ source_group("Sources\\Shared" FILES ${fileListShared})
 source_group("Sources\\Game" FILES ${fileListGame})
 source_group("Sources\\Entities\\Shared" FILES ${fileListSharedEntities})
 source_group("Sources\\Entities\\Game" FILES ${fileListGameEntities})
+source_group("Sources\\Entities\\Client\\Game" FILES ${fileListGameClient})
+source_group("Sources\\Entities\\Server\\Game" FILES ${fileListGameServer})
 
 # --- BINDINGS
 foreach(input_file ${fileListEngine})
@@ -298,6 +351,13 @@ foreach(input_file ${fileListGameEntities})
     GenerateBindingFor(${input_file} "Generated\\\\Entities\\\\Game")
 endforeach()
 
+foreach(input_file ${fileListGameClient})
+    GenerateBindingFor(${input_file} "Generated\\\\Entities\\\\Game\\\\Client")
+endforeach()
+
+foreach(input_file ${fileListGameServer})
+    GenerateBindingFor(${input_file} "Generated\\\\Entities\\\\Game\\\\Server")
+endforeach()
 
 #Everything ready, now define the executables
 if (APPLE)
@@ -364,6 +424,7 @@ if (APPLE)
 else()
     target_link_libraries(Polyhedron
         enet
+        rt
         ${SDL2_LIBRARIES}
 		${SDL2_MIXER_LIBRARIES}
 		${SDL2_IMAGE_LIBRARIES}
@@ -377,7 +438,7 @@ endif()
 if (APPLE)
     set_property(TARGET Polyhedron PROPERTY MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_LIST_DIR}/xcode/tesseract.plist.in)
     set_target_properties(Polyhedron PROPERTIES RESOURCE "${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib")
-    target_compile_features(Polyhedron PUBLIC cxx_std_14)
+    target_compile_features(Polyhedron PUBLIC cxx_std_17)
 
     # set_source_files_properties(
     #     ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.nib/designable.nib
