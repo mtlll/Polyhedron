@@ -1,0 +1,28 @@
+[
+    {
+        "base_entity": [
+            null
+        ],
+        "class": "base_entity",
+        "core_entity": {
+            "attached": "",
+            "attr1": 4,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": 0,
+            "name": "tesseract_ent_-1",
+            "o": {
+                "x": 608.0,
+                "y": 479.7738342285156,
+                "z": 521.061767578125
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 2,
+        "game_type": 2
+    }
+]

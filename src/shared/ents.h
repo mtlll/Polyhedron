@@ -1,5 +1,4 @@
-#ifndef ENTS_H
-#define ENTS_H
+#pragma once
 
 // This file defines static map entities ("entity") and includes the basic entities:
 // (dynamic entities (players/monsters, "dynent"), and static(No AI, or Input) entities(barrels, etc, "physent")
@@ -116,6 +115,3 @@ namespace entities
         class BaseDynamicEntity;
     } // classes
 } // entities
-
-
-#endif // ENTS_H

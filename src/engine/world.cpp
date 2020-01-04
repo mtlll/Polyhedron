@@ -42,6 +42,9 @@ static inline void decalboundbox(const entities::classes::CoreEntity *e, DecalSl
 
 bool getentboundingbox(const entities::classes::CoreEntity *e, ivec &o, ivec &r)
 {
+    if (!e)
+        return false;
+        
 	return e->getBoundingBox(entselradius, o, r);
 	/*switch(e->et_type)
     {

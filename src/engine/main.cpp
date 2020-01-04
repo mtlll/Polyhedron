@@ -10,7 +10,7 @@ void cleanup()
 	recorder::stop();
 	cleanupserver();
 	SDL_ShowCursor(SDL_TRUE);
-	SDL_SetRelativeMouseMode(SDL_FALSE);
+	//SDL_SetRelativeMouseMode(SDL_FALSE);
 	if(screen) SDL_SetWindowGrab(screen, SDL_FALSE);
 	cleargamma();
 	freeocta(worldroot);
@@ -59,7 +59,7 @@ void fatal(const char *s, ...)    // failure exit
 #else
 		SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
 #endif
-				SDL_SetRelativeMouseMode(SDL_FALSE);
+				//SDL_SetRelativeMouseMode(SDL_FALSE);
 				if(screen) SDL_SetWindowGrab(screen, SDL_FALSE);
 				cleargamma();
 				#ifdef __APPLE__
@@ -434,7 +434,7 @@ void inputgrab(bool on)
 #endif
 		if(relativemouse)
 		{
-			SDL_SetRelativeMouseMode(SDL_FALSE);
+			//SDL_SetRelativeMouseMode(SDL_FALSE);
 			SDL_SetWindowGrab(screen, SDL_FALSE);
 			relativemouse = false;
 		}

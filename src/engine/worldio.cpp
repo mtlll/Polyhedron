@@ -818,6 +818,14 @@ bool load_world(const char *mname, const char *cname)        // Does not support
     // Define the path to our JSON file.
     defformatcubestr(jsonname, "media/map/%s.json", mname);
 
+    renderprogress(0, "loading slots...");
+    loadvslots(f, hdr.numvslots);
+
+    renderprogress(0, "loading octree...");
+    bool failed = false;
+    worldroot = loadchildren(f, ivec(0, 0, 0), hdr.worldsize>>1, failed);
+    if(failed) conoutf(CON_ERROR, "garbage in map");
+
     // Get a reference to the entities array.
     auto &ents = entities::getents();
 
@@ -853,14 +861,6 @@ bool load_world(const char *mname, const char *cname)        // Does not support
         //f->seek((hdr.numents-MAXENTS)*(samegame ? sizeof(entities::classes::CoreEntity) + einfosize : eif), SEEK_CUR);
     }
 
-    renderprogress(0, "loading slots...");
-    loadvslots(f, hdr.numvslots);
-
-    renderprogress(0, "loading octree...");
-    bool failed = false;
-    worldroot = loadchildren(f, ivec(0, 0, 0), hdr.worldsize>>1, failed);
-    if(failed) conoutf(CON_ERROR, "garbage in map");
-
     renderprogress(0, "validating...");
     validatec(worldroot, hdr.worldsize>>1);
 
@@ -886,7 +886,7 @@ bool load_world(const char *mname, const char *cname)        // Does not support
     mapcrc = f->getcrc();
     delete f;
 
-    conoutf("read map %s (%.1f seconds)", ogzname, (SDL_GetTicks()-loadingstart)/1000.0f);
+    conoutf("Read map %s (%.1f seconds)", ogzname, (SDL_GetTicks()-loadingstart)/1000.0f);
 
     clearmainmenu();
 
@@ -1012,7 +1012,7 @@ SCRIPTEXPORT void writeobj(char *name)
     }
     delete f;
 
-    conoutf("generated model %s", fname);
+    conoutf("Generated model %s", fname);
 }
 
 SCRIPTEXPORT void writecollideobj(char *name)
@@ -1021,7 +1021,7 @@ SCRIPTEXPORT void writecollideobj(char *name)
     extern selinfo sel;
     if(!havesel)
     {
-        conoutf(CON_ERROR, "geometry for collide model not selected");
+        conoutf(CON_ERROR, "Geometry for collide model not selected");
         return;
     }
     auto &ents = entities::getents();
@@ -1042,15 +1042,15 @@ SCRIPTEXPORT void writecollideobj(char *name)
     }
     if(!mm)
     {
-        conoutf(CON_ERROR, "could not find map model in selection");
+        conoutf(CON_ERROR, "Could not find map model in selection");
         return;
     }
     model *m = loadmapmodel(mm->model_idx);
     if(!m)
     {
         mapmodelinfo *mmi = getmminfo(mm->model_idx);
-        if(mmi) conoutf(CON_ERROR, "could not load map model: %s", mmi->name);
-        else conoutf(CON_ERROR, "could not find map model: %d", mm->model_idx);
+        if(mmi) conoutf(CON_ERROR, "Could not load map model: %s", mmi->name);
+        else conoutf(CON_ERROR, "Could not find map model: %d", mm->model_idx);
         return;
     }
 
