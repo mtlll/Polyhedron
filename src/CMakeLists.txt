@@ -64,6 +64,7 @@ endif()
 add_definitions("-DGL_SILENCE_DEPRECATION")
 include_directories(
     ext/json-develop/single_include
+    ext/Nuklear
 )
 
 # The engine, server and shared sub projects
@@ -141,6 +142,14 @@ list(APPEND fileListEngine
     engine/world.cpp
     engine/world.h
     engine/worldio.cpp
+)
+
+#
+# ENGINE - NUKEUI - FILELIST
+#
+list(APPEND fileListEngineUI
+    engine/ui/uimain.cpp
+    engine/ui/uimain.h
 )
 
 #
@@ -248,7 +257,7 @@ list(APPEND fileListSharedUtils
 # SHARED - NUKLEAR - FILELIST
 #
 list(APPEND fileListSharedNuklear
-    shared/Nuklear/nuklear.h
+    shared/nukeui/nukeui.h
 )
 
 #
@@ -256,11 +265,13 @@ list(APPEND fileListSharedNuklear
 #
 list(APPEND fileList
     ${fileListEngine}
+    ${fileListEngineUI}
 
     ${fileListShared}
     ${fileListSharedUtils}
+    ${fileListSharedNuklear}
     ${fileListSharedEntities}
-
+    
     ${fileListGame}
     ${fileListGameClient}
     ${fileListGameServer}

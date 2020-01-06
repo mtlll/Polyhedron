@@ -1,7 +1,7 @@
 #pragma once
 
 enum                            // hardcoded texture numbers
-{
+{                               //  <-- WatIsDeze: Hardcoded, so there is 0 for sky and 1 for Geometry
     DEFAULT_SKY = 0,
     DEFAULT_GEOM,
     NUMDEFAULTSLOTS

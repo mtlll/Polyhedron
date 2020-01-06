@@ -1,6 +1,8 @@
 // main.cpp: initialisation & main loop
 
 #include "engine.h"
+#include "engine/ui/uimain.h"
+#include "shared/nukeui/nukeui.h"
 #include "../game/entities/player.h"
 
 extern void cleargamma();
@@ -1149,12 +1151,14 @@ int main(int argc, char **argv)
 	if(!notexture) fatal("Could not find core textures");
 
 	// Initialize our console and execute the stdlib.cfg, and font.cfg files.
-	logoutf("init: Console");
+	logoutf("Init: Console");
 	if(!execfile("config/stdlib.cfg", false)) fatal("Cannot find data files (you are running from the wrong folder, try .bat file in the main folder)");   // this is the first file we load.
 	if(!execfile("config/font.cfg", false)) fatal("Cannot find font definitions");
 	if(!setfont("default")) fatal("No default font specified");
 
 	// Setup the User Interface.
+	logoutf("Init: User Interface, be careful, it's NUKLEAR");
+	engine::nukeui::ui.CreateContext();
 	UI::setup();
 
 	// Currently in between frames.
