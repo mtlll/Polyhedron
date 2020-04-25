@@ -32,32 +32,34 @@ if (APPLE)
 endif()
 
 #Libraries
-find_package(ZLIB REQUIRED)
-find_package(PNG REQUIRED)
-find_package(JPEG REQUIRED)
-find_package(TIFF REQUIRED)
-find_package(WEBP REQUIRED)
-find_package(Freetype REQUIRED)
-#For Linux, prime the SDL2 finder by setting the include dir
-if (UNIX AND NOT APPLE)
-    set(SDL2_INCLUDE_DIR "/usr/include/SDL2")
-endif()
-find_package(SDL2 REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(OpenGL REQUIRED)
+include(../cmake/thirdparty.cmake)
+#
+#find_package(ZLIB REQUIRED)
+#find_package(PNG REQUIRED)
+#find_package(JPEG REQUIRED)
+#find_package(TIFF REQUIRED)
+#find_package(WEBP REQUIRED)
+#find_package(Freetype REQUIRED)
+##For Linux, prime the SDL2 finder by setting the include dir
+#if (UNIX AND NOT APPLE)
+#    set(SDL2_INCLUDE_DIR "/usr/include/SDL2")
+#endif()
+#find_package(SDL2 REQUIRED)
+#find_package(SDL2_mixer REQUIRED)
+#find_package(SDL2_image REQUIRED)
+#find_package(OpenGL REQUIRED)
 
-if (APPLE)
-    find_library(COREAUDIO CoreAudio REQUIRED)
-    find_library(AVFOUNDATION AVFoundation REQUIRED)
-    find_library(COCOA Cocoa REQUIRED)
-    find_library(COREFOUNDATION CoreFoundation REQUIRED)
-    find_library(APPLICATIONSERVICES ApplicationServices REQUIRED)
-    find_library(FOUNDATION Foundation REQUIRED)
-    find_library(COREFOUNDATION CoreFoundation REQUIRED)
-    find_library(AUDIOTOOLBOX AudioToolbox REQUIRED)
-    find_library(BULLSHITLIB BullShitLib REQUIRED)
-endif()
+#if (APPLE)
+#    find_library(COREAUDIO CoreAudio REQUIRED)
+#    find_library(AVFOUNDATION AVFoundation REQUIRED)
+#    find_library(COCOA Cocoa REQUIRED)
+#    find_library(COREFOUNDATION CoreFoundation REQUIRED)
+#    find_library(APPLICATIONSERVICES ApplicationServices REQUIRED)
+#    find_library(FOUNDATION Foundation REQUIRED)
+#    find_library(COREFOUNDATION CoreFoundation REQUIRED)
+#    find_library(AUDIOTOOLBOX AudioToolbox REQUIRED)
+#    find_library(BULLSHITLIB BullShitLib REQUIRED)
+#endif()
 
 #defines, project wide
 #Silence OpenGL deprecations .. yes Apple, you like Metal and you can't shutup about it .. :rolleyes:
@@ -381,54 +383,75 @@ else()
 endif()
 
 #Link the libraries
+target_compile_features(Polyhedron PUBLIC cxx_std_17)
+
 target_include_directories(Polyhedron
     PRIVATE
         .
         shared
         game
         engine
-		${CMAKE_SOURCE_DIR}
-		${SDL2_INCLUDE_DIRS}
-		${SDL2_MIXER_INCLUDE_DIRS}
-		${SDL2_IMAGE_INCLUDE_DIRS}
-		${FREETYPE_INCLUDE_DIRS}
-		${ZLIB_INCLUDE_DIRS}
-		${OPENGL_INCLUDE_DIRS}        
+    PUBLIC
+        ${THIRDPARTY_INCLUDE_DIRS}
 )
 
-if (APPLE)
-    target_link_libraries(Polyhedron
-        enet
+target_link_directories(Polyhedron
+    PUBLIC
+        ${THIRDPARTY_LINK_DIRS}
+)
 
-        ${COCOA}
-        ${COREFOUNDATION}
-        ${AUDIOTOOLBOX}
-        ${COREAUDIO}
-
-        ${SDL2_LIBRARIES}
-        ${SDL2_MAIN_LIBRARIES}
-		${SDL2_MIXER_LIBRARIES}
-		${SDL2_IMAGE_LIBRARIES}
-        ${FREETYPE_LIBRARIES}
-        ${ZLIB_LIBRARIES}
-        ${OPENGL_LIBRARIES}     
-        # ${AVFOUNDATION}
-        # ${APLICATIONSERVICES}
-        # ${FOUNDATION}
-        # ${COREFOUNDATION}
-    )
-else()
-    target_link_libraries(Polyhedron
+target_link_libraries(Polyhedron
+    PUBLIC
+        ${THIRDPARTY_LINK_LIBS}
         enet
-        rt
-        ${SDL2_LIBRARIES}
-		${SDL2_MIXER_LIBRARIES}
-		${SDL2_IMAGE_LIBRARIES}
-        ${FREETYPE_LIBRARIES}
-        ${ZLIB_LIBRARIES}
-        ${OPENGL_LIBRARIES}
-    )
-endif()
+        $<$<NOT:$<CXX_COMPILER_ID:AppleClang>>:rt>
+)
+#
+#target_include_directories(Polyhedron
+#    PRIVATE
+#		${CMAKE_SOURCE_DIR}
+#        ${}
+#		${SDL2_INCLUDE_DIRS}
+#		${SDL2_MIXER_INCLUDE_DIRS}
+#		${SDL2_IMAGE_INCLUDE_DIRS}
+#		${FREETYPE_INCLUDE_DIRS}
+#		${ZLIB_INCLUDE_DIRS}
+#		${OPENGL_INCLUDE_DIRS}
+#)
+#
+#if (APPLE)
+#    target_link_libraries(Polyhedron
+#        enet
+#
+#        ${COCOA}
+#        ${COREFOUNDATION}
+#        ${AUDIOTOOLBOX}
+#        ${COREAUDIO}
+#
+#        ${SDL2_LIBRARIES}
+#        ${SDL2_MAIN_LIBRARIES}
+#		${SDL2_MIXER_LIBRARIES}
+#		${SDL2_IMAGE_LIBRARIES}
+#        ${FREETYPE_LIBRARIES}
+#        ${ZLIB_LIBRARIES}
+#        ${OPENGL_LIBRARIES}
+#        # ${AVFOUNDATION}
+#        # ${APLICATIONSERVICES}
+#        # ${FOUNDATION}
+#        # ${COREFOUNDATION}
+#    )
+#else()
+#    target_link_libraries(Polyhedron
+#        enet
+#        rt
+#        ${SDL2_LIBRARIES}
+#		${SDL2_MIXER_LIBRARIES}
+#		${SDL2_IMAGE_LIBRARIES}
+#        ${FREETYPE_LIBRARIES}
+#        ${ZLIB_LIBRARIES}
+#        ${OPENGL_LIBRARIES}
+#    )
+#endif()
 
 #Apple specific stuff
 if (APPLE)
