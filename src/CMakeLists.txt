@@ -63,7 +63,7 @@ endif()
 #Silence OpenGL deprecations .. yes Apple, you like Metal and you can't shutup about it .. :rolleyes:
 add_definitions("-DGL_SILENCE_DEPRECATION")
 include_directories(
-    ext/json-develop/single_include
+    ext/json-develop/include
 )
 
 #The engine, server and shared sub projects
@@ -160,50 +160,57 @@ list(APPEND fileListShared
 )
 
 list(APPEND fileListSharedGeom
-#    shared/geom/ivec4.cpp
-#    shared/geom/vec2.h
-#    shared/geom/half.h
-#    shared/geom/hvec.cpp
-#    shared/geom/hvec2.cpp
-#    shared/geom/dualquat.cpp
-#    shared/geom/matrix4x3.cpp
-#    shared/geom/matrix2.h
-#    shared/geom/hvec2.h
-#    shared/geom/vec.cpp
-#    shared/geom/bvec.h
-#    shared/geom/vec.h
-#    shared/geom/dvec4.h
-#    shared/geom/matrix4.cpp
-#    shared/geom/ivec.h
-#    shared/geom/quat.cpp
-#    shared/geom/bvec.cpp
-#    shared/geom/bvec4.h
-#    shared/geom/matrix.h
-#    shared/geom/matrix4x3.h
-#    shared/geom/matrix2.cpp
-#    shared/geom/matrix3.cpp
-#    shared/geom/plane.h
-#    shared/geom/bvec4.cpp
-#    shared/geom/half.cpp
-#    shared/geom/hvec.h
-#    shared/geom/usvec.cpp
-#    shared/geom/matrix4.h
-#    shared/geom/vec4.h
-#    shared/geom/ivec.cpp
-#    shared/geom/quat.h
-#    shared/geom/triangle.cpp
-#    shared/geom/svec.h
-#    shared/geom/matrix.cpp
-#    shared/geom/svec.cpp
-#    shared/geom/usvec.h
-#    shared/geom/vec4.cpp
-#    shared/geom/triangle.h
-#    shared/geom/dualquat.h
-#    shared/geom/matrix3.h
-#    shared/geom/dvec4.cpp
-#    shared/geom/vec2.cpp
-#    shared/geom/plane.cpp
-#    shared/geom/ivec4.h
+    shared/geom/bvec.cpp
+    shared/geom/bvec.h
+    shared/geom/bvec4.cpp
+    shared/geom/bvec4.h
+    shared/geom/constants.h
+    shared/geom/dualquat.cpp
+    shared/geom/dualquat.h
+    shared/geom/dvec4.cpp
+    shared/geom/dvec4.h
+    shared/geom/half.cpp
+    shared/geom/half.h
+    shared/geom/hvec.cpp
+    shared/geom/hvec.h
+    shared/geom/hvec2.cpp
+    shared/geom/hvec2.h
+    shared/geom/hvec4.cpp
+    shared/geom/hvec4.h
+    shared/geom/ivec.cpp
+    shared/geom/ivec.h
+    shared/geom/ivec2.cpp
+    shared/geom/ivec2.h
+    shared/geom/ivec4.cpp
+    shared/geom/ivec4.h
+    shared/geom/matrix.cpp
+    shared/geom/matrix.h
+    shared/geom/matrix2.cpp
+    shared/geom/matrix2.h
+    shared/geom/matrix3.cpp
+    shared/geom/matrix3.h
+    shared/geom/matrix4.cpp
+    shared/geom/matrix4.h
+    shared/geom/matrix4x3.cpp
+    shared/geom/matrix4x3.h
+    shared/geom/plane.cpp
+    shared/geom/plane.h
+    shared/geom/quat.cpp
+    shared/geom/quat.h
+    shared/geom/squat.cpp
+    shared/geom/squat.h
+    shared/geom/svec.cpp
+    shared/geom/svec.h
+    shared/geom/triangle.cpp
+    shared/geom/triangle.h
+    shared/geom/usvec.cpp
+    shared/geom/usvec.h
+    shared/geom/vec.cpp
+    shared/geom/vec.h
+    shared/geom/vec2.cpp
+    shared/geom/vec2.h
+    shared/geom/vec4.cpp
+    shared/geom/vec4.h
 )
 
 list(APPEND fileListGame
