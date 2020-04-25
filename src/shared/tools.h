@@ -16,13 +16,7 @@
 #include <SDL_opengl.h>
 #endif
 #include "zlib.h"
-
-typedef unsigned char uchar;
-typedef unsigned short ushort;
-typedef unsigned int uint;
-typedef unsigned long ulong;
-typedef signed long long int llong;
-typedef unsigned long long int ullong;
+#include "types.h"
 
 #ifdef _DEBUG
 #define ASSERT(c) assert(c)
@@ -89,25 +83,12 @@ static inline int bitscan(uint mask)
 #define rndscale(x) (float((randomMT()&0x7FFFFFFF)*double(x)/double(0x7FFFFFFF)))
 #define detrnd(s, x) ((int)(((((uint)(s))*1103515245+12345)>>16)%(x)))
 
-#define loop(v,m) for(int v = 0; v < int(m); ++v)
-#define loopi(m) loop(i,m)
-#define loopj(m) loop(j,m)
-#define loopk(m) loop(k,m)
-#define loopl(m) loop(l,m)
-#define looprev(v,m) for(int v = int(m); --v >= 0;)
-#define loopirev(m) looprev(i,m)
-#define loopjrev(m) looprev(j,m)
-#define loopkrev(m) looprev(k,m)
-#define looplrev(m) looprev(l,m)
+#include "loops.h"
 
 #define DELETEP(p) if(p) { delete   p; p = 0; }
 #define DELETEA(p) if(p) { delete[] p; p = 0; }
 
-#define PI (3.14159265358979f)
-#define SQRT2 (1.4142135623731f)
-#define SQRT3 (1.73205080756888f)
-#define SQRT5 (2.23606797749979f)
-#define RAD (PI / 180.0f)
+#include "geom/constants.h"
 
 #ifdef WIN32
 #ifndef M_PI
