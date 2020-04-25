@@ -1,0 +1,74 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Python: current file",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "refactor",
+                "build/",
+                "src/shared/geom.cpp",
+                "test.txt",
+                "vec2"
+            ]
+        },
+        {
+            "name": "Binding: Refactor",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/binding/index.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "refactor",
+                "build/",
+                "src/shared/geom.cpp",
+                "test.txt",
+                "*"
+            ]
+        },
+        {
+            "name": "Binding: Refactor Model",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/binding/index.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "cppmodel_refactor",
+                "build/",
+                "src/shared/geom.cpp",
+                "test.txt"
+            ]
+        },
+        {
+            "name": "REFUKKER",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/binding/refukker.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "subProcess": true,
+            "args": [
+                "--projectPath",
+                "${workspaceFolder}/src",
+                "--buildFolder",
+                "${workspaceFolder}/build"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+prefix=/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug
+exec_prefix=/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug
+libdir=/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/lib
+includedir=/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/include/libpng16
+
+Name: libpng
+Description: Loads and saves PNG files
+Version: 1.6.37
+Requires: zlib
+Libs: -L${libdir} -lpng16
+Libs.private: -lz -lm
+Cflags: -I${includedir}

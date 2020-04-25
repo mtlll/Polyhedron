@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libjpeg-subbuild/CMakeFiles/libjpeg-populate"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libjpeg-subbuild/CMakeFiles/libjpeg-populate.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libjpeg-subbuild/CMakeFiles/libjpeg-populate-complete.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libjpeg-subbuild/libjpeg-populate-prefix/src/libjpeg-populate-stamp/libjpeg-populate-install.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libjpeg-subbuild/libjpeg-populate-prefix/src/libjpeg-populate-stamp/libjpeg-populate-mkdir.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libjpeg-subbuild/libjpeg-populate-prefix/src/libjpeg-populate-stamp/libjpeg-populate-download.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libjpeg-subbuild/libjpeg-populate-prefix/src/libjpeg-populate-stamp/libjpeg-populate-update.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libjpeg-subbuild/libjpeg-populate-prefix/src/libjpeg-populate-stamp/libjpeg-populate-patch.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libjpeg-subbuild/libjpeg-populate-prefix/src/libjpeg-populate-stamp/libjpeg-populate-configure.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libjpeg-subbuild/libjpeg-populate-prefix/src/libjpeg-populate-stamp/libjpeg-populate-build.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libjpeg-subbuild/libjpeg-populate-prefix/src/libjpeg-populate-stamp/libjpeg-populate-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"libjpeg-populate"
+		],
+		"name" : "libjpeg-populate"
+	}
+}

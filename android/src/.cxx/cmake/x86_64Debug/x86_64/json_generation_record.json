@@ -1,0 +1,410 @@
+[
+  {
+    "level": "INFO",
+    "message": "Start JSON generation. Platform version: 26 min SDK version: x86_64",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Trying to locate CMake in local SDK repository.",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "CMake \u00273.10.2\u0027 found in SDK did not match requested version \u00273.14.5\u0027.",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "CMake \u00273.6.0\u0027 found in SDK did not match requested version \u00273.14.5\u0027.",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Requested CMake version 3.14.5 was not satisfied by default version 3.10.2 for this Android Gradle Plugin",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Trying to locate CMake in PATH.",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "- CMake found in PATH at \u0027/usr/local\u0027 had version \u00273.14.5\u0027",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "rebuilding JSON /Users/micha/dev/cube/Polyhedron/android/src/.cxx/cmake/x86_64Debug/x86_64/android_gradle_build.json due to:",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "- force flag, will remove stale json folder",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "- expected json /Users/micha/dev/cube/Polyhedron/android/src/.cxx/cmake/x86_64Debug/x86_64/android_gradle_build.json file is not present, will remove stale json folder",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "- missing previous command file /Users/micha/dev/cube/Polyhedron/android/src/.cxx/cmake/x86_64Debug/x86_64/build_command.txt, will remove stale json folder",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "- command changed from previous, will remove stale json folder",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "removing stale contents from \u0027/Users/micha/dev/cube/Polyhedron/android/src/.cxx/cmake/x86_64Debug/x86_64\u0027",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "created folder \u0027/Users/micha/dev/cube/Polyhedron/android/src/.cxx/cmake/x86_64Debug/x86_64\u0027",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "executing cmake Executable : /usr/local/bin/cmake\narguments : \n-H/Users/micha/dev/cube/Polyhedron/src\n-DCMAKE_BUILD_TYPE\u003dDebug\n-DCMAKE_TOOLCHAIN_FILE\u003d/Users/micha/Library/Android/sdk/ndk-bundle/build/cmake/android.toolchain.cmake\n-DANDROID_ABI\u003dx86_64\n-DANDROID_NDK\u003d/Users/micha/Library/Android/sdk/ndk-bundle\n-DANDROID_PLATFORM\u003dandroid-26\n-DCMAKE_ANDROID_ARCH_ABI\u003dx86_64\n-DCMAKE_ANDROID_NDK\u003d/Users/micha/Library/Android/sdk/ndk-bundle\n-DCMAKE_EXPORT_COMPILE_COMMANDS\u003dON\n-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\u003d/Users/micha/dev/cube/Polyhedron/android/src/build/intermediates/cmake/x86_64Debug/obj/x86_64\n-DCMAKE_MAKE_PROGRAM\u003d/usr/local/bin/ninja\n-DCMAKE_SYSTEM_NAME\u003dAndroid\n-DCMAKE_SYSTEM_VERSION\u003d26\n-B/Users/micha/dev/cube/Polyhedron/android/src/.cxx/cmake/x86_64Debug/x86_64\n-GNinja\njvmArgs : \n\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "[\u003d\u003d \"CMake Server\" \u003d\u003d[\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"supportedProtocolVersions\":[{\"isExperimental\":true,\"major\":1,\"minor\":2}],\"type\":\"hello\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "]\u003d\u003d \"CMake Server\" \u003d\u003d]\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\n  \"type\": \"handshake\",\n  \"cookie\": \"gradle-cmake-cookie\",\n  \"protocolVersion\": {\n    \"isExperimental\": true,\n    \"major\": 1,\n    \"minor\": 2\n  },\n  \"sourceDirectory\": \"/Users/micha/dev/cube/Polyhedron/src\",\n  \"buildDirectory\": \"/Users/micha/dev/cube/Polyhedron/android/src/.cxx/cmake/x86_64Debug/x86_64\",\n  \"generator\": \"Ninja\"\n}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"gradle-cmake-cookie\",\"inReplyTo\":\"handshake\",\"type\":\"reply\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\n  \"type\": \"configure\",\n  \"cacheArguments\": [\n    \"\",\n    \"-DCMAKE_BUILD_TYPE\\u003dDebug\",\n    \"-DCMAKE_TOOLCHAIN_FILE\\u003d/Users/micha/Library/Android/sdk/ndk-bundle/build/cmake/android.toolchain.cmake\",\n    \"-DANDROID_ABI\\u003dx86_64\",\n    \"-DANDROID_NDK\\u003d/Users/micha/Library/Android/sdk/ndk-bundle\",\n    \"-DANDROID_PLATFORM\\u003dandroid-26\",\n    \"-DCMAKE_ANDROID_ARCH_ABI\\u003dx86_64\",\n    \"-DCMAKE_ANDROID_NDK\\u003d/Users/micha/Library/Android/sdk/ndk-bundle\",\n    \"-DCMAKE_EXPORT_COMPILE_COMMANDS\\u003dON\",\n    \"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY\\u003d/Users/micha/dev/cube/Polyhedron/android/src/build/intermediates/cmake/x86_64Debug/obj/x86_64\",\n    \"-DCMAKE_MAKE_PROGRAM\\u003d/usr/local/bin/ninja\",\n    \"-DCMAKE_SYSTEM_NAME\\u003dAndroid\",\n    \"-DCMAKE_SYSTEM_VERSION\\u003d26\"\n  ]\n}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Check for working C compiler: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Check for working C compiler: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":33,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Check for working C compiler: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang -- works\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Check for working C compiler: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang -- works",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Detecting C compiler ABI info\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Detecting C compiler ABI info",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":65,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Detecting C compiler ABI info - done\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Detecting C compiler ABI info - done",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Detecting C compile features\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Detecting C compile features",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":96,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":126,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":155,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Detecting C compile features - done\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Detecting C compile features - done",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Check for working CXX compiler: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Check for working CXX compiler: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":184,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Check for working CXX compiler: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ -- works\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Check for working CXX compiler: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ -- works",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Detecting CXX compiler ABI info\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Detecting CXX compiler ABI info",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":211,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Detecting CXX compiler ABI info - done\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Detecting CXX compiler ABI info - done",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Detecting CXX compile features\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Detecting CXX compile features",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":237,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":262,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":287,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":311,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":334,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Detecting CXX compile features - done\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Detecting CXX compile features - done",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Found ZLIB: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a (found version \\\"1.2.7\\\") \",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Found ZLIB: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a (found version \"1.2.7\") ",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"CMake Error at /usr/local/Cellar/cmake/3.14.5/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:137 (message):\\n  Could NOT find PNG (missing: PNG_LIBRARY PNG_PNG_INCLUDE_DIR)\\nCall Stack (most recent call first):\\n  /usr/local/Cellar/cmake/3.14.5/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:378 (_FPHSA_FAILURE_MESSAGE)\\n  /usr/local/Cellar/cmake/3.14.5/share/cmake/Modules/FindPNG.cmake:143 (find_package_handle_standard_args)\\n  CMakeLists.txt:36 (find_package)\\n\\n\",\"title\":\"Error\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "ERROR",
+    "message": "CMake Error at /usr/local/Cellar/cmake/3.14.5/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:137 (message):\n  Could NOT find PNG (missing: PNG_LIBRARY PNG_PNG_INCLUDE_DIR)\nCall Stack (most recent call first):\n  /usr/local/Cellar/cmake/3.14.5/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:378 (_FPHSA_FAILURE_MESSAGE)\n  /usr/local/Cellar/cmake/3.14.5/share/cmake/Modules/FindPNG.cmake:143 (find_package_handle_standard_args)\n  CMakeLists.txt:36 (find_package)\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"progressCurrent\":1000,\"progressMaximum\":1000,\"progressMessage\":\"Configuring\",\"progressMinimum\":0,\"type\":\"progress\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"inReplyTo\":\"configure\",\"message\":\"Configuring incomplete, errors occurred!\\nSee also \\\"/Users/micha/dev/cube/Polyhedron/android/src/.cxx/cmake/x86_64Debug/x86_64/CMakeFiles/CMakeOutput.log\\\".\",\"type\":\"message\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "Configuring incomplete, errors occurred!\nSee also \"/Users/micha/dev/cube/Polyhedron/android/src/.cxx/cmake/x86_64Debug/x86_64/CMakeFiles/CMakeOutput.log\".",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "{\"cookie\":\"\",\"errorMessage\":\"Configuration failed.\",\"inReplyTo\":\"configure\",\"type\":\"error\"}\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "ERROR",
+    "message": "Configuration failed.",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  },
+  {
+    "level": "INFO",
+    "message": "JSON generation completed with problem. Exception: com.android.ide.common.process.ProcessException: Error configuring CMake server (/usr/local/bin).\r\nCheck for working C compiler: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang\nCheck for working C compiler: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang -- works\nDetecting C compiler ABI info\nDetecting C compiler ABI info - done\nDetecting C compile features\nDetecting C compile features - done\nCheck for working CXX compiler: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++\nCheck for working CXX compiler: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++ -- works\nDetecting CXX compiler ABI info\nDetecting CXX compiler ABI info - done\nDetecting CXX compile features\nDetecting CXX compile features - done\nFound ZLIB: /Users/micha/Library/Android/sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/x86_64-linux-android/libz.a (found version \"1.2.7\") \nCMake Error at /usr/local/Cellar/cmake/3.14.5/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:137 (message):\n  Could NOT find PNG (missing: PNG_LIBRARY PNG_PNG_INCLUDE_DIR)\nCall Stack (most recent call first):\n  /usr/local/Cellar/cmake/3.14.5/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:378 (_FPHSA_FAILURE_MESSAGE)\n  /usr/local/Cellar/cmake/3.14.5/share/cmake/Modules/FindPNG.cmake:143 (find_package_handle_standard_args)\n  CMakeLists.txt:36 (find_package)\n\n\nConfiguring incomplete, errors occurred!\nSee also \"/Users/micha/dev/cube/Polyhedron/android/src/.cxx/cmake/x86_64Debug/x86_64/CMakeFiles/CMakeOutput.log\".\n",
+    "file": "/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt",
+    "tag": "x86_64Debug|x86_64"
+  }
+]

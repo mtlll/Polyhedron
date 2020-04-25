@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-subbuild/CMakeFiles/libpng-populate"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-subbuild/CMakeFiles/libpng-populate.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-subbuild/CMakeFiles/libpng-populate-complete.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-subbuild/libpng-populate-prefix/src/libpng-populate-stamp/libpng-populate-install.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-subbuild/libpng-populate-prefix/src/libpng-populate-stamp/libpng-populate-mkdir.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-subbuild/libpng-populate-prefix/src/libpng-populate-stamp/libpng-populate-download.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-subbuild/libpng-populate-prefix/src/libpng-populate-stamp/libpng-populate-update.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-subbuild/libpng-populate-prefix/src/libpng-populate-stamp/libpng-populate-patch.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-subbuild/libpng-populate-prefix/src/libpng-populate-stamp/libpng-populate-configure.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-subbuild/libpng-populate-prefix/src/libpng-populate-stamp/libpng-populate-build.rule"
+		},
+		{
+			"file" : "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-subbuild/libpng-populate-prefix/src/libpng-populate-stamp/libpng-populate-test.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"libpng-populate"
+		],
+		"name" : "libpng-populate"
+	}
+}

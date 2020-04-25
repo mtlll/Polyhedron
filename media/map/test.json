@@ -1,0 +1,131 @@
+[
+    {
+        "base_dynamic_entity": null,
+        "base_entity": null,
+        "base_map_model": {
+            "animation": 0,
+            "modelname": "door",
+            "size": 1.0
+        },
+        "base_physical_entity": {
+            "aboveeye": 2.0,
+            "blocked": false,
+            "collidetype": 3,
+            "crouching": 0,
+            "deltapos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "editstate": 0,
+            "eyeheight": 7.0,
+            "falling": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "floor": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 1.0
+            },
+            "inwater": 0,
+            "jumping": false,
+            "maxheight": 8.0,
+            "maxspeed": 25.0,
+            "move": 0,
+            "newpos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "physstate": 1,
+            "pitch": 0.0,
+            "radius": 2.4000000953674316,
+            "roll": 0.0,
+            "state": 0,
+            "strafe": 0,
+            "timeinair": 0,
+            "vel": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "xradius": 1.6699999570846558,
+            "yaw": 0.0,
+            "yradius": 1.6699999570846558,
+            "zmargin": 0.0
+        },
+        "class": "base_map_model",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": -1,
+            "name": "coreentity_unnamed",
+            "o": {
+                "x": 500.0,
+                "y": 532.0,
+                "z": 546.0
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 2,
+        "game_type": 9
+    },
+    {
+        "class": "core_entity",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": -1,
+            "name": "coreentity_unnamed",
+            "o": {
+                "x": 484.87939453125,
+                "y": 543.40869140625,
+                "z": 549.406982421875
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 9
+    },
+    {
+        "base_entity": null,
+        "class": "playerstart",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": -1,
+            "name": "coreentity_unnamed",
+            "o": {
+                "x": 502.78558349609375,
+                "y": 609.9554443359375,
+                "z": 520.8035888671875
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 3,
+        "playerstart": {
+            "yaw": 0.0
+        }
+    }
+]

@@ -1,0 +1,21 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/micha/dev/cube/Polyhedron/src
+CMake Error at CMakeLists.txt:39 (find_package):
+  By not providing "FindWEBP.cmake" in CMAKE_MODULE_PATH this project has
+  asked CMake to find a package configuration file provided by "WEBP", but
+  CMake did not find one.
+
+  Could not find a package configuration file provided by "WEBP" with any of
+  the following names:
+
+    WEBPConfig.cmake
+    webp-config.cmake
+
+  Add the installation prefix of "WEBP" to CMAKE_PREFIX_PATH or set
+  "WEBP_DIR" to a directory containing one of the above files.  If "WEBP"
+  provides a separate development package or SDK, be sure it has been
+  installed.
+
+
+-- Configuring incomplete, errors occurred!
+See also "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/CMakeFiles/CMakeOutput.log".
+See also "/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/CMakeFiles/CMakeError.log".

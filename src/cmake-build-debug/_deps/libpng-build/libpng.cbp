@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="libpng"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\cmake\;CMake Files\..\cmake\thirdparty\;CMake Files\..\cmake\thirdparty\SDL2-2.0.12\;CMake Files\..\cmake\thirdparty\SDL2-2.0.12\cmake\;CMake Files\..\cmake\thirdparty\SDL2-2.0.12\include\;CMake Files\..\cmake\thirdparty\libjpeg\;CMake Files\..\cmake\thirdparty\libjpeg\cmake\;CMake Files\..\cmake\thirdparty\libpng\;CMake Files\..\cmake\thirdparty\libpng\scripts\;CMake Files\xcode\;CMake Files\enet\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pngfix">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngfix" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 pngfix"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pngfix/fast">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngfix" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 pngfix/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pngstest">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngstest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 pngstest"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pngstest/fast">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngstest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 pngstest/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pngvalid">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngvalid" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 pngvalid"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pngvalid/fast">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngvalid" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 pngvalid/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pngunknown">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngunknown" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 pngunknown"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pngunknown/fast">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngunknown" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 pngunknown/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="png_static">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/libpng16d.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 png_static"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="png_static/fast">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/libpng16d.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 png_static/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pngtest">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngtest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 pngtest"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pngtest/fast">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngtest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 pngtest/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="png">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/libpng16d.dylib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 png"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="png/fast">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/libpng16d.dylib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 png/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="genfiles">
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 genfiles"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="genprebuilt">
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 genprebuilt"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gensym">
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 gensym"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="genvers">
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 genvers"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="png-fix-itxt">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/png-fix-itxt" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 png-fix-itxt"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="png-fix-itxt/fast">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/png-fix-itxt" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 png-fix-itxt/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pngimage">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngimage" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 pngimage"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pngimage/fast">
+				<Option output="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngimage" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPNG_INTEL_SSE_OPT=1"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+					<Add directory="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 pngimage/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="symbol-check">
+				<Option working_dir="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 symbol-check"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/contrib/libtests/pngimage.c">
+			<Option target="pngimage"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/contrib/libtests/pngstest.c">
+			<Option target="pngstest"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/contrib/libtests/pngunknown.c">
+			<Option target="pngunknown"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/contrib/libtests/pngvalid.c">
+			<Option target="pngvalid"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/contrib/tools/png-fix-itxt.c">
+			<Option target="png-fix-itxt"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/contrib/tools/pngfix.c">
+			<Option target="pngfix"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/intel/filter_sse2_intrinsics.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/intel/intel_init.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/png.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/png.h">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngconf.h">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngdebug.h">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngerror.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngget.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pnginfo.h">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngmem.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngpread.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngpriv.h">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngread.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngrio.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngrtran.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngrutil.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngset.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngstruct.h">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngtest.c">
+			<Option target="pngtest"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngtrans.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngwio.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngwrite.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngwtran.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/cmake/thirdparty/libpng/pngwutil.c">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pnglibconf.c.rule">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pnglibconf.h">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pnglibconf.h.rule">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pnglibconf.out.rule">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngprefix.h">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/cmake-build-debug/_deps/libpng-build/pngprefix.h.rule">
+			<Option target="png_static"/>
+			<Option target="png"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty.cmake">
+			<Option virtualFolder="CMake Files\..\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/SDL2-2.0.12/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\SDL2-2.0.12\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/SDL2-2.0.12/SDL2.spec.in">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\SDL2-2.0.12\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/SDL2-2.0.12/cmake_uninstall.cmake.in">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\SDL2-2.0.12\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/SDL2-2.0.12/sdl2-config.in">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\SDL2-2.0.12\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/SDL2-2.0.12/sdl2.pc.in">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\SDL2-2.0.12\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/SDL2-2.0.12/cmake/macros.cmake">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\SDL2-2.0.12\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/SDL2-2.0.12/cmake/sdlchecks.cmake">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\SDL2-2.0.12\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/SDL2-2.0.12/include/SDL_config.h.cmake">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\SDL2-2.0.12\include\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/libjpeg/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\libjpeg\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/libjpeg/jconfig.h.cmake">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\libjpeg\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/libjpeg/cmake/dist.cmake">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\libjpeg\cmake\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/libpng/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\libpng\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/libpng/libpng-config.in">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\libpng\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/libpng/libpng.pc.in">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\libpng\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/libpng/scripts/genchk.cmake.in">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\libpng\scripts\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/libpng/scripts/genout.cmake.in">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\libpng\scripts\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/libpng/scripts/gensrc.cmake.in">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\libpng\scripts\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/../cmake/thirdparty/libpng/scripts/test.cmake.in">
+			<Option virtualFolder="CMake Files\..\cmake\thirdparty\libpng\scripts\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/xcode/tesseract.plist.in">
+			<Option virtualFolder="CMake Files\xcode\"/>
+		</Unit>
+		<Unit filename="/Users/micha/dev/cube/Polyhedron/src/enet/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\enet\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

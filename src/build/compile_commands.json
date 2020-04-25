@@ -1,0 +1,835 @@
+[
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+aa.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+aa.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+aa.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+bih.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+bih.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+bih.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+blend.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+blend.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+blend.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+client.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+client.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+client.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+command.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+command.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+command.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+console.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+console.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+console.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+dynlight.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+dynlight.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+dynlight.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+grass.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+grass.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+grass.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+help.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+help.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+help.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+light.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+light.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+light.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+log.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+log.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+log.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+main.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+main.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+main.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+material.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+material.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+material.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+menus.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+menus.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+menus.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+movie.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+movie.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+movie.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+normal.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+normal.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+normal.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+octa.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+octa.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+octa.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+octaedit.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+octaedit.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+octaedit.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+octarender.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+octarender.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+octarender.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+pch.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+pch.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+pch.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+physics.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+physics.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+physics.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+pvs.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+pvs.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+pvs.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+rendergl.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+rendergl.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+rendergl.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+renderlights.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+renderlights.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+renderlights.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+rendermodel.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+rendermodel.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+rendermodel.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+renderparticles.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+renderparticles.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+renderparticles.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+rendersky.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+rendersky.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+rendersky.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+rendertext.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+rendertext.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+rendertext.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+renderva.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+renderva.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+renderva.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+scriptexport.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+scriptexport.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+scriptexport.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+server.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+server.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+server.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+serverbrowser.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+serverbrowser.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+serverbrowser.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+shader.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+shader.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+shader.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+sound.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+sound.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+sound.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+stain.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+stain.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+stain.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+texture.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+texture.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+texture.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+ui.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+ui.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+ui.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+water.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+water.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+water.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+world.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+world.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+world.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine+worldio.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/engine+worldio.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/engine+worldio.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+crypto.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+crypto.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+crypto.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+geom.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+geom.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+geom.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+glemu.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+glemu.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+glemu.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+pch.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+pch.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+pch.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+stream.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+stream.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+stream.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+tools.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+tools.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+tools.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+zip.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+zip.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+zip.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game+entities.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/game+entities.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/game+entities.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game+game.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/game+game.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/game+game.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game+render.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/game+render.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/game+render.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game+server.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/game+server.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/game+server.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game+commands.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/game+commands.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/game+commands.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+entities+attributes.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+entities+attributes.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+entities+attributes.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+entities+coreentity.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+entities+coreentity.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+entities+coreentity.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+entities+baseentity.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+entities+baseentity.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+entities+baseentity.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+entities+basedynamicentity.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+entities+basedynamicentity.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+entities+basedynamicentity.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+entities+basephysicalentity.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+entities+basephysicalentity.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+entities+basephysicalentity.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared+entities+entityfactory.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/shared+entities+entityfactory.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/shared+entities+entityfactory.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game+entities+basemapmodel.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/game+entities+basemapmodel.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/game+entities+basemapmodel.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game+entities+door.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/game+entities+door.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/game+entities+door.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game+entities+dynamiclight.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/game+entities+dynamiclight.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/game+entities+dynamiclight.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game+entities+basemonster.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/game+entities+basemonster.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/game+entities+basemonster.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game+entities+playerstart.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/game+entities+playerstart.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/game+entities+playerstart.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game+entities+player.binding.cpp.o -c /Users/micha/dev/ScMaMike/src/build/game+entities+player.binding.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/build/game+entities+player.binding.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/aa.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/aa.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/aa.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/bih.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/bih.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/bih.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/blend.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/blend.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/blend.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/client.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/client.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/client.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/command.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/command.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/command.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/console.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/console.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/console.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/dynlight.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/dynlight.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/dynlight.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/grass.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/grass.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/grass.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/help.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/help.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/help.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/light.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/light.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/light.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/log.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/log.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/log.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/main.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/main.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/main.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/material.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/material.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/material.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/menus.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/menus.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/menus.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/movie.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/movie.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/movie.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/normal.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/normal.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/normal.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/octa.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/octa.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/octa.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/octaedit.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/octaedit.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/octaedit.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/octarender.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/octarender.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/octarender.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/pch.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/pch.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/pch.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/physics.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/physics.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/physics.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/pvs.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/pvs.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/pvs.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/rendergl.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/rendergl.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/rendergl.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/renderlights.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/renderlights.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/renderlights.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/rendermodel.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/rendermodel.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/rendermodel.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/renderparticles.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/renderparticles.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/renderparticles.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/rendersky.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/rendersky.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/rendersky.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/rendertext.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/rendertext.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/rendertext.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/renderva.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/renderva.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/renderva.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/scriptexport.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/scriptexport.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/scriptexport.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/server.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/server.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/server.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/serverbrowser.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/serverbrowser.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/serverbrowser.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/shader.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/shader.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/shader.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/sound.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/sound.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/sound.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/stain.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/stain.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/stain.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/texture.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/texture.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/texture.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/ui.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/ui.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/ui.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/water.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/water.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/water.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/world.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/world.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/world.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/engine/worldio.cpp.o -c /Users/micha/dev/ScMaMike/src/engine/worldio.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/engine/worldio.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/crypto.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/crypto.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/crypto.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/geom.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/geom.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/geom.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/glemu.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/glemu.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/glemu.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/pch.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/pch.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/pch.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/stream.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/stream.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/stream.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/tools.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/tools.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/tools.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/zip.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/zip.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/zip.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game/entities.cpp.o -c /Users/micha/dev/ScMaMike/src/game/entities.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/game/entities.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game/game.cpp.o -c /Users/micha/dev/ScMaMike/src/game/game.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/game/game.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game/render.cpp.o -c /Users/micha/dev/ScMaMike/src/game/render.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/game/render.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game/server.cpp.o -c /Users/micha/dev/ScMaMike/src/game/server.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/game/server.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game/commands.cpp.o -c /Users/micha/dev/ScMaMike/src/game/commands.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/game/commands.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/entities/attributes.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/entities/attributes.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/entities/attributes.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/entities/coreentity.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/entities/coreentity.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/entities/coreentity.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/entities/baseentity.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/entities/baseentity.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/entities/baseentity.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/entities/basedynamicentity.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/entities/basedynamicentity.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/entities/basedynamicentity.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/entities/basephysicalentity.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/entities/basephysicalentity.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/entities/basephysicalentity.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/shared/entities/entityfactory.cpp.o -c /Users/micha/dev/ScMaMike/src/shared/entities/entityfactory.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/shared/entities/entityfactory.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game/entities/basemapmodel.cpp.o -c /Users/micha/dev/ScMaMike/src/game/entities/basemapmodel.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/game/entities/basemapmodel.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game/entities/door.cpp.o -c /Users/micha/dev/ScMaMike/src/game/entities/door.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/game/entities/door.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game/entities/dynamiclight.cpp.o -c /Users/micha/dev/ScMaMike/src/game/entities/dynamiclight.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/game/entities/dynamiclight.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game/entities/basemonster.cpp.o -c /Users/micha/dev/ScMaMike/src/game/entities/basemonster.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/game/entities/basemonster.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game/entities/playerstart.cpp.o -c /Users/micha/dev/ScMaMike/src/game/entities/playerstart.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/game/entities/playerstart.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include   -stdlib=libc++ -std=c++14 -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -std=c++14 -o CMakeFiles/Polyhedron.dir/game/entities/player.cpp.o -c /Users/micha/dev/ScMaMike/src/game/entities/player.cpp",
+  "file": "/Users/micha/dev/ScMaMike/src/game/entities/player.cpp"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -o CMakeFiles/Polyhedron.dir/xcode/Launcher.m.o   -c /Users/micha/dev/ScMaMike/src/xcode/Launcher.m",
+  "file": "/Users/micha/dev/ScMaMike/src/xcode/Launcher.m"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DGL_SILENCE_DEPRECATION -I../ext/json-develop/single_include -I../. -I../shared -I../game -I../engine -I../ -I/usr/local/include/SDL2 -I/Library/Frameworks/Mono.framework/Headers -I/usr/local/include/freetype2 -I../enet/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -o CMakeFiles/Polyhedron.dir/xcode/main.m.o   -c /Users/micha/dev/ScMaMike/src/xcode/main.m",
+  "file": "/Users/micha/dev/ScMaMike/src/xcode/main.m"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1 -I../ext/json-develop/single_include -I../enet/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -Wno-error -o enet/CMakeFiles/enet.dir/callbacks.c.o   -c /Users/micha/dev/ScMaMike/src/enet/callbacks.c",
+  "file": "/Users/micha/dev/ScMaMike/src/enet/callbacks.c"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1 -I../ext/json-develop/single_include -I../enet/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -Wno-error -o enet/CMakeFiles/enet.dir/compress.c.o   -c /Users/micha/dev/ScMaMike/src/enet/compress.c",
+  "file": "/Users/micha/dev/ScMaMike/src/enet/compress.c"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1 -I../ext/json-develop/single_include -I../enet/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -Wno-error -o enet/CMakeFiles/enet.dir/host.c.o   -c /Users/micha/dev/ScMaMike/src/enet/host.c",
+  "file": "/Users/micha/dev/ScMaMike/src/enet/host.c"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1 -I../ext/json-develop/single_include -I../enet/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -Wno-error -o enet/CMakeFiles/enet.dir/list.c.o   -c /Users/micha/dev/ScMaMike/src/enet/list.c",
+  "file": "/Users/micha/dev/ScMaMike/src/enet/list.c"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1 -I../ext/json-develop/single_include -I../enet/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -Wno-error -o enet/CMakeFiles/enet.dir/packet.c.o   -c /Users/micha/dev/ScMaMike/src/enet/packet.c",
+  "file": "/Users/micha/dev/ScMaMike/src/enet/packet.c"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1 -I../ext/json-develop/single_include -I../enet/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -Wno-error -o enet/CMakeFiles/enet.dir/peer.c.o   -c /Users/micha/dev/ScMaMike/src/enet/peer.c",
+  "file": "/Users/micha/dev/ScMaMike/src/enet/peer.c"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1 -I../ext/json-develop/single_include -I../enet/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -Wno-error -o enet/CMakeFiles/enet.dir/protocol.c.o   -c /Users/micha/dev/ScMaMike/src/enet/protocol.c",
+  "file": "/Users/micha/dev/ScMaMike/src/enet/protocol.c"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1 -I../ext/json-develop/single_include -I../enet/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -Wno-error -o enet/CMakeFiles/enet.dir/unix.c.o   -c /Users/micha/dev/ScMaMike/src/enet/unix.c",
+  "file": "/Users/micha/dev/ScMaMike/src/enet/unix.c"
+},
+
+{
+  "directory": "/Users/micha/dev/ScMaMike/src/build",
+  "command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -DGL_SILENCE_DEPRECATION -DHAS_FCNTL=1 -DHAS_GETADDRINFO=1 -DHAS_GETNAMEINFO=1 -DHAS_INET_NTOP=1 -DHAS_INET_PTON=1 -DHAS_MSGHDR_FLAGS=1 -DHAS_POLL=1 -DHAS_SOCKLEN_T=1 -I../ext/json-develop/single_include -I../enet/include  -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14   -Wno-error -o enet/CMakeFiles/enet.dir/win32.c.o   -c /Users/micha/dev/ScMaMike/src/enet/win32.c",
+  "file": "/Users/micha/dev/ScMaMike/src/enet/win32.c"
+}
+]

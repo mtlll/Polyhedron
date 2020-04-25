@@ -1,0 +1,6 @@
+/Users/micha/dev/ScMaMike/src/build/CMakeFiles/rebuild_cache.dir
+/Users/micha/dev/ScMaMike/src/build/CMakeFiles/edit_cache.dir
+/Users/micha/dev/ScMaMike/src/build/CMakeFiles/Polyhedron.dir
+/Users/micha/dev/ScMaMike/src/build/enet/CMakeFiles/rebuild_cache.dir
+/Users/micha/dev/ScMaMike/src/build/enet/CMakeFiles/edit_cache.dir
+/Users/micha/dev/ScMaMike/src/build/enet/CMakeFiles/enet.dir

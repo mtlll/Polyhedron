@@ -1,0 +1,36 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Bind cppmodel coreentity.cpp",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/binding/index.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/build",
+            "args": [
+                "cppmodel",
+                ".",
+                "../src/shared/entities/coreentity.cpp",
+                "shared+entities+coreentity.binding.cpp"
+            ]
+        },
+        {
+            "name": "Bind gen coreentity.cpp",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/binding/index.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/build",
+            "args": [
+                "gen",
+                ".",
+                "../src/shared/entities/coreentity.cpp",
+                "shared+entities+coreentity.binding.cpp"
+            ]
+        }
+    ]
+}

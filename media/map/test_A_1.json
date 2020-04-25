@@ -1,0 +1,170 @@
+[
+    {
+        "class": "decal_entity",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 0,
+            "model_idx": 0,
+            "name": "decal_entity_0",
+            "o": {
+                "x": 508.0,
+                "y": 532.0,
+                "z": 516.0
+            },
+            "reserved": 0
+        },
+        "decal_entity": [
+            null
+        ],
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 9
+    },
+    {
+        "base_entity": [
+            null
+        ],
+        "class": "playerstart",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": 0,
+            "name": "playerstart_1",
+            "o": {
+                "x": 508.1025390625,
+                "y": 532.0,
+                "z": 515.9202880859375
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 9,
+        "playerstart": [
+            {
+                "yaw": 0.0
+            }
+        ]
+    },
+    {
+        "base_dynamic_entity": [
+            null
+        ],
+        "base_entity": [
+            null
+        ],
+        "base_map_model": [
+            {
+                "filename": ""
+            }
+        ],
+        "base_physical_entity": [
+            {
+                "aboveeye": 2.0,
+                "blocked": false,
+                "collidetype": 3,
+                "crouching": 0,
+                "deltapos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "editstate": 0,
+                "eyeheight": 7.0,
+                "falling": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "floor": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 1.0
+                },
+                "inwater": 0,
+                "jumping": false,
+                "maxheight": 8.0,
+                "maxspeed": 25.0,
+                "move": 0,
+                "newpos": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "physstate": 1,
+                "pitch": 0.0,
+                "radius": 2.4000000953674316,
+                "roll": 0.0,
+                "state": 0,
+                "strafe": 0,
+                "timeinair": 0,
+                "vel": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "xradius": 1.6699999570846558,
+                "yaw": 0.0,
+                "yradius": 1.6699999570846558,
+                "zmargin": 0.0
+            }
+        ],
+        "class": "base_map_model",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": 0,
+            "name": "base_map_model_2",
+            "o": {
+                "x": 524.0,
+                "y": 522.6980590820313,
+                "z": 522.2025756835938
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 9
+    },
+    {
+        "base_entity": [
+            null
+        ],
+        "class": "base_entity",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": 0,
+            "name": "base_entity_3",
+            "o": {
+                "x": 508.0,
+                "y": 516.0,
+                "z": 516.0
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 9
+    }
+]

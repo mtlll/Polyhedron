@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="Polyhedron" targetName="enet" />
+      <config projectName="Polyhedron" targetName="Polyhedron" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c7a74a0a-da5c-4fa8-a1bf-d69a2d4e6c1f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/cmake/FindModplug.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/FindSDL2.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/FindSDL2_gfx.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/FindSDL2_image.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/FindSDL2_mixer.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/FindSDL2_net.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/FindSDL2_ttf.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/FindWEBP.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/CMakeLists.txt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1axMWEAtN1hz71NQX1NWm8a8JIo" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/android/src" />
+    </key>
+  </component>
+  <component name="RunManager" selected="CMake Application.Polyhedron">
+    <configuration name="Polyhedron" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Polyhedron" TARGET_NAME="Polyhedron" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Polyhedron" RUN_TARGET_NAME="Polyhedron">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="enet" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Polyhedron" TARGET_NAME="enet" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="scriptbind cppmodel shared/entities/baseentity.cpp (1)" type="PythonConfigurationType" factoryName="Python">
+      <module name="Polyhedron" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/bin/python3.7" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/binding/index.py" />
+      <option name="PARAMETERS" value="cppmodel $PROJECT_DIR$/src/cmake-build-debug shared/entities/baseentity.cpp $PROJECT_DIR$/src/cmake-build-debug/shared+entities+baseentity.binding.cpp" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scriptbind gen shared/entities/baseentity.cpp" type="PythonConfigurationType" factoryName="Python">
+      <module name="Polyhedron" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/bin/python3.7" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/binding/index.py" />
+      <option name="PARAMETERS" value="gen $PROJECT_DIR$/src/cmake-build-debug shared/entities/baseentity.cpp $PROJECT_DIR$/src/cmake-build-debug/shared+entities+baseentity.binding.cpp" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.Polyhedron" />
+      <item itemvalue="CMake Application.enet" />
+      <item itemvalue="Python.scriptbind gen shared/entities/baseentity.cpp" />
+      <item itemvalue="Python.scriptbind cppmodel shared/entities/baseentity.cpp (1)" />
+    </list>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="304" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587768259537">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="304" y="198" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1680.1027@0.23.1680.1027" timestamp="1587768259537" />
+    <state x="627" y="248" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1587767421939">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="627" y="248" key="#com.intellij.ide.macro.MacrosDialog/0.23.1680.1027@0.23.1680.1027" timestamp="1587767421939" />
+    <state width="1636" height="345" key="GridCell.Tab.0.bottom" timestamp="1587835033831">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1636" height="345" key="GridCell.Tab.0.bottom/0.23.1680.1027@0.23.1680.1027" timestamp="1587835033831" />
+    <state width="1636" height="345" key="GridCell.Tab.0.center" timestamp="1587835033829">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1636" height="345" key="GridCell.Tab.0.center/0.23.1680.1027@0.23.1680.1027" timestamp="1587835033829" />
+    <state width="1636" height="345" key="GridCell.Tab.0.left" timestamp="1587835033829">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1636" height="345" key="GridCell.Tab.0.left/0.23.1680.1027@0.23.1680.1027" timestamp="1587835033829" />
+    <state width="1636" height="345" key="GridCell.Tab.0.right" timestamp="1587835033830">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1636" height="345" key="GridCell.Tab.0.right/0.23.1680.1027@0.23.1680.1027" timestamp="1587835033830" />
+    <state width="1636" height="345" key="GridCell.Tab.1.bottom" timestamp="1587835033832">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1636" height="345" key="GridCell.Tab.1.bottom/0.23.1680.1027@0.23.1680.1027" timestamp="1587835033832" />
+    <state width="1636" height="345" key="GridCell.Tab.1.center" timestamp="1587835033831">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1636" height="345" key="GridCell.Tab.1.center/0.23.1680.1027@0.23.1680.1027" timestamp="1587835033831" />
+    <state width="1636" height="345" key="GridCell.Tab.1.left" timestamp="1587835033831">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1636" height="345" key="GridCell.Tab.1.left/0.23.1680.1027@0.23.1680.1027" timestamp="1587835033831" />
+    <state width="1636" height="345" key="GridCell.Tab.1.right" timestamp="1587835033832">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state width="1636" height="345" key="GridCell.Tab.1.right/0.23.1680.1027@0.23.1680.1027" timestamp="1587835033832" />
+    <state x="349" y="175" key="SettingsEditor" timestamp="1587823640551">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="349" y="175" key="SettingsEditor/0.23.1680.1027@0.23.1680.1027" timestamp="1587823640551" />
+    <state x="621" y="170" width="1041" height="729" key="find.popup" timestamp="1587830445171">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="621" y="170" width="1041" height="729" key="find.popup/0.23.1680.1027@0.23.1680.1027" timestamp="1587830445171" />
+    <state x="505" y="250" width="672" height="676" key="search.everywhere.popup" timestamp="1587831872480">
+      <screen x="0" y="23" width="1680" height="1027" />
+    </state>
+    <state x="505" y="250" width="672" height="676" key="search.everywhere.popup/0.23.1680.1027@0.23.1680.1027" timestamp="1587831872480" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/binding/autobind/generator/JsonSerializer.py</url>
+          <line>11</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/binding/autobind/parsecpp.py</url>
+          <line>191</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/binding/autobind/parsecpp.py</url>
+          <line>220</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/binding/autobind/parsecpp.py</url>
+          <line>145</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/binding/autobind/parsecpp.py</url>
+          <line>154</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/binding/autobind/parsecpp.py</url>
+          <line>158</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/binding/autobind/parsecpp.py</url>
+          <line>170</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/binding/autobind/parsecpp.py</url>
+          <line>178</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/binding/autobind/parsecpp.py</url>
+          <line>179</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="type(node)" language="Python" />
+        <watch expression="node" language="Python" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>

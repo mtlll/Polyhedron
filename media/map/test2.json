@@ -1,0 +1,189 @@
+[
+    {
+        "base_entity": [
+            null
+        ],
+        "class": "base_entity",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": 0,
+            "name": "coreentity_unnamed",
+            "o": {
+                "x": 516.0,
+                "y": 516.0,
+                "z": 514.0
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 9
+    },
+    {
+        "base_entity": [
+            null
+        ],
+        "class": "base_entity",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": 0,
+            "name": "coreentity_unnamed",
+            "o": {
+                "x": 500.0,
+                "y": 502.0,
+                "z": 524.0
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 9
+    },
+    {
+        "base_entity": [
+            null
+        ],
+        "class": "base_entity",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": 0,
+            "name": "coreentity_unnamed",
+            "o": {
+                "x": 494.0,
+                "y": 524.0,
+                "z": 524.0
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 9
+    },
+    {
+        "base_entity": [
+            null
+        ],
+        "class": "base_entity",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": 0,
+            "name": "coreentity_unnamed",
+            "o": {
+                "x": 508.0,
+                "y": 530.0,
+                "z": 524.0
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 9
+    },
+    {
+        "base_entity": [
+            null
+        ],
+        "class": "base_entity",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": 0,
+            "name": "coreentity_unnamed",
+            "o": {
+                "x": 514.0,
+                "y": 516.0,
+                "z": 524.0
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 9
+    },
+    {
+        "base_entity": [
+            null
+        ],
+        "class": "base_entity",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": 0,
+            "name": "coreentity_unnamed",
+            "o": {
+                "x": 508.0,
+                "y": 516.0,
+                "z": 542.0
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 9
+    },
+    {
+        "base_entity": [
+            null
+        ],
+        "class": "playerstart",
+        "core_entity": {
+            "attached": "",
+            "attr1": 0,
+            "attr2": 0,
+            "attr3": 0,
+            "attr4": 0,
+            "attr5": 0,
+            "flags": 32,
+            "model_idx": 0,
+            "name": "coreentity_unnamed",
+            "o": {
+                "x": 504.1673583984375,
+                "y": 516.0,
+                "z": 530.1050415039063
+            },
+            "reserved": 0
+        },
+        "ent_type": 2,
+        "et_type": 9,
+        "game_type": 9,
+        "playerstart": [
+            {
+                "yaw": 0.0
+            }
+        ]
+    }
+]
