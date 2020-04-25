@@ -27,6 +27,9 @@ namespace entities
 
         private:
             DONTSERIALIZE mapmodelinfo mmi;
+            PHUI_INPUT("Animation id") int animation = 0;
+            PHUI_INPUT("Size") float size = 1.0f;
+            DONTSERIALIZE vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
             PHUI_INPUT("Model") std::string modelname;
         };
 		

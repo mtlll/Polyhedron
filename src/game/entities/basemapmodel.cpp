@@ -54,7 +54,7 @@ void BaseMapModel::render(game::RenderPass pass)
 {
 	if (pass == game::RenderPass::Main)
 	{
-		rendermodel(modelname.c_str(), 0, o, yaw, pitch, 0, MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED);
+		rendermodel(modelname.c_str(), animation, o, yaw, pitch, roll, MDL_CULL_VFC | MDL_CULL_DIST | MDL_CULL_OCCLUDED, this, nullptr, curtime, curtime, size, color);
 	}
 }
 
@@ -66,9 +66,18 @@ bool BaseMapModel::getBoundingBox(int entselradius, vec &minbb, vec &maxbb) cons
         mmboundbox(this, mmi.m, center, radius);
         center.add(o);
         radius.max(entselradius);
+
+        matrix4 matrix;
+        matrix.identity();
+        matrix.rotate_around_x(pitch * RAD);
+        matrix.rotate_around_y(roll * RAD);
+        matrix.rotate_around_z(yaw * RAD);
+
+        matrix.transform(radius, radius);
+
         minbb = vec(center).sub(radius);
         maxbb = vec(center).add(radius).add(1);
-
+        
         return true;
     }
 

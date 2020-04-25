@@ -972,17 +972,17 @@ void rendermodel(const char *mdl, int anim, const vec &o, float yaw, float pitch
 	m->boundbox(center, bbradius);
 	float radius = bbradius.magnitude();
 	entities::classes::BaseDynamicEntity *dynent = dynamic_cast<entities::classes::BaseDynamicEntity*>(d);
-	if(d)
+	if(dynent)
 	{
 		if(dynent->ragdoll)
 		{
-			if(anim&ANIM_RAGDOLL && d->ragdoll->millis >= basetime)
+			if(anim&ANIM_RAGDOLL && dynent->ragdoll->millis >= basetime)
 			{
 				radius = max(radius, d->ragdoll->radius);
-				center = d->ragdoll->center;
+				center = dynent->ragdoll->center;
 				goto hasboundbox;
 			}
-			DELETEP(d->ragdoll);
+			DELETEP(dynent->ragdoll);
 		}
 		if(anim&ANIM_RAGDOLL) flags &= ~(MDL_CULL_VFC | MDL_CULL_OCCLUDED | MDL_CULL_QUERY);
 	}

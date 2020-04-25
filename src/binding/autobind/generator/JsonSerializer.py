@@ -9,7 +9,7 @@ def Generate(cxxRootNode):
     template = """#include "{}"
 {}"""
     generated_funcs = []
-    for node in cxxRootNode.forEachChild(noDepth = True):
+    for node in cxxRootNode.forEachChild(noDepth = False):
         if type(node) is CxxClass:
             generated_funcs.append(GenerateFromJson(node))
             generated_funcs.append(GenerateToJson(node))
@@ -46,7 +46,7 @@ def GenerateToJson(cxxClass):
     for child in cxxClass.forEachChild(noDepth = True):
         output = output + GenerateToJsonVariable(child, "entity_t")
     body = ",\n\t\t".join(output)
-    return cxxClass.namespaceBlock(f"""void to_json(nlohmann::json& document, const {templateValues['className']}& entity_t)
+    return cxxClass.NamespaceBlock(f"""void to_json(nlohmann::json& document, const {templateValues['className']}& entity_t)
 {{
 \tdocument = {{
 \t\t{body}
@@ -72,7 +72,7 @@ def GenerateFromJson(cxxClass):
     for child in cxxClass.forEachChild(noDepth = True):
         output = output + GenerateFromJsonVariable(child, "document", "entity_t")
     body = "\n\t".join(output)
-    return cxxClass.namespaceBlock(f"""void from_json(const nlohmann::json& document,  {templateValues['className']}& entity_t)
+    return cxxClass.NamespaceBlock(f"""void from_json(const nlohmann::json& document, {templateValues['className']}& entity_t)
 {{
 \t{body}
 }}
@@ -81,6 +81,9 @@ def GenerateFromJson(cxxClass):
 def GenerateFromJsonVariable(cxxVar, jsonRootVar, instanceVar):
     templateValues = GenerateJsonVariableTemplateValues(cxxVar)
     output = []
+
+    if cxxVar.annotation and cxxVar.annotation.starts_with("dontunserialize"): # <- todo: get this value from parsecpp.py
+        return output
 
     if templateValues["variableType"] in CUSTOM_FROMJSON_VARGENERATORS:
         output = output + CUSTOM_FROMJSON_VARGENERATORS[templateValues["variableType"]](templateValues)
@@ -155,7 +158,10 @@ def GenerateAttributeGetter(cxxClass):
         if len(output) > 0:
             hasElse = "else "
 
-    body = "\n\t".join(output)
+    if len(output) == 0:
+        body = "return entities::attribute_T();";
+    else:
+        body = "\n\t".join(output)
     return f"""entities::attribute_T {templateValues['className']}::getAttributeImpl(const std::string &key) const
 {{
 \t{body}

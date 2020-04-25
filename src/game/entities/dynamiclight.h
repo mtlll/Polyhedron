@@ -17,13 +17,13 @@ namespace entities {
                 FLICKERING,
                 FADING
             };
-            
-			NLOHMANN_JSON_SERIALIZE_ENUM( DYNAMIC_LIGHT_STATE, {
-				{ON, "ON"},
-				{OFF, "OFF"},
-				{FLICKERING, "FLICKERING"},
-				{FADING, "FADING"},
-			});
+//
+//			NLOHMANN_JSON_SERIALIZE_ENUM( DYNAMIC_LIGHT_STATE, {
+//				{ON, "ON"},
+//				{OFF, "OFF"},
+//				{FLICKERING, "FLICKERING"},
+//				{FADING, "FADING"},
+//			});
 
             void setState(DynamicLight::DYNAMIC_LIGHT_STATE &state);
 

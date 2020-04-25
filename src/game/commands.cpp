@@ -58,6 +58,12 @@ namespace game {
 
         if (entities::edit_entity > -1 && entities::edit_entity < ents.length())
         {
+            if (attribute_key == nullptr || attribute_key[0] == '\0')
+            {
+                conoutf("missing attribute key");
+                return;
+            }
+
             auto ent = ents[entities::edit_entity];
             auto val = ent->getAttribute(attribute_key);
 

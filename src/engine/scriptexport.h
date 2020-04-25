@@ -11,6 +11,7 @@
 #define SCRIPTEXPORT_AS(NAME) __attribute__((annotate("scriptexport" #NAME))) VISIBLE_SYMBOL
 
 #define DONTSERIALIZE __attribute__((annotate("dontserialize")))
+#define DONTUNSERIALIZE __attribute__((annotate("dontunserialize")))
 
 
 #define PHUI_HIDDEN(label) __attribute__((annotate("phui;" #label ";hidden")))

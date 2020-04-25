@@ -29,7 +29,12 @@ template <> std::string entities::AttributeVisitCoercer<std::string>::operator()
 {
 	return std::to_string(value);
 }
-
+/*
+template <> std::string entities::AttributeVisitCoercer<std::string>::operator()(vec4 value) const
+{
+	return std::to_string(value.x) + ", " + std::to_string(value.y) + ", " + std::to_string(value.z) + ", " + std::to_string(value.w);
+}
+*/
 
 template <> float entities::AttributeVisitCoercer<float>::operator()(const std::string& value) const
 {
@@ -50,6 +55,13 @@ template <> float entities::AttributeVisitCoercer<float>::operator()(const bool 
 {
 	return value ? 1.0f : 0.0f;
 }
+
+/*
+template <> float entities::AttributeVisitCoercer<float>::operator()(const vec4 value) const
+{
+	return value.x;
+}
+*/
 
 
 template <> int entities::AttributeVisitCoercer<int>::operator()(std::string const& value) const
@@ -72,6 +84,13 @@ template <> int entities::AttributeVisitCoercer<int>::operator()(bool value) con
 	return value ? 1 : 0;
 }
 
+/*
+template <> int entities::AttributeVisitCoercer<int>::operator()(vec4 value) const
+{
+	return value.x;
+}
+*/
+
 
 template <> bool entities::AttributeVisitCoercer<bool>::operator()(const std::string& value) const
 {
@@ -92,6 +111,12 @@ template <> bool entities::AttributeVisitCoercer<bool>::operator()(const bool va
 {
 	return value;
 }
+
+/*
+template <> bool entities::AttributeVisitCoercer<bool>::operator()(const vec4 value) const
+{
+	return value.x != 0 ? true : false;
+}*/
 
 std::map<std::string, entities::EntityFactory::EntityFactoryConstructor>& entities::EntityFactory::getConstructors()
 {
