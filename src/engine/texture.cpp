@@ -3240,6 +3240,8 @@ struct DDSURFACEDESC2
     uint dwTextureStage;
 };
 
+DDPIXELFORMAT myFormatBiatch;
+
 #define DECODEDDS(name, dbpp, initblock, writeval, nextval) \
 static void name(ImageData &s) \
 { \

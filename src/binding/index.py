@@ -1,7 +1,7 @@
 from autobind.fileiterator import ForEachTranslationUnitInDirectory
 from autobind.compileflags import CompileFlagsFor
 from autobind.parsecpp import CppParser 
-from autobind.generator import CubeScriptBinding, JsonSerializer
+from autobind.generator import CubeScriptBinding, JsonSerializer, ClassHeaderSourceSplitter
 import sys
 import os
 import json
@@ -54,6 +54,36 @@ def debug_cppmodel(buildFolder, file, outputfile):
     parser.start(outputfile)
     parser.cppmodel_generate()
     parser.dump_cppmodel()
+
+def debug_cppmodel_refactor(buildFolder, file, outputfile):
+    parser = CppParser(buildFolder, file)
+    parser.start(outputfile)
+    parser.cppmodel_refactor_generate()
+    parser.dump_cppmodel()
+
+def refactor(buildFolder, file, outputFolder, classPattern):
+    parser = CppParser(buildFolder, file)
+    parser.start(outputFileHeaderAbs)
+    parser.cppmodel_refactor_generate()
+
+    rootNode = parser.cppmodel()
+    if classPattern == "*":
+        from autobind.cppmodel.CxxClass import CxxClass
+
+        for node in cxxRootNode.forEachChild(noDepth = True):
+            if type(node) is CxxClass:
+                className = node.sourceObject.spelling
+                outputFileHeaderAbs = os.path.abspath(os.path.join(outputFolder, className + ".h"))
+                outputFileSourceAbs = os.path.abspath(os.path.join(outputFolder, className + ".cpp"))
+
+                generatedHeader = ClassHeaderSourceSplitter.Generate(rootNode, className)
+    else:
+        className = classPattern
+        outputFileHeaderAbs = os.path.abspath(os.path.join(outputFolder, className + ".h"))
+        outputFileSourceAbs = os.path.abspath(os.path.join(outputFolder, className + ".cpp"))
+
+        generatedHeader = ClassHeaderSourceSplitter.Generate(rootNode, className)
+
 
 def generate_code(buildFolder, file, outputfile):
     outputFileAbs = os.path.abspath(outputfile)
@@ -127,13 +157,20 @@ if __name__ == "__main__":
     #     print ("{}\n\t{}".format(file, " ".join(flags)))
 
     args = sys.argv[1:]
-    if len(args) == 4:
+    if len(args) == 5:
+        if args[0] == "refactor":
+            refactor(args[1], args[2], args[3], args[4])
+        else:
+            usage()
+    elif len(args) == 4:
         if args[0] == "gen":
             generate_code(args[1], args[2], args[3])
         elif args[0] == "dump":
-            debug_dump(args[1], args[1], args[3])
+            debug_dump(args[1], args[2], args[3])
         elif args[0] == "cppmodel":
             debug_cppmodel(args[1], args[2], args[3])
+        elif args[0] == "cppmodel_refactor":
+            debug_cppmodel_refactor(args[1], args[2], args[3])
         else:
             usage()
     elif len(args) == 2:        

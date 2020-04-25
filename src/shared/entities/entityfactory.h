@@ -5,7 +5,6 @@
 #include <string>
 #include <variant>
 
-
 typedef unsigned int uint;
 struct ident;
 namespace CommandTypes
@@ -15,7 +14,7 @@ namespace CommandTypes
 
 namespace entities {
 
-	typedef std::variant<std::string, float, int, bool> attribute_T;
+	typedef std::variant<std::string, float, int, bool/*, vec4*/> attribute_T;
 	typedef std::vector< std::vector< attribute_T > > attributeList_T;
 
 	template <typename TargetType>
@@ -25,6 +24,7 @@ namespace entities {
 		TargetType operator()(float value) const;
 		TargetType operator()(int value) const;
 		TargetType operator()(bool value) const;
+		/*TargetType operator()(vec4 value) const;*/
 	};
 
 	namespace classes
@@ -35,10 +35,10 @@ namespace entities {
     class EntityFactory
     {
     private:
+	public:
         typedef std::function<entities::classes::CoreEntity*()> EntityFactoryConstructor;
         typedef std::function<attributeList_T()> EntityFactoryAttribute;
 
-	public:
         static std::map<std::string, EntityFactoryConstructor>& getConstructors();
         static std::map<std::string, EntityFactoryAttribute>& getAttributors();
         

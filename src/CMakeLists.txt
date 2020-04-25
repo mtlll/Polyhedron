@@ -145,7 +145,7 @@ list(APPEND fileListShared
     shared/cube.h
     shared/ents.h
     shared/geom.cpp
-    shared/geom.h
+    shared/geom.h    
     shared/glemu.cpp
     shared/glemu.h
     shared/glexts.h
@@ -157,6 +157,53 @@ list(APPEND fileListShared
     shared/tools.cpp
     shared/tools.h
     shared/zip.cpp
+)
+
+list(APPEND fileListSharedGeom
+    shared/geom/ivec4.cpp
+    shared/geom/vec2.h
+    shared/geom/half.h
+    shared/geom/hvec.cpp
+    shared/geom/hvec2.cpp
+    shared/geom/dualquat.cpp
+    shared/geom/matrix4x3.cpp
+    shared/geom/matrix2.h
+    shared/geom/hvec2.h
+    shared/geom/vec.cpp
+    shared/geom/bvec.h
+    shared/geom/vec.h
+    shared/geom/dvec4.h
+    shared/geom/matrix4.cpp
+    shared/geom/ivec.h
+    shared/geom/quat.cpp
+    shared/geom/bvec.cpp
+    shared/geom/bvec4.h
+    shared/geom/matrix.h
+    shared/geom/matrix4x3.h
+    shared/geom/matrix2.cpp
+    shared/geom/matrix3.cpp
+    shared/geom/plane.h
+    shared/geom/bvec4.cpp
+    shared/geom/half.cpp
+    shared/geom/hvec.h
+    shared/geom/usvec.cpp
+    shared/geom/matrix4.h
+    shared/geom/vec4.h
+    shared/geom/ivec.cpp
+    shared/geom/quat.h
+    shared/geom/triangle.cpp
+    shared/geom/svec.h
+    shared/geom/matrix.cpp
+    shared/geom/svec.cpp
+    shared/geom/usvec.h
+    shared/geom/vec4.cpp
+    shared/geom/triangle.h
+    shared/geom/dualquat.h
+    shared/geom/matrix3.h
+    shared/geom/dvec4.cpp
+    shared/geom/vec2.cpp
+    shared/geom/plane.cpp
+    shared/geom/ivec4.h
 )
 
 list(APPEND fileListGame
@@ -204,6 +251,7 @@ list(APPEND fileListSharedEntities
 list(APPEND fileList
     ${fileListEngine}
     ${fileListShared}
+    ${fileListSharedGeom}
     ${fileListGame}
     ${fileListSharedEntities}
     ${fileListGameEntities}
@@ -273,6 +321,7 @@ endfunction()
 
 source_group("Sources\\Engine" FILES ${fileListEngine})
 source_group("Sources\\Shared" FILES ${fileListShared})
+source_group("Sources\\Shared\\Geom" FILES ${fileListSharedGeom})
 source_group("Sources\\Game" FILES ${fileListGame})
 source_group("Sources\\Entities\\Shared" FILES ${fileListSharedEntities})
 source_group("Sources\\Entities\\Game" FILES ${fileListGameEntities})
@@ -377,8 +426,23 @@ endif()
 #Apple specific stuff
 if (APPLE)
     set_property(TARGET Polyhedron PROPERTY MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_LIST_DIR}/xcode/tesseract.plist.in)
-    set_target_properties(Polyhedron PROPERTIES RESOURCE "${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib")
+#    set_target_properties(Polyhedron PROPERTIES RESOURCE "${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib")
     target_compile_features(Polyhedron PUBLIC cxx_std_14)
+
+    find_program(IBTOOL ibtool HINTS "/usr/bin" "${OSX_DEVELOPER_ROOT}/usr/bin")
+    if (${IBTOOL} STREQUAL "IBTOOL-NOTFOUND")
+        message(SEND_ERROR "ibtool can not be found and is needed to compile the .xib files. It should have been installed with
+                    the Apple developer tools. The default system paths were searched in addition to ${OSX_DEVELOPER_ROOT}/usr/bin")
+    endif()
+
+    add_custom_command (TARGET Polyhedron PRE_BUILD
+            COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/Polyhedron.app/Contents/Resources)
+
+    add_custom_command (TARGET Polyhedron POST_BUILD
+            COMMAND ${IBTOOL} --errors --warnings --notices --output-format human-readable-text
+            --compile ${CMAKE_CURRENT_BINARY_DIR}/Polyhedron.app/Contents/Resources/MainMenu.nib
+            ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib
+            COMMENT "Compiling ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib")
 
     # set_source_files_properties(
     #     ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.nib/designable.nib

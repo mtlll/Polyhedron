@@ -5,21 +5,41 @@ PHUI_ANNOTATION = "phui;"
 
 class CxxNode():
     
-    def __init__(self, sourceObject, parent = None):
+    def __init__(self, parser, sourceObject, parent = None):
         # self.cxxtype = cxxtype
         self.sourceObject = sourceObject
         self.parent = parent
         self.children = []
 
+        self.getQualifiers()
+
         if not self.parent is None:
             self.parent.addchild(self)
 
-        first_child = next(self.sourceObject.get_children(), None)
-        if not first_child is None:
-            if first_child.kind == cindex.CursorKind.ANNOTATE_ATTR:
-                if first_child.spelling.startswith(PHUI_ANNOTATION):
-                    self.handle_phui_field(first_child)
+        if hasattr(self.sourceObject, 'first_child'):
+            first_child = next(self.sourceObject.get_children(), None)
+            if not first_child is None:
+                if first_child.kind == cindex.CursorKind.ANNOTATE_ATTR:
+                    if first_child.spelling.startswith(PHUI_ANNOTATION):
+                        self.handle_phui_field(first_child)
         
+    def getQualifiers(self):
+        self.isConst = 0
+        self.isVolatile = 0
+        self.isRestrict = 0
+        if hasattr(self.sourceObject, 'get_usr'):
+            usr = self.sourceObject.get_usr()
+            bangLoc = usr.rfind("#")
+            if bangLoc >= 0 and len(usr) > bangLoc+1:
+                bangValue = usr[bangLoc+1:]
+                try:
+                    qual = int(bangValue)
+                    self.isConst = qual & 0x1
+                    self.isVolatile = qual & 0x4
+                    self.isRestrict = qual & 0x2
+                except ValueError:
+                    pass
+
     def handle_phui_field(self, annotation_cursor):
         from .PhuiElement import PhuiElement
 

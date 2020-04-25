@@ -34,6 +34,11 @@ def CompileFlagsFor(file, buildFolder):
                         flags.append(c) 
             return NormalizeCompileFlags(buildFolder, flags)
 
+    fileabsstr = str(fileabs)
+    if fileabsstr.endswith(".h"):
+        return ["-x", "c++-header"] + CompileFlagsFor(fileabsstr[:-2] + ".cpp", buildFolder)
+
+
     raise RuntimeError(f"Missing entry for {file} in compile_commands.json in {buildFolder}! Perhaps you have to regenerate the compile_commands.json?")
 
 

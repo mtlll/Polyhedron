@@ -5,10 +5,12 @@ import json
 import sys
 
 from .cppmodel.CxxNode import CxxNode
+from .cppmodel.CxxTranslationUnit import CxxTranslationUnit
 from .cppmodel.CxxFunction import CxxFunction
 from .cppmodel.CxxClass import CxxClass
 from .cppmodel.CxxVariable import CxxVariable
 from .cppmodel.CxxInclude import CxxInclude
+from .cppmodel.CxxTemplate import CxxTemplate
 from .cppmodel.PhuiElement import PhuiElement
 
 
@@ -21,6 +23,7 @@ libclang_paths = [
 
 EXPORT_ANNOTATION = "scriptexport"
 DONTSERIALIZE_ANNOTATION = "dontserialize"
+DONTUNSERIALIZE_ANNOTATION = "dontunserialize"
 PROJECT_ROOT = os.path.dirname(os.getcwd())
 
 class CppParser:
@@ -32,6 +35,7 @@ class CppParser:
         self.model = None
         self.translation_unit = None
         self.hierarchy_cache = {}
+        self.usr_cache = {}
 
         foundLibClang = False
         for cpath in libclang_paths:
@@ -48,6 +52,7 @@ class CppParser:
         self.flags = [
             "-DSCRIPTBIND_RUN",
             "-fparse-all-comments",
+            "-fno-delayed-template-parsing"
         ] + CompileFlagsFor(self.file, self.buildfolder)
 
         print (f"scriptbind {self.file} {' '.join(self.flags)}")
@@ -59,11 +64,16 @@ class CppParser:
                 self.translation_unit = index.parse(self.file, self.flags)
             else:
                 self.translation_unit = index.parse(self.file, self.flags, None, cindex.TranslationUnit.PARSE_SKIP_FUNCTION_BODIES | cindex.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
-            self.model = CxxNode(self.translation_unit.cursor)
+            self.model = CxxTranslationUnit(self, self.translation_unit)
 
             if self.translation_unit.diagnostics:
+                wasFatal = False
                 for diag in self.translation_unit.diagnostics:
                     print (diag, file=sys.stderr)        
+                    if diag.severity > cindex.Diagnostic.Warning:
+                        wasFatal = True
+                if wasFatal:
+                    raise cindex.TranslationUnitLoadError()
         except cindex.TranslationUnitLoadError:
             print(f"Error: LibClang was unable to parse {self.file}", file=sys.stderr)
             pass
@@ -113,13 +123,27 @@ class CppParser:
                     return True
         return False        
 
+    def record_cursor_by_usr(self, cursor, cursor_usr):
+        if not cursor_usr in self.usr_cache:
+            self.usr_cache[cursor_usr] = []
+        self.usr_cache[cursor_usr].append(cursor)
+
+    def get_cursors_by_usr(self, cursor_usr):
+        if cursor_usr in self.usr_cache:
+            return self.usr_cache[cursor_usr]
+        else:
+            return []
+
     def cppmodel_generate(self):
         def node_factory(cursor, parent, file):
+            cursor_usr = cursor.get_usr()
+            if not cursor_usr is None:
+                self.record_cursor_by_usr(cursor, cursor_usr)
             if cursor.kind == cindex.CursorKind.FUNCTION_DECL:
                 first_child = next(cursor.get_children(), None)
                 if not first_child is None:
                     if first_child.kind == cindex.CursorKind.ANNOTATE_ATTR and first_child.spelling.startswith(EXPORT_ANNOTATION):
-                        return CxxFunction(cursor, parent)
+                        return CxxFunction(self, cursor, parent)
             if (cursor.kind in [cindex.CursorKind.CLASS_DECL,
                                 cindex.CursorKind.STRUCT_DECL,
                                 cindex.CursorKind.CLASS_TEMPLATE,
@@ -128,22 +152,71 @@ class CppParser:
                 if self.cursor_is_part_of_file_or_header(cursor, file):
                     if 'class entities::classes::CoreEntity' in inherits:
                         print(">>> class {} inherits from CoreEntity!".format(cursor.spelling), file=sys.stderr)
-                        return CxxClass(cursor, parent)
+                        return CxxClass(self, cursor, parent)
                     elif cursor.spelling == 'CoreEntity':
                         if "coreentity.cpp" in file or "coreentity.h" in file:
-                            print(">>> class {} IS CoreEntty!".format(cursor.spelling), file=sys.stderr)
-                            return CxxClass(cursor, parent)
+                            print(">>> class {} IS CoreEntity!".format(cursor.spelling), file=sys.stderr)
+                            return CxxClass(self, cursor, parent)
             if type(parent) == CxxClass:
                 if self.cursor_is_part_of_file_or_header(cursor, file):
-                    if (cursor.kind in [cindex.CursorKind.FIELD_DECL]):
+                    if (cursor.kind in [cindex.CursorKind.FIELD_DECL,
+                                        cindex.CursorKind.VAR_DECL]):
                         first_child = next(cursor.get_children(), None)
+                        annotation = None
                         if not first_child is None:
                             if first_child.kind == cindex.CursorKind.ANNOTATE_ATTR:
                                 if first_child.spelling.startswith(DONTSERIALIZE_ANNOTATION):
-                                    print(">>> class {} DONTSERIALIZE field({}) {}".format(parent.sourceObject.spelling, cursor.kind, cursor.spelling), file=sys.stderr)
+                                    if hasattr(parent.sourceObject, 'spelling'):
+                                        print(">>> class {} DONTSERIALIZE field({}) {}".format(parent.sourceObject.spelling, cursor.kind, cursor.spelling), file=sys.stderr)
                                     return None
-                        print(">>> class {} field({}) {}".format(parent.sourceObject.spelling, cursor.kind, cursor.spelling), file=sys.stderr)
-                        return CxxVariable(cursor, parent)
+                                if first_child.spelling.startswith(DONTUNSERIALIZE_ANNOTATION):
+                                    if hasattr(parent.sourceObject, 'spelling'):
+                                        print(">>> class {} DONTUNSERIALIZE field({}) {}".format(parent.sourceObject.spelling, cursor.kind, cursor.spelling), file=sys.stderr)
+                                    annotation = first_child.spelling
+                        if hasattr(parent.sourceObject, 'spelling'):
+                            print(">>> class {} field({}) {}".format(parent.sourceObject.spelling, cursor.kind, cursor.spelling), file=sys.stderr)
+                        if cursor.storage_class == cindex.StorageClass.STATIC:
+                            return None
+                        return CxxVariable(self, cursor, parent, annotation)
+
+            return None
+
+        def iterate(tree, node, file):
+            for c in node.get_children():
+                if self.cursor_is_part_of_project(c):
+                    tree_node = node_factory(c, tree, file)
+                    if tree_node is None:
+                        tree_node = tree
+                    iterate(tree_node, c, file)
+
+        iterate(self.model, self.translation_unit.cursor, self.file)
+
+
+    def cppmodel_refactor_generate(self):
+        def node_factory(cursor, parent, file):
+            if self.cursor_is_part_of_file_or_header(cursor, file):
+                if cursor.kind in [cindex.CursorKind.FUNCTION_DECL,
+                                   cindex.CursorKind.CXX_METHOD,
+                                   cindex.CursorKind.CONSTRUCTOR,
+                                   cindex.CursorKind.DESTRUCTOR,
+                                   cindex.CursorKind.CONVERSION_FUNCTION]:
+                    return CxxFunction(self, cursor, parent)
+
+                if cursor.kind in [cindex.CursorKind.CLASS_DECL,
+                                    cindex.CursorKind.STRUCT_DECL,
+                                    cindex.CursorKind.UNION_DECL,
+                                    cindex.CursorKind.CLASS_TEMPLATE,
+                                    cindex.CursorKind.CLASS_TEMPLATE_PARTIAL_SPECIALIZATION]:
+                    first_child = next(cursor.get_children(), None)
+                    if not first_child is None:
+                        return CxxClass(self, cursor, parent)
+
+                if cursor.kind in [cindex.CursorKind.FUNCTION_TEMPLATE]:
+                    return CxxTemplate(self, cursor, parent)
+                        
+                if type(parent) == CxxClass:
+                    if (cursor.kind in [cindex.CursorKind.FIELD_DECL]):
+                        return CxxVariable(self, cursor, parent)
 
             return None
 
@@ -167,7 +240,7 @@ class CppParser:
                 include_file = os.path.abspath(os.path.join(fromDir, cursor.spelling))
                 if os.path.exists(include_file) and include_file.startswith(commonRoot):
                     print(include_file)
-                    return CxxInclude(cursor, include_file, parent)
+                    return CxxInclude(self, cursor, include_file, parent)
 
             return None
 
