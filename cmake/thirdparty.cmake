@@ -9,7 +9,7 @@ include(ExternalProject)
 message("Fetching dependency: SDL2")
 FetchContent_Declare(
     SDL2
-    SOURCE_DIR          "${CMAKE_CURRENT_LIST_DIR}/thirdparty/SDL2-2.0.12"
+    SOURCE_DIR          "${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2-2.0.12"
     URL                 https://www.libsdl.org/release/SDL2-2.0.12.tar.gz
     DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
     INSTALL_COMMAND     ""
@@ -23,7 +23,7 @@ endif()
 message("Fetching dependency: OGG")
 FetchContent_Declare(
         OGG
-        SOURCE_DIR          "${CMAKE_CURRENT_LIST_DIR}/thirdparty/libogg-1.3.4"
+        SOURCE_DIR          "${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libogg-1.3.4"
         URL                 http://downloads.xiph.org/releases/ogg/libogg-1.3.4.tar.gz
         DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
         INSTALL_COMMAND     ""
@@ -31,13 +31,30 @@ FetchContent_Declare(
 FetchContent_GetProperties(OGG)
 if (NOT ogg_POPULATED)
     source_group(TREE OGG)
-    FetchContent_MakeAvailable(OGG)
+    FetchContent_Populate(OGG)
+    #    set(OGG_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libogg-1.3.4/include)
+#    set(OGG_LIBRARIES ogg)
+#    set(OGG_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libogg-1.3.4/include)
+#    set(OGG_LIBRARY ogg)
+    set(BUILD_FRAMEWORK OFF)
+    set(INSTALL_DOCS OFF)
+    set(INSTALL_PKG_CONFIG_MODULE OFF)
+    set(INSTALL_CMAKE_PACKAGE_MODULE OFF)
+    execute_process(COMMAND
+            cmake -E chdir "${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libogg-1.3.4"
+            patch -p0 -i "${CMAKE_CURRENT_LIST_DIR}/patch-libogg-add-stdint-h.diff"
+        RESULT_VARIABLE RESULT_PATCH
+    )
+    message(STATUS "Patching libogg: ${RESULT_PATCH}, SOURCE DIR: ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libogg-1.3.4")
+#    FetchContent_MakeAvailable(OGG)
+    message("ogg dirs: |${ogg_SOURCE_DIR}| |${ogg_BINARY_DIR}|")
+    add_subdirectory(${ogg_SOURCE_DIR} ${ogg_BINARY_DIR})
 endif()
 
 message("Fetching dependency: Vorbis")
 FetchContent_Declare(
         VORBIS
-        SOURCE_DIR          "${CMAKE_CURRENT_LIST_DIR}/thirdparty/libvorbis-1.3.6"
+        SOURCE_DIR          "${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libvorbis-1.3.6"
         URL                 https://github.com/xiph/vorbis/archive/v1.3.6.tar.gz
         DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
         INSTALL_COMMAND     ""
@@ -51,7 +68,7 @@ endif()
 message("Fetching dependency: Flac")
 FetchContent_Declare(
         FLAC
-        SOURCE_DIR          "${CMAKE_CURRENT_LIST_DIR}/thirdparty/flac-1.3.3"
+        SOURCE_DIR          "${CMAKE_CURRENT_BINARY_DIR}/thirdparty/flac-1.3.3"
         URL                 https://github.com/xiph/flac/archive/1.3.3.tar.gz
         DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
         INSTALL_COMMAND     ""
@@ -66,24 +83,10 @@ if (NOT flac_POPULATED)
     FetchContent_MakeAvailable(FLAC)
 endif()
 
-#message("Fetching dependency: mpg123")
-#FetchContent_Declare(
-#        MPG123
-#        SOURCE_DIR          "${CMAKE_CURRENT_LIST_DIR}/thirdparty/mpg123-1.25.13"
-#        URL                 https://github.com/bincrafters/conan-libmpg123/archive/testing/1.25.13.zip
-#        DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
-#        INSTALL_COMMAND     ""
-#)
-#FetchContent_GetProperties(MPG123)
-#if (NOT mpg123_POPULATED)
-#    source_group(TREE MPG123)
-#    FetchContent_MakeAvailable(MPG123)
-#endif()
-
 message("Fetching dependency: SDL2_mixer")
 FetchContent_Declare(
         SDL2_mixer
-        SOURCE_DIR          "${CMAKE_CURRENT_LIST_DIR}/thirdparty/SDL2_mixer-2.0.4"
+        SOURCE_DIR          "${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2_mixer-2.0.4"
         URL                 https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.4.tar.gz
         DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
         INSTALL_COMMAND     ""
@@ -94,69 +97,58 @@ if (NOT sdl2_mixer_POPULATED)
     file(COPY
         ${CMAKE_CURRENT_LIST_DIR}/SDL2_mixer-2.0.4_CMakeLists.txt
         DESTINATION
-        ${CMAKE_CURRENT_LIST_DIR}/thirdparty/SDL2_mixer-2.0.4
+        ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2_mixer-2.0.4
     )
     file(RENAME
-        ${CMAKE_CURRENT_LIST_DIR}/thirdparty/SDL2_mixer-2.0.4/SDL2_mixer-2.0.4_CMakeLists.txt
-        ${CMAKE_CURRENT_LIST_DIR}/thirdparty/SDL2_mixer-2.0.4/CMakeLists.txt
+        ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2_mixer-2.0.4/SDL2_mixer-2.0.4_CMakeLists.txt
+        ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2_mixer-2.0.4/CMakeLists.txt
     )
+    set(SDL_MIXER_INCLUDES ${sdl2_SOURCE_DIR}/include)
+    set(SDL_MIXER_LIBRARIES SDL2-static)
     FetchContent_MakeAvailable(SDL2_mixer)
 endif()
 
-#message("Fetching dependency GLM")
-#FetchContent_Declare(
-#    GLM
-#    SOURCE_DIR          ${CMAKE_CURRENT_LIST_DIR}/thirdparty/glm
-#    URL                 https://github.com/g-truc/glm/releases/download/0.9.9.7/glm-0.9.9.7.zip
-#    DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
-#    INSTALL_COMMAND     ""
-#)
-#FetchContent_GetProperties(GLM)
-#if (NOT glm_POPULATED)
-#    source_group(TREE GLM)
-#    FetchContent_Populate(GLM)
-#    add_subdirectory(${glm_SOURCE_DIR}/glm ${glm_BINARY_DIR})
-#endif()
+if (NOT ANDROID)
+    find_package(OpenGL REQUIRED)
+endif()
 
-find_package(OpenGL REQUIRED)
+message("Fetching dependency SDL2_image")
+FetchContent_Declare(
+    SDL2_IMAGE
+    SOURCE_DIR          ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2_image-2.0.5
+    URL                 https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5.tar.gz
+    DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
+    INSTALL_COMMAND     ""
+)
+FetchContent_GetProperties(SDL2_IMAGE)
+if (NOT sdl2_image_POPULATED)
+    file(COPY
+        ${CMAKE_CURRENT_LIST_DIR}/SDL2_Image-2.0.5_CMakeLists.txt
+        DESTINATION
+        ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2_image-2.0.5
+    )
+    file(RENAME
+        ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2_image-2.0.5/SDL2_Image-2.0.5_CMakeLists.txt
+        ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2_image-2.0.5/CMakeLists.txt
+    )
+    file(COPY
+        ${CMAKE_CURRENT_LIST_DIR}/jpeg-9b_CMakeLists.txt
+        DESTINATION
+        ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2_image-2.0.5/external/jpeg-9b
+    )
+    file(RENAME
+        ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2_image-2.0.5/external/jpeg-9b/jpeg-9b_CMakeLists.txt
+        ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2_image-2.0.5/external/jpeg-9b/CMakeLists.txt
+    )
 
- message("Fetching dependency SDL2_image")
- FetchContent_Declare(
-     SDL2_IMAGE
-     SOURCE_DIR          ${CMAKE_CURRENT_LIST_DIR}/thirdparty/SDL2_image-2.0.5
-     URL                 https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5.tar.gz
-     DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
-     INSTALL_COMMAND     ""
- )
- FetchContent_GetProperties(SDL2_IMAGE)
- if (NOT sdl2_image_POPULATED)
-     file(COPY
-         ${CMAKE_CURRENT_LIST_DIR}/SDL2_Image-2.0.5_CMakeLists.txt
-         DESTINATION
-         ${CMAKE_CURRENT_LIST_DIR}/thirdparty/SDL2_image-2.0.5
-     )
-     file(RENAME
-         ${CMAKE_CURRENT_LIST_DIR}/thirdparty/SDL2_image-2.0.5/SDL2_Image-2.0.5_CMakeLists.txt
-         ${CMAKE_CURRENT_LIST_DIR}/thirdparty/SDL2_image-2.0.5/CMakeLists.txt
-     )
-     file(COPY
-         ${CMAKE_CURRENT_LIST_DIR}/jpeg-9b_CMakeLists.txt
-         DESTINATION
-         ${CMAKE_CURRENT_LIST_DIR}/thirdparty/SDL2_image-2.0.5/external/jpeg-9b
-     )
-     file(RENAME
-         ${CMAKE_CURRENT_LIST_DIR}/thirdparty/SDL2_image-2.0.5/external/jpeg-9b/jpeg-9b_CMakeLists.txt
-         ${CMAKE_CURRENT_LIST_DIR}/thirdparty/SDL2_image-2.0.5/external/jpeg-9b/CMakeLists.txt
-     )
-
-     FetchContent_Populate(SDL2_IMAGE)
-     add_subdirectory(${sdl2_image_SOURCE_DIR} ${sdl2_image_BINARY_DIR})
- endif()
+    FetchContent_Populate(SDL2_IMAGE)
+    add_subdirectory(${sdl2_image_SOURCE_DIR} ${sdl2_image_BINARY_DIR})
+endif()
 #
 #message("Fetching libjpeg")
 #FetchContent_Declare(
 #    LIBJPEG
-#    SOURCE_DIR          ${CMAKE_CURRENT_LIST_DIR}/thirdparty/libjpeg
+#    SOURCE_DIR          ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libjpeg
 #    GIT_REPOSITORY      https://github.com/LuaDist/libjpeg.git
 #    DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
 #    INSTALL_COMMAND     ""
@@ -170,7 +162,7 @@ find_package(OpenGL REQUIRED)
 #message("Fetching libpng")
 #FetchContent_Declare(
 #    LIBPNG
-#    SOURCE_DIR          ${CMAKE_CURRENT_LIST_DIR}/thirdparty/libpng
+#    SOURCE_DIR          ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libpng
 #    URL                 http://prdownloads.sourceforge.net/libpng/libpng-1.6.37.tar.gz?download
 #    DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
 #    INSTALL_COMMAND     ""
@@ -184,7 +176,7 @@ find_package(OpenGL REQUIRED)
 #message("Fetching Box2D")
 #FetchContent_Declare(
 #    BOX2D
-#    SOURCE_DIR          ${CMAKE_CURRENT_LIST_DIR}/thirdparty/Box2D
+#    SOURCE_DIR          ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/Box2D
 #    GIT_REPOSITORY      https://github.com/erincatto/box2d.git
 #    DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
 #    INSTALL_COMMAND     ""
@@ -201,7 +193,7 @@ find_package(OpenGL REQUIRED)
 #message("Fetching nothings/STB")
 #FetchContent_Declare(
 #    STB
-#    SOURCE_DIR          ${CMAKE_CURRENT_LIST_DIR}/thirdparty/STB
+#    SOURCE_DIR          ${CMAKE_CURRENT_BINARY_DIR}/thirdparty/STB
 #    GIT_REPOSITORY      https://github.com/nothings/stb.git
 #    DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
 #    INSTALL_COMMAND     ""
@@ -242,3 +234,12 @@ list(APPEND THIRDPARTY_LINK_LIBS
     ${FOUNDATION}
     ${OPENGL_LIBRARIES}
 )
+
+if (ANDROID)
+    list(APPEND THIRDPARTY_LINK_LIBS
+        log
+        GLESv2
+        EGL
+        android
+    )
+endif()
