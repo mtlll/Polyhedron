@@ -68,7 +68,9 @@ namespace UI
 
     static void pushclip(float x, float y, float w, float h)
     {
-        if(clipstack.empty()) glEnable(GL_SCISSOR_TEST);
+        if(clipstack.empty()){
+            glCheckError(glEnable(GL_SCISSOR_TEST));
+        }
         ClipArea &c = clipstack.add(ClipArea(x, y, w, h));
         if(clipstack.length() >= 2) c.intersect(clipstack[clipstack.length()-2]);
         c.scissor();
@@ -77,7 +79,10 @@ namespace UI
     static void popclip()
     {
         clipstack.pop();
-        if(clipstack.empty()) glDisable(GL_SCISSOR_TEST);
+        if(clipstack.empty())
+        {
+            glCheckError(glDisable(GL_SCISSOR_TEST));
+        }
         else clipstack.last().scissor();
     }
 
@@ -165,7 +170,7 @@ namespace UI
         if(blendtype != type)
         {
             blendtype = type;
-            glBlendFunc(src, dst);
+            glCheckError(glBlendFunc(src, dst));
         }
     }
 
@@ -648,9 +653,9 @@ namespace UI
             projection();
             hudshader->set();
 
-            glEnable(GL_BLEND);
+            glCheckError(glEnable(GL_BLEND));
             blendtype = BLEND_ALPHA;
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glCheckError(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
             gle::colorf(1, 1, 1);
 
             changed = 0;
@@ -660,7 +665,7 @@ namespace UI
 
             stopdrawing();
 
-            glDisable(GL_BLEND);
+            glCheckError(glDisable(GL_BLEND));
 
             window = nullptr;
         }
@@ -737,7 +742,7 @@ namespace UI
     {
         int sx1, sy1, sx2, sy2;
         window->calcscissor(x1, y1, x2, y2, sx1, sy1, sx2, sy2);
-        glScissor(sx1, sy1, sx2-sx1, sy2-sy1);
+        glCheckError(glScissor(sx1, sy1, sx2-sx1, sy2-sy1));
     }
 
     struct World : Object
@@ -1496,7 +1501,7 @@ namespace UI
         void bindtex()
         {
             changedraw();
-            if(lasttex != tex) { if(lasttex) gle::end(); lasttex = tex; glBindTexture(GL_TEXTURE_2D, tex->id); }
+            if(lasttex != tex) { if(lasttex) gle::end(); lasttex = tex; glCheckError(glBindTexture(GL_TEXTURE_2D, tex->id)); }
         }
 
         void draw(float sx, float sy)
@@ -2851,16 +2856,20 @@ namespace UI
     {
         void startdraw()
         {
-            glDisable(GL_BLEND);
+            glCheckError(glDisable(GL_BLEND));
 
-            if(clipstack.length()) glDisable(GL_SCISSOR_TEST);
+            if(clipstack.length()){
+                glCheckError(glDisable(GL_SCISSOR_TEST));
+            }
         }
 
         void enddraw()
         {
-            glEnable(GL_BLEND);
+            glCheckError(glEnable(GL_BLEND));
 
-            if(clipstack.length()) glEnable(GL_SCISSOR_TEST);
+            if(clipstack.length()){
+                glCheckError(glEnable(GL_SCISSOR_TEST));
+            }
         }
     };
 
@@ -3050,26 +3059,26 @@ namespace UI
             }
             float xt = min(1.0f, t->xs/float(t->ys)), yt = min(1.0f, t->ys/float(t->xs));
             loopk(4) { tc[k].x = tc[k].x/xt - float(xoff)/t->xs; tc[k].y = tc[k].y/yt - float(yoff)/t->ys; }
-            glBindTexture(GL_TEXTURE_2D, t->id);
+            glCheckError(glBindTexture(GL_TEXTURE_2D, t->id));
             if(slot.loaded) gle::color(vslot.colorscale);
             else gle::colorf(1, 1, 1);
             quad(x, y, w, h, tc);
             if(detailtex)
             {
-                glBindTexture(GL_TEXTURE_2D, detailtex->id);
+                glCheckError(glBindTexture(GL_TEXTURE_2D, detailtex->id));
                 quad(x + w/2, y + h/2, w/2, h/2, tc);
             }
             if(glowtex)
             {
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-                glBindTexture(GL_TEXTURE_2D, glowtex->id);
+                glCheckError(glBlendFunc(GL_SRC_ALPHA, GL_ONE));
+                glCheckError(glBindTexture(GL_TEXTURE_2D, glowtex->id));
                 gle::color(vslot.glowcolor);
                 quad(x, y, w, h, tc);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                glCheckError(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
             }
             if(layertex)
             {
-                glBindTexture(GL_TEXTURE_2D, layertex->id);
+                glCheckError(glBindTexture(GL_TEXTURE_2D, layertex->id));
                 gle::color(layer->colorscale);
                 quad(x, y, w/2, h/2, tc);
             }

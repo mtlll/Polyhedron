@@ -1,4 +1,3 @@
-#CMake Configuration for Tesseract "The Right Way (tm)"
 cmake_minimum_required(VERSION 3.13)
 project(Polyhedron)
 
@@ -10,62 +9,32 @@ if (APPLE)
     set(PYTHON /usr/local/bin/python3)
 endif()
 
-option(SCHIZOMANIA_BUILD_CLIENT "Build the game client" ON)
-option(SCHIZOMANIA_BUILD_SERVER "Build the game server" OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
-
 #For OSX, find the Shared libraries and ignore the static ones
 if (APPLE)
-    set(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
-    list(REMOVE_ITEM CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-    list(INSERT CMAKE_FIND_LIBRARY_SUFFIXES 0 ".dylib" )
+#    set(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib")
+#    list(REMOVE_ITEM CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+#    list(INSERT CMAKE_FIND_LIBRARY_SUFFIXES 0 ".dylib" )
 
     set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
     set(CMAKE_XCODE_ATTRIBUTE_CLANG_LANGUAGE_STANDARD "c++17")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++17")
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++17")
 endif()
 
-#Libraries
 include(../cmake/thirdparty.cmake)
-#
-#find_package(ZLIB REQUIRED)
-#find_package(PNG REQUIRED)
-#find_package(JPEG REQUIRED)
-#find_package(TIFF REQUIRED)
-#find_package(WEBP REQUIRED)
-#find_package(Freetype REQUIRED)
-##For Linux, prime the SDL2 finder by setting the include dir
-#if (UNIX AND NOT APPLE)
-#    set(SDL2_INCLUDE_DIR "/usr/include/SDL2")
-#endif()
-#find_package(SDL2 REQUIRED)
-#find_package(SDL2_mixer REQUIRED)
-#find_package(SDL2_image REQUIRED)
-#find_package(OpenGL REQUIRED)
-
-#if (APPLE)
-#    find_library(COREAUDIO CoreAudio REQUIRED)
-#    find_library(AVFOUNDATION AVFoundation REQUIRED)
-#    find_library(COCOA Cocoa REQUIRED)
-#    find_library(COREFOUNDATION CoreFoundation REQUIRED)
-#    find_library(APPLICATIONSERVICES ApplicationServices REQUIRED)
-#    find_library(FOUNDATION Foundation REQUIRED)
-#    find_library(COREFOUNDATION CoreFoundation REQUIRED)
-#    find_library(AUDIOTOOLBOX AudioToolbox REQUIRED)
-#    find_library(BULLSHITLIB BullShitLib REQUIRED)
-#endif()
 
 #defines, project wide
 #Silence OpenGL deprecations .. yes Apple, you like Metal and you can't shutup about it .. :rolleyes:
 add_definitions("-DGL_SILENCE_DEPRECATION")
 include_directories(
     ext/json-develop/include
+    ext/nuklear
+    ext/stb
 )
 
 #The engine, server and shared sub projects
@@ -105,6 +74,8 @@ list(APPEND fileListEngine
     engine/movie.cpp
     engine/mpr.h
     engine/normal.cpp
+    engine/nui/nui.cpp
+    engine/nui/nui.h
     engine/obj.h
     engine/octa.cpp
     engine/octa.h
@@ -356,7 +327,6 @@ foreach(input_file ${fileListGameEntities})
     GenerateBindingFor(${input_file} "Generated\\\\Entities\\\\Game")
 endforeach()
 
-
 #Everything ready, now define the executables
 if (APPLE)
     list(APPEND fileListXCode
@@ -375,6 +345,11 @@ if (APPLE)
     )
 
     source_group("XCode Files" FILES ${fileListXCode})
+elseif(ANDROID)
+    add_library(Polyhedron SHARED
+        ${generatedFileList}
+        ${fileList}
+    )
 else()
     add_executable(Polyhedron
         ${generatedFileList}
@@ -384,6 +359,7 @@ endif()
 
 #Link the libraries
 target_compile_features(Polyhedron PUBLIC cxx_std_17)
+target_compile_definitions(Polyhedron PUBLIC NK_SDL_GL3_IMPLEMENTATION)
 
 target_include_directories(Polyhedron
     PRIVATE
@@ -391,73 +367,23 @@ target_include_directories(Polyhedron
         shared
         game
         engine
-    PUBLIC
-        ${THIRDPARTY_INCLUDE_DIRS}
-)
-
-target_link_directories(Polyhedron
-    PUBLIC
-        ${THIRDPARTY_LINK_DIRS}
 )
 
 target_link_libraries(Polyhedron
     PUBLIC
-        ${THIRDPARTY_LINK_LIBS}
+        ${THIRDPARTY_LIBRARIES}
         enet
         $<$<NOT:$<CXX_COMPILER_ID:AppleClang>>:rt>
 )
-#
-#target_include_directories(Polyhedron
-#    PRIVATE
-#		${CMAKE_SOURCE_DIR}
-#        ${}
-#		${SDL2_INCLUDE_DIRS}
-#		${SDL2_MIXER_INCLUDE_DIRS}
-#		${SDL2_IMAGE_INCLUDE_DIRS}
-#		${FREETYPE_INCLUDE_DIRS}
-#		${ZLIB_INCLUDE_DIRS}
-#		${OPENGL_INCLUDE_DIRS}
-#)
-#
-#if (APPLE)
-#    target_link_libraries(Polyhedron
-#        enet
-#
-#        ${COCOA}
-#        ${COREFOUNDATION}
-#        ${AUDIOTOOLBOX}
-#        ${COREAUDIO}
-#
-#        ${SDL2_LIBRARIES}
-#        ${SDL2_MAIN_LIBRARIES}
-#		${SDL2_MIXER_LIBRARIES}
-#		${SDL2_IMAGE_LIBRARIES}
-#        ${FREETYPE_LIBRARIES}
-#        ${ZLIB_LIBRARIES}
-#        ${OPENGL_LIBRARIES}
-#        # ${AVFOUNDATION}
-#        # ${APLICATIONSERVICES}
-#        # ${FOUNDATION}
-#        # ${COREFOUNDATION}
-#    )
-#else()
-#    target_link_libraries(Polyhedron
-#        enet
-#        rt
-#        ${SDL2_LIBRARIES}
-#		${SDL2_MIXER_LIBRARIES}
-#		${SDL2_IMAGE_LIBRARIES}
-#        ${FREETYPE_LIBRARIES}
-#        ${ZLIB_LIBRARIES}
-#        ${OPENGL_LIBRARIES}
-#    )
-#endif()
+
+target_link_directories(Polyhedron
+    PUBLIC
+    ${THIRDPARTY_LINK_DIRECTORIES}
+)
 
 #Apple specific stuff
 if (APPLE)
     set_property(TARGET Polyhedron PROPERTY MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_LIST_DIR}/xcode/tesseract.plist.in)
-#    set_target_properties(Polyhedron PROPERTIES RESOURCE "${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib")
-    target_compile_features(Polyhedron PUBLIC cxx_std_14)
 
     find_program(IBTOOL ibtool HINTS "/usr/bin" "${OSX_DEVELOPER_ROOT}/usr/bin")
     if (${IBTOOL} STREQUAL "IBTOOL-NOTFOUND")
@@ -466,23 +392,12 @@ if (APPLE)
     endif()
 
     add_custom_command (TARGET Polyhedron PRE_BUILD
-            COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/Polyhedron.app/Contents/Resources)
+        COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/Polyhedron.app/Contents/Resources)
 
     add_custom_command (TARGET Polyhedron POST_BUILD
-            COMMAND ${IBTOOL} --errors --warnings --notices --output-format human-readable-text
-            --compile ${CMAKE_CURRENT_BINARY_DIR}/Polyhedron.app/Contents/Resources/MainMenu.nib
-            ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib
-            COMMENT "Compiling ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib")
+        COMMAND ${IBTOOL} --errors --warnings --notices --output-format human-readable-text
+        --compile ${CMAKE_CURRENT_BINARY_DIR}/Polyhedron.app/Contents/Resources/MainMenu.nib
+        ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib
+        COMMENT "Compiling ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib")
 
-    # set_source_files_properties(
-    #     ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.nib/designable.nib
-    #     PROPERTIES
-    #     MACOSX_PACKAGE_LOCATION Resources/MainMenu.nib
-    # )
-
-    # set_source_files_properties(
-    #     ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.nib/keyedobjects.nib
-    #     PROPERTIES
-    #     MACOSX_PACKAGE_LOCATION Resources/MainMenu.nib
-    # )
 endif()

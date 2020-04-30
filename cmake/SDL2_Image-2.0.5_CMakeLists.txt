@@ -21,6 +21,8 @@ add_subdirectory(external/libpng-1.6.37)
 add_subdirectory(external/libwebp-1.0.2)
 add_subdirectory(external/tiff-4.0.9)
 
+find_package(SDL2 CONFIG REQUIRED)
+
 add_library(SDL2_image STATIC
     IMG.c
     IMG_WIC.c
@@ -42,7 +44,7 @@ add_library(SDL2_image STATIC
 )
 
 target_compile_options(SDL2_image
-    PRIVATE
+    PUBLIC
         -DSDL_IMAGE_USE_COMMON_BACKEND
         -DLOAD_JPG
         -DLOAD_PNG
@@ -50,29 +52,18 @@ target_compile_options(SDL2_image
         -DLOAD_TIFF
 )
 
-execute_process(
-    COMMAND
-        sh ${SDL2_CONFIG} --libs
-    OUTPUT_VARIABLE
-        SDL2_CONFIG_LIBS
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
 target_link_libraries(SDL2_image
-    PRIVATE
+    PUBLIC
+        SDL2::SDL2-static
         jpeg
         zlibstatic
         png_static
         webp
         tiff
-        SDL2-static
-        ${SDL2_CONFIG_LIBS}
 )
 
 target_include_directories(SDL2_image
     PUBLIC
-        ${SDL2_BINARY_DIR}/include
-        ${SDL2_SOURCE_DIR}/include
         ${CMAKE_CURRENT_LIST_DIR}
     PRIVATE
         external/jpeg-9b
@@ -82,13 +73,3 @@ target_include_directories(SDL2_image
         external/tiff-4.0.9/libtiff
 )
 
-# add_dependencies(
-#     SDL2_image
-#         jpeg
-#         zlibstatic
-#         png_static
-#         webp
-#         webpdecoder
-#         tiff
-#         SDL2-static
-# )

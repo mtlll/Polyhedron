@@ -375,10 +375,12 @@ extern PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements_;
 #define glGetShaderiv_ glGetShaderiv
 #define glGetProgramiv_ glGetProgramiv
 #define glAttachShader_ glAttachShader
+#define glDetachShader_ glDetachShader
 #define glGetProgramInfoLog_ glGetProgramInfoLog
 #define glGetShaderInfoLog_ glGetShaderInfoLog
 #define glLinkProgram_ glLinkProgram
 #define glGetUniformLocation_ glGetUniformLocation
+#define glGetAttribLocation_ glGetAttribLocation
 #define glUniform1f_ glUniform1f
 #define glUniform2f_ glUniform2f
 #define glUniform3f_ glUniform3f
@@ -474,6 +476,7 @@ extern PFNGLGETPROGRAMINFOLOGPROC        glGetProgramInfoLog_;
 extern PFNGLGETSHADERINFOLOGPROC         glGetShaderInfoLog_;
 extern PFNGLLINKPROGRAMPROC              glLinkProgram_;
 extern PFNGLGETUNIFORMLOCATIONPROC       glGetUniformLocation_;
+extern PFNGLGETATTRIBLOCATIONPROC        glGetAttribLocation_;
 extern PFNGLUNIFORM1FPROC                glUniform1f_;
 extern PFNGLUNIFORM2FPROC                glUniform2f_;
 extern PFNGLUNIFORM3FPROC                glUniform3f_;
@@ -830,3 +833,12 @@ extern PFNGLGETDEBUGMESSAGELOGPROC glGetDebugMessageLog_;
 // GL_ARB_copy_image
 extern PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData_;
 
+
+//#ifdef DEBUG
+
+GLenum DebugOpenGL(const char *expression, const char *file, int line);
+
+#define glCheckError(EXPR) EXPR; DebugOpenGL(#EXPR, __FILE__, __LINE__)
+//#else
+//#define glCheckError(EXPR)
+//#endif

@@ -115,10 +115,12 @@ PFNGLCOMPILESHADERPROC            glCompileShader_            = NULL;
 PFNGLGETSHADERIVPROC              glGetShaderiv_              = NULL;
 PFNGLGETPROGRAMIVPROC             glGetProgramiv_             = NULL;
 PFNGLATTACHSHADERPROC             glAttachShader_             = NULL;
+PFNGLDETACHSHADERPROC             glDetachShader_             = NULL;
 PFNGLGETPROGRAMINFOLOGPROC        glGetProgramInfoLog_        = NULL;
 PFNGLGETSHADERINFOLOGPROC         glGetShaderInfoLog_         = NULL;
 PFNGLLINKPROGRAMPROC              glLinkProgram_              = NULL;
 PFNGLGETUNIFORMLOCATIONPROC       glGetUniformLocation_       = NULL;
+PFNGLGETATTRIBLOCATIONPROC        glGetAttribLocation_        = NULL;
 PFNGLUNIFORM1FPROC                glUniform1f_                = NULL;
 PFNGLUNIFORM2FPROC                glUniform2f_                = NULL;
 PFNGLUNIFORM3FPROC                glUniform3f_                = NULL;
@@ -305,7 +307,7 @@ static bool checkmesaversion(const char *s, int major, int minor, int patch)
     return vpatch >= patch;
 }
 
-VAR(dbgexts, 0, 0, 1);
+VAR(dbgexts, 0, 1, 1);
 
 hashset<const char *> glexts;
 
@@ -314,16 +316,16 @@ void parseglexts()
     if(glversion >= 300)
     {
         GLint numexts = 0;
-        glGetIntegerv(GL_NUM_EXTENSIONS, &numexts);
+        glCheckError(glGetIntegerv(GL_NUM_EXTENSIONS, &numexts));
         loopi(numexts)
         {
-            const char *ext = (const char *)glGetStringi_(GL_EXTENSIONS, i);
+            const char *ext = (const char *)glCheckError(glGetStringi_(GL_EXTENSIONS, i));
             glexts.add(newcubestr(ext));
         }
     }
     else
     {
-        const char *exts = (const char *)glGetString(GL_EXTENSIONS);
+        const char *exts = (const char *)glCheckError(glGetString(GL_EXTENSIONS));
         for(;;)
         {
             while(*exts == ' ') exts++;
@@ -344,37 +346,37 @@ bool checkdepthtexstencilrb()
 {
     int w = 256, h = 256;
     GLuint fbo = 0;
-    glGenFramebuffers_(1, &fbo);
-    glBindFramebuffer_(GL_FRAMEBUFFER, fbo);
+    glCheckError(glGenFramebuffers_(1, &fbo));
+    glCheckError(glBindFramebuffer_(GL_FRAMEBUFFER, fbo));
 
     GLuint depthtex = 0;
-    glGenTextures(1, &depthtex);
+    glCheckError(glGenTextures(1, &depthtex));
     createtexture(depthtex, w, h, NULL, 3, 0, GL_DEPTH_COMPONENT24, GL_TEXTURE_RECTANGLE);
-    glBindTexture(GL_TEXTURE_RECTANGLE, 0);
-    glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_RECTANGLE, depthtex, 0);
+    glCheckError(glBindTexture(GL_TEXTURE_RECTANGLE, 0));
+    glCheckError(glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_RECTANGLE, depthtex, 0));
 
     GLuint stencilrb = 0;
-    glGenRenderbuffers_(1, &stencilrb);
-    glBindRenderbuffer_(GL_RENDERBUFFER, stencilrb);
-    glRenderbufferStorage_(GL_RENDERBUFFER, GL_STENCIL_INDEX8, w, h);
-    glBindRenderbuffer_(GL_RENDERBUFFER, 0);
-    glFramebufferRenderbuffer_(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, stencilrb);
+    glCheckError(glGenRenderbuffers_(1, &stencilrb));
+    glCheckError(glBindRenderbuffer_(GL_RENDERBUFFER, stencilrb));
+    glCheckError(glRenderbufferStorage_(GL_RENDERBUFFER, GL_STENCIL_INDEX8, w, h));
+    glCheckError(glBindRenderbuffer_(GL_RENDERBUFFER, 0));
+    glCheckError(glFramebufferRenderbuffer_(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, stencilrb));
 
     bool supported = glCheckFramebufferStatus_(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 
-    glBindFramebuffer_(GL_FRAMEBUFFER, 0);
-    glDeleteFramebuffers_(1, &fbo);
-    glDeleteTextures(1, &depthtex);
-    glDeleteRenderbuffers_(1, &stencilrb);
+    glCheckError(glBindFramebuffer_(GL_FRAMEBUFFER, 0));
+    glCheckError(glDeleteFramebuffers_(1, &fbo));
+    glCheckError(glDeleteTextures(1, &depthtex));
+    glCheckError(glDeleteRenderbuffers_(1, &stencilrb));
 
     return supported;
 }
 
 void gl_checkextensions()
 {
-    const char *vendor = (const char *)glGetString(GL_VENDOR);
-    const char *renderer = (const char *)glGetString(GL_RENDERER);
-    const char *version = (const char *)glGetString(GL_VERSION);
+    const char *vendor = (const char *)glCheckError(glGetString(GL_VENDOR));
+    const char *renderer = (const char *)glCheckError(glGetString(GL_RENDERER));
+    const char *version = (const char *)glCheckError(glGetString(GL_VERSION));
     conoutf(CON_INIT, "Renderer: %s (%s)", renderer, vendor);
     conoutf(CON_INIT, "Driver: %s", version);
 
@@ -459,10 +461,12 @@ void gl_checkextensions()
     glGetShaderiv_ =              (PFNGLGETSHADERIVPROC)              getprocaddress("glGetShaderiv");
     glGetProgramiv_ =             (PFNGLGETPROGRAMIVPROC)             getprocaddress("glGetProgramiv");
     glAttachShader_ =             (PFNGLATTACHSHADERPROC)             getprocaddress("glAttachShader");
+    glDetachShader_ =             (PFNGLDETACHSHADERPROC)             getprocaddress("glDetachShader");
     glGetProgramInfoLog_ =        (PFNGLGETPROGRAMINFOLOGPROC)        getprocaddress("glGetProgramInfoLog");
     glGetShaderInfoLog_ =         (PFNGLGETSHADERINFOLOGPROC)         getprocaddress("glGetShaderInfoLog");
     glLinkProgram_ =              (PFNGLLINKPROGRAMPROC)              getprocaddress("glLinkProgram");
     glGetUniformLocation_ =       (PFNGLGETUNIFORMLOCATIONPROC)       getprocaddress("glGetUniformLocation");
+    glGetAttribLocation_ =        (PFNGLGETATTRIBNLOCATIONPROC)       getprocaddress("glGetAttribLocation");
     glUniform1f_ =                (PFNGLUNIFORM1FPROC)                getprocaddress("glUniform1f");
     glUniform2f_ =                (PFNGLUNIFORM2FPROC)                getprocaddress("glUniform2f");
     glUniform3f_ =                (PFNGLUNIFORM3FPROC)                getprocaddress("glUniform3f");
@@ -524,7 +528,7 @@ void gl_checkextensions()
         glGetStringi_ =            (PFNGLGETSTRINGIPROC)          getprocaddress("glGetStringi");
     }
 
-    const char *glslstr = (const char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
+    const char *glslstr = (const char *)glCheckError(glGetString(GL_SHADING_LANGUAGE_VERSION));
     conoutf(CON_INIT, "GLSL: %s", glslstr ? glslstr : "unknown");
 
     uint glslmajorversion, glslminorversion;
@@ -535,21 +539,21 @@ void gl_checkextensions()
     parseglexts();
 
     GLint texsize = 0, texunits = 0, vtexunits = 0, cubetexsize = 0, drawbufs = 0;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &texsize);
+    glCheckError(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &texsize));
     hwtexsize = texsize;
     if(hwtexsize < 2048)
         fatal("Large texture support is required!");
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texunits);
+    glCheckError(glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texunits));
     hwtexunits = texunits;
     if(hwtexunits < 16)
         fatal("Hardware does not support at least 16 texture units.");
-    glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &vtexunits);
+    glCheckError(glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &vtexunits));
     hwvtexunits = vtexunits;
     //if(hwvtexunits < 4)
     //    fatal("Hardware does not support at least 4 vertex texture units.");
-    glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, &cubetexsize);
+    glCheckError(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, &cubetexsize));
     hwcubetexsize = cubetexsize;
-    glGetIntegerv(GL_MAX_DRAW_BUFFERS, &drawbufs);
+    glCheckError(glGetIntegerv(GL_MAX_DRAW_BUFFERS, &drawbufs));
     maxdrawbufs = drawbufs;
     if(maxdrawbufs < 4) fatal("Hardware does not support at least 4 draw buffers.");
 
@@ -870,7 +874,7 @@ void gl_checkextensions()
     if(hasext("GL_EXT_texture_filter_anisotropic"))
     {
        GLint val = 0;
-       glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &val);
+       glCheckError(glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &val));
        hwmaxaniso = val;
        hasAF = true;
        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_texture_filter_anisotropic extension.");
@@ -924,7 +928,7 @@ void gl_checkextensions()
         if(hasGPU4)
         {
             GLint dualbufs = 0;
-            glGetIntegerv(GL_MAX_DUAL_SOURCE_DRAW_BUFFERS, &dualbufs);
+            glCheckError(glGetIntegerv(GL_MAX_DUAL_SOURCE_DRAW_BUFFERS, &dualbufs));
             maxdualdrawbufs = dualbufs;
         }
 
@@ -1095,7 +1099,9 @@ timer *findtimer(const char *name, bool gpu)
     t.name = name;
     t.gpu = gpu;
     memset(t.query, 0, sizeof(t.query));
-    if(gpu) glGenQueries_(timer::MAXQUERY, t.query);
+    if(gpu){
+        glCheckError(glGenQueries_(timer::MAXQUERY, t.query));
+    }
     t.waiting = 0;
     t.starttime = 0;
     t.result = -1;
@@ -1110,7 +1116,7 @@ timer *begintimer(const char *name, bool gpu)
     if(t->gpu)
     {
         deferquery++;
-        glBeginQuery_(GL_TIME_ELAPSED_EXT, t->query[timercycle]);
+        glCheckError(glBeginQuery_(GL_TIME_ELAPSED_EXT, t->query[timercycle]));
         t->waiting |= 1<<timercycle;
     }
     else t->starttime = getclockmillis();
@@ -1122,7 +1128,7 @@ void endtimer(timer *t)
     if(!t) return;
     if(t->gpu)
     {
-        glEndQuery_(GL_TIME_ELAPSED_EXT);
+        glCheckError(glEndQuery_(GL_TIME_ELAPSED_EXT));
         deferquery--;
     }
     else t->result = max(float(getclockmillis() - t->starttime), 0.0f);
@@ -1138,10 +1144,11 @@ void synctimers()
         if(t.waiting&(1<<timercycle))
         {
             GLint available = 0;
-            while(!available)
-                glGetQueryObjectiv_(t.query[timercycle], GL_QUERY_RESULT_AVAILABLE, &available);
+            while(!available) {
+                glCheckError(glGetQueryObjectiv_(t.query[timercycle], GL_QUERY_RESULT_AVAILABLE, &available));
+            }
             GLuint64EXT result = 0;
-            glGetQueryObjectui64v_(t.query[timercycle], GL_QUERY_RESULT, &result);
+            glCheckError(glGetQueryObjectui64v_(t.query[timercycle], GL_QUERY_RESULT, &result));
             t.result = max(float(result) * 1e-6f, 0.0f);
             t.waiting &= ~(1<<timercycle);
         }
@@ -1154,7 +1161,9 @@ void cleanuptimers()
     loopv(timers)
     {
         timer &t = timers[i];
-        if(t.gpu) glDeleteQueries_(timer::MAXQUERY, t.query);
+        if(t.gpu){
+            glCheckError(glDeleteQueries_(timer::MAXQUERY, t.query));
+        }
     }
     timers.shrink(0);
     timerorder.shrink(0);
@@ -1191,28 +1200,28 @@ void printtimers(int conw, int conh)
 void gl_resize()
 {
     gl_setupframe();
-    glViewport(0, 0, hudw, hudh);
+    glCheckError(glViewport(0, 0, hudw, hudh));
 }
 
 void gl_init()
 {
     GLERROR;
 
-    glClearColor(0, 0, 0, 0);
-    glClearDepth(1);
-    glClearStencil(0);
-    glDepthFunc(GL_LESS);
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_STENCIL_TEST);
-    glStencilFunc(GL_ALWAYS, 0, ~0);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    glCheckError(glClearColor(0, 0, 0, 0));
+    glCheckError(glClearDepth(1));
+    glCheckError(glClearStencil(0));
+    glCheckError(glDepthFunc(GL_LESS));
+    glCheckError(glDisable(GL_DEPTH_TEST));
+    glCheckError(glDisable(GL_STENCIL_TEST));
+    glCheckError(glStencilFunc(GL_ALWAYS, 0, ~0));
+    glCheckError(glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP));
 
-    glEnable(GL_LINE_SMOOTH);
-    //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glCheckError(glEnable(GL_LINE_SMOOTH));
+    //glCheckError(glHint(GL_LINE_SMOOTH_HINT, GL_NICEST));
 
-    glFrontFace(GL_CW);
-    glCullFace(GL_BACK);
-    glDisable(GL_CULL_FACE);
+    glCheckError(glFrontFace(GL_CW));
+    glCheckError(glCullFace(GL_BACK));
+    glCheckError(glDisable(GL_CULL_FACE));
 
     gle::setup();
     setupshaders();
@@ -1585,8 +1594,8 @@ void enablepolygonoffset(GLenum type)
 {
     if(!depthoffset)
     {
-        glPolygonOffset(polygonoffsetfactor, polygonoffsetunits);
-        glEnable(type);
+        glCheckError(glPolygonOffset(polygonoffsetfactor, polygonoffsetunits));
+        glCheckError(glEnable(type));
         return;
     }
 
@@ -1600,7 +1609,7 @@ void disablepolygonoffset(GLenum type)
 {
     if(!depthoffset)
     {
-        glDisable(type);
+        glCheckError(glDisable(type));
         return;
     }
 
@@ -1796,17 +1805,17 @@ static void setupscreenquad()
 {
     if(!screenquadvbo)
     {
-        glGenBuffers_(1, &screenquadvbo);
+        glCheckError(glGenBuffers_(1, &screenquadvbo));
         gle::bindvbo(screenquadvbo);
         vec2 verts[4] = { vec2(1, -1), vec2(-1, -1), vec2(1, 1), vec2(-1, 1) };
-        glBufferData_(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+        glCheckError(glBufferData_(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW));
         gle::clearvbo();
     }
 }
 
 static void cleanupscreenquad()
 {
-    if(screenquadvbo) { glDeleteBuffers_(1, &screenquadvbo); screenquadvbo = 0; }
+    if(screenquadvbo) { glCheckError(glDeleteBuffers_(1, &screenquadvbo)); screenquadvbo = 0; }
 }
 
 void screenquad()
@@ -1815,7 +1824,7 @@ void screenquad()
     gle::bindvbo(screenquadvbo);
     gle::enablevertex();
     gle::vertexpointer(sizeof(vec2), (const vec2 *)0, GL_FLOAT, 2);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glCheckError(glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
     gle::disablevertex();
     gle::clearvbo();
 }
@@ -2018,8 +2027,8 @@ void drawfogoverlay(int fogmat, float fogbelow, float fogblend, int abovemat)
 {
     SETSHADER(fogoverlay);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ZERO, GL_SRC_COLOR);
+    glCheckError(glEnable(GL_BLEND));
+    glCheckError(glBlendFunc(GL_ZERO, GL_SRC_COLOR));
     vec overlay(0, 0, 0);
     blendfogoverlay(fogmat, fogbelow, fogblend, overlay);
     blendfogoverlay(abovemat, 0, 1-fogblend, overlay);
@@ -2027,7 +2036,7 @@ void drawfogoverlay(int fogmat, float fogbelow, float fogblend, int abovemat)
     gle::color(overlay);
     screenquad();
 
-    glDisable(GL_BLEND);
+    glCheckError(glDisable(GL_BLEND));
 }
 
 int drawtex = 0;
@@ -2037,7 +2046,7 @@ vec minimapcenter(0, 0, 0), minimapradius(0, 0, 0), minimapscale(0, 0, 0);
 
 void clearminimap()
 {
-    if(minimaptex) { glDeleteTextures(1, &minimaptex); minimaptex = 0; }
+    if(minimaptex) { glCheckError(glDeleteTextures(1, &minimaptex)); minimaptex = 0; }
 }
 
 VARR(minimapheight, 0, 0, 2<<16);
@@ -2049,7 +2058,7 @@ CVARFP(nominimapcolour, 0x101010, { if(minimaptex && !showminimap) drawminimap()
 
 void bindminimap()
 {
-    glBindTexture(GL_TEXTURE_2D, minimaptex);
+    glCheckError(glBindTexture(GL_TEXTURE_2D, minimaptex));
 }
 
 void clipminimap(ivec &bbmin, ivec &bbmax, cube *c = worldroot, const ivec &co = ivec(0, 0, 0), int size = worldsize>>1)
@@ -2072,7 +2081,9 @@ void drawminimap()
 
     if(!showminimap)
     {
-        if(!minimaptex) glGenTextures(1, &minimaptex);
+        if(!minimaptex){
+            glCheckError(glGenTextures(1, &minimaptex));
+        }
         createtexture(minimaptex, 1, 1, nominimapcolour.v, 3, 0, GL_RGB, GL_TEXTURE_2D);
         return;
     }
@@ -2087,7 +2098,9 @@ void drawminimap()
 
     int size = 1<<minimapsize, sizelimit = min(hwtexsize, min(gw, gh));
     while(size > sizelimit) size /= 2;
-    if(!minimaptex) glGenTextures(1, &minimaptex);
+    if(!minimaptex){
+        glCheckError(glGenTextures(1, &minimaptex));
+    }
 
     ivec bbmin(worldsize, worldsize, worldsize), bbmax(0, 0, 0);
     loopv(valist)
@@ -2134,8 +2147,8 @@ void drawminimap()
     projmatrix.ortho(-minimapradius.x, minimapradius.x, -minimapradius.y, minimapradius.y, 0, 2*zscale);
     setcamprojmatrix();
 
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
+    glCheckError(glEnable(GL_CULL_FACE));
+    glCheckError(glEnable(GL_DEPTH_TEST));
 
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
     flipqueries();
@@ -2160,8 +2173,8 @@ void drawminimap()
         shademinimap();
     }
 
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
+    glCheckError(glDisable(GL_DEPTH_TEST));
+    glCheckError(glDisable(GL_CULL_FACE));
 
     farplane = oldfarplane;
     vieww = oldvieww;
@@ -2173,21 +2186,21 @@ void drawminimap()
     drawtex = 0;
 
     createtexture(minimaptex, size, size, NULL, 3, 1, GL_RGB5, GL_TEXTURE_2D);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glCheckError(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER));
+    glCheckError(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER));
     GLfloat border[4] = { minimapcolour.x/255.0f, minimapcolour.y/255.0f, minimapcolour.z/255.0f, 1.0f };
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glCheckError(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border));
+    glCheckError(glBindTexture(GL_TEXTURE_2D, 0));
 
     GLuint fbo = 0;
-    glGenFramebuffers_(1, &fbo);
-    glBindFramebuffer_(GL_FRAMEBUFFER, fbo);
-    glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, minimaptex, 0);
+    glCheckError(glGenFramebuffers_(1, &fbo));
+    glCheckError(glBindFramebuffer_(GL_FRAMEBUFFER, fbo));
+    glCheckError(glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, minimaptex, 0));
     copyhdr(size, size, fbo);
-    glBindFramebuffer_(GL_FRAMEBUFFER, 0);
-    glDeleteFramebuffers_(1, &fbo);
+    glCheckError(glBindFramebuffer_(GL_FRAMEBUFFER, 0));
+    glCheckError(glDeleteFramebuffers_(1, &fbo));
 
-    glViewport(0, 0, hudw, hudh);
+    glCheckError(glViewport(0, 0, hudw, hudh));
 }
 
 void drawcubemap(int size, const vec &o, float yaw, float pitch, const cubemapside &side, bool onlysky)
@@ -2229,8 +2242,8 @@ void drawcubemap(int size, const vec &o, float yaw, float pitch, const cubemapsi
     projmatrix.perspective(fovy, aspect, nearplane, farplane);
     setcamprojmatrix();
 
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
+    glCheckError(glEnable(GL_CULL_FACE));
+    glCheckError(glEnable(GL_DEPTH_TEST));
 
     xtravertsva = xtraverts = glde = gbatches = vtris = vverts = 0;
     flipqueries();
@@ -2275,8 +2288,8 @@ void drawcubemap(int size, const vec &o, float yaw, float pitch, const cubemapsi
         GLERROR;
     }
 
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
+    glCheckError(glDisable(GL_DEPTH_TEST));
+    glCheckError(glDisable(GL_CULL_FACE));
 
     aspect = oldaspect;
     fovy = oldfovy;
@@ -2352,8 +2365,8 @@ namespace modelpreview
         projmatrix.perspective(fovy, aspect, nearplane, farplane);
         setcamprojmatrix();
 
-        glEnable(GL_CULL_FACE);
-        glEnable(GL_DEPTH_TEST);
+        glCheckError(glEnable(GL_CULL_FACE));
+        glCheckError(glEnable(GL_DEPTH_TEST));
 
         preparegbuffer();
     }
@@ -2362,8 +2375,8 @@ namespace modelpreview
     {
         rendermodelbatches();
 
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
+        glCheckError(glDisable(GL_DEPTH_TEST));
+        glCheckError(glDisable(GL_CULL_FACE));
 
         shademodelpreview(x, y, w, h, background, scissor);
 
@@ -2416,19 +2429,23 @@ void gl_drawview()
     projmatrix.perspective(fovy, aspect, nearplane, farplane);
     setcamprojmatrix();
 
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
+    glCheckError(glEnable(GL_CULL_FACE));
+    glCheckError(glEnable(GL_DEPTH_TEST));
 
     ldrscale = 0.5f;
     ldrscaleb = ldrscale/255;
 
     visiblecubes();
 
-    if(wireframe && editmode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    if(wireframe && editmode){
+        glCheckError(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
+    }
 
     rendergbuffer();
 
-    if(wireframe && editmode) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    if(wireframe && editmode){
+        glCheckError(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
+    }
     else if(limitsky() && editmode) renderexplicitsky(true);
 
     renderao();
@@ -2484,16 +2501,16 @@ void gl_drawview()
         extern int hidehud;
         if(!hidehud)
         {
-            glDepthMask(GL_FALSE);
+            glCheckError(glDepthMask(GL_FALSE));
             renderblendbrush();
             rendereditcursor();
             game::rendergame(game::RenderPass::Edit);
-            glDepthMask(GL_TRUE);
+            glCheckError(glDepthMask(GL_TRUE));
         }
     }
 
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
+    glCheckError(glDisable(GL_CULL_FACE));
+    glCheckError(glDisable(GL_DEPTH_TEST));
 
     if(fogoverlay && fogmat != MAT_AIR) drawfogoverlay(fogmat, fogbelow, clamp(fogbelow, 0.0f, 1.0f), abovemat);
 
@@ -2544,7 +2561,7 @@ void drawdamagecompass(int w, int h)
     {
         if(!dirs)
         {
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glCheckError(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
             gle::colorf(1, 0, 0, damagecompassalpha/100.0f);
             gle::defvertex();
             gle::begin(GL_TRIANGLES);
@@ -2597,8 +2614,8 @@ void drawdamagescreen(int w, int h)
     static Texture *damagetex = NULL;
     if(!damagetex) damagetex = textureload("media/interface/hud/damage.png", 3);
 
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    glBindTexture(GL_TEXTURE_2D, damagetex->id);
+    glCheckError(glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA));
+    glCheckError(glBindTexture(GL_TEXTURE_2D, damagetex->id));
     float fade = damagescreenalpha/100.0f;
     if(damageblendmillis - lastmillis < damagescreenfade)
         fade *= float(damageblendmillis - lastmillis)/damagescreenfade;
@@ -2684,13 +2701,17 @@ void drawcrosshair(int w, int h)
         }
         chsize = crosshairsize*w/900.0f;
     }
-    if(crosshair->type&Texture::ALPHA) glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    else glBlendFunc(GL_ONE, GL_ONE);
+    if(crosshair->type&Texture::ALPHA){
+        glCheckError(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    }
+    else{
+        glCheckError(glBlendFunc(GL_ONE, GL_ONE));
+    }
     hudshader->set();
     gle::color(color);
     float x = cx*w - (windowhit ? 0 : chsize/2.0f);
     float y = cy*h - (windowhit ? 0 : chsize/2.0f);
-    glBindTexture(GL_TEXTURE_2D, crosshair->id);
+    glCheckError(glBindTexture(GL_TEXTURE_2D, crosshair->id));
 
     hudquad(x, y, chsize, chsize);
 }
@@ -2729,7 +2750,7 @@ void gl_drawhud()
 
     debuglights();
 
-    glEnable(GL_BLEND);
+    glCheckError(glEnable(GL_BLEND));
 
     debugparticles();
 
@@ -2790,7 +2811,7 @@ void gl_drawhud()
         if(!editmode)
         {
             resethudshader();
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glCheckError(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
             game::gameplayhud(w, h);
             abovehud = min(abovehud, conh*game::abovegameplayhud(w, h));
         }
@@ -2807,7 +2828,7 @@ void gl_drawhud()
 
     drawcrosshair(w, h);
 
-    glDisable(GL_BLEND);
+    glCheckError(glDisable(GL_BLEND));
 
     popfont();
 
@@ -2855,6 +2876,35 @@ void cleanupgl()
     cleanupscreenquad();
     gle::cleanup();
 }
+
+//#ifdef DEBUG
+
+GLenum DebugOpenGL(const char *expression, const char *file, int line)
+{
+    std::string path = file;
+    std::string filebase = path.substr(path.find_last_of("/\\") + 1);
+
+    GLenum errorCode;
+    while ((errorCode = glGetError()) != GL_NO_ERROR)
+    {
+        std::string errorName;
+        switch (errorCode)
+        {
+            case GL_INVALID_ENUM:                  errorName = "INVALID_ENUM"; break;
+            case GL_INVALID_VALUE:                 errorName = "INVALID_VALUE"; break;
+            case GL_INVALID_OPERATION:             errorName = "INVALID_OPERATION"; break;
+            // case GL_STACK_OVERFLOW:                errorName = "STACK_OVERFLOW"; break;
+            // case GL_STACK_UNDERFLOW:               errorName = "STACK_UNDERFLOW"; break;
+            case GL_OUT_OF_MEMORY:                 errorName = "OUT_OF_MEMORY"; break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION: errorName = "INVALID_FRAMEBUFFER_OPERATION"; break;
+        }
+//        conoutf(CON_ERROR, ("OpenGL error: " + filebase + ":" + std::to_string(line) + ": " + expression + " " + errorName).c_str());
+    }
+
+    return errorCode;
+}
+
+//#endif
 
 
 // >>>>>>>>>> SCRIPTBIND >>>>>>>>>>>>>> //

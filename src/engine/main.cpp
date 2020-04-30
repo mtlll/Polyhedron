@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include "../game/entities/player.h"
+#include "nui/nui.h"
 
 extern void cleargamma();
 
@@ -173,20 +174,20 @@ void renderbackgroundview(int w, int h, const char *caption, Texture *mapshot, c
 	float bu = w*0.67f/256.0f, bv = h*0.67f/256.0f;
 	bgquad(0, 0, w, h, backgroundu, backgroundv, bu, bv);
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glCheckError(glEnable(GL_BLEND));
+	glCheckError(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 	settexture("media/interface/shadow.png", 3);
 	bgquad(0, 0, w, h);
 
-	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	glCheckError(glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA));
 
 	float lh = 0.5f*min(w, h), lw = lh*2,
 		  lx = 0.5f*(w - lw), ly = 0.5f*(h*0.5f - lh);
 	settexture((maxtexsize ? min(maxtexsize, hwtexsize) : hwtexsize) >= 1024 && (hudw > 1280 || hudh > 800) ? "<premul>media/interface/logo_1024.png" : "<premul>media/interface/logo.png", 3);
 	bgquad(lx, ly, lw, lh);
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glCheckError(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 	if(caption)
 	{
@@ -214,7 +215,7 @@ void renderbackgroundview(int w, int h, const char *caption, Texture *mapshot, c
 		{
 			x -= 0.5f*sz;
 			resethudshader();
-			glBindTexture(GL_TEXTURE_2D, mapshot->id);
+            glCheckError(glBindTexture(GL_TEXTURE_2D, mapshot->id));
 			bgquad(x, y, sz, sz);
 		}
 		if(mapname)
@@ -233,7 +234,7 @@ void renderbackgroundview(int w, int h, const char *caption, Texture *mapshot, c
 		}
 	}
 
-	glDisable(GL_BLEND);
+    glCheckError(glDisable(GL_BLEND));
 }
 
 VAR(menumute, 0, 1, 1);
@@ -611,7 +612,7 @@ SCRIPTEXPORT void resetgl()
 
 	inputgrab(grabinput);
 
-	gl_init();
+    gl_init();
 
 	inbetweenframes = false;
 	if(!reloadtexture(*notexture) ||
@@ -1137,7 +1138,9 @@ int main(int argc, char **argv)
 
 	// Initialize the default settings of the OpenGL renderer.
 	logoutf("init: gl_init");
-	gl_init();
+    engine::nui::Initialize(screen);
+
+    gl_init();
 
 	// Very important: notexture is required to load, if it fails, all fails.
 	notexture = textureload("media/texture/game/notexture.png");
@@ -1241,7 +1244,7 @@ int main(int argc, char **argv)
 	inputgrab(grabinput = true);
 	ignoremousemotion();
 
-	for(;;)
+    for(;;)
 	{
 		static int frames = 0;
 		int millis = getclockmillis();
@@ -1282,6 +1285,7 @@ int main(int argc, char **argv)
 
 		inbetweenframes = false;
 		gl_drawframe();
+		engine::nui::Render();
 		swapbuffers();
 		renderedframe = inbetweenframes = true;
 	}

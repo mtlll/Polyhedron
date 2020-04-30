@@ -44,6 +44,7 @@ add_library (jpeg STATIC
 	jcinit.c
 	jcmaster.c
 	jcmainct.c
+	jcparam.c
 	jcprepct.c
 	jccoefct.c
 	jccolor.c
