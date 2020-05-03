@@ -74,7 +74,6 @@ void NkPolyhedron::Render()
 
                 gle::defvertex(2);
                 gle::defcolor(4, GL_UNSIGNED_BYTE);
-                glCheckError(glLineWidth(rectCmd->line_thickness));
 
                 gle::begin(GL_LINE_LOOP);
 

@@ -32,14 +32,6 @@ FetchContent_GetProperties(OGG)
 if (NOT ogg_POPULATED)
     source_group(TREE OGG)
     FetchContent_Populate(OGG)
-    #    set(OGG_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libogg-1.3.4/include)
-#    set(OGG_LIBRARIES ogg)
-#    set(OGG_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libogg-1.3.4/include)
-#    set(OGG_LIBRARY ogg)
-#    set(BUILD_FRAMEWORK OFF)
-#    set(INSTALL_DOCS OFF)
-#    set(INSTALL_PKG_CONFIG_MODULE OFF)
-#    set(INSTALL_CMAKE_PACKAGE_MODULE OFF)
     execute_process(COMMAND
             cmake -E chdir "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libogg-1.3.4"
             patch -p0 -i "${CMAKE_CURRENT_LIST_DIR}/patch-libogg-add-stdint-h.diff"
@@ -203,12 +195,6 @@ list(APPEND THIRDPARTY_LIBRARIES
     SDL2_mixer
 #    mpg123
 )
-
-if (NOT ANDROID)
-    list(APPEND THIRDPARTY_LIBRARIES
-        FLAC
-    )
-endif()
 
 if (APPLE)
     find_library(COREFOUNDATION CoreFoundation REQUIRED)

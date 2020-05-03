@@ -1,7 +1,9 @@
 #pragma once
 #include <SDL.h>
 #ifdef __APPLE__
-#include <OpenGL/opengl.h>
+#define GL_GLEXT_LEGACY
+#define __glext_h_
+#include <OpenGL/gl.h>
 #else
 #include <SDL_opengl.h>
 #endif
