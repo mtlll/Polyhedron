@@ -66,6 +66,19 @@ FetchContent_Declare(
 FetchContent_GetProperties(VORBIS)
 if (NOT vorbis_POPULATED)
     source_group(TREE VORBIS)
+    FetchContent_Populate(VORBIS)
+    execute_process(COMMAND
+        cmake -E chdir "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libvorbis-1.3.6"
+        patch -p0 -i "${CMAKE_CURRENT_LIST_DIR}/patch-libvorbis-CMakeLists.txt.diff"
+        RESULT_VARIABLE RESULT_PATCH1
+    )
+    execute_process(COMMAND
+        cmake -E chdir "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libvorbis-1.3.6"
+        patch -p0 -i "${CMAKE_CURRENT_LIST_DIR}/patch-libvorbis-lib-CMakeLists.txt.diff"
+        RESULT_VARIABLE RESULT_PATCH2
+    )
+    message(STATUS "Patching libvorbis: 1: ${RESULT_PATCH1}, 2: ${RESULT_PATCH2}, SOURCE DIR: ${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libogg-1.3.4")
+
     FetchContent_MakeAvailable(VORBIS)
 endif()
 
