@@ -1,6 +1,7 @@
 // console.cpp: the console buffer, its display, and command line control
 
 #include "engine.h"
+#include "tools/cubestr.h"
 
 // WatIsDeze: Required.... sadly.
 #include "../game/entities/player.h"

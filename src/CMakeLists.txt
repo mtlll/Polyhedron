@@ -34,10 +34,17 @@ add_definitions("-DGL_SILENCE_DEPRECATION")
 include_directories(
     ext/json-develop/include
     ext/nuklear
-    ext/stb
+    ext/renderdoc
 )
 
-#The engine, server and shared sub projects
+CHECK_INCLUDE_FILE(renderdoc.h HAVE_RENDERDOC_H)
+if (HAVE_RENDERDOC_H)
+    add_definitions("-DHAVE_RENDERDOC_H")
+    message("Found renderdoc.h -- including support")
+    list(APPEND THIRDPARTY_LIBRARIES dl)
+endif()
+
+    #The engine, server and shared sub projects
 add_subdirectory(enet)
 
 list(APPEND fileListEngine
@@ -52,6 +59,8 @@ list(APPEND fileListEngine
     engine/dynlight.cpp
     engine/engine.h
     engine/explosion.h
+    engine/engine/font.h
+    engine/engine/font.cpp
     engine/grass.cpp
     engine/help.h
     engine/help.cpp
@@ -228,6 +237,17 @@ list(APPEND fileListSharedEntities
     shared/entities/entityfactory.cpp
 )
 
+list(APPEND extRenderdocFiles
+    ext/renderdoc/renderdoc_api.h
+    ext/renderdoc/renderdoc_api.cpp
+)
+
+list(APPEND extNuklearFiles
+    ext/nuklear/nuklear.h
+    ext/nuklear/nuklear_polyhedron.h
+    ext/nuklear/nuklear_polyhedron.cpp
+)
+
 list(APPEND fileList
     ${fileListEngine}
     ${fileListShared}
@@ -235,6 +255,8 @@ list(APPEND fileList
     ${fileListGame}
     ${fileListSharedEntities}
     ${fileListGameEntities}
+    ${extRenderdocFiles}
+    ${extNuklearFiles}
 )
 
 function(GenerateBindingFor input_file ide_folder)
@@ -360,6 +382,7 @@ endif()
 #Link the libraries
 target_compile_features(Polyhedron PUBLIC cxx_std_17)
 target_compile_definitions(Polyhedron PUBLIC NK_SDL_GL3_IMPLEMENTATION)
+target_compile_options(Polyhedron PUBLIC -Wno-attributes)
 
 target_include_directories(Polyhedron
     PRIVATE
@@ -398,6 +421,8 @@ if (APPLE)
         COMMAND ${IBTOOL} --errors --warnings --notices --output-format human-readable-text
         --compile ${CMAKE_CURRENT_BINARY_DIR}/Polyhedron.app/Contents/Resources/MainMenu.nib
         ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib
+        OUTPUTS ${CMAKE_CURRENT_BINARY_DIR}/Polyhedron.app/Contents/Resources/MainMenu.nib
+        DEPENDS ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib
         COMMENT "Compiling ${CMAKE_CURRENT_LIST_DIR}/xcode/English.lproj/MainMenu.xib")
 
 endif()

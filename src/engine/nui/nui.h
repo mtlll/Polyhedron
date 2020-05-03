@@ -1,32 +1,24 @@
-#ifndef POLYHEDRON_NUI_H
-#define POLYHEDRON_NUI_H
+#pragma once
+#include "nuklear_polyhedron.h"
 
 struct nk_context;
-struct SDL_Window;
 
 namespace engine {
 	namespace nui {
-		/// Initialize Nuklear UI Framework.
-		int Initialize(SDL_Window *wnd);
+        using InputEventProcessState = NkPolyhedron::InputEventProcessState;
 
-		/// Render Nuklear UI Framework.
-		int Render();
+		void Initialize();
 
-		/// Begin handling Nuklear UI Framework User Input.
-		int UserInputBeginPoll();
+		void Render();
 
-		/// Poll events for Nuklear UI Framework User Input.
-		int UserInputPolLEvent(const SDL_Event &evt);
+		void InputProcessBegin();
+        InputEventProcessState InputEvent(const SDL_Event &evt);
+		void InputProcessEnd();
 
-		/// End handling Nklear UI Framework User Input.
-		int UserInputEndPoll();
+		void Destroy();
 
-		/// Destroy Nuklear UI Framework.
-		int Destroy();
-
-		/// Return a pointer to the NUI Nuklear UI Framework Context.
 		nk_context *GetNKContext();
+
+		void DemoUI();
 	}
 }
-
-#endif //POLYHEDRON_NUI_H

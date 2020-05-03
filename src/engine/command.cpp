@@ -2,6 +2,7 @@
 // is largely backwards compatible with the quake console language.
 
 #include "engine.h"
+#include "tools/cubestr.h"
 
 hashnameset<ident> idents; // contains ALL vars/commands/aliases
 vector<ident *> identmap;

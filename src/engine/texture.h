@@ -1,4 +1,14 @@
 #pragma once
+#include <SDL.h>
+#ifdef __APPLE__
+#include <OpenGL/opengl.h>
+#else
+#include <SDL_opengl.h>
+#endif
+#include "glexts.h"
+#include "geom.h"
+#include <limits.h>
+
 
 struct GlobalShaderParamState
 {
@@ -227,7 +237,7 @@ struct Shader
         if(variantrows)
         {
             int start = variantrows[row], end = variantrows[row+1];
-            for(col = min(start + col, end-1); col >= start; --col) if(!variants[col]->invalid()) { s = variants[col]; break; }
+            for(col = std::min(start + col, end-1); col >= start; --col) if(!variants[col]->invalid()) { s = variants[col]; break; }
         }
         if(lastshader!=s) s->bindprograms();
     }
@@ -507,7 +517,7 @@ struct ImageData
         if(!ndata) { owner = this; freefunc = NULL; }
     }
 
-    int calclevelsize(int level) const { return ((max(w>>level, 1)+align-1)/align)*((max(h>>level, 1)+align-1)/align)*bpp; }
+    int calclevelsize(int level) const { return ((std::max(w>>level, 1)+align-1)/align)*((std::max(h>>level, 1)+align-1)/align)*bpp; }
 
     int calcsize() const
     {
@@ -864,4 +874,10 @@ extern VSlot dummyvslot;
 extern DecalSlot dummydecalslot;
 extern vector<Slot *> slots;
 extern vector<VSlot *> vslots;
+
+Texture *textureload(const char *name, int clamp = 0, bool mipit = true, bool msg = true);
+
+extern bool reloadtexture(Texture &tex);
+extern bool reloadtexture(const char *name);
+
 

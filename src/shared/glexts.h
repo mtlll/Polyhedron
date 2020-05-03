@@ -472,6 +472,7 @@ extern PFNGLCOMPILESHADERPROC            glCompileShader_;
 extern PFNGLGETSHADERIVPROC              glGetShaderiv_;
 extern PFNGLGETPROGRAMIVPROC             glGetProgramiv_;
 extern PFNGLATTACHSHADERPROC             glAttachShader_;
+extern PFNGLDETACHSHADERPROC             glDetachShader_;
 extern PFNGLGETPROGRAMINFOLOGPROC        glGetProgramInfoLog_;
 extern PFNGLGETSHADERINFOLOGPROC         glGetShaderInfoLog_;
 extern PFNGLLINKPROGRAMPROC              glLinkProgram_;

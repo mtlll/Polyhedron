@@ -15,6 +15,8 @@
 #include "model.h"
 #include "ents.h"
 
+#include "engine/font.h"
+
 extern entities::classes::Player *player;
 extern entities::classes::BasePhysicalEntity *camera1;                // special ent that acts as camera, same object as player in FPS mode
 
@@ -35,44 +37,10 @@ extern int screenw, screenh, renderw, renderh, hudw, hudh;
 
 extern vector<int> entgroup;
 
-// rendertext
-struct font
-{
-    struct charinfo
-    {
-        float x, y, w, h, offsetx, offsety, advance;
-        int tex;
-    };
-
-    char *name;
-    vector<Texture *> texs;
-    vector<charinfo> chars;
-    int charoffset, defaultw, defaulth, scale;
-    float bordermin, bordermax, outlinemin, outlinemax;
-
-    font() : name(NULL) {}
-    ~font() { DELETEA(name); }
-};
-
-#define FONTH (curfont->scale)
-#define FONTW (FONTH/2)
-#define MINRESW 640
-#define MINRESH 480
-
-extern font *curfont;
-extern Shader *textshader;
-extern const matrix4x3 *textmatrix;
-extern float textscale;
-
-extern font *findfont(const char *name);
-extern void reloadfonts();
-
-static inline void setfont(font *f) { if(f) curfont = f; }
 
 // texture
 extern int hwtexsize, hwcubetexsize, hwmaxaniso, maxtexsize, hwtexunits, hwvtexunits;
 
-extern Texture *textureload(const char *name, int clamp = 0, bool mipit = true, bool msg = true);
 extern int texalign(const void *data, int w, int bpp);
 extern bool floatformat(GLenum format);
 extern void cleanuptexture(Texture *t);
@@ -94,8 +62,6 @@ extern ushort closestenvmap(const vec &o);
 extern ushort closestenvmap(int orient, const ivec &o, int size);
 extern GLuint lookupenvmap(ushort emid);
 extern GLuint lookupenvmap(Slot &slot);
-extern bool reloadtexture(Texture &tex);
-extern bool reloadtexture(const char *name);
 extern void setuptexcompress();
 extern void clearslots();
 extern void compacteditvslots();

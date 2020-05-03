@@ -466,7 +466,7 @@ void gl_checkextensions()
     glGetShaderInfoLog_ =         (PFNGLGETSHADERINFOLOGPROC)         getprocaddress("glGetShaderInfoLog");
     glLinkProgram_ =              (PFNGLLINKPROGRAMPROC)              getprocaddress("glLinkProgram");
     glGetUniformLocation_ =       (PFNGLGETUNIFORMLOCATIONPROC)       getprocaddress("glGetUniformLocation");
-    glGetAttribLocation_ =        (PFNGLGETATTRIBNLOCATIONPROC)       getprocaddress("glGetAttribLocation");
+    glGetAttribLocation_ =        (PFNGLGETATTRIBLOCATIONPROC)        getprocaddress("glGetAttribLocation");
     glUniform1f_ =                (PFNGLUNIFORM1FPROC)                getprocaddress("glUniform1f");
     glUniform2f_ =                (PFNGLUNIFORM2FPROC)                getprocaddress("glUniform2f");
     glUniform3f_ =                (PFNGLUNIFORM3FPROC)                getprocaddress("glUniform3f");
@@ -2898,7 +2898,7 @@ GLenum DebugOpenGL(const char *expression, const char *file, int line)
             case GL_OUT_OF_MEMORY:                 errorName = "OUT_OF_MEMORY"; break;
             case GL_INVALID_FRAMEBUFFER_OPERATION: errorName = "INVALID_FRAMEBUFFER_OPERATION"; break;
         }
-//        conoutf(CON_ERROR, ("OpenGL error: " + filebase + ":" + std::to_string(line) + ": " + expression + " " + errorName).c_str());
+        conoutf(CON_ERROR, ("OpenGL error: " + filebase + ":" + std::to_string(line) + ": " + expression + " " + errorName).c_str());
     }
 
     return errorCode;

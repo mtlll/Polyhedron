@@ -5,7 +5,7 @@ SET(CMAKE_FIND_LIBRARY_SUFFIXES .a)
 
 find_package(SDL2 CONFIG REQUIRED)
 set(SDL_MIXER_LIBRARIES
-    SDL2::SDL2-static)
+    SDL2-static)
 
 # builtin formats
 set(SDL_MIXER_DEFINES
@@ -34,6 +34,7 @@ if(TARGET vorbis)
     if(TARGET ogg)
         if (TARGET vorbisfile)
             list(APPEND SDL_MIXER_LIBRARIES vorbis vorbisfile ogg)
+            list(APPEND SDL_MIXER_INCLUDES )
             list(APPEND SDL_MIXER_DEFINES MUSIC_OGG)
         endif()
     endif()

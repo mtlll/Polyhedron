@@ -1,3 +1,13 @@
+#pragma once
+#include "shared/tools/databuf.h"
+#ifdef __APPLE__
+#include <OpenGL/opengl.h>
+#else
+#include <SDL_opengl.h>
+#endif
+#include "glexts.h"
+#include "geom.h"
+
 namespace gle
 {
     enum

@@ -36,21 +36,23 @@ if (NOT ogg_POPULATED)
 #    set(OGG_LIBRARIES ogg)
 #    set(OGG_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libogg-1.3.4/include)
 #    set(OGG_LIBRARY ogg)
-    set(BUILD_FRAMEWORK OFF)
-    set(INSTALL_DOCS OFF)
-    set(INSTALL_PKG_CONFIG_MODULE OFF)
-    set(INSTALL_CMAKE_PACKAGE_MODULE ON)
+#    set(BUILD_FRAMEWORK OFF)
+#    set(INSTALL_DOCS OFF)
+#    set(INSTALL_PKG_CONFIG_MODULE OFF)
+#    set(INSTALL_CMAKE_PACKAGE_MODULE OFF)
     execute_process(COMMAND
             cmake -E chdir "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libogg-1.3.4"
             patch -p0 -i "${CMAKE_CURRENT_LIST_DIR}/patch-libogg-add-stdint-h.diff"
         RESULT_VARIABLE RESULT_PATCH
     )
     message(STATUS "Patching libogg: ${RESULT_PATCH}, SOURCE DIR: ${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libogg-1.3.4")
-#    FetchContent_MakeAvailable(OGG)
-    message("ogg dirs: |${ogg_SOURCE_DIR}| |${ogg_BINARY_DIR}|")
-    set(OGG_INCLUDE_DIRS ${ogg_SOURCE_DIR}/include)
-    set(OGG_LIBRARIES ogg)
+
     add_subdirectory(${ogg_SOURCE_DIR} ${ogg_BINARY_DIR})
+    FetchContent_MakeAvailable(OGG)
+    set(OGG_INCLUDE_DIRS "${ogg_SOURCE_DIR}/include" "${ogg_BINARY_DIR}/include")
+    set(OGG_LIBRARIES ogg)
+    set(OGG_INCLUDE_DIR ${OGG_INCLUDE_DIRS})
+    set(OGG_LIBRARY ${OGG_LIBRARIES})
 endif()
 
 message("Fetching dependency: Vorbis")
@@ -185,9 +187,6 @@ list(APPEND THIRDPARTY_LIBRARIES
     SDL2-static
 #    SDL2main
     SDL2_image
-    ogg
-    vorbis
-    vorbisfile
     SDL2_mixer
 #    mpg123
 )
