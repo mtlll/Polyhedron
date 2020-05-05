@@ -6,6 +6,18 @@ SET(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/thirdparty)
 include(FetchContent)
 include(ExternalProject)
 
+macro(CopyFileIfDifferent FromFile ToFile)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E compare_files
+        ${FromFile} ${ToFile} RESULT_VARIABLE compare_result
+    )
+    if(compare_result EQUAL 1 OR NOT EXISTS "${ToFile}")
+         execute_process(COMMAND cp ${FromFile} ${ToFile} RESULT_VARIABLE cp_result)
+         message("cp ${FromFile} ${ToFile}: ${cp_result}")
+    else()
+         message("Skip Copy[${compare_result}]: ${FromFile} ${ToFile}")
+    endif()
+endmacro()
+
 message("Fetching dependency: SDL2")
 FetchContent_Declare(
     SDL2
@@ -17,14 +29,26 @@ FetchContent_Declare(
 FetchContent_GetProperties(SDL2)
 if (NOT sdl2_POPULATED)
     source_group(TREE SDL2)
+
     FetchContent_MakeAvailable(SDL2)
+
+    message("SDL2_SOURCE_DIR ${sdl2_SOURCE_DIR} ABSOLUTE BASE_DIR \"${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/SDL2-2.0.12\"")
+    get_filename_component(SDL2_SOURCE_DIR ${sdl2_SOURCE_DIR} ABSOLUTE BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/SDL2-2.0.12" CACHE)
+    message("sdl2_SOURCE_DIR ${SDL2_SOURCE_DIR}")
+    get_filename_component(SDL2_BINARY_DIR ${sdl2_BINARY_DIR} ABSOLUTE BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/SDL2-2.0.12" CACHE)
+    message("sdl2_BINARY_DIR ${SDL2_BINARY_DIR}")
+
+    set(SDL2_DIR ${SDL2_SOURCE_DIR} CACHE PATH "SDL2_DIR" FORCE)
+    message("SDL2_DIR ${SDL2_DIR}")
+#    add_subdirectory(${sdl2_SOURCE_DIR} ${sdl2_BINARY_DIR})
 endif()
 
 message("Fetching dependency: OGG")
 FetchContent_Declare(
         OGG
         SOURCE_DIR          "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libogg-1.3.4"
-        URL                 http://downloads.xiph.org/releases/ogg/libogg-1.3.4.tar.gz
+        URL                 https://ftp.osuosl.org/pub/xiph/releases/ogg/libogg-1.3.4.tar.gz
+                            #http://downloads.xiph.org/releases/ogg/libogg-1.3.4.tar.gz
         DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
         INSTALL_COMMAND     ""
 )
@@ -51,7 +75,8 @@ message("Fetching dependency: Vorbis")
 FetchContent_Declare(
         VORBIS
         SOURCE_DIR          "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libvorbis-1.3.6"
-        URL                 https://github.com/xiph/vorbis/archive/v1.3.6.tar.gz
+        URL                 https://ftp.osuosl.org/pub/xiph/releases/vorbis/libvorbis-1.3.6.tar.gz
+                            #https://github.com/xiph/vorbis/archive/v1.3.6.tar.gz
         DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
         INSTALL_COMMAND     ""
 )
@@ -79,7 +104,8 @@ if (NOT ANDROID)
     FetchContent_Declare(
             FLAC
             SOURCE_DIR          "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/flac-1.3.3"
-            URL                 https://github.com/xiph/flac/archive/1.3.3.tar.gz
+            URL                 https://ftp.osuosl.org/pub/xiph/releases/flac/flac-1.3.2.tar.xz
+                                #https://github.com/xiph/flac/archive/1.3.3.tar.gz
             DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
             INSTALL_COMMAND     ""
     )
@@ -117,25 +143,24 @@ endif()
 
 message("Fetching dependency SDL2_image")
 FetchContent_Declare(
-    SDL2_IMAGE
+    SDL2_image
     SOURCE_DIR          ${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/SDL2_image-2.0.5
     URL                 https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5.tar.gz
     DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
     INSTALL_COMMAND     ""
 )
-FetchContent_GetProperties(SDL2_IMAGE)
+FetchContent_GetProperties(SDL2_image)
 if (NOT sdl2_image_POPULATED)
-    configure_file(
+    FetchContent_Populate(SDL2_image)
+    FetchContent_MakeAvailable(SDL2_image)
+    CopyFileIfDifferent(
         "${CMAKE_CURRENT_LIST_DIR}/jpeg-9b_CMakeLists.txt"
         "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/SDL2_image-2.0.5/external/jpeg-9b/CMakeLists.txt"
-        COPYONLY
     )
-    configure_file(
+    CopyFileIfDifferent(
         "${CMAKE_CURRENT_LIST_DIR}/SDL2_Image-2.0.5_CMakeLists.txt"
         "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/SDL2_image-2.0.5/CMakeLists.txt"
-        COPYONLY
     )
-    FetchContent_Populate(SDL2_IMAGE)
     add_subdirectory(${sdl2_image_SOURCE_DIR} ${sdl2_image_BINARY_DIR})
 endif()
 #

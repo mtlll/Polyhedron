@@ -18,10 +18,12 @@ set(WEBP_BUILD_EXTRAS OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/jpeg-9b)
 add_subdirectory(external/zlib-1.2.11)
 add_subdirectory(external/libpng-1.6.37)
-add_subdirectory(external/libwebp-1.0.2)
+if (NOT ANDROID)
+	add_subdirectory(external/libwebp-1.0.2)
+endif()
 add_subdirectory(external/tiff-4.0.9)
 
-find_package(SDL2 CONFIG REQUIRED)
+#find_package(SDL2 CONFIG REQUIRED)
 
 add_library(SDL2_image STATIC
     IMG.c
@@ -48,9 +50,14 @@ target_compile_options(SDL2_image
         -DSDL_IMAGE_USE_COMMON_BACKEND
         -DLOAD_JPG
         -DLOAD_PNG
-        -DLOAD_WEBP
         -DLOAD_TIFF
 )
+if (NOT ANDROID)
+	target_compile_options(SDL2_image
+		PUBLIC
+			-DLOAD_WEBP
+	)
+endif()
 
 target_link_libraries(SDL2_image
     PUBLIC
@@ -58,9 +65,15 @@ target_link_libraries(SDL2_image
         jpeg
         zlibstatic
         png_static
-        webp
         tiff
 )
+
+if (NOT ANDROID)
+	target_link_libraries(SDL2_image
+		PUBLIC
+	        webp
+	)
+endif()
 
 target_include_directories(SDL2_image
     PUBLIC
@@ -69,7 +82,13 @@ target_include_directories(SDL2_image
         external/jpeg-9b
         external/zlib-1.2.11
         external/libpng-1.6.37
-        external/libwebp-1.0.2/src
         external/tiff-4.0.9/libtiff
 )
+
+if (NOT ANDROID)
+	target_include_directories(SDL2_image
+		PRIVATE
+            external/libwebp-1.0.2/src
+	)
+endif()
 
