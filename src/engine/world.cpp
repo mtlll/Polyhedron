@@ -24,7 +24,7 @@ inline void transformbb(const entities::classes::CoreEntity *e, vec &center, vec
 	rotatebb(center, radius, e->attr2, e->attr3, e->attr4);
 }
 
-inline void mmboundbox(const entities::classes::CoreEntity *e, model *m, vec &center, vec &radius)
+void mmboundbox(const entities::classes::CoreEntity *e, model *m, vec &center, vec &radius)
 {
     m->boundbox(center, radius);
     transformbb(e, center, radius);
