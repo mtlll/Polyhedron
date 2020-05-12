@@ -1,5 +1,8 @@
 #pragma once
 
+struct vertex;
+#include "octa.h"
+
 enum                            // hardcoded texture numbers
 {
     DEFAULT_SKY = 0,
@@ -69,5 +72,22 @@ ET* getentitybytype(int searchStartIndex = 0)
 entities::classes::CoreEntity *new_game_entity(bool local, const vec &o, int &idx, const char *strclass = "");
 
 inline void transformbb(const entities::classes::CoreEntity *e, vec &center, vec &radius);
-inline void mmboundbox(const entities::classes::CoreEntity *e, model *m, vec &center, vec &radius);
+void mmboundbox(const entities::classes::CoreEntity *e, model *m, vec &center, vec &radius);
 inline void mmcollisionbox(const entities::classes::CoreEntity *e, model *m, vec &center, vec &radius);
+
+extern vector<int> outsideents;
+
+void entcancel();
+void entitiesinoctanodes();
+void attachentities();
+void freeoctaentities(cube &c);
+bool pointinsel(const selinfo &sel, const vec &o);
+
+void resetmap();
+void startmap(const char *name);
+
+const char *entname(entities::classes::CoreEntity *e);
+bool haveselent();
+undoblock *copyundoents(undoblock *u);
+void pasteundoent(int idx, entities::classes::CoreEntity *ue);
+void pasteundoents(undoblock *u);
