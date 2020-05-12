@@ -39,8 +39,13 @@ if (NOT sdl2_POPULATED)
     message("sdl2_BINARY_DIR ${SDL2_BINARY_DIR}")
 
     set(SDL2_DIR ${SDL2_SOURCE_DIR} CACHE PATH "SDL2_DIR" FORCE)
+    set(SDL2_SOURCE_DIR ${SDL2_SOURCE_DIR} CACHE PATH "SDL2_SOURCE_DIR" FORCE)
     message("SDL2_DIR ${SDL2_DIR}")
 #    add_subdirectory(${sdl2_SOURCE_DIR} ${sdl2_BINARY_DIR})
+    list(APPEND THIRDPARTY_INCLUDE_DIRS
+        ${SDL2_SOURCE_DIR}/include
+        ${SDL2_BINARY_DIR}/include
+    )
 endif()
 
 message("Fetching dependency: OGG")
@@ -131,14 +136,21 @@ FetchContent_Declare(
 FetchContent_GetProperties(SDL2_mixer)
 if (NOT sdl2_mixer_POPULATED)
     source_group(TREE SDL2_mixer)
-    configure_file(
+    CopyFileIfDifferent(
         "${CMAKE_CURRENT_LIST_DIR}/SDL2_mixer-2.0.4_CMakeLists.txt"
         "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/SDL2_mixer-2.0.4/CMakeLists.txt"
-        COPYONLY
     )
     set(SDL_MIXER_INCLUDES ${sdl2_SOURCE_DIR}/include)
     set(SDL_MIXER_LIBRARIES SDL2-static)
     FetchContent_MakeAvailable(SDL2_mixer)
+
+    get_filename_component(SDL2_MIXER_SOURCE_DIR ${sdl2_mixer_SOURCE_DIR} ABSOLUTE BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/SDL2_mixer-2.0.4" CACHE)
+    get_filename_component(SDL2_MIXER_BINARY_DIR ${sdl2_mixer_BINARY_DIR} ABSOLUTE BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/SDL2_mixer-2.0.4" CACHE)
+
+    list(APPEND THIRDPARTY_INCLUDE_DIRS
+        ${SDL2_MIXER_SOURCE_DIR}
+    )
+
 endif()
 
 message("Fetching dependency SDL2_image")
@@ -161,6 +173,15 @@ if (NOT sdl2_image_POPULATED)
         "${CMAKE_CURRENT_LIST_DIR}/SDL2_Image-2.0.5_CMakeLists.txt"
         "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/SDL2_image-2.0.5/CMakeLists.txt"
     )
+
+    get_filename_component(SDL2_IMAGE_SOURCE_DIR ${sdl2_image_SOURCE_DIR} ABSOLUTE BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/SDL2_image-2.0.5" CACHE)
+    get_filename_component(SDL2_IMAGE_BINARY_DIR ${sdl2_image_BINARY_DIR} ABSOLUTE BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/SDL2_image-2.0.5" CACHE)
+
+    list(APPEND THIRDPARTY_INCLUDE_DIRS
+        ${SDL2_IMAGE_SOURCE_DIR}/include
+        ${SDL2_IMAGE_BINARY_DIR}/include
+    )
+
     add_subdirectory(${sdl2_image_SOURCE_DIR} ${sdl2_image_BINARY_DIR})
 endif()
 #
@@ -253,7 +274,7 @@ endif()
 if (ANDROID)
     list(APPEND THIRDPARTY_LIBRARIES
         log
-        GLESv2
+        GLESv3
         EGL
         android
     )

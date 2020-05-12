@@ -270,25 +270,38 @@ char *path(char *s)
 {
     for(char *curpart = s;;)
     {
+    	//Make "&" a \0, so strlen gives us the length up to this char
         char *endpart = strchr(curpart, '&');
         if(endpart) *endpart = '\0';
+
+        //Ignore <.*?> from the front
         if(curpart[0]=='<')
         {
             char *file = strrchr(curpart, '>');
             if(!file) return s;
             curpart = file+1;
         }
+
+        //Normalize directory delimiters
         for(char *t = curpart; (t = strpbrk(t, "/\\")); *t++ = PATHDIV);
+
+        //For each directory
         for(char *prevdir = NULL, *curdir = curpart;;)
         {
+        	//If current directory start with delimiter, jump past the delimiter
             prevdir = curdir[0]==PATHDIV ? curdir+1 : curdir;
+
+            //Grab until next delimiter, curdir contains a dir
             curdir = strchr(prevdir, PATHDIV);
-            if(!curdir) break;
+            if(!curdir) break; //No more dir segments, break out of loop
+
+			//Normalize "/./"
             if(prevdir+1==curdir && prevdir[0]=='.')
             {
                 memmove(prevdir, curdir+1, strlen(curdir+1)+1);
                 curdir = prevdir;
             }
+            //Normalize path "/../"
             else if(curdir[1]=='.' && curdir[2]=='.' && curdir[3]==PATHDIV)
             {
                 if(prevdir+2==curdir && prevdir[0]=='.' && prevdir[1]=='.') continue;
@@ -301,6 +314,8 @@ char *path(char *s)
                 curdir = prevdir;
             }
         }
+
+        //Restore '&'
         if(endpart)
         {
             *endpart = '&';

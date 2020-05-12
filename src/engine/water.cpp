@@ -83,7 +83,11 @@ void renderwaterfog(int mat, float surface)
 {
     glDepthFunc(GL_NOTEQUAL);
     glDepthMask(GL_FALSE);
-    glDepthRange(1, 1); 
+#ifdef ANDROID
+    glDepthRangef(1.0f, 1.0f);
+#else
+    glDepthRange(1, 1);
+#endif
 
     glEnable(GL_BLEND);
 
@@ -140,7 +144,11 @@ void renderwaterfog(int mat, float surface)
         
     glDepthFunc(GL_LESS);
     glDepthMask(GL_TRUE);
+#ifdef ANDROID
+    glDepthRangef(0.0f, 1.0f);
+#else
     glDepthRange(0, 1);
+#endif
 }
 
 /* vertex water */
@@ -209,6 +217,7 @@ VERTWN(vertln, {
     gle::attribf(wxscale*(v1+wscroll), wyscale*(v2+wscroll));
 })
 
+#ifndef ANDROID
 #define renderwaterstrips(vertw, z) { \
     def##vertw(); \
     gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv); \
@@ -225,6 +234,23 @@ VERTWN(vertln, {
     } \
     xtraverts += gle::end(); \
 }
+#else
+#define renderwaterstrips(vertw, z) { \
+    def##vertw(); \
+    gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv); \
+    for(int x = wx1; x<wx2; x += subdiv) \
+    { \
+        vertw(x,        wy1, z); \
+        vertw(x+subdiv, wy1, z); \
+        for(int y = wy1; y<wy2; y += subdiv) \
+        { \
+            vertw(x,        y+subdiv, z); \
+            vertw(x+subdiv, y+subdiv, z); \
+        } \
+    } \
+    xtraverts += gle::end(); \
+}
+#endif
 
 void rendervertwater(int subdiv, int xo, int yo, int z, int size, int mat)
 {

@@ -31,8 +31,9 @@ void setuptqaa(int w, int h)
         if(!tqaatex[i]) glGenTextures(1, &tqaatex[i]);
         if(!tqaafbo[i]) glGenFramebuffers_(1, &tqaafbo[i]);
         glBindFramebuffer_(GL_FRAMEBUFFER, tqaafbo[i]);
-        createtexture(tqaatex[i], w, h, NULL, 3, 1, GL_RGBA8, GL_TEXTURE_RECTANGLE);
-        glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, tqaatex[i], 0);
+        createtexture(tqaatex[i], w, h, NULL, 3, 1, GL_RGBA8, GL_TEXTURE_2D);
+        glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tqaatex[i], 0);
+
         bindgdepth();
         if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             fatal("failed allocating TQAA buffer!");
@@ -600,7 +601,7 @@ void dosmaa(GLuint outfbo = 0, bool split = false)
             glEnable(GL_DEPTH_TEST);
             glDepthFunc(GL_ALWAYS);
             float depthval = cleardepth ? 0.25f*(pass+1) : 1;
-            glDepthRange(depthval, depthval);
+            glDepthRange_(depthval, depthval);
         }
         else if(stencil)
         {
@@ -643,7 +644,7 @@ void dosmaa(GLuint outfbo = 0, bool split = false)
             glDisable(GL_DEPTH_TEST);
             glDepthMask(GL_TRUE);
             glDepthFunc(GL_LESS);
-            glDepthRange(0, 1);
+            glDepthRange_(0, 1);
         }
         else if(stencil) glDisable(GL_STENCIL_TEST);
     }

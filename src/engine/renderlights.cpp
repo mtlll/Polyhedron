@@ -473,10 +473,12 @@ void checkmsaasamples()
     glGenTextures(1, &tex);
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, tex);
 
-    GLint samples;
-    glTexImage2DMultisample_(GL_TEXTURE_2D_MULTISAMPLE, msaaminsamples, GL_RGBA8, 1, 1, GL_TRUE);
+    GLint samples = 0;
+#ifndef ANDROID
+	glTexImage2DMultisample_(GL_TEXTURE_2D_MULTISAMPLE, msaaminsamples, GL_RGBA8, 1, 1, GL_TRUE);
     glGetTexLevelParameteriv(GL_TEXTURE_2D_MULTISAMPLE, 0, GL_TEXTURE_SAMPLES, &samples);
-    msaasamples = samples;
+#endif
+	msaasamples = samples;
 
     glDeleteTextures(1, &tex);
 }
@@ -588,6 +590,7 @@ void bindmsdepth()
 
 void setupmsbuffer(int w, int h)
 {
+#ifndef ANDROID
     if(!msfbo) glGenFramebuffers_(1, &msfbo);
     
     glBindFramebuffer_(GL_FRAMEBUFFER, msfbo);
@@ -718,6 +721,7 @@ void setupmsbuffer(int w, int h)
         useshaderbyname("msaatonemap");
         if(msaalight > 2) useshaderbyname("msaatonemapsample");
     }
+#endif
 }
 
 void bindgdepth()
@@ -1041,7 +1045,11 @@ void processhdr(GLuint outfbo, int aa)
             int cw = max(vieww/2, bloomw), ch = max(viewh/2, bloomh);
             glBindFramebuffer_(GL_READ_FRAMEBUFFER, mshdrfbo);
             glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, hdrfbo);
-            glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, cw, ch, GL_COLOR_BUFFER_BIT, GL_SCALED_RESOLVE_FASTEST_EXT);
+#ifdef ANDROID
+            glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, cw, ch, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+#else
+			glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, cw, ch, GL_COLOR_BUFFER_BIT, GL_SCALED_RESOLVE_FASTEST_EXT);
+#endif
             pw = cw;
             ph = ch;
         }
@@ -1421,7 +1429,10 @@ void setupradiancehints()
         glBindRenderbuffer_(GL_RENDERBUFFER, 0);
         glFramebufferRenderbuffer_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_RENDERBUFFER, rhrb[i]);
     }
-    else loopi(4) glFramebufferTexture3D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_3D, rhtex[i], 0, 0);
+    else loopi(4)
+	{
+		glFramebufferTexture3D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_3D, rhtex[i], 0, 0);
+	}
 
     static const GLenum drawbufs[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
     glDrawBuffers_(4, drawbufs);
@@ -1759,7 +1770,9 @@ void setupshadowatlas()
 
     glBindFramebuffer_(GL_FRAMEBUFFER, shadowatlasfbo);
 
+#ifndef ANDROID
     glDrawBuffer(GL_NONE);
+#endif
     glReadBuffer(GL_NONE);
 
     glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowatlastarget, shadowatlastex, 0);
@@ -2926,7 +2939,9 @@ static inline void setavatarstencil(int stencilref, bool on)
 
 static void rendersunpass(Shader *s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask)
 {
+#ifndef ANDROID
     if(hasDBT && depthtestlights > 1) glDepthBounds_(0, depthtestlightsclamp);
+#endif
 
     int tx1 = max(int(floor((bsx1*0.5f+0.5f)*vieww)), 0), ty1 = max(int(floor((bsy1*0.5f+0.5f)*viewh)), 0),
         tx2 = min(int(ceil((bsx2*0.5f+0.5f)*vieww)), vieww), ty2 = min(int(ceil((bsy2*0.5f+0.5f)*viewh)), viewh);
@@ -2976,7 +2991,9 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
                 tx2 = int(ceil((sx2*0.5f+0.5f)*vieww)), ty2 = int(ceil((sy2*0.5f+0.5f)*viewh));
             glScissor(tx1, ty1, tx2-tx1, ty2-ty1);
 
+#ifndef ANDROID
             if(hasDBT && depthtestlights > 1) glDepthBounds_(l.sz1*0.5f + 0.5f, min(l.sz2*0.5f + 0.5f, depthtestlightsclamp));
+#endif
 
             if(camera1->o.dist(l.o) <= l.radius*lightradiustweak + nearplane + 1 && depthfaillights)
             {
@@ -3050,7 +3067,9 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
 
         lightpassesused++;
 
+#ifndef ANDROID
         if(hasDBT && depthtestlights > 1) glDepthBounds_(sz1*0.5f + 0.5f, min(sz2*0.5f + 0.5f, depthtestlightsclamp));
+#endif
         gle::begin(GL_QUADS);
         loopvj(batch.rects)
         {
@@ -3096,7 +3115,9 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
             if(n) setlightshader(s, n, baselight, shadowmap, spotlight, false, true);
             else s->setvariant(0, 17);
 
+#ifndef ANDROID
             if(hasDBT && depthtestlights > 1) glDepthBounds_(sz1*0.5f + 0.5f, min(sz2*0.5f + 0.5f, depthtestlightsclamp));
+#endif
             lightquad(sz1, sx1, sy1, sx2, sy2, tilemask);
             lightpassesused++;
         }
@@ -3160,7 +3181,9 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
 
+#ifndef ANDROID
     if(hasDBT && depthtestlights > 1) glEnable(GL_DEPTH_BOUNDS_TEST_EXT);
+#endif
 
     bool sunpass = !lighttilebatch || drawtex == DRAWTEX_MINIMAP || (!sunlight.iszero() && csmshadowmap && batchsunlight <= (gi && giscale && gidist ? 1 : 0));
     if(sunpass)
@@ -3193,11 +3216,18 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
 
     glDisable(GL_BLEND);
 
-    if(!depthtestlights) glEnable(GL_DEPTH_TEST);
+    if(!depthtestlights)
+	{
+#ifndef ANDROID
+		glEnable(GL_DEPTH_TEST);
+#endif
+	}
     else
     {
         glDepthMask(GL_TRUE);
+#ifndef ANDROID
         if(hasDBT && depthtestlights > 1) glDisable(GL_DEPTH_BOUNDS_TEST_EXT);
+#endif
     }
 }
 
@@ -4495,9 +4525,9 @@ void rendershadowatlas()
 
     if(debugshadowatlas)
     {
-        glClearDepth(0);
+        glClearDepth_(0);
         glClear(GL_DEPTH_BUFFER_BIT);
-        glClearDepth(1);
+        glClearDepth_(1);
     }
 
     // sun light
@@ -4678,7 +4708,9 @@ void rendertransparent()
         }
         maskgbuffer("cndg");
 
+#ifndef ANDROID
         if(wireframe && editmode) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+#endif
 
         switch(layer)
         {
@@ -4698,7 +4730,9 @@ void rendertransparent()
             break;
         }
 
+#ifndef ANDROID
         if(wireframe && editmode) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif
 
         if(msaalight)
         {

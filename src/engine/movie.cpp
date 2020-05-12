@@ -8,11 +8,7 @@
 //   kino - ok
 
 #include "engine.h"
-#ifdef __APPLE__
-  #include "SDL_mixer.h"
-#else
-  #include <SDL2/SDL_mixer.h>
-#endif
+#include <SDL_mixer.h>
 
 VAR(dbgmovie, 0, 0, 1);
 

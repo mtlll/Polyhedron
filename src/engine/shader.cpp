@@ -167,15 +167,26 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
     char *modsource = NULL;
     const char *parts[16];
     int numparts = 0;
+#ifndef ANDROID
     static const struct { int version; const char * const header; } glslversions[] =
     {
         { 400, "#version 400\n" },
         { 330, "#version 330\n" },
+        { 320, "#version 150\n" },
         { 150, "#version 150\n" },
         { 140, "#version 140\n" },
         { 130, "#version 130\n" },
         { 120, "#version 120\n" }
     };
+#else
+    static const struct { int version; const char * const header; } glslversions[] =
+    {
+        { 330, "#version 320 es\nprecision mediump float;\n" },
+        { 310, "#version 310 es\nprecision mediump float;\n" },
+        { 300, "#version 300 es\nprecision mediump float;\n" },
+        { 200, "#version 100\nprecision mediump float;\n" }
+    };
+#endif
     loopi(sizeof(glslversions)/sizeof(glslversions[0])) if(glslversion >= glslversions[i].version)
     {
         parts[numparts++] = glslversions[i].header;
@@ -375,6 +386,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
         loopi(gle::MAXATTRIBS) if(!(attribs&(1<<i))){
             glCheckError(glBindAttribLocation_(s.program, i, gle::attribnames[i]));
         }
+#ifndef ANDROID
         if(hasGPU4 && ((glslversion < 330 && (glslversion < 150 || !hasEAL)) || amd_eal_bug)) loopv(s.fragdatalocs)
         {
             FragDataLoc &d = s.fragdatalocs[i];
@@ -389,6 +401,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
                 glCheckError(glBindFragDataLocation_(s.program, d.loc, d.name));
             }
         }
+#endif
         glCheckError(glLinkProgram_(s.program));
         glCheckError(glGetProgramiv_(s.program, GL_LINK_STATUS, &success));
     }

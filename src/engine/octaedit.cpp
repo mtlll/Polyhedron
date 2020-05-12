@@ -1480,7 +1480,9 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
     gle::color(vec(color).mul(ldrscale));
     glDrawRangeElements_(GL_TRIANGLES, 0, p.numverts-1, p.numtris*3, GL_UNSIGNED_SHORT, (ushort *)0);
 
+#ifndef ANDROID
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+#endif
     enablepolygonoffset(GL_POLYGON_OFFSET_LINE);
 
     pm.mul(camprojmatrix, m);
@@ -1490,8 +1492,9 @@ static void renderprefab(prefab &p, const vec &o, float yaw, float pitch, float 
     glDrawRangeElements_(GL_TRIANGLES, 0, p.numverts-1, p.numtris*3, GL_UNSIGNED_SHORT, (ushort *)0);
 
     disablepolygonoffset(GL_POLYGON_OFFSET_LINE);
+#ifndef ANDROID
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+#endif
     gle::disablevertex();
     gle::disablenormal();
     gle::clearebo();

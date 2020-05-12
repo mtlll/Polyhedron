@@ -9,12 +9,7 @@
 #include <algorithm>
 #include <enet/enet.h>
 
-#include <SDL.h>
-#ifdef __APPLE__
-#include <OpenGL/opengl.h>
-#else
-#include <SDL_opengl.h>
-#endif
+#include "engine/includegl.h"
 #include "zlib.h"
 #include "types.h"
 

@@ -1,11 +1,6 @@
 #pragma once
 #include "shared/tools/databuf.h"
-#ifdef __APPLE__
-#include <OpenGL/opengl.h>
-#else
-#include <SDL_opengl.h>
-#endif
-#include "glexts.h"
+#include "engine/includegl.h"
 #include "geom.h"
 
 namespace gle
@@ -55,18 +50,24 @@ namespace gle
         static inline void name##suffix(type x, type y, type z, type w) { glCheckError(glVertexAttrib4##suffix##_(index, x, y, z, w)); }
     #define GLE_INITATTRIBF(name, index) \
         GLE_INITATTRIB(name, index, f, float) \
-        static inline void name(const vec &v) { glCheckError(glVertexAttrib3fv_(index, v.v)); } \
-        static inline void name(const vec &v, float w) { glCheckError(glVertexAttrib4f_(index, v.x, v.y, v.z, w)); } \
-        static inline void name(const vec2 &v) { glCheckError(glVertexAttrib2fv_(index, v.v)); } \
-        static inline void name(const vec4 &v) { glCheckError(glVertexAttrib4fv_(index, v.v)); }
+        static inline void name(const vec &v) { glCheckError(glVertexAttrib3fv(index, v.v)); } \
+        static inline void name(const vec &v, float w) { glCheckError(glVertexAttrib4f(index, v.x, v.y, v.z, w)); } \
+        static inline void name(const vec2 &v) { glCheckError(glVertexAttrib2fv(index, v.v)); } \
+        static inline void name(const vec4 &v) { glCheckError(glVertexAttrib4fv(index, v.v)); }
     #define GLE_INITATTRIBN(name, index, suffix, type, defaultw) \
         static inline void name##suffix(type x, type y, type z, type w = defaultw) { glCheckError(glVertexAttrib4N##suffix##_(index, x, y, z, w)); }
 
     GLE_INITATTRIBF(vertex, ATTRIB_VERTEX)
     GLE_INITATTRIBF(color, ATTRIB_COLOR)
+#ifndef ANDROID
     GLE_INITATTRIBN(color, ATTRIB_COLOR, ub, uchar, 255)
     static inline void color(const bvec &v, uchar alpha = 255) { glCheckError(glVertexAttrib4Nub_(ATTRIB_COLOR, v.x, v.y, v.z, alpha)); }
     static inline void color(const bvec4 &v) { glCheckError(glVertexAttrib4Nubv_(ATTRIB_COLOR, v.v)); }
+#else
+	static inline void colorub(uchar vx, uchar vy, uchar vz, uchar alpha = 255) { vec4 fv(vx / 255.f, vy / 255.f, vz / 255.f, alpha / 255.f); glCheckError(glVertexAttrib4fv_(ATTRIB_COLOR, fv.v)); }
+    static inline void color(const bvec &v, uchar alpha = 255) { vec4 fv(v.x / 255.f, v.y / 255.f, v.z / 255.f, alpha / 255.f); glCheckError(glVertexAttrib4fv_(ATTRIB_COLOR, fv.v)); }
+    static inline void color(const bvec4 &v) { vec4 fv(v.x / 255.f, v.y / 255.f, v.z / 255.f, v.w / 255.f); glCheckError(glVertexAttrib4fv_(ATTRIB_COLOR, fv.v)); }
+#endif
     GLE_INITATTRIBF(texcoord0, ATTRIB_TEXCOORD0)
     GLE_INITATTRIBF(texcoord1, ATTRIB_TEXCOORD1)
     static inline void normal(float x, float y, float z) { glCheckError(glVertexAttrib4f_(ATTRIB_NORMAL, x, y, z, 0.0f)); }

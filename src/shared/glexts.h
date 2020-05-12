@@ -1,3 +1,5 @@
+#include "shared/types.h"
+
 #ifndef APIENTRY
 #define APIENTRY
 #endif
@@ -66,8 +68,8 @@
 #ifndef GL_EXT_timer_query
 #define GL_EXT_timer_query 1
 #define GL_TIME_ELAPSED_EXT               0x88BF
-typedef llong GLint64EXT;
-typedef ullong GLuint64EXT;
+//typedef llong GLint64EXT;
+//typedef ullong GLuint64EXT;
 typedef void (APIENTRYP PFNGLGETQUERYOBJECTI64VEXTPROC) (GLuint id, GLenum pname, GLint64EXT *params);
 typedef void (APIENTRYP PFNGLGETQUERYOBJECTUI64VEXTPROC) (GLuint id, GLenum pname, GLuint64EXT *params);
 #endif
@@ -834,6 +836,11 @@ extern PFNGLGETDEBUGMESSAGELOGPROC glGetDebugMessageLog_;
 // GL_ARB_copy_image
 extern PFNGLCOPYIMAGESUBDATAPROC glCopyImageSubData_;
 
+
+#ifdef ANDROID
+#define glDepthRange glDepthRangef
+#define glClearDepth glClearDepthf
+#endif
 
 //#ifdef DEBUG
 

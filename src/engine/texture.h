@@ -1,20 +1,10 @@
 #pragma once
-#include <SDL.h>
-#ifdef __APPLE__
-#define GL_GLEXT_LEGACY
-#define __glext_h_
-#include <OpenGL/gl.h>
-#else
-#include <SDL_opengl.h>
-#endif
-
 #include "shared/cube.h"
 #include "world.h"
 #include "octa.h"
-#include "shared/glexts.h"
+#include "engine/includegl.h"
 #include "shared/geom.h"
 #include <limits.h>
-
 
 struct GlobalShaderParamState
 {

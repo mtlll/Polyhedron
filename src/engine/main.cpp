@@ -4,6 +4,7 @@
 #include "../game/entities/player.h"
 #include "nui/nui.h"
 #include "renderdoc_api.h"
+#include "includegl.h"
 
 extern void cleargamma();
 
@@ -586,6 +587,11 @@ void setupscreen()
 	}
 	if(!glcontext) fatal("failed to create OpenGL context: %s", SDL_GetError());
 
+	gladLoadGLES2Loader(SDL_GL_GetProcAddress);
+	printf("Vendor:   %s\n", glGetString(GL_VENDOR));
+	printf("Renderer: %s\n", glGetString(GL_RENDERER));
+	printf("Version:  %s\n", glGetString(GL_VERSION));
+
 	SDL_GetWindowSize(screen, &screenw, &screenh);
 	renderw = min(scr_w, screenw);
 	renderh = min(scr_h, screenh);
@@ -1065,6 +1071,29 @@ int main(int argc, char **argv)
         break;
     }
 
+	{
+		const char* testpaths[10] = {
+			"/r_path/n_path/file.txt",
+			"<bla>/r_path/n_path/file.txt",
+			"r_path/n_path/file.txt",
+			"<bla>r_path/n_path/file.txt",
+			"/r_path/n_path/o_path/p_path/../../file.txt",
+			"<bla>/r_path/n_path/o_path/p_path/../../file.txt",
+			"/r_path/n_path/o_path/p_path/../../file.txt&another/path/here/file.txt",
+			"<bla>/r_path/n_path/o_path/p_path/../../file.txt&another/path/here/file.txt",
+			"r_path/n_path/o_path/p_path/../../file.txt&another/path/here/file.txt",
+			"<bla>r_path/n_path/o_path/p_path/../../file.txt&another/path/here/file.txt"
+		};
+
+		for (int i = 0; i < 10; ++i)
+		{
+			char* pathwritable = new char[strlen(testpaths[i]) + 1];
+			memcpy(pathwritable, testpaths[i], strlen(testpaths[i]));
+			pathwritable[strlen(testpaths[i])] = '\0';
+			logoutf("Path from: %s, to: %s", testpaths[i], path(pathwritable));
+			delete [] pathwritable;
+		}
+	}
     // Execute initialization configuration file.
     execfile("config/init.cfg", false);
 

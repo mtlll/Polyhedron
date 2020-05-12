@@ -467,7 +467,9 @@ void drawskybox(bool clear)
         glDepthMask(GL_FALSE);
     }
 
+#ifndef ANDROID
     if(clampsky) glDepthRange(1, 1);
+#endif
 
     if(clear || (!skybox[0] && (!atmo || atmoalpha < 1)))
     {
@@ -561,7 +563,9 @@ void drawskybox(bool clear)
         drawfogdome();
     }
 
+#ifndef ANDROID
     if(clampsky) glDepthRange(0, 1);
+#endif
 
     if(limited)
     {

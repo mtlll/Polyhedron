@@ -13,7 +13,7 @@
 #ifndef NK_SDL_GL3_H_
 #define NK_SDL_GL3_H_
 
-#include "glexts.h"
+//#include "glexts.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 

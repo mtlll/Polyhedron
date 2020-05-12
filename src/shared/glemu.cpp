@@ -1,4 +1,5 @@
 #include "cube.h"
+#include "engine/includegl.h"
 
 extern int glversion;
 extern int intel_mapbufferrange_bug;
@@ -31,8 +32,10 @@ namespace gle
     static GLenum primtype = GL_TRIANGLES;
     static uchar *lastbuf = NULL;
     static bool changedattribs = false;
+#ifndef ANDROID
     static vector<GLint> multidrawstart;
     static vector<GLsizei> multidrawcount;
+#endif
 
     #define MAXQUADS (0x10000/4)
     static GLuint quadindexes = 0;
@@ -119,7 +122,9 @@ namespace gle
             case 'I': case GL_UNSIGNED_INT:   a.formatsize = 4; a.format = GL_UNSIGNED_INT; break;
             case 'i': case GL_INT:            a.formatsize = 4; a.format = GL_INT; break;
             case 'f': case GL_FLOAT:          a.formatsize = 4; a.format = GL_FLOAT; break;
+#ifndef ANDROID
             case 'd': case GL_DOUBLE:         a.formatsize = 8; a.format = GL_DOUBLE; break;
+#endif
             default:                          a.formatsize = 0; a.format = GL_FALSE; break;
         }
         a.formatsize *= size;
@@ -238,6 +243,7 @@ namespace gle
         }
     }
 
+#ifndef ANDROID
     void multidraw()
     {
         int start = multidrawstart.length() ? multidrawstart.last() + multidrawcount.last() : 0,
@@ -248,6 +254,7 @@ namespace gle
             multidrawcount.add(count);
         }
     }
+#endif
 
     int end()
     {
@@ -313,6 +320,7 @@ namespace gle
         }
         else
         {
+#ifndef ANDROID
             if(multidrawstart.length())
             {
                 multidraw();
@@ -322,6 +330,7 @@ namespace gle
                 multidrawcount.setsize(0);
             }
             else
+#endif
             {
                 glCheckError(glDrawArrays(primtype, start, numvertexes));
             }

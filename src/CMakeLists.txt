@@ -35,6 +35,7 @@ include_directories(
     ext/json-develop/include
     ext/nuklear
     ext/renderdoc
+    ext/glad/include
 )
 
 CHECK_INCLUDE_FILE(renderdoc.h HAVE_RENDERDOC_H)
@@ -248,6 +249,12 @@ list(APPEND extNuklearFiles
     ext/nuklear/nuklear_polyhedron.cpp
 )
 
+
+list(APPEND extGladFiles
+    ext/glad/src/glad.c
+)
+
+
 list(APPEND fileList
     ${fileListEngine}
     ${fileListShared}
@@ -257,6 +264,7 @@ list(APPEND fileList
     ${fileListGameEntities}
     ${extRenderdocFiles}
     ${extNuklearFiles}
+    ${extGladFiles}
 )
 
 function(GenerateBindingFor input_file ide_folder)
@@ -381,7 +389,6 @@ endif()
 
 #Link the libraries
 target_compile_features(Polyhedron PUBLIC cxx_std_17)
-target_compile_definitions(Polyhedron PUBLIC NK_SDL_GL3_IMPLEMENTATION)
 target_compile_options(Polyhedron PUBLIC -Wno-attributes)
 
 target_include_directories(Polyhedron
@@ -390,18 +397,25 @@ target_include_directories(Polyhedron
         shared
         game
         engine
+        ${THIRDPARTY_INCLUDE_DIRS}
 )
 
 target_link_libraries(Polyhedron
     PUBLIC
         ${THIRDPARTY_LIBRARIES}
         enet
-        $<$<NOT:$<CXX_COMPILER_ID:AppleClang>>:rt>
 )
+
+if (NOT APPLE AND NOT ANDROID)
+    target_link_libraries(Polyhedron
+        PUBLIC
+            rt
+    )
+endif()
 
 target_link_directories(Polyhedron
     PUBLIC
-    ${THIRDPARTY_LINK_DIRECTORIES}
+    ${THIRDPARTY_LINK_DIRS}
 )
 
 #Apple specific stuff

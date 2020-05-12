@@ -2,12 +2,8 @@
 
 #include "engine.h"
 #include "shared/entities/basephysicalentity.h"
-
-#ifdef __APPLE__
-  #include "SDL_image.h"
-#else
-    #include <SDL2/SDL_image.h>
-#endif
+#include "engine/includegl.h"
+#include <SDL_image.h>
 
 template<int BPP> static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)
 {
@@ -425,9 +421,11 @@ void texreorient(ImageData &s, bool flipx, bool flipy, bool swapxy, int type = T
             break;
         }
     case GL_COMPRESSED_RED_RGTC1:
+#ifndef ANDROID
     case GL_COMPRESSED_RG_RGTC2:
     case GL_COMPRESSED_LUMINANCE_LATC1_EXT:
     case GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT:
+#endif
         {
             uchar *dst = d.data, *src = s.data;
             loopi(s.levels)
@@ -698,6 +696,7 @@ void setuptexcompress()
 {
     if(!usetexcompress) return;
 
+#ifndef ANDROID
     GLenum hint = GL_DONT_CARE;
     switch(texcompressquality)
     {
@@ -705,10 +704,12 @@ void setuptexcompress()
         case 0: hint = GL_FASTEST; break;
     }
     glCheckError(glHint(GL_TEXTURE_COMPRESSION_HINT, hint));
+#endif
 }
 
 GLenum compressedformat(GLenum format, int w, int h, int force = 0)
 {
+#ifndef ANDROID
     if(usetexcompress && texcompress && force >= 0 && (force || max(w, h) >= texcompress)) switch(format)
     {
         case GL_RGB5:
@@ -725,6 +726,7 @@ GLenum compressedformat(GLenum format, int w, int h, int force = 0)
         case GL_LUMINANCE_ALPHA:
         case GL_LUMINANCE8_ALPHA8: return hasLATC ? (usetexcompress > 1 ? GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT : GL_COMPRESSED_LUMINANCE_ALPHA) : (usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA);
     }
+#endif
     return format;
 }
 
@@ -809,10 +811,12 @@ void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format
         if(row > 0){
             glCheckError(glPixelStorei(GL_UNPACK_ROW_LENGTH, row));
         }
+#ifndef ANDROID
         if(target==GL_TEXTURE_1D){
             glCheckError(glTexImage1D(target, level, internal, tw, 0, format, type, src));
         }
         else
+#endif
         {
             glCheckError(glTexImage2D(target, level, internal, tw, th, 0, format, type, src));
         }
@@ -842,10 +846,12 @@ void uploadcompressedtexture(GLenum target, GLenum subtarget, GLenum format, int
         int size = ((w + align-1)/align) * ((h + align-1)/align) * blocksize;
         if(w <= sizelimit && h <= sizelimit)
         {
+#ifndef ANDROID
             if(target==GL_TEXTURE_1D){
                 glCheckError(glCompressedTexImage1D_(subtarget, level, format, w, 0, size, data));
             }
             else
+#endif
             {
                 glCheckError(glCompressedTexImage2D_(subtarget, level, format, w, h, 0, size, data));
             }
@@ -876,6 +882,7 @@ GLenum textarget(GLenum subtarget)
 
 GLenum uncompressedformat(GLenum format)
 {
+#ifndef ANDROID
     switch(format)
     {
         case GL_COMPRESSED_ALPHA:
@@ -901,6 +908,7 @@ GLenum uncompressedformat(GLenum format)
         case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
             return GL_RGBA;
     }
+#endif
     return GL_FALSE;
 }
 
@@ -920,7 +928,11 @@ void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLe
 {
     glCheckError(glBindTexture(target, tnum));
     glCheckError(glTexParameteri(target, GL_TEXTURE_WRAP_S, clamp&1 ? GL_CLAMP_TO_EDGE : (clamp&0x100 ? GL_MIRRORED_REPEAT : GL_REPEAT)));
+#ifdef ANDROID
+    if(target==GL_TEXTURE_3D || target==GL_TEXTURE_2D)
+#else
     if(target!=GL_TEXTURE_1D)
+#endif
     {
         glCheckError(glTexParameteri(target, GL_TEXTURE_WRAP_T, clamp&2 ? GL_CLAMP_TO_EDGE : (clamp&0x200 ? GL_MIRRORED_REPEAT : GL_REPEAT)));
     }
@@ -937,6 +949,7 @@ void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLe
                 (bilinear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_LINEAR) :
                 (bilinear ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST_MIPMAP_NEAREST)) :
             (filter && bilinear ? GL_LINEAR : GL_NEAREST)));
+#ifndef ANDROID
     if(swizzle && hasTRG && hasTSW)
     {
         const GLint *mask = swizzlemask(format);
@@ -944,6 +957,7 @@ void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLe
             glCheckError(glTexParameteriv(target, GL_TEXTURE_SWIZZLE_RGBA, mask));
         }
     }
+#endif
 }
 
 static GLenum textype(GLenum &component, GLenum &format)
@@ -989,33 +1003,41 @@ static GLenum textype(GLenum &component, GLenum &format)
             break;
 
         case GL_R8:
+#ifndef ANDROID
         case GL_R16:
         case GL_COMPRESSED_RED:
+#endif
         case GL_COMPRESSED_RED_RGTC1:
             if(!format) format = GL_RED;
             break;
 
         case GL_RG8:
+#ifndef ANDROID
         case GL_RG16:
         case GL_COMPRESSED_RG:
         case GL_COMPRESSED_RG_RGTC2:
             if(!format) format = GL_RG;
             break;
+#endif
 
         case GL_RGB5:
         case GL_RGB8:
-        case GL_RGB16:
         case GL_RGB10:
+#ifndef ANDROID
+        case GL_RGB16:
         case GL_COMPRESSED_RGB:
+#endif
         case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
             if(!format) format = GL_RGB;
             break;
 
         case GL_RGB5_A1:
         case GL_RGBA8:
+		case GL_RGB10_A2:
+#ifndef ANDROID
         case GL_RGBA16:
-        case GL_RGB10_A2:
         case GL_COMPRESSED_RGBA:
+#endif
         case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
         case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
         case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
@@ -1023,24 +1045,30 @@ static GLenum textype(GLenum &component, GLenum &format)
             break;
 
         case GL_LUMINANCE8:
+#ifndef ANDROID
         case GL_LUMINANCE16:
         case GL_COMPRESSED_LUMINANCE:
         case GL_COMPRESSED_LUMINANCE_LATC1_EXT:
             if(!format) format = GL_LUMINANCE;
             break;
+#endif
 
         case GL_LUMINANCE8_ALPHA8:
+#ifndef ANDROID
         case GL_LUMINANCE16_ALPHA16:
         case GL_COMPRESSED_LUMINANCE_ALPHA:
         case GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT:
+#endif
             if(!format) format = GL_LUMINANCE_ALPHA;
             break;
 
+#ifndef ANDROID
         case GL_ALPHA8:
         case GL_ALPHA16:
         case GL_COMPRESSED_ALPHA:
             if(!format) format = GL_ALPHA;
             break;
+#endif
 
         case GL_RGB8UI:
         case GL_RGB16UI:
@@ -1548,6 +1576,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
 
     if(msg) renderprogress(loadprogress, file);
 
+#ifndef ANDROID
     int flen = strlen(file);
     if(flen >= 4 && (!strcasecmp(file + flen - 4, ".dds") || (dds && !raw)))
     {
@@ -1561,6 +1590,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
         }
         if(d.data && !d.compressed && !dds && compress) *compress = scaledds;
     }
+#endif
 
     if(!d.data)
     {
@@ -3415,6 +3445,7 @@ DECODEDDS(decodergtc2, 2,
     greenbits >>= 3;
 );
 
+#ifndef ANDROID
 bool loaddds(const char *filename, ImageData &image, int force)
 {
     stream *f = openfile(filename, "rb");
@@ -3510,6 +3541,7 @@ SCRIPTEXPORT void gendds(char *infile, char *outfile)
 
     glCheckError(glBindTexture(GL_TEXTURE_2D, t->id));
     GLint compressed = 0, format = 0, width = 0, height = 0;
+
     glCheckError(glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED, &compressed));
     glCheckError(glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format));
     glCheckError(glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width));
@@ -3593,6 +3625,7 @@ SCRIPTEXPORT void gendds(char *infile, char *outfile)
 
     setuptexcompress();
 }
+#endif
 
 void writepngchunk(stream *f, const char *type, uchar *data = NULL, uint len = 0)
 {
@@ -3946,10 +3979,3 @@ SCRIPTEXPORT void removealphachannel(char *destfile, char *rgbafile)
     );
     saveimage(destfile, guessimageformat(destfile, IMG_TGA), d);
 }
-
-
-// >>>>>>>>>> SCRIPTBIND >>>>>>>>>>>>>> //
-#if 0
-#include "/Users/micha/dev/ScMaMike/src/build/binding/..+engine+texture.binding.cpp"
-#endif
-// <<<<<<<<<< SCRIPTBIND <<<<<<<<<<<<<< //

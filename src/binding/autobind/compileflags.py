@@ -60,4 +60,6 @@ def NormalizeCompileFlags(buildFolder, flags):
             else:
                 output.append(flag)
     os.chdir(oldworkdir)
+    # if '-DANDROID' in output:
+    #     output.remove("-DANDROID")
     return output

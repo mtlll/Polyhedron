@@ -475,7 +475,9 @@ void sorteditmaterials()
 void rendermatgrid()
 {
     enablepolygonoffset(GL_POLYGON_OFFSET_LINE);
+#ifndef ANDROID
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+#endif
     int lastmat = -1;
     loopvrev(editsurfs)
     {
@@ -503,7 +505,9 @@ void rendermatgrid()
         drawmaterial(m, -0.1f);
     }
     xtraverts += gle::end();
+#ifndef ANDROID
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif
     disablepolygonoffset(GL_POLYGON_OFFSET_LINE);
 }
 

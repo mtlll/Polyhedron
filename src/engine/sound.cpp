@@ -3,11 +3,7 @@
 #include "engine.h"
 #include "../game/entities/player.h"
 
-#ifdef __APPLE__
-  #include "SDL_mixer.h"
-#else
-  #include <SDL2/SDL_mixer.h>
-#endif
+#include <SDL_mixer.h>
 
 bool nosound = true;
 
@@ -759,6 +755,9 @@ struct MumbleInfo
 static HANDLE mumblelink = NULL;
 static MumbleInfo *mumbleinfo = NULL;
 #define VALID_MUMBLELINK (mumblelink && mumbleinfo)
+#elif defined(ANDROID)
+static int mumblelink = -1;
+static MumbleInfo *mumbleinfo = (MumbleInfo *)-1;
 #elif defined(_POSIX_SHARED_MEMORY_OBJECTS)
 static int mumblelink = -1;
 static MumbleInfo *mumbleinfo = (MumbleInfo *)-1;
