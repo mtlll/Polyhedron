@@ -1,7 +1,15 @@
 // shader.cpp: OpenGL GLSL shader management
 
 #include "engine.h"
+#include "engine/rendergl.h"
+#include "engine/renderlights.h"
+#include "engine/octarender.h"
+#include "engine/rendermodel.h"
+#include "engine/menus.h"
 #include "engine/GLFeatures.h"
+
+//extern from command.h
+extern int identflags;
 
 Shader *Shader::lastshader = NULL;
 

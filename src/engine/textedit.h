@@ -1,4 +1,8 @@
+#include "engine/font.h"
 #include "shared/stream.h"
+
+//extern from command.h
+extern int identflags;
 
 struct editline
 {

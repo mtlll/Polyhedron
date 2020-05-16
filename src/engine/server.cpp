@@ -2,8 +2,13 @@
 // runs dedicated or as client coroutine
 
 #include "engine.h"
+#include "serverbrowser.h"
+#include "client.h"
 #include "scriptexport.h"
 #include "log.h"
+
+//extern from menus.h
+extern int mainmenu;
 
 #ifdef STANDALONE
 void fatal(const char *fmt, ...)

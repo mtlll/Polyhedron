@@ -1,5 +1,6 @@
 #include "engine.h"
 #include "shared/entities/basephysicalentity.h"
+extern vector<vtxarray *> valist;
 
 enum
 {

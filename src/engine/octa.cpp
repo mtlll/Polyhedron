@@ -1,7 +1,7 @@
 // core world management routines
 
 #include "engine.h"
-
+#include "octarender.h"
 static struct emptycube : cube
 {
     emptycube()

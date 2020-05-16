@@ -1,7 +1,23 @@
 #include "engine.h"
+#include "pvs.h"
+#include "rendergl.h"
+#include "renderlights.h"
+#include "aa.h"
+#include "renderva.h"
+#include "material.h"
+#include "rendermodel.h"
+#include "renderparticles.h"
+#include "stain.h"
+#include "rendersky.h"
 #include "shared/entities/basephysicalentity.h"
 #include "game/game.h"
 #include "engine/GLFeatures.h"
+
+
+//octarender.h externs
+extern ivec worldmin, worldmax, nogimin, nogimax;
+
+extern int amd_pf_bug;
 
 int gw = -1, gh = -1, bloomw = -1, bloomh = -1, lasthdraccum = 0;
 GLuint gfbo = 0, gdepthtex = 0, gcolortex = 0, gnormaltex = 0, gglowtex = 0, gdepthrb = 0, gstencilrb = 0;
@@ -19,7 +35,39 @@ int aow = -1, aoh = -1;
 GLuint aofbo[4] = { 0, 0, 0, 0 }, aotex[4] = { 0, 0, 0, 0 }, aonoisetex = 0;
 matrix4 eyematrix, worldmatrix, linearworldmatrix, screenmatrix;
 
-extern int amd_pf_bug;
+
+template<class T>
+void calctilebounds(float sx1, float sy1, float sx2, float sy2, T &bx1, T &by1, T &bx2, T &by2)
+{
+    int tx1 = max(int(floor(((sx1 + 1)*0.5f*vieww)/lighttilealignw)), 0),
+            ty1 = max(int(floor(((sy1 + 1)*0.5f*viewh)/lighttilealignh)), 0),
+            tx2 = min(int(ceil(((sx2 + 1)*0.5f*vieww)/lighttilealignw)), lighttilevieww),
+            ty2 = min(int(ceil(((sy2 + 1)*0.5f*viewh)/lighttilealignh)), lighttileviewh);
+    bx1 = T((tx1 * lighttilew) / lighttilevieww);
+    by1 = T((ty1 * lighttileh) / lighttileviewh);
+    bx2 = T((tx2 * lighttilew + lighttilevieww - 1) / lighttilevieww);
+    by2 = T((ty2 * lighttileh + lighttileviewh - 1) / lighttileviewh);
+}
+
+void masktiles(uint *tiles, float sx1, float sy1, float sx2, float sy2)
+{
+    int tx1, ty1, tx2, ty2;
+    calctilebounds(sx1, sy1, sx2, sy2, tx1, ty1, tx2, ty2);
+    for(int ty = ty1; ty < ty2; ty++) tiles[ty] |= ((1<<(tx2-tx1))-1)<<tx1;
+}
+
+bool sphereinsidespot(const vec &dir, int spot, const vec &center, float radius)
+{
+    const vec2 &sc = sincos360[spot];
+    float cdist = dir.dot(center), cradius = radius + sc.y*cdist;
+    return sc.x*sc.x*(center.dot(center) - cdist*cdist) <= cradius*cradius;
+}
+
+bool bbinsidespot(const vec &origin, const vec &dir, int spot, const ivec &bbmin, const ivec &bbmax)
+{
+    vec radius = vec(ivec(bbmax).sub(bbmin)).mul(0.5f), center = vec(bbmin).add(radius);
+    return sphereinsidespot(dir, spot, center.sub(origin), radius.magnitude());
+}
 
 int gethdrformat(int prec, int fallback = GL_RGB)
 {

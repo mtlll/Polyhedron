@@ -35,33 +35,34 @@ extern int screenw, screenh, renderw, renderh, hudw, hudh;
 
 extern vector<int> entgroup;
 
-#include "pvs.h"
-#include "engine/font.h"
-#include "rendergl.h"
-#include "renderlights.h"
-#include "aa.h"
-#include "octaedit.h"
-#include "octarender.h"
-#include "renderva.h"
-#include "dynlight.h"
-#include "material.h"
-#include "water.h"
-#include "server.h"
-#include "serverbrowser.h"
-#include "client.h"
-#include "command.h"
-#include "console.h"
-#include "physics.h"
-#include "rendermodel.h"
-#include "renderparticles.h"
-#include "stain.h"
-#include "rendersky.h"
-#include "ui.h"
-#include "menus.h"
+//#include "pvs.h"
+//#include "engine/font.h"
+//#include "rendergl.h"
+
+//config values from renderlights.h
+#define LIGHTTILE_MAXW 16
+#define LIGHTTILE_MAXH 16
+
+//#include "renderva.h"
+//#include "material.h"
+//#include "water.h"
+//#include "server.h"
+//#include "serverbrowser.h"
+//#include "client.h"
+//#include "command.h"
+//#include "console.h"
+//#include "physics.h"
+//#include "rendermodel.h"
+//#include "renderparticles.h"
+//#include "stain.h"
+//#include "rendersky.h"
+//#include "ui.h"
+//#include "menus.h"
+//#include "sound.h"
+//#include "grass.h"
+//#include "blend.h"
+//#include "movie.h"
 #include "SoundConfig.h"
-#include "grass.h"
-#include "blend.h"
-#include "movie.h"
 
 //TODO: Not sure what this is here for or where it's even implemented. Remove it?
 void render3dbox(vec &o, float tofloor, float toceil, float xradius, float yradius = 0);

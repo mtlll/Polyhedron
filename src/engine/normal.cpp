@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "octarender.h"
 #include "scriptexport.h"
 
 struct normalkey

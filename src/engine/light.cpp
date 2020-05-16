@@ -1,5 +1,10 @@
 #include "cube.h"
 #include "engine.h"
+#include "physics.h"
+#include "renderlights.h"
+#include "octaedit.h"
+#include "octarender.h"
+#include "blend.h"
 #include "shared/entities/baseentity.h"
 #include "shared/entities/basephysicalentity.h"
 

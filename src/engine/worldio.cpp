@@ -1,6 +1,12 @@
 // worldio.cpp: loading & saving of maps and savegames
 
 #include "engine.h"
+#include "pvs.h"
+#include "octarender.h"
+#include "rendermodel.h"
+#include "menus.h"
+#include "sound.h"
+#include "blend.h"
 
 // Include game.h for our game entity casting.
 #include "game/game.h"
@@ -8,6 +14,11 @@
 #include "shared/ents.h"
 #include "world.h"
 #include "shared/entities/basephysicalentity.h"
+
+
+//extern from command.h
+extern hashnameset<ident> idents;
+extern int identflags;
 
 // Use JSON, no shit.
 using json = nlohmann::json;

@@ -1,6 +1,25 @@
 // rendergl.cpp: core opengl rendering stuff
 
 #include "engine.h"
+#include "pvs.h"
+#include "engine/font.h"
+#include "rendergl.h"
+#include "renderlights.h"
+#include "aa.h"
+#include "octaedit.h"
+#include "renderva.h"
+#include "material.h"
+#include "water.h"
+#include "console.h"
+#include "rendermodel.h"
+#include "renderparticles.h"
+#include "rendersky.h"
+#include "ui.h"
+#include "grass.h"
+#include "blend.h"
+#include "../shared/ents.h"
+#include "../game/game.h"
+#include "../game/entities/player.h"
 #include "engine/main/Application.h"
 #include "engine/main/Input.h"
 #include "engine/main/Window.h"
@@ -10,6 +29,12 @@
 #include "shared/ents.h"
 #include "game/game.h"
 #include "game/entities/player.h"
+
+//octarender.h externs
+extern vector<vtxarray *> varoot, valist;
+
+//extern from menus.h
+extern int mainmenu;
 
 
 int hasstencil = 0;

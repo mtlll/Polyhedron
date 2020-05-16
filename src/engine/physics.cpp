@@ -4,6 +4,7 @@
 // very robust (uses discrete steps at fixed fps).
 
 #include "engine.h"
+#include "rendermodel.h"
 #include "mpr.h"
 #include "ents.h"
 

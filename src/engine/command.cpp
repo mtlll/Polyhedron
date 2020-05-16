@@ -2,6 +2,8 @@
 // is largely backwards compatible with the quake console language.
 
 #include "engine.h"
+#include "rendergl.h"
+#include "console.h"
 #include "shared/stream.h"
 #include "tools/cubestr.h"
 

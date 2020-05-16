@@ -1,4 +1,6 @@
 #include "engine.h"
+#include "renderva.h"
+#include "blend.h"
 #include "shared/entities/basephysicalentity.h"
 
 VARP(grass, 0, 1, 1);

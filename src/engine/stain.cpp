@@ -1,5 +1,13 @@
 #include "engine.h"
+#include "rendergl.h"
+#include "rendermodel.h"
+#include "stain.h"
 #include "shared/entities/basephysicalentity.h"
+
+//REVIEW: only actual imports from renderlights.h, just declare instead of including the whole header?
+extern int ghasstencil;
+void maskgbuffer(const char *mask);
+
 
 struct stainvert
 {

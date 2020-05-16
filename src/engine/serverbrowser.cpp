@@ -1,4 +1,7 @@
 #include "engine.h"
+#include "engine/server.h"
+#include "engine/serverbrowser.h"
+#include "engine/client.h"
 #include "shared/stream.h"
 
 struct resolverthread

@@ -1,4 +1,6 @@
 #include "engine.h"
+#include "rendermodel.h"
+#include "stain.h"
 #include "ents.h"
 #include "shared/entities/basephysicalentity.h"
 

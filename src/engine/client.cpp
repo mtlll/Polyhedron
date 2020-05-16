@@ -1,6 +1,12 @@
 // client.cpp, mostly network related client game code
 
 #include "engine.h"
+#include "server.h"
+#include "serverbrowser.h"
+#include "client.h"
+
+//extern from menus.h
+extern int mainmenu;
 
 ENetHost *clienthost = NULL;
 ENetPeer *curpeer = NULL, *connpeer = NULL;

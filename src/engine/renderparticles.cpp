@@ -1,9 +1,18 @@
 // renderparticles.cpp
 
 #include "engine.h"
+#include "engine/pvs.h"
+#include "engine/font.h"
+#include "engine/rendergl.h"
+#include "engine/water.h"
+#include "engine/renderparticles.h"
 #include "engine/main/Application.h"
 #include "engine/hud.h"
 #include "shared/entities/basephysicalentity.h"
+
+//renderlights.h externs
+extern int msaalight;
+extern GLuint gdepthtex, msdepthtex;
 
 
 Shader *particleshader = NULL, *particlenotextureshader = NULL, *particlesoftshader = NULL, *particletextshader = NULL;

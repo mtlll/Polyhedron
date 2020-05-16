@@ -1,7 +1,15 @@
 #include "engine.h"
 #include "ents.h"
+#include "pvs.h"
+#include "rendergl.h"
+#include "renderlights.h"
+#include "aa.h"
+#include "renderva.h"
 #include "game/entities/basemapmodel.h"
 #include "shared/entities/basedynamicentity.h"
+
+//extern from command.h
+extern int identflags;
 
 VAR(oqdynent, 0, 1, 1);
 VAR(animationinterpolationtime, 0, 200, 1000);
@@ -338,6 +346,39 @@ SCRIPTEXPORT void nummapmodels()
     intret(mapmodels.length());
 }
 
+//static inlines from rendermodel.h
+model *loadmapmodel(int n)
+{
+    if(mapmodels.inrange(n))
+    {
+        model *m = mapmodels[n].m;
+        return m ? m : loadmodel(NULL, n);
+    }
+    return NULL;
+}
+
+
+model *loadmapmodel(const char *filename)
+{
+    loopv(mapmodels)
+    {
+        // Compare if the mapmodel's values equal each other.
+        model *m = mapmodels[i].m;
+
+        if (strcmp(m->name, filename) == 0)
+            // If they equal each other, it means we don't have to load it in again. Just return the pointer.
+            return m ? m : loadmodel(filename);
+        else
+            return NULL;
+    }
+    return NULL;
+}
+
+
+mapmodelinfo *getmminfo(int n)
+{
+    return mapmodels.inrange(n) ? &mapmodels[n] : NULL;
+}
 // model registry
 
 hashnameset<model *> models;

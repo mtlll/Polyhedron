@@ -1,5 +1,16 @@
 #include "engine.h"
+#include "rendergl.h"
+#include "octarender.h"
+#include "material.h"
+#include "water.h"
 #include "shared/entities/basephysicalentity.h"
+
+//extern from renderva.h
+extern vtxarray *visibleva;
+
+
+//REVIEW: only actual import from renderlights.h, just declare instead of including the whole header?
+void masktiles(uint *tiles, float sx1, float sy1, float sx2, float sy2);
 
 struct QuadNode
 {

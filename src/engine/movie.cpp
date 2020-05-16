@@ -8,12 +8,14 @@
 //   kino - ok
 
 #include "engine.h"
-#include "shared/stream.h"
+#include "engine/font.h"
+#include "rendergl.h"
 #include "engine/main/Application.h"
 #include "engine/main/Window.h"
 #include "engine/main/GLContext.h"
 #include "engine/hud.h"
 #include "engine/GLFeatures.h"
+#include "shared/stream.h"
 #include <SDL_mixer.h>
 
 VAR(dbgmovie, 0, 0, 1);

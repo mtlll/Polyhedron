@@ -1,15 +1,24 @@
 // texture.cpp: texture slot management
 
 #include "engine.h"
-#include "shared/stream.h"
-#include "shared/zip.h"
-#include "shared/entities/basephysicalentity.h"
+#include "engine/rendergl.h"
+#include "engine/renderlights.h"
+#include "engine/octarender.h"
+#include "engine/material.h"
+#include "engine/client.h"
+#include "engine/rendersky.h"
 #include "engine/includegl.h"
 #include "engine/main/Application.h"
 #include "engine/main/Window.h"
 #include "engine/main/GLContext.h"
 #include "engine/GLFeatures.h"
+#include "shared/stream.h"
+#include "shared/zip.h"
+#include "shared/entities/basephysicalentity.h"
 #include <SDL_image.h>
+
+//extern from command.h
+extern int identflags;
 
 template<int BPP> static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)
 {

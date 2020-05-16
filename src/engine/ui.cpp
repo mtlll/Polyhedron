@@ -1,8 +1,17 @@
 #include "cube.h"
 #include "engine.h"
+#include "octaedit.h"
 #include "textedit.h"
+#include "console.h"
 #include "shared/entities/animinfo.h"
 #include "engine/hud.h"
+
+extern float forceaspect;
+namespace modelpreview
+{
+    void start(int x, int y, int w, int h, bool background = true, bool scissor = false);
+    void end();
+}
 
 namespace UI
 {

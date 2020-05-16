@@ -1,11 +1,20 @@
 // console.cpp: the console buffer, its display, and command line control
 
 #include "engine.h"
+#include "console.h"
+#include "ui.h"
 #include "shared/stream.h"
 #include "tools/cubestr.h"
-
+#include "engine/font.h"
 // WatIsDeze: Required.... sadly.
 #include "../game/entities/player.h"
+
+//externs from command.h
+extern int identflags;
+extern hashnameset<ident> idents;
+
+//extern from menus.h
+extern int mainmenu;
 
 #define MAXCONLINES 1000
 struct cline { char *line; int type, outtime; };

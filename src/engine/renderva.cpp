@@ -1,10 +1,21 @@
 // renderva.cpp: handles the occlusion and rendering of vertex arrays
 
 #include "engine.h"
+#include "pvs.h"
+#include "rendergl.h"
+#include "renderlights.h"
+#include "renderva.h"
+#include "grass.h"
+#include "octarender.h"
+#include "blend.h"
+
 
 // Included especially for base and animated map models.
 #include "game/entities/basemapmodel.h"
 #include "engine/GLFeatures.h"
+
+//extern from rendersky.h
+extern int skyshadow;
 
 static inline void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
 {
