@@ -1,6 +1,8 @@
 // texture.cpp: texture slot management
 
 #include "engine.h"
+#include "shared/stream.h"
+#include "shared/zip.h"
 #include "shared/entities/basephysicalentity.h"
 #include "engine/includegl.h"
 #include <SDL_image.h>
@@ -421,7 +423,7 @@ void texreorient(ImageData &s, bool flipx, bool flipy, bool swapxy, int type = T
             break;
         }
     case GL_COMPRESSED_RED_RGTC1:
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     case GL_COMPRESSED_RG_RGTC2:
     case GL_COMPRESSED_LUMINANCE_LATC1_EXT:
     case GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT:
@@ -696,7 +698,7 @@ void setuptexcompress()
 {
     if(!usetexcompress) return;
 
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     GLenum hint = GL_DONT_CARE;
     switch(texcompressquality)
     {
@@ -709,7 +711,7 @@ void setuptexcompress()
 
 GLenum compressedformat(GLenum format, int w, int h, int force = 0)
 {
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     if(usetexcompress && texcompress && force >= 0 && (force || max(w, h) >= texcompress)) switch(format)
     {
         case GL_RGB5:
@@ -811,7 +813,7 @@ void uploadtexture(GLenum target, GLenum internal, int tw, int th, GLenum format
         if(row > 0){
             glCheckError(glPixelStorei(GL_UNPACK_ROW_LENGTH, row));
         }
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         if(target==GL_TEXTURE_1D){
             glCheckError(glTexImage1D(target, level, internal, tw, 0, format, type, src));
         }
@@ -846,7 +848,7 @@ void uploadcompressedtexture(GLenum target, GLenum subtarget, GLenum format, int
         int size = ((w + align-1)/align) * ((h + align-1)/align) * blocksize;
         if(w <= sizelimit && h <= sizelimit)
         {
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
             if(target==GL_TEXTURE_1D){
                 glCheckError(glCompressedTexImage1D_(subtarget, level, format, w, 0, size, data));
             }
@@ -882,7 +884,7 @@ GLenum textarget(GLenum subtarget)
 
 GLenum uncompressedformat(GLenum format)
 {
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     switch(format)
     {
         case GL_COMPRESSED_ALPHA:
@@ -928,7 +930,7 @@ void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLe
 {
     glCheckError(glBindTexture(target, tnum));
     glCheckError(glTexParameteri(target, GL_TEXTURE_WRAP_S, clamp&1 ? GL_CLAMP_TO_EDGE : (clamp&0x100 ? GL_MIRRORED_REPEAT : GL_REPEAT)));
-#ifdef ANDROID
+#ifdef OPEN_GL_ES
     if(target==GL_TEXTURE_3D || target==GL_TEXTURE_2D)
 #else
     if(target!=GL_TEXTURE_1D)
@@ -949,7 +951,7 @@ void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLe
                 (bilinear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_LINEAR) :
                 (bilinear ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST_MIPMAP_NEAREST)) :
             (filter && bilinear ? GL_LINEAR : GL_NEAREST)));
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     if(swizzle && hasTRG && hasTSW)
     {
         const GLint *mask = swizzlemask(format);
@@ -1003,7 +1005,7 @@ static GLenum textype(GLenum &component, GLenum &format)
             break;
 
         case GL_R8:
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         case GL_R16:
         case GL_COMPRESSED_RED:
 #endif
@@ -1012,7 +1014,7 @@ static GLenum textype(GLenum &component, GLenum &format)
             break;
 
         case GL_RG8:
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         case GL_RG16:
         case GL_COMPRESSED_RG:
         case GL_COMPRESSED_RG_RGTC2:
@@ -1023,7 +1025,7 @@ static GLenum textype(GLenum &component, GLenum &format)
         case GL_RGB5:
         case GL_RGB8:
         case GL_RGB10:
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         case GL_RGB16:
         case GL_COMPRESSED_RGB:
 #endif
@@ -1034,7 +1036,7 @@ static GLenum textype(GLenum &component, GLenum &format)
         case GL_RGB5_A1:
         case GL_RGBA8:
 		case GL_RGB10_A2:
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         case GL_RGBA16:
         case GL_COMPRESSED_RGBA:
 #endif
@@ -1045,7 +1047,7 @@ static GLenum textype(GLenum &component, GLenum &format)
             break;
 
         case GL_LUMINANCE8:
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         case GL_LUMINANCE16:
         case GL_COMPRESSED_LUMINANCE:
         case GL_COMPRESSED_LUMINANCE_LATC1_EXT:
@@ -1054,7 +1056,7 @@ static GLenum textype(GLenum &component, GLenum &format)
 #endif
 
         case GL_LUMINANCE8_ALPHA8:
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         case GL_LUMINANCE16_ALPHA16:
         case GL_COMPRESSED_LUMINANCE_ALPHA:
         case GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT:
@@ -1062,7 +1064,7 @@ static GLenum textype(GLenum &component, GLenum &format)
             if(!format) format = GL_LUMINANCE_ALPHA;
             break;
 
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         case GL_ALPHA8:
         case GL_ALPHA16:
         case GL_COMPRESSED_ALPHA:
@@ -1576,7 +1578,7 @@ static bool texturedata(ImageData &d, const char *tname, bool msg = true, int *c
 
     if(msg) renderprogress(loadprogress, file);
 
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     int flen = strlen(file);
     if(flen >= 4 && (!strcasecmp(file + flen - 4, ".dds") || (dds && !raw)))
     {
@@ -3445,7 +3447,7 @@ DECODEDDS(decodergtc2, 2,
     greenbits >>= 3;
 );
 
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
 bool loaddds(const char *filename, ImageData &image, int force)
 {
     stream *f = openfile(filename, "rb");

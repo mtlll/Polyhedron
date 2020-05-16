@@ -1,3 +1,5 @@
+#include "shared/stream.h"
+
 VARP(fullbrightmodels, 0, 0, 200);
 VAR(testtags, 0, 0, 1);
 VARF(dbgcolmesh, 0, 0, 1,

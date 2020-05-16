@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "shared/stream.h"
 #include "shared/entities/basephysicalentity.h"
 
 
@@ -467,7 +468,7 @@ void drawskybox(bool clear)
         glDepthMask(GL_FALSE);
     }
 
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     if(clampsky) glDepthRange(1, 1);
 #endif
 
@@ -563,7 +564,7 @@ void drawskybox(bool clear)
         drawfogdome();
     }
 
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     if(clampsky) glDepthRange(0, 1);
 #endif
 

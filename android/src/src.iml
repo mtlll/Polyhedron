@@ -47,6 +47,7 @@
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/tiff-4.0.9/test" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/libogg-1.3.4/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2-2.0.12/src/main/android" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/tiff-4.0.9/tools" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2-2.0.12/src/atomic" isTestSource="false" />
@@ -90,17 +91,18 @@
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2-2.0.12/src/sensor/android" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2-2.0.12/src/video/android" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2-2.0.12/src/thread/pthread" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2-2.0.12/src/hidapi/android" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/tiff-4.0.9/contrib/dbs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/tiff-4.0.9/contrib/iptcutil" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/tiff-4.0.9/contrib/addtiffo" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2-2.0.12/src/hidapi/android" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/tiff-4.0.9/libtiff" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/tiff-4.0.9/port" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/zlib-1.2.11/test" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/libpng-1.6.37/arm" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/libpng-1.6.37" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_mixer-2.0.4" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_mixer-2.0.4/native_midi" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/zlib-1.2.11" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2-2.0.12/src/main/android" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/zlib-1.2.11/test" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/zlib-1.2.11/win32" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.cxx/cmake/arm8Debug/arm64-v8a/thirdparty_sources/SDL2_image-2.0.5/external/jpeg-9b" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/arm8/debug" isTestSource="false" generated="true" />

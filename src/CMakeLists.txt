@@ -276,15 +276,16 @@ function(GenerateBindingFor input_file ide_folder)
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
         get_filename_component(output_file_target ${CMAKE_CURRENT_BINARY_DIR}/${input_file_target} ABSOLUTE)
+        get_filename_component(input_file_full ${CMAKE_CURRENT_LIST_DIR}/${input_file} ABSOLUTE)
 
         message(">> ${input_file} => ${output_file_target} (${input_file_target})")
 
         add_custom_command(
-            OUTPUT ${output_file_target}
+            OUTPUT ${input_file_target}
             WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
             COMMAND ${PYTHON} ${CMAKE_CURRENT_LIST_DIR}/binding/index.py gen ${CMAKE_CURRENT_BINARY_DIR} ${input_file} ${output_file_target}
             COMMENT "Preprocessing ${input_file}"
-            DEPENDS ${input_file}
+#            DEPENDS ${input_file_full}
         )
 
         set_source_files_properties(

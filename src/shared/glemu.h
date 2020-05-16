@@ -59,7 +59,7 @@ namespace gle
 
     GLE_INITATTRIBF(vertex, ATTRIB_VERTEX)
     GLE_INITATTRIBF(color, ATTRIB_COLOR)
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     GLE_INITATTRIBN(color, ATTRIB_COLOR, ub, uchar, 255)
     static inline void color(const bvec &v, uchar alpha = 255) { glCheckError(glVertexAttrib4Nub_(ATTRIB_COLOR, v.x, v.y, v.z, alpha)); }
     static inline void color(const bvec4 &v) { glCheckError(glVertexAttrib4Nubv_(ATTRIB_COLOR, v.v)); }

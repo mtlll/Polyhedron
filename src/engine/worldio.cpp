@@ -4,6 +4,7 @@
 
 // Include game.h for our game entity casting.
 #include "game/game.h"
+#include "shared/stream.h"
 #include "shared/ents.h"
 #include "world.h"
 #include "shared/entities/basephysicalentity.h"

@@ -8,6 +8,7 @@
 //   kino - ok
 
 #include "engine.h"
+#include "shared/stream.h"
 #include <SDL_mixer.h>
 
 VAR(dbgmovie, 0, 0, 1);

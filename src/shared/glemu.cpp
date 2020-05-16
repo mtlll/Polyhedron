@@ -122,7 +122,7 @@ namespace gle
             case 'I': case GL_UNSIGNED_INT:   a.formatsize = 4; a.format = GL_UNSIGNED_INT; break;
             case 'i': case GL_INT:            a.formatsize = 4; a.format = GL_INT; break;
             case 'f': case GL_FLOAT:          a.formatsize = 4; a.format = GL_FLOAT; break;
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
             case 'd': case GL_DOUBLE:         a.formatsize = 8; a.format = GL_DOUBLE; break;
 #endif
             default:                          a.formatsize = 0; a.format = GL_FALSE; break;

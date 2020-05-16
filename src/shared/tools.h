@@ -65,29 +65,6 @@ static inline T clamp(T a, U b, U c)
 #include "tools/stream.h"
 #include "tools/streambuf.h"
 
-extern cubestr homedir;
-
-extern char *makerelpath(const char *dir, const char *file, const char *prefix = NULL, const char *cmd = NULL);
-extern char *path(char *s);
-extern char *path(const char *s, bool copy);
-extern const char *parentdir(const char *directory);
-extern bool fileexists(const char *path, const char *mode);
-extern bool createdir(const char *path);
-extern size_t fixpackagedir(char *dir);
-extern const char *sethomedir(const char *dir);
-extern const char *addpackagedir(const char *dir);
-extern const char *findfile(const char *filename, const char *mode);
-extern bool findzipfile(const char *filename);
-extern stream *openrawfile(const char *filename, const char *mode);
-extern stream *openzipfile(const char *filename, const char *mode);
-extern stream *openfile(const char *filename, const char *mode);
-extern stream *opentempfile(const char *filename, const char *mode);
-extern stream *opengzfile(const char *filename, const char *mode, stream *file = NULL, int level = Z_BEST_COMPRESSION);
-extern stream *openutf8file(const char *filename, const char *mode, stream *file = NULL);
-extern char *loadfile(const char *fn, size_t *size, bool utf8 = true);
-extern bool listdir(const char *dir, bool rel, const char *ext, vector<char *> &files);
-extern int listfiles(const char *dir, const char *ext, vector<char *> &files);
-extern int listzipfiles(const char *dir, const char *ext, vector<char *> &files);
 extern void seedMT(uint seed);
 extern uint randomMT();
 

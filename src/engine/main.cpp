@@ -1,10 +1,15 @@
 // main.cpp: initialisation & main loop
 
 #include "engine.h"
+#include "shared/stream.h"
 #include "../game/entities/player.h"
 #include "nui/nui.h"
 #include "renderdoc_api.h"
 #include "includegl.h"
+
+#ifdef __APPLE__
+#define main SDL_main
+#endif
 
 extern void cleargamma();
 
@@ -587,10 +592,14 @@ void setupscreen()
 	}
 	if(!glcontext) fatal("failed to create OpenGL context: %s", SDL_GetError());
 
-	gladLoadGLES2Loader(SDL_GL_GetProcAddress);
-	printf("Vendor:   %s\n", glGetString(GL_VENDOR));
-	printf("Renderer: %s\n", glGetString(GL_RENDERER));
-	printf("Version:  %s\n", glGetString(GL_VERSION));
+	if(!gladLoadGLES2Loader(SDL_GL_GetProcAddress)) {
+        fatal("Unable to load GL through glad!\n");
+        exit(-1);
+    }
+    conoutf("OpenGL:   %d.%d\n", GLVersion.major, GLVersion.minor);
+	conoutf("Vendor:   %s\n", glGetString(GL_VENDOR));
+	conoutf("Renderer: %s\n", glGetString(GL_RENDERER));
+
 
 	SDL_GetWindowSize(screen, &screenw, &screenh);
 	renderw = min(scr_w, screenw);
@@ -1102,7 +1111,7 @@ int main(int argc, char **argv)
     {
         if(argv[i][0]=='-') switch(argv[i][1])
         {
-            case 'u': if(homedir[0]) logoutf("Using home directory: %s", homedir); break;
+//            case 'u': if(homedir[0]) logoutf("Using home directory: %s", homedir); break;
             case 'k':
             {
                 const char *dir = addpackagedir(&argv[i][2]);
@@ -1191,6 +1200,7 @@ int main(int argc, char **argv)
 	logoutf("init: console");
 	if(!execfile("config/stdlib.cfg", false)) fatal("cannot find data files (you are running from the wrong folder, try .bat file in the main folder)");   // this is the first file we load.
 	if(!execfile("config/font.cfg", false)) fatal("cannot find font definitions");
+	if(!execfile("media/interface/font/default.cfg", false)) fatal("cannot find default font");
 	if(!setfont("default")) fatal("no default font specified");
 
 	// Setup the User Interface.

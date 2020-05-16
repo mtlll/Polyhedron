@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "shared/stream.h"
 
 struct resolverthread
 {

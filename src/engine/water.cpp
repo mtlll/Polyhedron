@@ -83,7 +83,7 @@ void renderwaterfog(int mat, float surface)
 {
     glDepthFunc(GL_NOTEQUAL);
     glDepthMask(GL_FALSE);
-#ifdef ANDROID
+#ifdef OPEN_GL_ES
     glDepthRangef(1.0f, 1.0f);
 #else
     glDepthRange(1, 1);
@@ -144,7 +144,7 @@ void renderwaterfog(int mat, float surface)
         
     glDepthFunc(GL_LESS);
     glDepthMask(GL_TRUE);
-#ifdef ANDROID
+#ifdef OPEN_GL_ES
     glDepthRangef(0.0f, 1.0f);
 #else
     glDepthRange(0, 1);
@@ -217,7 +217,7 @@ VERTWN(vertln, {
     gle::attribf(wxscale*(v1+wscroll), wyscale*(v2+wscroll));
 })
 
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
 #define renderwaterstrips(vertw, z) { \
     def##vertw(); \
     gle::begin(GL_TRIANGLE_STRIP, 2*(wy2-wy1 + 1)*(wx2-wx1)/subdiv); \

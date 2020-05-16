@@ -348,7 +348,7 @@ VAR(oqwait, 0, 1, 1);
 static inline GLenum querytarget()
 {
     return oqany && hasOQ2 ? (oqany > 1 && hasES3 ? GL_ANY_SAMPLES_PASSED_CONSERVATIVE : GL_ANY_SAMPLES_PASSED) :
-#ifdef ANDROID
+#ifdef OPEN_GL_ES
 	GL_ANY_SAMPLES_PASSED
 #else
     GL_SAMPLES_PASSED
@@ -370,7 +370,7 @@ bool checkquery(occludequery *query, bool nowait)
 {
     if(query->fragments < 0)
     {
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         if(nowait || !oqwait)
         {
             GLint avail;
@@ -381,7 +381,7 @@ bool checkquery(occludequery *query, bool nowait)
      
         GLuint fragments;
         glCheckError(glGetQueryObjectuiv_(query->id, GL_QUERY_RESULT, &fragments));
-#ifdef ANDROID
+#ifdef OPEN_GL_ES
         query->fragments = querytarget() == GL_ANY_SAMPLES_PASSED || !fragments ? int(fragments) : oqfrags;
 #else
         query->fragments = querytarget() == GL_SAMPLES_PASSED || !fragments ? int(fragments) : oqfrags;
@@ -643,7 +643,7 @@ void renderoutline()
 
     gle::enablevertex();
 
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 #endif
     gle::color(outlinecolour);
@@ -683,7 +683,7 @@ void renderoutline()
 
     disablepolygonoffset(GL_POLYGON_OFFSET_LINE);
 
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     glCheckError(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 #endif
 
@@ -2090,7 +2090,7 @@ bool renderexplicitsky(bool outline)
                     gle::color(explicitskycolour);
                     glCheckError(glDepthMask(GL_FALSE));
                     enablepolygonoffset(GL_POLYGON_OFFSET_LINE);
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
                     glCheckError(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 #endif
                 }
@@ -2117,7 +2117,7 @@ bool renderexplicitsky(bool outline)
     if(!prev) return false;
     if(outline)
     {
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         glCheckError(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 #endif
         disablepolygonoffset(GL_POLYGON_OFFSET_LINE);

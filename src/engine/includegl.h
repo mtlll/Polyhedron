@@ -1,13 +1,13 @@
 #pragma once
 
+#define OPEN_GL_ES
+
 #include <glad/glad.h>
 #include <SDL.h>
 
 #ifdef __APPLE_
-//#define GL_GLEXT_LEGACY
-//#define __glext_h
-// #include <OpenGL/gl.h>
-#define main SDL_main
+#import <OpenGLES/ES3/gl.h>
+#import <OpenGLES/ES3/glext.h>
 #endif
 
 #ifdef ANDROID
@@ -200,15 +200,18 @@
 
 #define glTexImage3D_ glTexImage3D
 
-#ifdef ANDROID
+#ifdef OPEN_GL_ES
 #define glDepthRange_ glDepthRangef
 #else
 #define glDepthRange_ glDepthRange
 #endif
 
-#ifdef ANDROID
+#ifdef OPEN_GL_ES
+//#ifdef ANDROID
+//#define GL_TEXTURE_RECTANGLE TEXTURE_UNNORMALIZED_COORDINATES_ARM
+//#else
 #define GL_TEXTURE_RECTANGLE GL_TEXTURE_2D
-//TEXTURE_UNNORMALIZED_COORDINATES_ARM
+//#endif
 #define GL_POLYGON_OFFSET_LINE GL_POLYGON_OFFSET_FILL
 #endif
 

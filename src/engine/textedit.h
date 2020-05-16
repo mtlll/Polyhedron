@@ -1,3 +1,4 @@
+#include "shared/stream.h"
 
 struct editline
 {

@@ -1,5 +1,7 @@
 #include "log.h"
 #include "shared/tools.h"
+#include "shared/stream.h"
+
 #ifdef ANDROID
 #include <android/log.h>
 #endif

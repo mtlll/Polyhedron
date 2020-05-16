@@ -488,7 +488,7 @@ void gl_checkextensions()
         if(hasGPU4)
         {
             GLint dualbufs = 0;
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
             glCheckError(glGetIntegerv(GL_MAX_DUAL_SOURCE_DRAW_BUFFERS, &dualbufs));
 #endif
             maxdualdrawbufs = dualbufs;
@@ -691,13 +691,13 @@ void synctimers()
         if(t.waiting&(1<<timercycle))
         {
             GLint available = 0;
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
             while(!available) {
                 glCheckError(glGetQueryObjectiv_(t.query[timercycle], GL_QUERY_RESULT_AVAILABLE, &available));
             }
 #endif
             GLuint64EXT result = 0;
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
             glCheckError(glGetQueryObjectui64v_(t.query[timercycle], GL_QUERY_RESULT, &result));
 #endif
             t.result = max(float(result) * 1e-6f, 0.0f);
@@ -759,7 +759,7 @@ void gl_init()
     GLERROR;
 
     glCheckError(glClearColor(0, 0, 0, 0));
-#ifdef ANDROID
+#ifdef OPEN_GL_ES
 	glCheckError(glClearDepthf(1));
 #else
     glCheckError(glClearDepth(1));
@@ -771,7 +771,7 @@ void gl_init()
     glCheckError(glStencilFunc(GL_ALWAYS, 0, ~0));
     glCheckError(glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP));
 
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     glCheckError(glEnable(GL_LINE_SMOOTH));
 #endif
     //glCheckError(glHint(GL_LINE_SMOOTH_HINT, GL_NICEST));
@@ -1995,7 +1995,7 @@ void gl_drawview()
     visiblecubes();
 
     if(wireframe && editmode){
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         glCheckError(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 #endif
     }
@@ -2003,7 +2003,7 @@ void gl_drawview()
     rendergbuffer();
 
     if(wireframe && editmode){
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         glCheckError(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 #endif
     }

@@ -1,6 +1,7 @@
 // console.cpp: the console buffer, its display, and command line control
 
 #include "engine.h"
+#include "shared/stream.h"
 #include "tools/cubestr.h"
 
 // WatIsDeze: Required.... sadly.

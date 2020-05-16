@@ -85,38 +85,42 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name, const char *
     if(length > 1)
     {
         conoutf(CON_ERROR, "GLSL ERROR (%s:%s)", type == GL_VERTEX_SHADER ? "VS" : (type == GL_FRAGMENT_SHADER ? "FS" : "PROG"), name);
-        FILE *l = getlogfile();
-        if(l)
-        {
-            GLchar *log = new GLchar[length];
-            if(type)
-            {
-                glCheckError(glGetShaderInfoLog_(obj, length, &length, log));
-            }
-            else
-            {
-                glCheckError(glGetProgramInfoLog_(obj, length, &length, log));
-            }
-            fprintf(l, "%s\n", log);
-            bool partlines = log[0] != '0';
-            int line = 0;
-            loopi(numparts)
-            {
-                const char *part = parts[i];
-                int startline = line;
-                while(*part)
-                {
-                    const char *next = strchr(part, '\n');
-                    if(++line > 1000) goto done;
-                    if(partlines) fprintf(l, "%d(%d): ", i, line - startline); else fprintf(l, "%d: ", line);
-                    fwrite(part, 1, next ? next - part + 1 : strlen(part), l);
-                    if(!next) { fputc('\n', l); break; }
-                    part = next + 1;
-                }
-            }
-        done:
-            delete[] log;
-        }
+
+		std::string log;
+		log.reserve(length + 1);
+		if(type)
+		{
+			glCheckError(glGetShaderInfoLog_(obj, length, &length, log.data()));
+		}
+		else
+		{
+			glCheckError(glGetProgramInfoLog_(obj, length, &length, log.data()));
+		}
+
+		conoutf(CON_ERROR, ">> %s", log.c_str());
+
+		for (int i = 0; i < numparts; ++i)
+		{
+			int line = 0;
+			const char *part = parts[i];
+			while(*part)
+			{
+				const char *next = strchr(part, '\n');
+				if(++line > 1000) return;
+
+				if (!next)
+				{
+					conoutf(CON_ERROR, ">>% 2d:%02d: %s<<<\n", i, line, part);
+					break;
+				}
+				else
+				{
+					std::string strLine(part, next - part);
+					conoutf(CON_ERROR, ">>% 2d:%02d: %s\n", i, line, strLine.c_str());
+				}
+				part = next + 1;
+			}
+		}
     }
 }
 
@@ -167,7 +171,7 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
     char *modsource = NULL;
     const char *parts[16];
     int numparts = 0;
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
     static const struct { int version; const char * const header; } glslversions[] =
     {
         { 400, "#version 400\n" },
@@ -181,10 +185,12 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
 #else
     static const struct { int version; const char * const header; } glslversions[] =
     {
-        { 330, "#version 320 es\nprecision mediump float;\n" },
-        { 310, "#version 310 es\nprecision mediump float;\n" },
-        { 300, "#version 300 es\nprecision mediump float;\n" },
-        { 200, "#version 100\nprecision mediump float;\n" }
+        { 400, "#version 400\n" },
+        { 330, "#version 330 es\nprecision mediump float;\nprecision mediump sampler3D;\n" },
+        { 320, "#version 320 es\nprecision mediump float;\nprecision mediump sampler3D;\n" },
+        { 310, "#version 310 es\nprecision mediump float;\nprecision mediump sampler3D;\n" },
+        { 300, "#version 300 es\nprecision mediump float;\nprecision mediump sampler3D;\n" },
+        { 200, "#version 100\nprecision mediump float;\nprecision mediump sampler3D;\n" }
     };
 #endif
     loopi(sizeof(glslversions)/sizeof(glslversions[0])) if(glslversion >= glslversions[i].version)
@@ -215,7 +221,7 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         else if(type == GL_FRAGMENT_SHADER)
         {
             parts[numparts++] = "#define varying in\n";
-            parts[numparts++] = (glslversion >= 330 || (glslversion >= 150 && hasEAL)) && !amd_eal_bug ?
+            parts[numparts++] = (glslversion >= 330 || (glslversion >= 150 && hasEAL) || (glslversion >= 300 && hasGLES)) && !amd_eal_bug ?
                 "#define fragdata(loc) layout(location = loc) out\n"
                 "#define fragblend(loc) layout(location = loc, index = 1) out\n" :
                 "#define fragdata(loc) out\n"
@@ -386,7 +392,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
         loopi(gle::MAXATTRIBS) if(!(attribs&(1<<i))){
             glCheckError(glBindAttribLocation_(s.program, i, gle::attribnames[i]));
         }
-#ifndef ANDROID
+#ifndef OPEN_GL_ES
         if(hasGPU4 && ((glslversion < 330 && (glslversion < 150 || !hasEAL)) || amd_eal_bug)) loopv(s.fragdatalocs)
         {
             FragDataLoc &d = s.fragdatalocs[i];

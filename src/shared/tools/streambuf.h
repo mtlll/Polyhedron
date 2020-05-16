@@ -1,5 +1,5 @@
 #pragma once
-#include "stream.h"
+#include "shared/stream.h"
 
 template<class T>
 struct streambuf
