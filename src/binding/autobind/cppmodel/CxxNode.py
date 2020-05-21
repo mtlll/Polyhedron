@@ -1,15 +1,23 @@
 from clang import cindex
+from enum import Flag, auto
 import sys
 
 PHUI_ANNOTATION = "phui;"
+class Generator(Flag):
+    Json = auto()
+    Attributes = auto()
+    CubeScript = auto()
+
+    All = Json | Attributes | CubeScript
 
 class CxxNode():
     
-    def __init__(self, parser, sourceObject, parent = None):
+    def __init__(self, parser, sourceObject, parent = None, generateFor = Generator.All):
         # self.cxxtype = cxxtype
         self.sourceObject = sourceObject
         self.parent = parent
         self.children = []
+        self.generateFor = generateFor
 
         self.getQualifiers()
 
@@ -56,7 +64,8 @@ class CxxNode():
         if node in self.children:
             self.children.remove(node)
             node.parent = None
-        pass
+            return True
+        return False
     
     def forEachChild(self, depthFirst = False, noDepth = False):
         for child in self.children:
@@ -68,7 +77,7 @@ class CxxNode():
 
     def dump(self, level = 0):
         pretext = " |" * level
-        output = pretext + " +"+ self.__class__.__qualname__  + " " + str(self) + "\n"
+        output = pretext + " +"+ self.__class__.__qualname__ + " " + str(self) + "\n"
         for child in self.children:
             output += child.dump(level + 1)
 

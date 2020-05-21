@@ -1,4 +1,11 @@
 #pragma once
+#include "shared/geom/vec.h"
+
+namespace entities {
+    namespace classes {
+        class BasePhysicalEntity;
+    }
+}
 
 void modifyorient(float yaw, float pitch);
 void mousemove(int dx, int dy);

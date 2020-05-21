@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cstring>
 #include <cstdarg>
+#include <cstdio>
 
 #ifdef __GNUC__
 #define PRINTFARGS(fmt, args) __attribute__((format(printf, fmt, args)))

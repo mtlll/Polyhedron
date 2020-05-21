@@ -58,7 +58,7 @@ extern vector<int> entgroup;
 #include "rendersky.h"
 #include "ui.h"
 #include "menus.h"
-#include "sound.h"
+#include "SoundConfig.h"
 #include "grass.h"
 #include "blend.h"
 #include "movie.h"
@@ -84,7 +84,7 @@ enum
 };
 bool initwarning(const char *desc, int level = INIT_RESET, int type = CHANGE_GFX);
 
-extern bool grabinput, minimized;
+extern bool grabinput;
 
 void pushevent(const SDL_Event &e);
 bool interceptkey(int sym);

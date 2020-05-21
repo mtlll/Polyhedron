@@ -1,18 +1,18 @@
 // rendergl.cpp: core opengl rendering stuff
 
 #include "engine.h"
-#include "../shared/ents.h"
-#include "../game/game.h"
-#include "../game/entities/player.h"
+#include "engine/main/Application.h"
+#include "engine/main/Window.h"
+#include "engine/main/GLContext.h"
+#include "engine/hud.h"
+#include "engine/GLFeatures.h"
+#include "shared/ents.h"
+#include "game/game.h"
+#include "game/entities/player.h"
 
-bool hasVAO = false, hasTR = false, hasTSW = false, hasPBO = false, hasFBO = false, hasAFBO = false, hasDS = false, hasTF = false, hasCBF = false, hasS3TC = false, hasFXT1 = false, hasLATC = false, hasRGTC = false, hasAF = false, hasFBB = false, hasFBMS = false, hasTMS = false, hasMSS = false, hasFBMSBS = false, hasUBO = false, hasMBR = false, hasDB2 = false, hasDBB = false, hasTG = false, hasTQ = false, hasPF = false, hasTRG = false, hasTI = false, hasHFV = false, hasHFP = false, hasDBT = false, hasDC = false, hasDBGO = false, hasEGPU4 = false, hasGPU4 = false, hasGPU5 = false, hasBFE = false, hasEAL = false, hasCR = false, hasOQ2 = false, hasES3 = false, hasCB = false, hasCI = false;
-bool mesa = false, intel = false, amd = false, nvidia = false, hasGLES;
 
 int hasstencil = 0;
 
-VAR(glversion, 1, 0, 0);
-VAR(glslversion, 1, 0, 0);
-VAR(glcompat, 1, 0, 0);
 
 void *getprocaddress(const char *name)
 {
@@ -37,583 +37,12 @@ void glerror(const char *file, int line, GLenum error)
     printf("GL error: %s:%d: %s (%x)\n", file, line, desc, error);
 }
 
-VAR(amd_pf_bug, 0, 0, 1);
-VAR(amd_eal_bug, 0, 0, 1);
-VAR(mesa_texrectoffset_bug, 0, 0, 1);
-VAR(intel_texalpha_bug, 0, 0, 1);
-VAR(intel_mapbufferrange_bug, 0, 0, 1);
-VAR(mesa_swap_bug, 0, 0, 1);
-VAR(useubo, 1, 0, 0);
-VAR(usetexgather, 1, 0, 0);
-VAR(usetexcompress, 1, 0, 0);
-VAR(maxdrawbufs, 1, 0, 0);
-VAR(maxdualdrawbufs, 1, 0, 0);
-
-static bool checkseries(const char *s, const char *name, int low, int high)
-{
-    if(name) s = strstr(s, name);
-    if(!s) return false;
-    while(*s && !isdigit(*s)) ++s;
-    if(!*s) return false;
-    int n = 0;
-    while(isdigit(*s)) n = n*10 + (*s++ - '0');
-    return n >= low && n <= high;
-}
-
-static bool checkmesaversion(const char *s, int major, int minor, int patch)
-{
-    const char *v = strstr(s, "Mesa");
-    if(!v) return false;
-    int vmajor = 0, vminor = 0, vpatch = 0;
-    if(sscanf(v, "Mesa %d.%d.%d", &vmajor, &vminor, &vpatch) < 1) return false;
-    if(vmajor > major) return true; else if(vmajor < major) return false;
-    if(vminor > minor) return true; else if(vminor < minor) return false;
-    return vpatch >= patch;
-}
 
 VAR(dbgexts, 0, 1, 1);
 
-hashset<const char *> glexts;
-
-void parseglexts()
-{
-    if(glversion >= 300)
-    {
-        GLint numexts = 0;
-        glCheckError(glGetIntegerv(GL_NUM_EXTENSIONS, &numexts));
-        loopi(numexts)
-        {
-            const char *ext = (const char *)glCheckError(glGetStringi_(GL_EXTENSIONS, i));
-            glexts.add(newcubestr(ext));
-        }
-    }
-    else
-    {
-        const char *exts = (const char *)glCheckError(glGetString(GL_EXTENSIONS));
-        for(;;)
-        {
-            while(*exts == ' ') exts++;
-            if(!*exts) break;
-            const char *ext = exts;
-            while(*exts && *exts != ' ') exts++;
-            if(exts > ext) glexts.add(newcubestr(ext, size_t(exts-ext)));
-        }
-    }
-}
-
-bool hasext(const char *ext)
-{
-    return glexts.access(ext)!=NULL;
-}
-
-bool checkdepthtexstencilrb()
-{
-    int w = 256, h = 256;
-    GLuint fbo = 0;
-    glCheckError(glGenFramebuffers_(1, &fbo));
-    glCheckError(glBindFramebuffer_(GL_FRAMEBUFFER, fbo));
-
-    GLuint depthtex = 0;
-    glCheckError(glGenTextures(1, &depthtex));
-    createtexture(depthtex, w, h, NULL, 3, 0, GL_DEPTH_COMPONENT24, GL_TEXTURE_RECTANGLE);
-    glCheckError(glBindTexture(GL_TEXTURE_RECTANGLE, 0));
-    glCheckError(glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_RECTANGLE, depthtex, 0));
-
-    GLuint stencilrb = 0;
-    glCheckError(glGenRenderbuffers_(1, &stencilrb));
-    glCheckError(glBindRenderbuffer_(GL_RENDERBUFFER, stencilrb));
-    glCheckError(glRenderbufferStorage_(GL_RENDERBUFFER, GL_STENCIL_INDEX8, w, h));
-    glCheckError(glBindRenderbuffer_(GL_RENDERBUFFER, 0));
-    glCheckError(glFramebufferRenderbuffer_(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, stencilrb));
-
-    bool supported = glCheckFramebufferStatus_(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
-
-    glCheckError(glBindFramebuffer_(GL_FRAMEBUFFER, 0));
-    glCheckError(glDeleteFramebuffers_(1, &fbo));
-    glCheckError(glDeleteTextures(1, &depthtex));
-    glCheckError(glDeleteRenderbuffers_(1, &stencilrb));
-
-    return supported;
-}
-
-void gl_checkextensions()
-{
-    const char *vendor = (const char *)glCheckError(glGetString(GL_VENDOR));
-    const char *renderer = (const char *)glCheckError(glGetString(GL_RENDERER));
-    const char *version = (const char *)glCheckError(glGetString(GL_VERSION));
-    conoutf(CON_INIT, "Renderer: %s (%s)", renderer, vendor);
-    conoutf(CON_INIT, "Driver: %s", version);
-
-    if(strstr(renderer, "Mesa") || strstr(version, "Mesa"))
-    {
-        mesa = true;
-        if(strstr(renderer, "Intel")) intel = true;
-    }
-    else if(strstr(vendor, "NVIDIA"))
-        nvidia = true;
-    else if(strstr(vendor, "ATI") || strstr(vendor, "Advanced Micro Devices"))
-        amd = true;
-    else if(strstr(vendor, "Intel"))
-        intel = true;
-
-    uint glmajorversion, glminorversion;
-    if(sscanf(version, " %u.%u", &glmajorversion, &glminorversion) != 2)
-	{
-		char esStr[64] = {0};
-		if(sscanf(version, "%*s %s %u.%u", esStr, &glmajorversion, &glminorversion) == 3)
-		{
-			glversion = glmajorversion*100 + glminorversion*10;
-			if (strcmp(esStr, "ES") == 0)
-			{
-				hasGLES = true;
-			}
-		}
-		else
-		{
-			glversion = 100;
-		}
-	}
-    else
-	{
-		glversion = glmajorversion*100 + glminorversion*10;
-	}
-
-    if(glversion < 200) fatal("OpenGL 2.0 or greater is required!");
-
-    const char *glslstr = (const char *)glCheckError(glGetString(GL_SHADING_LANGUAGE_VERSION));
-    conoutf(CON_INIT, "GLSL: %s", glslstr ? glslstr : "unknown");
-
-    uint glslmajorversion = 0, glslminorversion = 0;
-    if (glslstr)
-	{
-		if (sscanf(glslstr, " %u.%u", &glslmajorversion, &glslminorversion) == 2)
-		{
-			glslversion = glslmajorversion*100 + glslminorversion;
-		}
-		else
-		{
-			if (sscanf(glslstr, "%*s %*s %*s %*s %u.%u", &glslmajorversion, &glslminorversion) == 2)
-			{
-				glslversion = glslmajorversion*100 + glslminorversion;
-			}
-		}
-	}
-
-    if(glslversion < 120) fatal("GLSL 1.20 or greater is required!");
-
-    parseglexts();
-
-    GLint texsize = 0, texunits = 0, vtexunits = 0, cubetexsize = 0, drawbufs = 0;
-    glCheckError(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &texsize));
-    hwtexsize = texsize;
-    if(hwtexsize < 2048)
-        fatal("Large texture support is required!");
-    glCheckError(glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texunits));
-    hwtexunits = texunits;
-    if(hwtexunits < 16)
-        fatal("Hardware does not support at least 16 texture units.");
-    glCheckError(glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &vtexunits));
-    hwvtexunits = vtexunits;
-    //if(hwvtexunits < 4)
-    //    fatal("Hardware does not support at least 4 vertex texture units.");
-    glCheckError(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, &cubetexsize));
-    hwcubetexsize = cubetexsize;
-    glCheckError(glGetIntegerv(GL_MAX_DRAW_BUFFERS, &drawbufs));
-    maxdrawbufs = drawbufs;
-    if(maxdrawbufs < 4) fatal("Hardware does not support at least 4 draw buffers.");
-
-    if(glversion >= 210 || hasext("GL_ARB_pixel_buffer_object") || hasext("GL_EXT_pixel_buffer_object"))
-    {
-        hasPBO = true;
-        if(glversion < 210 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_pixel_buffer_object extension.");
-    }
-    else fatal("Pixel buffer object support is required!");
-
-    if(glversion >= 300 || hasext("GL_ARB_vertex_array_object"))
-    {
-        hasVAO = true;
-        if(glversion < 300 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_vertex_array_object extension.");
-    }
-    else if(hasext("GL_APPLE_vertex_array_object"))
-    {
-        hasVAO = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_APPLE_vertex_array_object extension.");
-    }
-
-    if(glversion >= 300)
-    {
-        hasTF = hasTRG = hasRGTC = hasPF = hasHFV = hasHFP = true;
-
-        hasGPU4 = true;
-
-        if(hasext("GL_EXT_gpu_shader4"))
-        {
-            hasEGPU4 = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_gpu_shader4 extension.");
-        }
-
-        hasCBF = true;
-
-        hasDB2 = true;
-
-        hasCR = true;
-
-        hasTI = true;
-    }
-    else
-    {
-        if(hasext("GL_ARB_texture_float"))
-        {
-            hasTF = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_float extension.");
-        }
-        if(hasext("GL_ARB_texture_rg"))
-        {
-            hasTRG = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_rg extension.");
-        }
-        if(hasext("GL_ARB_texture_compression_rgtc") || hasext("GL_EXT_texture_compression_rgtc"))
-        {
-            hasRGTC = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_compression_rgtc extension.");
-        }
-        if(hasext("GL_EXT_packed_float"))
-        {
-            hasPF = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_packed_float extension.");
-        }
-        if(hasext("GL_EXT_gpu_shader4"))
-        {
-            hasEGPU4 = hasGPU4 = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_gpu_shader4 extension.");
-        }
-        if(hasext("GL_ARB_color_buffer_float"))
-        {
-            hasCBF = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_color_buffer_float extension.");
-        }
-        if(hasext("GL_EXT_draw_buffers2"))
-        {
-            hasDB2 = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_draw_buffers2 extension.");
-        }
-        if(hasext("GL_NV_conditional_render"))
-        {
-            hasCR = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_NV_conditional_render extension.");
-        }
-        if(hasext("GL_EXT_texture_integer"))
-        {
-            hasTI = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_texture_integer extension.");
-        }
-        if(hasext("GL_NV_half_float"))
-        {
-            hasHFV = hasHFP = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_NV_half_float extension.");
-        }
-        else
-        {
-            if(hasext("GL_ARB_half_float_vertex"))
-            {
-                hasHFV = true;
-                if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_half_float_vertex extension.");
-            }
-            if(hasext("GL_ARB_half_float_pixel"))
-            {
-                hasHFP = true;
-                if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_half_float_pixel extension.");
-            }
-        }
-    }
-
-    if(!hasHFV) fatal("Half-precision floating-point support is required!");
-
-    if(glversion >= 300 || hasext("GL_ARB_framebuffer_object"))
-    {
-        hasAFBO = hasFBO = hasFBB = hasFBMS = hasDS = true;
-        if(glversion < 300 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_framebuffer_object extension.");
-    }
-    else if(hasext("GL_EXT_framebuffer_object"))
-    {
-        hasFBO = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_framebuffer_object extension.");
-
-        if(hasext("GL_EXT_framebuffer_blit"))
-        {
-            hasFBB = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_framebuffer_blit extension.");
-        }
-        if(hasext("GL_EXT_framebuffer_multisample"))
-        {
-            hasFBMS = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_framebuffer_multisample extension.");
-        }
-        if(hasext("GL_EXT_packed_depth_stencil") || hasext("GL_NV_packed_depth_stencil"))
-        {
-            hasDS = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_packed_depth_stencil extension.");
-        }
-    }
-    else fatal("Framebuffer object support is required!");
-
-    if(glversion >= 300 || hasext("GL_ARB_map_buffer_range"))
-    {
-        hasMBR = true;
-        if(glversion < 300 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_map_buffer_range.");
-    }
-
-    if(glversion >= 310 || hasext("GL_ARB_uniform_buffer_object"))
-    {
-
-        useubo = 1;
-        hasUBO = true;
-        if(glversion < 310 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_uniform_buffer_object extension.");
-    }
-
-    if(glversion >= 310 || hasext("GL_ARB_texture_rectangle"))
-    {
-        hasTR = true;
-        if(glversion < 310 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_rectangle extension.");
-    }
-    else fatal("Texture rectangle support is required!");
-
-    if(glversion >= 310 || hasext("GL_ARB_copy_buffer"))
-    {
-        hasCB = true;
-        if(glversion < 310 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_copy_buffer extension.");
-    }
-
-    if(glversion >= 320 || hasext("GL_ARB_texture_multisample"))
-    {
-       hasTMS = true;
-        if(glversion < 320 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_multisample extension.");
-    }
-    if(hasext("GL_EXT_framebuffer_multisample_blit_scaled"))
-    {
-        hasFBMSBS = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_framebuffer_multisample_blit_scaled extension.");
-    }
-
-    if(hasext("GL_EXT_timer_query"))
-    {
-       hasTQ = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_timer_query extension.");
-    }
-    else if(glversion >= 330 || hasext("GL_ARB_timer_query"))
-    {
-       hasTQ = true;
-        if(glversion < 330 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_timer_query extension.");
-    }
-
-    if(hasext("GL_EXT_texture_compression_s3tc"))
-    {
-        hasS3TC = true;
-#ifdef __APPLE__
-        usetexcompress = 1;
-#else
-        if(!mesa) usetexcompress = 2;
-#endif
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_texture_compression_s3tc extension.");
-    }
-    else if(hasext("GL_EXT_texture_compression_dxt1") && hasext("GL_ANGLE_texture_compression_dxt3") && hasext("GL_ANGLE_texture_compression_dxt5"))
-    {
-        hasS3TC = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_texture_compression_dxt1 extension.");
-    }
-    if(hasext("GL_3DFX_texture_compression_FXT1"))
-    {
-        hasFXT1 = true;
-        if(mesa) usetexcompress = max(usetexcompress, 1);
-        if(dbgexts) conoutf(CON_INIT, "Using GL_3DFX_texture_compression_FXT1.");
-    }
-    if(hasext("GL_EXT_texture_compression_latc"))
-    {
-        hasLATC = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_texture_compression_latc extension.");
-    }
-
-    if(hasext("GL_EXT_texture_filter_anisotropic"))
-    {
-       GLint val = 0;
-       glCheckError(glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &val));
-       hwmaxaniso = val;
-       hasAF = true;
-       if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_texture_filter_anisotropic extension.");
-    }
-
-    if(hasext("GL_EXT_depth_bounds_test"))
-    {
-        hasDBT = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_EXT_depth_bounds_test extension.");
-    }
-
-    if(glversion >= 320 || hasext("GL_ARB_depth_clamp"))
-    {
-        hasDC = true;
-        if(glversion < 320 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_depth_clamp extension.");
-    }
-    else if(hasext("GL_NV_depth_clamp"))
-    {
-        hasDC = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_NV_depth_clamp extension.");
-    }
-
-    if(glversion >= 330)
-    {
-        hasTSW = hasEAL = hasOQ2 = true;
-    }
-    else
-    {
-        if(hasext("GL_ARB_texture_swizzle") || hasext("GL_EXT_texture_swizzle"))
-        {
-            hasTSW = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_swizzle extension.");
-        }
-        if(hasext("GL_ARB_explicit_attrib_location"))
-        {
-            hasEAL = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_explicit_attrib_location extension.");
-        }
-        if(hasext("GL_ARB_occlusion_query2"))
-        {
-            hasOQ2 = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_occlusion_query2 extension.");
-        }
-    }
-
-    if(glversion >= 330 || hasext("GL_ARB_blend_func_extended"))
-    {
-
-        if(hasGPU4)
-        {
-            GLint dualbufs = 0;
-#ifndef OPEN_GL_ES
-            glCheckError(glGetIntegerv(GL_MAX_DUAL_SOURCE_DRAW_BUFFERS, &dualbufs));
-#endif
-            maxdualdrawbufs = dualbufs;
-        }
-
-        hasBFE = true;
-        if(glversion < 330 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_blend_func_extended extension.");
-    }
-
-    if(glversion >= 400)
-    {
-        hasTG = hasGPU5 = true;
-
-		hasMSS = true;
-
-        hasDBB = true;
-    }
-    else
-    {
-        if(hasext("GL_ARB_texture_gather"))
-        {
-            hasTG = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_texture_gather extension.");
-        }
-        if(hasext("GL_ARB_gpu_shader5"))
-        {
-            hasGPU5 = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_gpu_shader5 extension.");
-        }
-        if(hasext("GL_ARB_sample_shading"))
-        {
-
-            hasMSS = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_sample_shading extension.");
-        }
-        if(hasext("GL_ARB_draw_buffers_blend"))
-        {
-
-            hasDBB = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_draw_buffers_blend extension.");
-        }
-    }
-    if(hasTG) usetexgather = hasGPU5 && !intel && !nvidia ? 2 : 1;
-
-    if(glversion >= 430 || hasext("GL_ARB_ES3_compatibility"))
-    {
-        hasES3 = true;
-        if(glversion < 430 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_ES3_compatibility extension.");
-    }
-
-    if(glversion >= 430)
-    {
-
-        hasDBGO = true;
-    }
-    else
-    {
-        if(hasext("GL_ARB_debug_output"))
-        {
-
-            hasDBGO = true;
-            if(dbgexts) conoutf(CON_INIT, "Using GL_ARB_debug_output extension.");
-        }
-    }
-
-    if(glversion >= 430 || hasext("GL_ARB_copy_image"))
-    {
-
-
-        hasCI = true;
-        if(glversion < 430 && dbgexts) conoutf(CON_INIT, "Using GL_ARB_copy_image extension.");
-    }
-    else if(hasext("GL_NV_copy_image"))
-    {
-
-        hasCI = true;
-        if(dbgexts) conoutf(CON_INIT, "Using GL_NV_copy_image extension.");
-    }
-
-    extern int gdepthstencil, gstencil, glineardepth, msaadepthstencil, msaalineardepth, batchsunlight, smgather, rhrect, tqaaresolvegather;
-    if(amd)
-    {
-        msaalineardepth = glineardepth = 1; // reading back from depth-stencil still buggy on newer cards, and requires stencil for MSAA
-        msaadepthstencil = gdepthstencil = 1; // some older AMD GPUs do not support reading from depth-stencil textures, so only use depth-stencil renderbuffer for now
-        if(checkseries(renderer, "Radeon HD", 4000, 5199)) amd_pf_bug = 1;
-        if(glversion < 400)
-        {
-            amd_eal_bug = 1; // explicit_attrib_location broken when used with blend_func_extended on legacy Catalyst
-            rhrect = 1; // bad cpu stalls on Catalyst 13.x when trying to use 3D textures previously bound to FBOs
-        }
-    }
-    else if(nvidia)
-    {
-    }
-    else if(intel)
-    {
-        smgather = 1; // native shadow filter is slow
-        if(mesa)
-        {
-            batchsunlight = 0; // causes massive slowdown in linux driver
-            if(!checkmesaversion(version, 10, 0, 3))
-                mesa_texrectoffset_bug = 1; // mesa i965 driver has buggy textureOffset with texture rectangles
-            msaalineardepth = 1; // MSAA depth texture access is buggy and resolves are slow
-        }
-        else
-        {
-            // causes massive slowdown in windows driver if reading depth-stencil texture
-            if(checkdepthtexstencilrb())
-            {
-                gdepthstencil = 1;
-                gstencil = 1;
-            }
-            // sampling alpha by itself from a texture generates garbage on Intel drivers on Windows
-            intel_texalpha_bug = 1;
-            // MapBufferRange is buggy on older Intel drivers on Windows
-            if(glversion <= 310) intel_mapbufferrange_bug = 1;
-        }
-    }
-    if(mesa) mesa_swap_bug = 1;
-    if(hasGPU5 && hasTG) tqaaresolvegather = 1;
-}
-
 SCRIPTEXPORT void glext(char *ext)
 {
-    intret(hasext(ext) ? 1 : 0);
+    intret(has_ext(ext) ? 1 : 0);
 }
 
 struct timer
@@ -658,12 +87,12 @@ timer *findtimer(const char *name, bool gpu)
 
 timer *begintimer(const char *name, bool gpu)
 {
-    if(!usetimers || inbetweenframes || (gpu && (!hasTQ || deferquery))) return NULL;
+    if(!usetimers || inbetweenframes || (gpu && (!GLFeatures::HasTQ() || deferquery))) return NULL;
     timer *t = findtimer(name, gpu);
     if(t->gpu)
     {
         deferquery++;
-        glCheckError(glBeginQuery_(GL_TIME_ELAPSED_EXT, t->query[timercycle]));
+        glCheckError(glBeginQuery_(GL_TIME_ELAPSED, t->query[timercycle]));
         t->waiting |= 1<<timercycle;
     }
     else t->starttime = getclockmillis();
@@ -675,7 +104,7 @@ void endtimer(timer *t)
     if(!t) return;
     if(t->gpu)
     {
-        glCheckError(glEndQuery_(GL_TIME_ELAPSED_EXT));
+        glCheckError(glEndQuery_(GL_TIME_ELAPSED));
         deferquery--;
     }
     else t->result = max(float(getclockmillis() - t->starttime), 0.0f);
@@ -856,54 +285,6 @@ void setcamprojmatrix(bool init = true, bool flush = false)
     GLOBALPARAM(lineardepthscale, projmatrix.lineardepthscale()); //(invprojmatrix.c.z, invprojmatrix.d.z));
 
     if(flush && Shader::lastshader) Shader::lastshader->flushparams();
-}
-
-matrix4 hudmatrix, hudmatrixstack[64];
-int hudmatrixpos = 0;
-
-void resethudmatrix()
-{
-    hudmatrixpos = 0;
-    GLOBALPARAM(hudmatrix, hudmatrix);
-}
-
-void pushhudmatrix()
-{
-    if(hudmatrixpos >= 0 && hudmatrixpos < int(sizeof(hudmatrixstack)/sizeof(hudmatrixstack[0]))) hudmatrixstack[hudmatrixpos] = hudmatrix;
-    ++hudmatrixpos;
-}
-
-void flushhudmatrix(bool flushparams)
-{
-    GLOBALPARAM(hudmatrix, hudmatrix);
-    if(flushparams && Shader::lastshader) Shader::lastshader->flushparams();
-}
-
-void pophudmatrix(bool flush, bool flushparams)
-{
-    --hudmatrixpos;
-    if(hudmatrixpos >= 0 && hudmatrixpos < int(sizeof(hudmatrixstack)/sizeof(hudmatrixstack[0])))
-    {
-        hudmatrix = hudmatrixstack[hudmatrixpos];
-        if(flush) flushhudmatrix(flushparams);
-    }
-}
-
-void pushhudscale(float sx, float sy)
-{
-    if(!sy) sy = sx;
-    pushhudmatrix();
-    hudmatrix.scale(sx, sy, 1);
-    flushhudmatrix();
-}
-
-void pushhudtranslate(float tx, float ty, float sx, float sy)
-{
-    if(!sy) sy = sx;
-    pushhudmatrix();
-    hudmatrix.translate(tx, ty, 0);
-    if(sy) hudmatrix.scale(sx, sy, 1);
-    flushhudmatrix();
 }
 
 int vieww = -1, viewh = -1;
@@ -1742,7 +1123,7 @@ void drawminimap()
     camera1 = oldcamera;
     drawtex = 0;
 
-    createtexture(minimaptex, size, size, NULL, 3, 1, GL_RGB5, GL_TEXTURE_2D);
+    createtexture(minimaptex, size, size, NULL, 3, 1, GL_RGBA, GL_TEXTURE_2D);
     glCheckError(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER));
     glCheckError(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER));
     GLfloat border[4] = { minimapcolour.x/255.0f, minimapcolour.y/255.0f, minimapcolour.z/255.0f, 1.0f };
@@ -1979,7 +1360,7 @@ void gl_drawview()
     }
     else fogmat = MAT_AIR;
     setfog(abovemat);
-    //setfog(fogmat, fogbelow, 1, abovemat);
+    setfog(fogmat, fogbelow, 1, abovemat);
 
     farplane = worldsize*2;
 
@@ -1992,7 +1373,7 @@ void gl_drawview()
     ldrscale = 0.5f;
     ldrscaleb = ldrscale/255;
 
-    visiblecubes();
+    visiblecubes(false);
 
     if(wireframe && editmode){
 #ifndef OPEN_GL_ES
@@ -2096,7 +1477,7 @@ float damagedirs[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 void damagecompass(int n, const vec &loc)
 {
-    if(!usedamagecompass || minimized) return;
+    if(!usedamagecompass || Application::Instance().GetAppState().Minimized) return;
     vec delta(loc);
     delta.sub(camera1->o);
     float yaw = 0, pitch;
@@ -2161,7 +1542,7 @@ VARP(damagescreenmax, 1, 100, 1000);
 
 void damageblend(int n)
 {
-    if(!damagescreen || minimized) return;
+    if(!damagescreen || Application::Instance().GetAppState().Minimized) return;
     if(lastmillis > damageblendmillis) damageblendmillis = lastmillis;
     damageblendmillis += clamp(n, damagescreenmin, damagescreenmax)*damagescreenfactor;
 }
@@ -2404,11 +1785,8 @@ int renderw = 0, renderh = 0, hudw = 0, hudh = 0;
 
 void gl_setupframe(bool force)
 {
-    extern int scr_w, scr_h;
-    renderw = min(scr_w, screenw);
-    renderh = min(scr_h, screenh);
-    hudw = screenw;
-    hudh = screenh;
+    Application::Instance().GetWindow().GetContext().GetFramebufferSize(renderw, renderh);
+    Application::Instance().GetWindow().GetContext().GetFramebufferSize(hudw, hudh);
     if(!force) return;
     setuplights();
 }

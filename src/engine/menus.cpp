@@ -26,6 +26,18 @@ void addchange(const char *desc, int type)
     if(!hidechanges) UI::showui("changes");
 }
 
+int initing = NOT_INITING;
+
+bool initwarning(const char *desc, int level, int type)
+{
+    if(initing < level)
+    {
+        addchange(desc, type);
+        return true;
+    }
+    return false;
+}
+
 void clearchanges(int type)
 {
     loopvrev(needsapply)

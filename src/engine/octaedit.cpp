@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "shared/stream.h"
-#include "../game/entities/player.h"
+#include "engine/hud.h"
+#include "game/entities/player.h"
 
 extern int outline;
 

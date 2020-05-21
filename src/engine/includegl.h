@@ -1,22 +1,19 @@
 #pragma once
 
-#define OPEN_GL_ES
+//#define OPEN_GL_ES
 
 #include <glad/glad.h>
 #include <SDL.h>
 
-#ifdef __APPLE_
-#import <OpenGLES/ES3/gl.h>
-#import <OpenGLES/ES3/glext.h>
+#if defined(glMultiDrawArraysEXT) && !defined(glMultiDrawArrays)
+#define glMultiDrawArrays glMultiDrawArraysEXT
 #endif
+#define glMultiDrawArrays_ glMultiDrawArrays
 
-#ifdef ANDROID
-#include <GLES3/gl3.h>
-#include <GLES3/gl3ext.h>
+#if defined(glMultiDrawElementsEXT) && !defined(glMultiDrawElements)
+#define glMultiDrawElements glMultiDrawElementsEXT
 #endif
-
-#define glMultiDrawArrays_ glMultiDrawArraysEXT
-#define glMultiDrawElements_ glMultiDrawElementsExt
+#define glMultiDrawElements_ glMultiDrawElements
 
 #define glBlendFuncSeparate_ glBlendFuncSeparate
 #define glBlendEquationSeparate_ glBlendEquationSeparate
@@ -181,7 +178,10 @@
 #define glSampleMaski_ glSampleMaski
 #define glGetQueryObjecti64v_ glGetQueryObjecti64v
 #define glGetQueryObjectui64v_ glGetQueryObjectui64v
-#define glDepthBounds_ glDepthBoundsf
+#if defined(glDepthBoundsf) && !defined(glDepthBounds)
+#define glDepthBounds glDepthBoundsf
+#endif
+#define glDepthBounds_ glDepthBounds
 #define glBindFragDataLocationIndexed_ glBindFragDataLocationIndexed
 #define glBlendEquationi_ glBlendEquationi
 #define glBlendEquationSeparatei_ glBlendEquationSeparatei
@@ -196,8 +196,9 @@
 #define glDrawRangeElements_ glDrawRangeElements
 #define glFramebufferTexture3D_ glFramebufferTexture3DOES
 
+#define glCompressedTexImage1D_ glCompressedTexImage1D
 #define glCompressedTexImage2D_ glCompressedTexImage2D
-
+#define glGetCompressedTexImage_ glGetCompressedTexImage
 #define glTexImage3D_ glTexImage3D
 
 #ifdef OPEN_GL_ES
@@ -206,30 +207,88 @@
 #define glDepthRange_ glDepthRange
 #endif
 
-#ifdef OPEN_GL_ES
-//#ifdef ANDROID
-//#define GL_TEXTURE_RECTANGLE TEXTURE_UNNORMALIZED_COORDINATES_ARM
-//#else
-#define GL_TEXTURE_RECTANGLE GL_TEXTURE_2D
-//#endif
-#define GL_POLYGON_OFFSET_LINE GL_POLYGON_OFFSET_FILL
+#ifndef GL_TEXTURE_RECTANGLE
+#ifdef GL_TEXTURE_RECTANGLE_ARB
+#define GL_TEXTURE_RECTANGLE GL_TEXTURE_RECTANGLE_ARB
+#endif
+#ifdef GL_TEXTURE_RECTANGLE_NV
+#define GL_TEXTURE_RECTANGLE GL_TEXTURE_RECTANGLE_NV
+#endif
 #endif
 
+#ifndef GL_RGB5_EXT
+#define GL_RGB5_EXT 0x8050
+#endif
+
+#ifndef GL_RGB16_EXT
+#define GL_RGB16_EXT 0x8054
+#endif
+
+#ifndef GL_R16_EXT
+#define GL_R16_EXT 0x822A
+#endif
+
+#ifdef GL_LUMINANCE8_OES
 #define GL_LUMINANCE8 GL_LUMINANCE8_OES
+#endif
+#ifdef GL_LUMINANCE8_EXT
+#define GL_LUMINANCE8 GL_LUMINANCE8_EXT
+#endif
+#ifdef GL_LUMINANCE8_ALPHA8_OES
 #define GL_LUMINANCE8_ALPHA8 GL_LUMINANCE8_ALPHA8_OES
+#endif
+#ifdef GL_LUMINANCE8_ALPHA8_EXT
+#define GL_LUMINANCE8_ALPHA8 GL_LUMINANCE8_ALPHA8_EXT
+#endif
+#if defined(GL_RGB10_EXT) && !defined(GL_RGB10)
 #define GL_RGB10 GL_RGB10_EXT
-#define GL_R16 GL_R16F
-#define GL_RGB16 GL_RGB16F
+#endif
+#if defined(GL_R16_EXT) && !defined(GL_R16)
+#define GL_R16 GL_R16_EXT
+#endif
+#if defined(GL_RGB16_EXT) && !defined(GL_RGB16)
+#define GL_RGB16 GL_RGB16_EXT
+#endif
+#if defined(GL_DEPTH_COMPONENT32_OES) && !defined(GL_DEPTH_COMPONENT32)
 #define GL_DEPTH_COMPONENT32 GL_DEPTH_COMPONENT32_OES
+#endif
+
+#if defined(GL_COMPRESSED_RED_RGTC1_EXT) && !defined(GL_COMPRESSED_RED_RGTC1)
 #define GL_COMPRESSED_RED_RGTC1 GL_COMPRESSED_RED_RGTC1_EXT
+#endif
+
+#ifdef GL_ONE_MINUS_SRC1_ALPHA_EXT
 #define GL_ONE_MINUS_SRC1_ALPHA GL_ONE_MINUS_SRC1_ALPHA_EXT
+#endif
+#ifdef GL_SRC1_ALPHA_EXT
 #define GL_SRC1_ALPHA GL_SRC1_ALPHA_EXT
-#define GL_RGB5 GL_RGB565
+#endif
+#ifndef GL_RGB5
+#define GL_RGB5 GL_RGB5_EXT
+#endif
 //#define GL_COMPRESSED_RG_RGTC2 GL_COMPRESSED_RG_RGTC2_EXT
 #define GL_COMPRESSED_LUMINANCE_LATC1 GL_COMPRESSED_LUMINANCE_LATC1_EXT
 #define GL_COMPRESSED_LUMINANCE_ALPHA_LATC2 GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT
 #define GL_COMPRESSED_RGB_S3TC_DXT1 GL_COMPRESSED_RGB_S3TC_DXT1_EXT
+#ifndef GL_BGRA
 #define GL_BGRA GL_BGRA_EXT
+#endif
+
+#ifndef GL_LUMINANCE16
+#define GL_LUMINANCE16 GL_LUMINANCE16_EXT
+#endif
+
+#ifndef GL_LUMINANCE16_ALPHA16
+#define GL_LUMINANCE16_ALPHA16 GL_LUMINANCE16_ALPHA16_EXT
+#endif
+
+#ifndef GL_ALPHA8
+#define GL_ALPHA8 GL_ALPHA8_EXT
+#endif
+
+#ifndef GL_ALPHA16
+#define GL_ALPHA16 GL_ALPHA16_EXT
+#endif
 
 #ifndef GL_COMPRESSED_ALPHA
 #define GL_COMPRESSED_ALPHA					0x84E9
@@ -243,6 +302,16 @@
 #define GL_COMPRESSED_RED					0x8225
 #define GL_COMPRESSED_RG					0x8226
 
+#ifdef GL_TIME_ELAPSED_EXT
+#define GL_TIME_ELAPSED GL_TIME_ELAPSED_EXT
+#endif
+
+#ifdef GL_SCALED_RESOLVE_FASTEST_EXT
+#define GL_SCALED_RESOLVE_FASTEST GL_SCALED_RESOLVE_FASTEST_EXT
+#endif
+#ifndef GL_SCALED_RESOLVE_FASTEST
+#define GL_SCALED_RESOLVE_FASTEST GL_NEAREST
+#endif
 
 //#ifdef DEBUG
 GLenum DebugOpenGL(const char *expression, const char *file, int line);

@@ -608,6 +608,12 @@ bool stream::getline(char *str, size_t len)
     return true;
 }
 
+bool stream::putcubestr(const char *str)
+{
+    size_t len = strlen(str);
+    return write(str, len) == len;
+}
+
 size_t stream::printf(const char *fmt, ...)
 {
     char buf[512];

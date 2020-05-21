@@ -3,7 +3,8 @@
 #include "engine.h"
 
 // Included especially for base and animated map models.
-#include "../game/entities/basemapmodel.h"
+#include "game/entities/basemapmodel.h"
+#include "engine/GLFeatures.h"
 
 static inline void drawtris(GLsizei numindices, const GLvoid *indices, ushort minvert, ushort maxvert)
 {
@@ -347,11 +348,11 @@ VAR(oqwait, 0, 1, 1);
 
 static inline GLenum querytarget()
 {
-    return oqany && hasOQ2 ? (oqany > 1 && hasES3 ? GL_ANY_SAMPLES_PASSED_CONSERVATIVE : GL_ANY_SAMPLES_PASSED) :
-#ifdef OPEN_GL_ES
+    return oqany && GLFeatures::HasOQ2() ? (oqany > 1 && GLFeatures::HasES3() ? GL_ANY_SAMPLES_PASSED_CONSERVATIVE : GL_ANY_SAMPLES_PASSED) :
+           #ifdef OPEN_GL_ES
 	GL_ANY_SAMPLES_PASSED
 #else
-    GL_SAMPLES_PASSED
+           GL_SAMPLES_PASSED
 #endif
     ;
 }

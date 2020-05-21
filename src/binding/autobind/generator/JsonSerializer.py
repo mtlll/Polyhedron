@@ -4,19 +4,25 @@ CUSTOM_TOJSON_VARGENERATORS = {}
 CUSTOM_FROMJSON_VARGENERATORS = {}
 
 def Generate(cxxRootNode):
+    from ..cppmodel.CxxNode import Generator
     from ..cppmodel.CxxClass import CxxClass
-    
-    template = """#include "{}"
+
+    template = """#include <nlohmann/json.hpp>
+#include "{}"
+
 {}"""
     generated_funcs = []
     for node in cxxRootNode.forEachChild(noDepth = False):
         if type(node) is CxxClass:
-            generated_funcs.append(GenerateFromJson(node))
-            generated_funcs.append(GenerateToJson(node))
-            generated_funcs.append(GenerateAttributeDefinition(node))
-            generated_funcs.append(GenerateAttributeGetter(node))
-            generated_funcs.append(GenerateAttributeSetter(node))
-            generated_funcs.append(GenerateJsonDebug(node))
+            if node.generateFor & Generator.Json:
+                generated_funcs.append(GenerateFromJson(node))
+                generated_funcs.append(GenerateToJson(node))
+            if node.generateFor & Generator.Attributes:
+                generated_funcs.append(GenerateAttributeDefinition(node))
+                generated_funcs.append(GenerateAttributeGetter(node))
+                generated_funcs.append(GenerateAttributeSetter(node))
+            if node.generateFor & Generator.Json:
+                generated_funcs.append(GenerateJsonDebug(node))
     if len(generated_funcs) == 0:
         return ""
 
@@ -40,11 +46,13 @@ def GenerateJsonTemplateValues(cxxClass):
     }
 
 def GenerateToJson(cxxClass):
+    from ..cppmodel.CxxVariable import CxxVariable
     templateValues = GenerateJsonTemplateValues(cxxClass)
 
     output = []
     for child in cxxClass.forEachChild(noDepth = True):
-        output = output + GenerateToJsonVariable(child, "entity_t")
+        if type(child) == CxxVariable:
+            output = output + GenerateToJsonVariable(child, "entity_t")
     body = ",\n\t\t".join(output)
     return cxxClass.NamespaceBlock(f"""void to_json(nlohmann::json& document, const {templateValues['className']}& entity_t)
 {{
@@ -66,11 +74,13 @@ def GenerateToJsonVariable(cxxVar, instanceVar):
 
 
 def GenerateFromJson(cxxClass):
+    from ..cppmodel.CxxVariable import CxxVariable
     templateValues = GenerateJsonTemplateValues(cxxClass)
 
     output = []
     for child in cxxClass.forEachChild(noDepth = True):
-        output = output + GenerateFromJsonVariable(child, "document", "entity_t")
+        if type(child) == CxxVariable:
+            output = output + GenerateFromJsonVariable(child, "document", "entity_t")
     body = "\n\t".join(output)
     return cxxClass.NamespaceBlock(f"""void from_json(const nlohmann::json& document, {templateValues['className']}& entity_t)
 {{
@@ -121,11 +131,12 @@ def GenerateAttributeDefinitionVariable(cxxVar):
     definition = []
 
     for child in cxxVar.forEachChild(noDepth = True):
-        phui, uiType, *data = child.data
-        definition.append(f"\"{uiType}\"s")
-        definition.append(f"\"{cxxVar}\"s")
-        for element in data:
-            definition.append(GenerateAttributeDefinitionVariableSanitized(element))
+        if 'data' in child:
+            phui, uiType, *data = child.data
+            definition.append(f"\"{uiType}\"s")
+            definition.append(f"\"{cxxVar}\"s")
+            for element in data:
+                definition.append(GenerateAttributeDefinitionVariableSanitized(element))
 
     if len(definition) > 0:
         output.append(

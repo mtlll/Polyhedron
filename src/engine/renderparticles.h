@@ -1,4 +1,5 @@
 #pragma once
+ namespace entities { namespace classes { class CoreEntity; } }
 
 extern int particlelayers;
 

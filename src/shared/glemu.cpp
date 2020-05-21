@@ -1,5 +1,6 @@
 #include "cube.h"
 #include "engine/includegl.h"
+#include "engine/GLFeatures.h"
 
 extern int glversion;
 extern int intel_mapbufferrange_bug;
@@ -51,7 +52,7 @@ namespace gle
     {
         quadsenabled = true;
 
-        if(glversion < 300) return;
+        if(GLFeatures::Version() < 300) return;
 
         if(quadindexes)
         {
@@ -79,7 +80,7 @@ namespace gle
     {
         quadsenabled = false;
 
-        if(glversion < 300) return;
+        if(GLFeatures::Version() < 300) return;
 
         glCheckError(glBindBuffer_(GL_ELEMENT_ARRAY_BUFFER, 0));
     }
@@ -87,7 +88,7 @@ namespace gle
     void drawquads(int offset, int count)
     {
         if(count <= 0) return;
-        if(glversion < 300)
+        if(GLFeatures::Version() < 300)
         {
             glCheckError(glDrawArrays(GL_QUADS, offset*4, count*4));
             return;
@@ -221,7 +222,7 @@ namespace gle
     void begin(GLenum mode, int numverts)
     {
         primtype = mode;
-        if(glversion >= 300 && !intel_mapbufferrange_bug)
+        if(GLFeatures::Version() >= 300 && !intel_mapbufferrange_bug)
         {
             int len = numverts * vertexsize;
             if(vbooffset + len >= MAXVBOSIZE)
@@ -269,7 +270,7 @@ namespace gle
             return 0;
         }
         int start = 0;
-        if(glversion >= 300)
+        if(GLFeatures::Version() >= 300)
         {
             if(buf == attribdata)
             {
@@ -345,14 +346,14 @@ namespace gle
         numlastattribs = lastattribmask = lastvertexsize = 0;
         lastbuf = NULL;
         if(quadsenabled) disablequads();
-        if(glversion >= 300) {
+        if(GLFeatures::Version() >= 300) {
             glCheckError(glBindBuffer_(GL_ARRAY_BUFFER, 0));
         }
     }
 
     void setup()
     {
-        if(glversion >= 300)
+        if(GLFeatures::Version() >= 300)
         {
             if(!defaultvao) {
                 glCheckError(glGenVertexArrays_(1, &defaultvao));

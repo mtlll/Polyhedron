@@ -5,6 +5,10 @@
 #include "shared/zip.h"
 #include "shared/entities/basephysicalentity.h"
 #include "engine/includegl.h"
+#include "engine/main/Application.h"
+#include "engine/main/Window.h"
+#include "engine/main/GLContext.h"
+#include "engine/GLFeatures.h"
 #include <SDL_image.h>
 
 template<int BPP> static void halvetexture(uchar * RESTRICT src, uint sw, uint sh, uint stride, uchar * RESTRICT dst)
@@ -720,13 +724,13 @@ GLenum compressedformat(GLenum format, int w, int h, int force = 0)
         case GL_RGB5_A1: return usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT1_EXT : GL_COMPRESSED_RGBA;
         case GL_RGBA: return usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA;
         case GL_RED:
-        case GL_R8: return hasRGTC ? (usetexcompress > 1 ? GL_COMPRESSED_RED_RGTC1 : GL_COMPRESSED_RED) : (usetexcompress > 1 ? GL_COMPRESSED_RGB_S3TC_DXT1_EXT : GL_COMPRESSED_RGB);
+        case GL_R8: return GLFeatures::HasRGTC() ? (usetexcompress > 1 ? GL_COMPRESSED_RED_RGTC1 : GL_COMPRESSED_RED) : (usetexcompress > 1 ? GL_COMPRESSED_RGB_S3TC_DXT1_EXT : GL_COMPRESSED_RGB);
         case GL_RG:
-        case GL_RG8: return hasRGTC ? (usetexcompress > 1 ? GL_COMPRESSED_RG_RGTC2 : GL_COMPRESSED_RG) : (usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA);
+        case GL_RG8: return GLFeatures::HasRGTC() ? (usetexcompress > 1 ? GL_COMPRESSED_RG_RGTC2 : GL_COMPRESSED_RG) : (usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA);
         case GL_LUMINANCE:
-        case GL_LUMINANCE8: return hasLATC ? (usetexcompress > 1 ? GL_COMPRESSED_LUMINANCE_LATC1_EXT : GL_COMPRESSED_LUMINANCE) : (usetexcompress > 1 ? GL_COMPRESSED_RGB_S3TC_DXT1_EXT : GL_COMPRESSED_RGB);
+        case GL_LUMINANCE8: return GLFeatures::HasLATC() ? (usetexcompress > 1 ? GL_COMPRESSED_LUMINANCE_LATC1_EXT : GL_COMPRESSED_LUMINANCE) : (usetexcompress > 1 ? GL_COMPRESSED_RGB_S3TC_DXT1_EXT : GL_COMPRESSED_RGB);
         case GL_LUMINANCE_ALPHA:
-        case GL_LUMINANCE8_ALPHA8: return hasLATC ? (usetexcompress > 1 ? GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT : GL_COMPRESSED_LUMINANCE_ALPHA) : (usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA);
+        case GL_LUMINANCE8_ALPHA8: return GLFeatures::HasLATC() ? (usetexcompress > 1 ? GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT : GL_COMPRESSED_LUMINANCE_ALPHA) : (usetexcompress > 1 ? GL_COMPRESSED_RGBA_S3TC_DXT5_EXT : GL_COMPRESSED_RGBA);
     }
 #endif
     return format;
@@ -941,7 +945,7 @@ void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLe
     if(target==GL_TEXTURE_3D){
         glCheckError(glTexParameteri(target, GL_TEXTURE_WRAP_R, clamp&4 ? GL_CLAMP_TO_EDGE : (clamp&0x400 ? GL_MIRRORED_REPEAT : GL_REPEAT)));
     }
-    if(target==GL_TEXTURE_2D && hasAF && min(aniso, hwmaxaniso) > 0 && filter > 1) {
+    if(target==GL_TEXTURE_2D && GLFeatures::HasAF() && min(aniso, hwmaxaniso) > 0 && filter > 1) {
         glCheckError(glTexParameteri(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, min(aniso, hwmaxaniso)));
     }
     glCheckError(glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filter && bilinear ? GL_LINEAR : GL_NEAREST));
@@ -952,7 +956,7 @@ void setuptexparameters(int tnum, const void *pixels, int clamp, int filter, GLe
                 (bilinear ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST_MIPMAP_NEAREST)) :
             (filter && bilinear ? GL_LINEAR : GL_NEAREST)));
 #ifndef OPEN_GL_ES
-    if(swizzle && hasTRG && hasTSW)
+    if(swizzle && GLFeatures::HasTRG() && GLFeatures::HasTSW())
     {
         const GLint *mask = swizzlemask(format);
         if(mask){
@@ -1151,8 +1155,8 @@ static GLenum texformat(int bpp, bool swizzle = false)
 {
     switch(bpp)
     {
-        case 1: return hasTRG && (hasTSW || !glcompat || !swizzle) ? GL_RED : GL_LUMINANCE;
-        case 2: return hasTRG && (hasTSW || !glcompat || !swizzle) ? GL_RG : GL_LUMINANCE_ALPHA;
+        case 1: return GLFeatures::HasTRG() && (GLFeatures::HasTSW() || !glcompat || !swizzle) ? GL_RED : GL_LUMINANCE;
+        case 2: return GLFeatures::HasTRG() && (GLFeatures::HasTSW() || !glcompat || !swizzle) ? GL_RG : GL_LUMINANCE_ALPHA;
         case 3: return GL_RGB;
         case 4: return GL_RGBA;
         default: return 0;
@@ -1233,7 +1237,7 @@ static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clam
     {
         format = texformat(s.bpp, swizzle);
         t->bpp = s.bpp;
-        if(swizzle && hasTRG && !hasTSW && swizzlemask(format))
+        if(swizzle && GLFeatures::HasTRG() && !GLFeatures::HasTSW() && swizzlemask(format))
         {
             swizzleimage(s);
             format = texformat(s.bpp, swizzle);
@@ -1707,7 +1711,10 @@ Texture *textureload(const char *name, int clamp, bool mipit, bool msg)
     if(t) return t;
     int compress = 0;
     ImageData s;
-    if(texturedata(s, tname, msg, &compress, &clamp)) return newtexture(NULL, tname, s, clamp, mipit, false, false, compress);
+    if(texturedata(s, tname, msg, &compress, &clamp))
+    {
+        return newtexture(NULL, tname, s, clamp, mipit, false, false, compress);
+    }
     return notexture;
 }
 
@@ -2863,7 +2870,7 @@ Texture *cubemaploadwildcard(Texture *t, const char *name, bool mipit, bool msg,
     {
         format = texformat(surface[0].bpp, true);
         t->bpp = surface[0].bpp;
-        if(hasTRG && !hasTSW && swizzlemask(format))
+        if(GLFeatures::HasTRG() && !GLFeatures::HasTSW() && swizzlemask(format))
         {
             loopi(6) swizzleimage(surface[i]);
             format = texformat(surface[0].bpp, true);
@@ -3031,7 +3038,7 @@ GLuint genenvmap(const vec &o, int envmapsize, int blur, bool onlysky)
         }
         for(int level = 0, lsize = texsize;; level++)
         {
-            if(hasFBB)
+            if(GLFeatures::HasFBB())
             {
                 glCheckError(glBindFramebuffer_(GL_READ_FRAMEBUFFER, emfbo[0]));
                 glCheckError(glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, emfbo[2]));
@@ -3046,7 +3053,7 @@ GLuint genenvmap(const vec &o, int envmapsize, int blur, bool onlysky)
             }
             if(lsize <= 1) break;
             int dsize = lsize/2;
-            if(hasFBB)
+            if(GLFeatures::HasFBB())
             {
                 glCheckError(glBindFramebuffer_(GL_READ_FRAMEBUFFER, emfbo[0]));
                 glCheckError(glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, emfbo[1]));
@@ -3465,23 +3472,23 @@ bool loaddds(const char *filename, ImageData &image, int force)
         switch(d.ddpfPixelFormat.dwFourCC)
         {
             case FOURCC_DXT1:
-                if((supported = hasS3TC) || force) format = d.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS ? GL_COMPRESSED_RGBA_S3TC_DXT1_EXT : GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+                if((supported = GLFeatures::HasS3TC()) || force) format = d.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS ? GL_COMPRESSED_RGBA_S3TC_DXT1_EXT : GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
                 break;
             case FOURCC_DXT2:
             case FOURCC_DXT3:
-                if((supported = hasS3TC) || force) format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+                if((supported = GLFeatures::HasS3TC()) || force) format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
                 break;
             case FOURCC_DXT4:
             case FOURCC_DXT5:
-                if((supported = hasS3TC) || force) format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+                if((supported = GLFeatures::HasS3TC()) || force) format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
                 break;
             case FOURCC_ATI1:
-                if((supported = hasRGTC) || force) format = GL_COMPRESSED_RED_RGTC1;
-                else if((supported = hasLATC)) format = GL_COMPRESSED_LUMINANCE_LATC1_EXT;
+                if((supported = GLFeatures::HasRGTC()) || force) format = GL_COMPRESSED_RED_RGTC1;
+                else if((supported = GLFeatures::HasLATC())) format = GL_COMPRESSED_LUMINANCE_LATC1_EXT;
                 break;
             case FOURCC_ATI2:
-                if((supported = hasRGTC) || force) format = GL_COMPRESSED_RG_RGTC2;
-                else if((supported = hasLATC)) format = GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT;
+                if((supported = GLFeatures::HasRGTC()) || force) format = GL_COMPRESSED_RG_RGTC2;
+                else if((supported = GLFeatures::HasLATC())) format = GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT;
                 break;
         }
     }
@@ -3530,7 +3537,7 @@ bool loaddds(const char *filename, ImageData &image, int force)
 
 SCRIPTEXPORT void gendds(char *infile, char *outfile)
 {
-    if(!hasS3TC || usetexcompress <= 1) { conoutf(CON_ERROR, "OpenGL driver does not support S3TC texture compression"); return; }
+    if(!GLFeatures::HasS3TC() || usetexcompress <= 1) { conoutf(CON_ERROR, "OpenGL driver does not support S3TC texture compression"); return; }
 
     glCheckError(glHint(GL_TEXTURE_COMPRESSION_HINT, GL_NICEST));
 
@@ -3885,6 +3892,9 @@ SVARP(screenshotdir, "screenshot");
 
 SCRIPTEXPORT void screenshot(char *filename)
 {
+    int screenw = 0, screenh = 0;
+    Application::Instance().GetWindow().GetContext().GetFramebufferSize(screenw, screenh);
+
     static cubestr buf;
     int format = -1, dirlen = 0;
     copycubestr(buf, screenshotdir);

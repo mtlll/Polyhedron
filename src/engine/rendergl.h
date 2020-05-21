@@ -1,6 +1,9 @@
 #pragma once
+#include "shared/geom/matrix4.h"
+#include "shared/geom/vec.h"
+#include "shared/geom/bvec.h"
+#include "glad/glad.h"
 
-extern bool hasVAO, hasTR, hasTSW, hasPBO, hasFBO, hasAFBO, hasDS, hasTF, hasCBF, hasS3TC, hasFXT1, hasLATC, hasRGTC, hasAF, hasFBB, hasFBMS, hasTMS, hasMSS, hasFBMSBS, hasUBO, hasMBR, hasDB2, hasDBB, hasTG, hasTQ, hasPF, hasTRG, hasTI, hasHFV, hasHFP, hasDBT, hasDC, hasDBGO, hasEGPU4, hasGPU4, hasGPU5, hasBFE, hasEAL, hasCR, hasOQ2, hasES3, hasCB, hasCI, hasGLES;
 extern int glversion, glslversion, glcompat;
 extern int maxdrawbufs, maxdualdrawbufs;
 

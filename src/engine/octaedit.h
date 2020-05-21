@@ -1,4 +1,10 @@
 #pragma once
+#include "shared/geom/ivec.h"
+#include "shared/geom/vec.h"
+
+struct undoblock;
+struct block3;
+
 void cancelsel();
 void rendertexturepanel(int w, int h);
 void addundo(undoblock *u);

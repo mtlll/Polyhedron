@@ -1,5 +1,6 @@
 #ifndef __ENTITIES_H__
 #define __ENTITIES_H__
+#include "shared/tools/vector.h"
 
 namespace entities
 {

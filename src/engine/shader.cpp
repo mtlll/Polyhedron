@@ -1,6 +1,7 @@
 // shader.cpp: OpenGL GLSL shader management
 
 #include "engine.h"
+#include "engine/GLFeatures.h"
 
 Shader *Shader::lastshader = NULL;
 
@@ -110,13 +111,13 @@ static void showglslinfo(GLenum type, GLuint obj, const char *name, const char *
 
 				if (!next)
 				{
-					conoutf(CON_ERROR, ">>% 2d:%02d: %s<<<\n", i, line, part);
+					conoutf(CON_ERROR, ">>% 2d:%02d: %s<<<", i, line, part);
 					break;
 				}
 				else
 				{
 					std::string strLine(part, next - part);
-					conoutf(CON_ERROR, ">>% 2d:%02d: %s\n", i, line, strLine.c_str());
+					conoutf(CON_ERROR, ">>% 2d:%02d: %s", i, line, strLine.c_str());
 				}
 				part = next + 1;
 			}
@@ -193,27 +194,30 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         { 200, "#version 100\nprecision mediump float;\nprecision mediump sampler3D;\n" }
     };
 #endif
-    loopi(sizeof(glslversions)/sizeof(glslversions[0])) if(glslversion >= glslversions[i].version)
+    loopi(sizeof(glslversions)/sizeof(glslversions[0]))
     {
-        parts[numparts++] = glslversions[i].header;
-        break;
+        if(GLFeatures::ShaderVersion() >= glslversions[i].version)
+        {
+            parts[numparts++] = glslversions[i].header;
+            break;
+        }
     }
-    if(glslversion < 140)
+    if(GLFeatures::ShaderVersion() < 140)
     {
         parts[numparts++] = "#extension GL_ARB_texture_rectangle : enable\n";
-        if(hasEGPU4)
+        if(GLFeatures::HasEGPU4())
             parts[numparts++] = "#extension GL_EXT_gpu_shader4 : enable\n";
     }
-    if(glslversion < 150 && hasTMS)
+    if(GLFeatures::ShaderVersion() < 150 && GLFeatures::HasTMS())
         parts[numparts++] = "#extension GL_ARB_texture_multisample : enable\n";
-    if(glslversion >= 150 && glslversion < 330 && hasEAL && !amd_eal_bug)
+    if(GLFeatures::ShaderVersion() >= 150 && GLFeatures::ShaderVersion() < 330 && GLFeatures::HasEAL() && !amd_eal_bug)
         parts[numparts++] = "#extension GL_ARB_explicit_attrib_location : enable\n";
-    if(glslversion < 400)
+    if(GLFeatures::ShaderVersion() < 400)
     {
-        if(hasTG) parts[numparts++] = "#extension GL_ARB_texture_gather : enable\n";
-        if(hasGPU5) parts[numparts++] = "#extension GL_ARB_gpu_shader5 : enable\n";
+        if(GLFeatures::HasTG()) parts[numparts++] = "#extension GL_ARB_texture_gather : enable\n";
+        if(GLFeatures::HasGPU5()) parts[numparts++] = "#extension GL_ARB_gpu_shader5 : enable\n";
     }
-    if(glslversion >= 130)
+    if(GLFeatures::ShaderVersion() >= 130)
     {
         if(type == GL_VERTEX_SHADER) parts[numparts++] =
             "#define attribute in\n"
@@ -221,12 +225,13 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
         else if(type == GL_FRAGMENT_SHADER)
         {
             parts[numparts++] = "#define varying in\n";
-            parts[numparts++] = (glslversion >= 330 || (glslversion >= 150 && hasEAL) || (glslversion >= 300 && hasGLES)) && !amd_eal_bug ?
+            parts[numparts++] = (GLFeatures::ShaderVersion() >= 330 || (GLFeatures::ShaderVersion() >= 150 &&
+                    GLFeatures::HasEAL()) || (GLFeatures::ShaderVersion() >= 300 && GLFeatures::HasGLES())) && !amd_eal_bug ?
                 "#define fragdata(loc) layout(location = loc) out\n"
                 "#define fragblend(loc) layout(location = loc, index = 1) out\n" :
                 "#define fragdata(loc) out\n"
                 "#define fragblend(loc) out\n";
-            if(glslversion < 150)
+            if(GLFeatures::ShaderVersion() < 150)
             {
                 const char *decls = finddecls(source);
                 if(decls)
@@ -255,7 +260,7 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
             "#define shadow2DOffset(sampler, coords, offset) textureOffset(sampler, coords, offset)\n"
             "#define texture3D(sampler, coords) texture(sampler, coords)\n"
             "#define textureCube(sampler, coords) texture(sampler, coords)\n";
-        if(glslversion >= 140)
+        if(GLFeatures::ShaderVersion() >= 140)
         {
             parts[numparts++] =
                 "#define texture2DRect(sampler, coords) texture(sampler, coords)\n"
@@ -269,17 +274,17 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
                 "#define shadow2DRectOffset(sampler, coords, offset) textureOffset(sampler, coords, offset)\n";
         }
     }
-    if(glslversion < 130 && hasEGPU4) parts[numparts++] = "#define uint unsigned int\n";
-    else if(glslversion < 140 && !hasEGPU4)
+    if(GLFeatures::ShaderVersion() < 130 && GLFeatures::HasEGPU4()) parts[numparts++] = "#define uint unsigned int\n";
+    else if(GLFeatures::ShaderVersion() < 140 && !GLFeatures::HasEGPU4())
     {
-        if(glslversion < 130) parts[numparts++] = "#define flat\n";
+        if(GLFeatures::ShaderVersion() < 130) parts[numparts++] = "#define flat\n";
         parts[numparts++] =
             "#define texture2DRectOffset(sampler, coords, offset) texture2DRect(sampler, coords + vec2(offset))\n"
             "#define shadow2DRectOffset(sampler, coords, offset) shadow2DRect(sampler, coords + vec2(offset))\n";
     }
-    if(glslversion < 130 && type == GL_FRAGMENT_SHADER)
+    if(GLFeatures::ShaderVersion() < 130 && type == GL_FRAGMENT_SHADER)
     {
-        if(hasEGPU4)
+        if(GLFeatures::HasEGPU4())
         {
             parts[numparts++] =
                 "#define fragdata(loc) varying out\n"
@@ -334,7 +339,7 @@ VAR(dbgubo, 0, 0, 1);
 static void bindglsluniform(Shader &s, UniformLoc &u)
 {
     u.loc = glCheckError(glGetUniformLocation_(s.program, u.name));
-    if(!u.blockname || !hasUBO) return;
+    if(!u.blockname || !GLFeatures::HasUBO()) return;
     GLuint bidx = glCheckError(glGetUniformBlockIndex_(s.program, u.blockname));
     GLuint uidx = GL_INVALID_INDEX;
     glCheckError(glGetUniformIndices_(s.program, 1, &u.name, &uidx));
@@ -393,7 +398,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
             glCheckError(glBindAttribLocation_(s.program, i, gle::attribnames[i]));
         }
 #ifndef OPEN_GL_ES
-        if(hasGPU4 && ((glslversion < 330 && (glslversion < 150 || !hasEAL)) || amd_eal_bug)) loopv(s.fragdatalocs)
+        if(GLFeatures::HasGPU4() && ((GLFeatures::ShaderVersion() < 330 && (GLFeatures::ShaderVersion() < 150 || !GLFeatures::HasEAL())) || amd_eal_bug)) loopv(s.fragdatalocs)
         {
             FragDataLoc &d = s.fragdatalocs[i];
             if(d.index)
@@ -442,7 +447,7 @@ static void linkglslprogram(Shader &s, bool msg = true)
 static void findfragdatalocs(Shader &s, char *ps, const char *macroname, int index)
 {
     int macrolen = strlen(macroname); 
-    bool clear = glslversion < 130 && !hasEGPU4;
+    bool clear = GLFeatures::ShaderVersion() < 130 && !GLFeatures::HasEGPU4();
     while((ps = strstr(ps, macroname)))
     {
         char *start = ps;
@@ -498,7 +503,7 @@ static void findfragdatalocs(Shader &s, char *ps, const char *macroname, int ind
 
 void findfragdatalocs(Shader &s, char *psstr)
 {
-    if(!psstr || ((glslversion >= 330 || (glslversion >= 150 && hasEAL)) && !amd_eal_bug)) return;
+    if(!psstr || ((GLFeatures::ShaderVersion() >= 330 || (GLFeatures::ShaderVersion() >= 150 && GLFeatures::HasEAL())) && !amd_eal_bug)) return;
 
     findfragdatalocs(s, psstr, "fragdata(", 0);
     if(maxdualdrawbufs) findfragdatalocs(s, psstr, "fragblend(", 1);
@@ -1021,7 +1026,7 @@ void setupshaders()
     maxvsuniforms = val/4;
     glCheckError(glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &val));
     maxfsuniforms = val/4;
-    if(hasGPU4)
+    if(GLFeatures::HasGPU4())
     {
         glCheckError(glGetIntegerv(GL_MIN_PROGRAM_TEXEL_OFFSET, &val));
         mintexoffset = val;
@@ -1029,7 +1034,7 @@ void setupshaders()
         maxtexoffset = val;
     }
     else mintexoffset = maxtexoffset = 0;
-    if(glslversion >= 140 || hasEGPU4)
+    if(GLFeatures::ShaderVersion() >= 140 || GLFeatures::HasEGPU4())
     {
         mintexrectoffset = mintexoffset;
         maxtexrectoffset = maxtexoffset;

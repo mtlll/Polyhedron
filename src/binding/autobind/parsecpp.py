@@ -4,7 +4,7 @@ import os
 import json
 import sys
 
-from .cppmodel.CxxNode import CxxNode
+from .cppmodel.CxxNode import CxxNode, Generator
 from .cppmodel.CxxTranslationUnit import CxxTranslationUnit
 from .cppmodel.CxxFunction import CxxFunction
 from .cppmodel.CxxClass import CxxClass
@@ -23,7 +23,9 @@ libclang_paths = [
     "/usr/lib/x86_64-linux-gnu/libclang-9.so",
     "/usr/lib/x86_64-linux-gnu/libclang-9.so.1",
     "/usr/lib/x86_64-linux-gnu/libclang-10.so",
-    "/usr/lib/x86_64-linux-gnu/libclang-10.so.1"
+    "/usr/lib/x86_64-linux-gnu/libclang-10.so.1",
+    "/usr/lib/x86_64-linux-gnu/libclang-11.so",
+    "/usr/lib/x86_64-linux-gnu/libclang-11.so.1"
 ]
 
 EXPORT_ANNOTATION = "scriptexport"
@@ -140,7 +142,9 @@ class CppParser:
             return []
 
     def cppmodel_generate(self):
+        mayNeedCxxObjects = []
         def node_factory(cursor, parent, file):
+            nonlocal mayNeedCxxObjects
             cursor_usr = cursor.get_usr()
             if not cursor_usr is None:
                 self.record_cursor_by_usr(cursor, cursor_usr)
@@ -149,6 +153,23 @@ class CppParser:
                 if not first_child is None:
                     if first_child.kind == cindex.CursorKind.ANNOTATE_ATTR and first_child.spelling.startswith(EXPORT_ANNOTATION):
                         return CxxFunction(self, cursor, parent)
+                if self.cursor_is_part_of_file_or_header(cursor, file):
+                    if cursor.spelling in ["from_json", "to_json"]:
+                        mayNeedFunc = CxxFunction(self, cursor, parent, Generator.Json)
+                        funcArgs = []
+                        for arg in mayNeedFunc.forEachArgument():
+                            funcArgs.append(arg.spelling)
+                        if len(funcArgs) == 2:
+                            if funcArgs[0].endswith("nlohmann::json &") and funcArgs[1].endswith(" &"):
+                                print(">>> function {} {} may be a json serialisation function!".format(cursor.spelling, funcArgs), file=sys.stderr)
+                                className = funcArgs[1].replace(" &", "").replace("const ", "")
+                                for classObj in mayNeedCxxObjects:
+                                    if str(classObj) == className:
+                                        mayNeedCxxObjects.remove(classObj)
+                                        classObj.generateFor = Generator.Json
+                                        break;
+                                return mayNeedFunc
+
             if (cursor.kind in [cindex.CursorKind.CLASS_DECL,
                                 cindex.CursorKind.STRUCT_DECL,
                                 cindex.CursorKind.CLASS_TEMPLATE,
@@ -162,6 +183,11 @@ class CppParser:
                         if "coreentity.cpp" in file or "coreentity.h" in file:
                             print(">>> class {} IS CoreEntity!".format(cursor.spelling), file=sys.stderr)
                             return CxxClass(self, cursor, parent)
+                    else:
+                        mayNeedClass = CxxClass(self, cursor, parent)
+                        mayNeedCxxObjects.append(mayNeedClass)
+                        print(">>> saved class {}, we may need it later..".format(cursor.spelling), file=sys.stderr)
+                        return mayNeedClass
             if type(parent) == CxxClass:
                 if self.cursor_is_part_of_file_or_header(cursor, file):
                     if (cursor.kind in [cindex.CursorKind.FIELD_DECL,
@@ -194,8 +220,17 @@ class CppParser:
                         tree_node = tree
                     iterate(tree_node, c, file)
 
-        iterate(self.model, self.translation_unit.cursor, self.file)
+        def iterateClean(treeObject, objectsToClean):
+            for t in treeObject.forEachChild():
+                if t in objectsToClean:
+                    print(">>> removed excess class {} from further Generation steps".format(t), file=sys.stderr)
+                    return treeObject.delchild(t)
+            return False
 
+        iterate(self.model, self.translation_unit.cursor, self.file)
+        while iterateClean(self.model, mayNeedCxxObjects):
+            pass
+        mayNeedCxxObjects.clear()
 
     def cppmodel_refactor_generate(self):
         def node_factory(cursor, parent, file):

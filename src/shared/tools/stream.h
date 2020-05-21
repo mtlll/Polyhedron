@@ -1,5 +1,6 @@
 #pragma once
-
+#include "shared/types.h"
+#include <SDL_rwops.h>
 
 struct stream
 {
@@ -27,7 +28,7 @@ struct stream
     virtual int getchar() { uchar c; return read(&c, 1) == 1 ? c : -1; }
     virtual bool putchar(int n) { uchar c = n; return write(&c, 1) == 1; }
     virtual bool getline(char *str, size_t len);
-    virtual bool putcubestr(const char *str) { size_t len = strlen(str); return write(str, len) == len; }
+    virtual bool putcubestr(const char *str);
     virtual bool putline(const char *str) { return putcubestr(str) && putchar('\n'); }
     virtual size_t printf(const char *fmt, ...) PRINTFARGS(2, 3);
     virtual uint getcrc() { return 0; }

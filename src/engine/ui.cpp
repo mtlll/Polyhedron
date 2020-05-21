@@ -2,6 +2,7 @@
 #include "engine.h"
 #include "textedit.h"
 #include "shared/entities/animinfo.h"
+#include "engine/hud.h"
 
 namespace UI
 {

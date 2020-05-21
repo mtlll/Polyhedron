@@ -1,4 +1,4 @@
-from .CxxNode import CxxNode
+from .CxxNode import CxxNode, Generator
 import json
 import os
 from clang import cindex
@@ -6,8 +6,8 @@ from .. import parsecpp
 from ..generator import CubeScriptBinding
 
 class CxxFunction(CxxNode):
-    def __init__(self, parser, sourceObject, parent = None):
-        CxxNode.__init__(self, parser, sourceObject, parent)
+    def __init__(self, parser, sourceObject, parent = None, generateFor = Generator.All):
+        CxxNode.__init__(self, parser, sourceObject, parent, generateFor)
         self.customFuctionName = None
         self.first_child = next(sourceObject.get_children(), None)
         for self.first_child in sourceObject.get_children():

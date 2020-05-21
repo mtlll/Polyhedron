@@ -9,6 +9,11 @@
 
 #include "engine.h"
 #include "shared/stream.h"
+#include "engine/main/Application.h"
+#include "engine/main/Window.h"
+#include "engine/main/GLContext.h"
+#include "engine/hud.h"
+#include "engine/GLFeatures.h"
 #include <SDL_mixer.h>
 
 VAR(dbgmovie, 0, 0, 1);
@@ -217,6 +222,8 @@ struct aviwriter
 
     bool open()
     {
+        int screenw = 0, screenh = 0;
+        Application::Instance().GetWindow().GetContext().GetFramebufferSize(screenw, screenh);
         f = openfile(filename, "wb");
         if(!f) return false;
 
@@ -912,6 +919,9 @@ namespace recorder
     {
         if(file) return;
 
+        int screenw = 0, screenh = 0;
+        Application::Instance().GetWindow().GetContext().GetFramebufferSize(screenw, screenh);
+
         useshaderbyname("moviergb");
         useshaderbyname("movieyuv");
         useshaderbyname("moviey");
@@ -1002,6 +1012,9 @@ namespace recorder
 
     void readbuffer(videobuffer &m, uint nextframe)
     {
+        int screenw = 0, screenh = 0;
+        Application::Instance().GetWindow().GetContext().GetFramebufferSize(screenw, screenh);
+
         bool accelyuv = movieaccelyuv && !(m.w%8),
              usefbo = movieaccel && file->videow <= (uint)screenw && file->videoh <= (uint)screenh && (accelyuv || file->videow < (uint)screenw || file->videoh < (uint)screenh);
         uint w = screenw, h = screenh;
@@ -1014,7 +1027,7 @@ namespace recorder
         if(usefbo)
         {
             uint tw = screenw, th = screenh;
-            if(hasFBB && movieaccelblit) { tw = max(tw/2, m.w); th = max(th/2, m.h); }
+            if(GLFeatures::HasFBB() && movieaccelblit) { tw = max(tw / 2, m.w); th = max(th / 2, m.h); }
             if(tw != scalew || th != scaleh)
             {
                 if(!scalefb) glGenFramebuffers_(1, &scalefb);
@@ -1159,7 +1172,13 @@ VARP(moviesound, 0, 1, 1);
 SCRIPTEXPORT void movie(char *name)
 {
     if(name[0] == '\0') recorder::stop();
-    else if(!recorder::isrecording()) recorder::start(name, moviefps, moview ? moview : screenw, movieh ? movieh : screenh, moviesound!=0);
+    else if(!recorder::isrecording())
+    {
+        int screenw = 0, screenh = 0;
+        Application::Instance().GetWindow().GetContext().GetFramebufferSize(screenw, screenh);
+
+        recorder::start(name, moviefps, moview ? moview : screenw, movieh ? movieh : screenh, moviesound!=0);
+    }
 }
 
 SCRIPTEXPORT void movierecording()

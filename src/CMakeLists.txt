@@ -60,12 +60,16 @@ list(APPEND fileListEngine
     engine/dynlight.cpp
     engine/engine.h
     engine/explosion.h
+    engine/GLFeatures.cpp
+    engine/GLFeatures.h
     engine/engine/font.h
     engine/engine/font.cpp
     engine/grass.cpp
     engine/help.h
     engine/help.cpp
     engine/hitzone.h
+    engine/hud.cpp
+    engine/hud.h
     engine/iqm.h
     engine/lensflare.h
     engine/light.cpp
@@ -74,6 +78,28 @@ list(APPEND fileListEngine
     engine/log.h
     engine/log.cpp
     engine/main.cpp
+    engine/main/AppConfig.cpp
+    engine/main/AppConfig.h
+    engine/main/Application.cpp
+    engine/main/Application.h
+    engine/main/Clock.cpp
+    engine/main/Clock.h
+    engine/main/CommandlineArguments.cpp
+    engine/main/CommandlineArguments.h
+    engine/main/Compatibility.cpp
+    engine/main/Compatibility.h
+    engine/main/FPS.cpp
+    engine/main/FPS.h
+    engine/main/GLContext.cpp
+    engine/main/GLContext.h
+    engine/main/Input.cpp
+    engine/main/Input.h
+    engine/main/Renderer.cpp
+    engine/main/Renderer.h
+    engine/main/SoundConfig.cpp
+    engine/main/SoundConfig.h
+    engine/main/Window.cpp
+    engine/main/Window.h
     # engine/master.cpp
     engine/material.cpp
     engine/md2.h
@@ -252,8 +278,9 @@ list(APPEND extNuklearFiles
 
 list(APPEND extGladFiles
     ext/glad/src/glad.c
+    ext/glad/include/glad/glad.h
+    ext/glad/include/KHR/khrplatform.h
 )
-
 
 list(APPEND fileList
     ${fileListEngine}

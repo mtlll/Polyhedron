@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "shared/entities/basephysicalentity.h"
 #include "game/game.h"
+#include "engine/GLFeatures.h"
 
 int gw = -1, gh = -1, bloomw = -1, bloomh = -1, lasthdraccum = 0;
 GLuint gfbo = 0, gdepthtex = 0, gcolortex = 0, gnormaltex = 0, gglowtex = 0, gdepthrb = 0, gstencilrb = 0;
@@ -22,8 +23,8 @@ extern int amd_pf_bug;
 
 int gethdrformat(int prec, int fallback = GL_RGB)
 {
-    if(prec >= 3 && hasTF) return GL_RGB16F;
-    if(prec >= 2 && hasPF && !amd_pf_bug) return GL_R11F_G11F_B10F;
+    if(prec >= 3 && GLFeatures::HasTF()) return GL_RGB16F;
+    if(prec >= 2 && GLFeatures::HasPF() && !amd_pf_bug) return GL_R11F_G11F_B10F;
     if(prec >= 1) return GL_RGB10;
     return fallback;
 }
@@ -64,13 +65,14 @@ void setupbloom(int w, int h)
     {
         glGenBuffers_(1, &bloompbo);
         glBindBuffer_(GL_PIXEL_PACK_BUFFER, bloompbo);
-        glBufferData_(GL_PIXEL_PACK_BUFFER, 4*(hasTF ? sizeof(GLfloat) : sizeof(GLushort))*(hasTRG ? 1 : 3), NULL, GL_DYNAMIC_COPY);
+        glBufferData_(GL_PIXEL_PACK_BUFFER, 4 * (GLFeatures::HasTF() ? sizeof(GLfloat) : sizeof(GLushort)) * (GLFeatures::HasTRG() ? 1 : 3), NULL, GL_DYNAMIC_COPY);
         glBindBuffer_(GL_PIXEL_PACK_BUFFER, 0);
     }
 
     static const uchar gray[12] = { 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32 };
     static const float grayf[12] = { 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f, 0.125f };
-    createtexture(bloomtex[4], bloompbo ? 4 : 1, 1, hasTF ? (const void *)grayf : (const void *)gray, 3, 1, hasTF ? (hasTRG ? GL_R16F : GL_RGB16F) : (hasTRG ? GL_R16 : GL_RGB16));
+    createtexture(bloomtex[4], bloompbo ? 4 : 1, 1, GLFeatures::HasTF() ? (const void *)grayf : (const void *)gray, 3, 1,
+                  GLFeatures::HasTF() ? (GLFeatures::HasTRG() ? GL_R16F : GL_RGB16F) : (GLFeatures::HasTRG() ? GL_R16 : GL_RGB16));
 
     loopi(5 + (bloomformat != GL_RGB ? 1 : 0))
     {
@@ -186,7 +188,7 @@ void setupao(int w, int h)
     delete[] noise;
 
     bool upscale = aoreduce && aobilateral && aobilateralupscale;
-    GLenum format = aoprec && hasTRG ? GL_R8 : GL_RGBA8,
+    GLenum format = aoprec && GLFeatures::HasTRG() ? GL_R8 : GL_RGBA8,
            packformat = aobilateral && aopackdepth ? (aodepthformat ? GL_RG16F : GL_RGBA8) : format;
     int packfilter = upscale && aopackdepth && !aodepthformat ? 0 : 1;
     loopi(upscale ? 3 : 2)
@@ -233,7 +235,7 @@ void cleanupao()
     clearbilateralshaders();
 }
 
-VARFP(ao, 0, 1, 1, { cleanupao(); cleardeferredlightshaders(); });
+VARFP(ao, 0, 0, 1, { cleanupao(); cleardeferredlightshaders(); });
 FVARR(aoradius, 0, 5, 256);
 FVAR(aocutoff, 0, 2.0f, 1e3f);
 FVARR(aodark, 1e-3f, 11.0f, 1e3f);
@@ -242,10 +244,10 @@ FVAR(aoprefilterdepth, 0, 1, 1e3f);
 FVARR(aomin, 0, 0.25f, 1);
 VARFR(aosun, 0, 1, 1, cleardeferredlightshaders());
 FVARR(aosunmin, 0, 0.5f, 1);
-VARP(aoblur, 0, 4, 7);
+VARP(aoblur, 0, 0, 7);
 VARP(aoiter, 0, 0, 4);
-VARFP(aoreduce, 0, 1, 2, cleanupao());
-VARF(aoreducedepth, 0, 1, 2, cleanupao());
+VARFP(aoreduce, 0, 0, 2, cleanupao());
+VARF(aoreducedepth, 0, 0, 2, cleanupao());
 VARFP(aofloatdepth, 0, 1, 2, initwarning("AO setup", INIT_LOAD, CHANGE_SHADERS));
 VARFP(aoprec, 0, 1, 1, cleanupao());
 VAR(aodepthformat, 1, 0, 0);
@@ -260,7 +262,7 @@ VAR(debugao, 0, 0, 1);
 
 void initao()
 {
-    aodepthformat = aofloatdepth && hasTRG && hasTF ? aofloatdepth : 0;
+    aodepthformat = aofloatdepth && GLFeatures::HasTRG() && GLFeatures::HasTF() ? aofloatdepth : 0;
 }
 
 void viewao()
@@ -488,7 +490,10 @@ void initgbuffer()
     msaamaxsamples = msaamaxdepthtexsamples = msaamaxcolortexsamples = msaaminsamples = msaasamples = msaalight = 0;
     msaapositions.setsize(0);
 
-    if(hasFBMS && hasFBB && hasTMS)
+//    msaalight = 1;
+//    msaasamples = 1;
+
+    if(GLFeatures::HasFBMS() && GLFeatures::HasFBB() && GLFeatures::HasTMS())
     {
         GLint val;
         glGetIntegerv(GL_MAX_SAMPLES, &val);
@@ -517,18 +522,18 @@ void initgbuffer()
         else if(msaalineardepth >= 0) lineardepth = msaalineardepth;
     }
 
-    if(lineardepth > 1 && (!hasAFBO || !hasTF || !hasTRG)) gdepthformat = 1;
+    if(lineardepth > 1 && (!GLFeatures::HasAFBO() || !GLFeatures::HasTF() || !GLFeatures::HasTRG())) gdepthformat = 1;
     else gdepthformat = lineardepth;
 
     if(msaaminsamples)
     {
-        ghasstencil = (msaadepthstencil > 1 || (msaadepthstencil && gdepthformat)) && hasDS ? 2 : (msaastencil ? 1 : 0);
+        ghasstencil = (msaadepthstencil > 1 || (msaadepthstencil && gdepthformat)) && GLFeatures::HasDS() ? 2 : (msaastencil ? 1 : 0);
 
         checkmsaasamples();
 
-        if(msaapreserve >= 0) msaalight = hasMSS ? 3 : (msaasamples==2 ? 2 : msaapreserve);
+        if(msaapreserve >= 0) msaalight = GLFeatures::HasMSS() ? 3 : (msaasamples == 2 ? 2 : msaapreserve);
     }
-    else ghasstencil = (gdepthstencil > 1 || (gdepthstencil && gdepthformat)) && hasDS ? 2 : (gstencil ? 1 : 0);
+    else ghasstencil = (gdepthstencil > 1 || (gdepthstencil && gdepthformat)) && GLFeatures::HasDS() ? 2 : (gstencil ? 1 : 0);
 
     initao();
 }
@@ -631,7 +636,7 @@ void setupmsbuffer(int w, int h)
     {
         if(!msglowtex) glGenTextures(1, &msglowtex);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msglowtex);
-        glTexImage2DMultisample_(GL_TEXTURE_2D_MULTISAMPLE, msaasamples, hasAFBO ? hdrformat : GL_RGBA8, w, h, GL_TRUE);
+        glTexImage2DMultisample_(GL_TEXTURE_2D_MULTISAMPLE, msaasamples, GLFeatures::HasAFBO() ? hdrformat : GL_RGBA8, w, h, GL_TRUE);
     }
     
     bindmsdepth();
@@ -642,7 +647,7 @@ void setupmsbuffer(int w, int h)
 
     if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
-        if(msaalight && hasAFBO)
+        if(msaalight && GLFeatures::HasAFBO())
         {
             glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, msglowtex);
             glTexImage2DMultisample_(GL_TEXTURE_2D_MULTISAMPLE, msaasamples, GL_RGBA8, w, h, GL_TRUE);
@@ -803,7 +808,7 @@ void setupgbuffer()
 
         createtexture(gcolortex, gw, gh, NULL, 3, 0, GL_RGBA8, GL_TEXTURE_RECTANGLE);
         createtexture(gnormaltex, gw, gh, NULL, 3, 0, GL_RGBA8, GL_TEXTURE_RECTANGLE);
-        createtexture(gglowtex, gw, gh, NULL, 3, 0, hasAFBO ? hdrformat : GL_RGBA8, GL_TEXTURE_RECTANGLE);
+        createtexture(gglowtex, gw, gh, NULL, 3, 0, GLFeatures::HasAFBO() ? hdrformat : GL_RGBA8, GL_TEXTURE_RECTANGLE);
 
         bindgdepth();
         glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_RECTANGLE, gcolortex, 0);
@@ -813,7 +818,7 @@ void setupgbuffer()
 
         if(glCheckFramebufferStatus_(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
-            if(hasAFBO)
+            if(GLFeatures::HasAFBO())
             {
                 createtexture(gglowtex, gw, gh, NULL, 3, 0, GL_RGBA8, GL_TEXTURE_RECTANGLE);
                 glFramebufferTexture2D_(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_RECTANGLE, gglowtex, 0);
@@ -1040,7 +1045,7 @@ void processhdr(GLuint outfbo, int aa)
             glBindFramebuffer_(GL_DRAW_FRAMEBUFFER, hdrfbo);
             glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, vieww, viewh, GL_COLOR_BUFFER_BIT, GL_NEAREST);
         }
-        else if(hasFBMSBS && (vieww > bloomw || viewh > bloomh))
+        else if(GLFeatures::HasFBMSBS() && (vieww > bloomw || viewh > bloomh))
         {
             int cw = max(vieww/2, bloomw), ch = max(viewh/2, bloomh);
             glBindFramebuffer_(GL_READ_FRAMEBUFFER, mshdrfbo);
@@ -1048,7 +1053,7 @@ void processhdr(GLuint outfbo, int aa)
 #ifdef OPEN_GL_ES
             glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, cw, ch, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 #else
-			glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, cw, ch, GL_COLOR_BUFFER_BIT, GL_SCALED_RESOLVE_FASTEST_EXT);
+			glBlitFramebuffer_(0, 0, vieww, viewh, 0, 0, cw, ch, GL_COLOR_BUFFER_BIT, GL_SCALED_RESOLVE_FASTEST);
 #endif
             pw = cw;
             ph = ch;
@@ -1158,7 +1163,7 @@ void processhdr(GLuint outfbo, int aa)
         {
             glBindBuffer_(GL_PIXEL_PACK_BUFFER, bloompbo);
             glPixelStorei(GL_PACK_ALIGNMENT, 1);
-            glReadPixels(0, 0, 4, 1, hasTRG ? GL_RED : GL_RGB, hasTF ? GL_FLOAT : GL_UNSIGNED_SHORT, NULL);
+            glReadPixels(0, 0, 4, 1, GLFeatures::HasTRG() ? GL_RED : GL_RGB, GLFeatures::HasTF() ? GL_FLOAT : GL_UNSIGNED_SHORT, NULL);
             glBindBuffer_(GL_PIXEL_PACK_BUFFER, 0);
         }
 
@@ -1169,7 +1174,8 @@ void processhdr(GLuint outfbo, int aa)
     {
         gle::bindvbo(bloompbo);
         gle::enablecolor();
-        gle::colorpointer(hasTF ? sizeof(GLfloat) : sizeof(GLushort), (const void *)0, hasTF ? GL_FLOAT : GL_UNSIGNED_SHORT, 1);
+        gle::colorpointer(GLFeatures::HasTF() ? sizeof(GLfloat) : sizeof(GLushort), (const void *)0,
+                          GLFeatures::HasTF() ? GL_FLOAT : GL_UNSIGNED_SHORT, 1);
         gle::clearvbo();
     }
 
@@ -1402,7 +1408,7 @@ void clearrhshaders()
 
 void setupradiancehints()
 {
-    GLenum rhformat = hasTF && rhprec >= 1 ? GL_RGBA16F : GL_RGBA8;
+    GLenum rhformat = GLFeatures::HasTF() && rhprec >= 1 ? GL_RGBA16F : GL_RGBA8;
 
     loopi(!rhrect && rhcache ? 8 : 4)
     {
@@ -1730,8 +1736,8 @@ static inline void setsmcomparemode() // use embedded shadow cmp
 }
 
 extern int usetexgather;
-static inline bool usegatherforsm() { return smfilter > 1 && smgather && hasTG && usetexgather; }
-static inline bool usesmcomparemode() { return !usegatherforsm() || (hasTG && hasGPU5 && usetexgather > 1); }
+static inline bool usegatherforsm() { return smfilter > 1 && smgather && GLFeatures::HasTG() && usetexgather; }
+static inline bool usesmcomparemode() { return !usegatherforsm() || (GLFeatures::HasTG() && GLFeatures::HasGPU5() && usetexgather > 1); }
 
 void viewshadowatlas()
 {
@@ -2940,7 +2946,7 @@ static inline void setavatarstencil(int stencilref, bool on)
 static void rendersunpass(Shader *s, int stencilref, bool transparent, float bsx1, float bsy1, float bsx2, float bsy2, const uint *tilemask)
 {
 #ifndef OPEN_GL_ES
-    if(hasDBT && depthtestlights > 1) glDepthBounds_(0, depthtestlightsclamp);
+//    if(GLFeatures::HasDBT() && depthtestlights > 1) glDepthBounds_(0, depthtestlightsclamp);
 #endif
 
     int tx1 = max(int(floor((bsx1*0.5f+0.5f)*vieww)), 0), ty1 = max(int(floor((bsy1*0.5f+0.5f)*viewh)), 0),
@@ -2992,7 +2998,7 @@ static void renderlightsnobatch(Shader *s, int stencilref, bool transparent, flo
             glScissor(tx1, ty1, tx2-tx1, ty2-ty1);
 
 #ifndef OPEN_GL_ES
-            if(hasDBT && depthtestlights > 1) glDepthBounds_(l.sz1*0.5f + 0.5f, min(l.sz2*0.5f + 0.5f, depthtestlightsclamp));
+//            if(GLFeatures::HasDBT() && depthtestlights > 1) glDepthBounds_(l.sz1*0.5f + 0.5f, min(l.sz2*0.5f + 0.5f, depthtestlightsclamp));
 #endif
 
             if(camera1->o.dist(l.o) <= l.radius*lightradiustweak + nearplane + 1 && depthfaillights)
@@ -3068,7 +3074,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
         lightpassesused++;
 
 #ifndef OPEN_GL_ES
-        if(hasDBT && depthtestlights > 1) glDepthBounds_(sz1*0.5f + 0.5f, min(sz2*0.5f + 0.5f, depthtestlightsclamp));
+//        if(GLFeatures::HasDBT() && depthtestlights > 1) glDepthBounds_(sz1*0.5f + 0.5f, min(sz2*0.5f + 0.5f, depthtestlightsclamp));
 #endif
         gle::begin(GL_QUADS);
         loopvj(batch.rects)
@@ -3116,7 +3122,7 @@ static void renderlightbatches(Shader *s, int stencilref, bool transparent, floa
             else s->setvariant(0, 17);
 
 #ifndef OPEN_GL_ES
-            if(hasDBT && depthtestlights > 1) glDepthBounds_(sz1*0.5f + 0.5f, min(sz2*0.5f + 0.5f, depthtestlightsclamp));
+//            if(GLFeatures::HasDBT() && depthtestlights > 1) glDepthBounds_(sz1*0.5f + 0.5f, min(sz2*0.5f + 0.5f, depthtestlightsclamp));
 #endif
             lightquad(sz1, sx1, sy1, sx2, sy2, tilemask);
             lightpassesused++;
@@ -3182,7 +3188,7 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
     glEnable(GL_BLEND);
 
 #ifndef OPEN_GL_ES
-    if(hasDBT && depthtestlights > 1) glEnable(GL_DEPTH_BOUNDS_TEST_EXT);
+//    if(GLFeatures::HasDBT() && depthtestlights > 1) glEnable(GL_DEPTH_BOUNDS_TEST_EXT);
 #endif
 
     bool sunpass = !lighttilebatch || drawtex == DRAWTEX_MINIMAP || (!sunlight.iszero() && csmshadowmap && batchsunlight <= (gi && giscale && gidist ? 1 : 0));
@@ -3226,7 +3232,7 @@ void renderlights(float bsx1 = -1, float bsy1 = -1, float bsx2 = 1, float bsy2 =
     {
         glDepthMask(GL_TRUE);
 #ifndef OPEN_GL_ES
-        if(hasDBT && depthtestlights > 1) glDisable(GL_DEPTH_BOUNDS_TEST_EXT);
+//        if(GLFeatures::HasDBT() && depthtestlights > 1) glDisable(GL_DEPTH_BOUNDS_TEST_EXT);
 #endif
     }
 }
@@ -3944,7 +3950,7 @@ void radiancehints::renderslices()
             dmax[k] = max(dmax[k], (float)ceil((dynmax[k] + gidist + cellradius - (split.center[k] - split.bounds))/step)*step + split.center[k] - split.bounds);
         }
 
-        if((rhrect || !rhcache || hasCI) && split.cached == split.center && (!rhborder || prevcached) && !rhforce &&
+        if((rhrect || !rhcache || GLFeatures::HasCI()) && split.cached == split.center && (!rhborder || prevcached) && !rhforce &&
            (dmin.x > split.center.x + split.bounds || dmax.x < split.center.x - split.bounds ||
             dmin.y > split.center.y + split.bounds || dmax.y < split.center.y - split.bounds ||
             dmin.z > split.center.z + split.bounds || dmax.z < split.center.z - split.bounds))

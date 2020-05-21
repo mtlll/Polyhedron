@@ -260,7 +260,7 @@ namespace game
 
     void setupcamera() {
         entities::classes::BasePhysicalEntity *target = dynamic_cast<entities::classes::BasePhysicalEntity*>(player1);
-        assert(target);
+        //assert(target);
         if(target)
         {
             player1->strafe = target->strafe;

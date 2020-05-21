@@ -1,6 +1,8 @@
 // renderparticles.cpp
 
 #include "engine.h"
+#include "engine/main/Application.h"
+#include "engine/hud.h"
 #include "shared/entities/basephysicalentity.h"
 
 
@@ -1039,7 +1041,7 @@ static void regularsplash(int type, int color, int radius, int num, int fade, co
 
 bool canaddparticles()
 {
-    return !minimized;
+    return !Application::Instance().GetAppState().Minimized;
 }
 
 void regular_particle_splash(int type, int num, int fade, const vec &p, int color, float size, int radius, int gravity, int delay)
@@ -1386,7 +1388,7 @@ void updateparticles()
 {
     if(regenemitters) addparticleemitters();
 
-    if(minimized) { canemit = false; return; }
+    if (Application::Instance().GetAppState().Minimized) { canemit = false; return; }
 
     if(lastmillis - lastemitframe >= emitmillis)
     {
