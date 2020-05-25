@@ -1,4 +1,5 @@
 from .CxxNode import CxxNode
+PHUI_ANNOTATION = "phui;"
 
 class CxxVariable(CxxNode):
 
@@ -12,6 +13,9 @@ class CxxVariable(CxxNode):
             self.isArrayDecl = True
 
         self.annotation = annotation
+        if self.annotation:
+            if self.annotation.spelling.startswith(PHUI_ANNOTATION):
+                self.handle_phui_field(parser, self.annotation)
 
     def __str__(self):
         if self.isArrayDecl:

@@ -7,8 +7,8 @@ def Generate(cxxRootNode):
     from ..cppmodel.CxxNode import Generator
     from ..cppmodel.CxxClass import CxxClass
 
-    template = """#include <nlohmann/json.hpp>
-#include "{}"
+    template = """#include "{}"
+#include <nlohmann/json.hpp>
 
 {}"""
     generated_funcs = []
@@ -66,8 +66,8 @@ def GenerateToJsonVariable(cxxVar, instanceVar):
     templateValues = GenerateJsonVariableTemplateValues(cxxVar)
     output = []
 
-    if templateValues["variableType"] in CUSTOM_TOJSON_VARGENERATORS:
-        output = output + CUSTOM_TOJSON_VARGENERATORS[templateValues["variableType"]](templateValues)
+    if templateValues['variableType'] in CUSTOM_TOJSON_VARGENERATORS:
+        output = output + CUSTOM_TOJSON_VARGENERATORS[templateValues['variableType']](templateValues)
     else:
         output.append(f"{{\"{templateValues['variableName']}\", {instanceVar}.{templateValues['variableName']}}}")
     return output
@@ -92,11 +92,11 @@ def GenerateFromJsonVariable(cxxVar, jsonRootVar, instanceVar):
     templateValues = GenerateJsonVariableTemplateValues(cxxVar)
     output = []
 
-    if cxxVar.annotation and cxxVar.annotation.starts_with("dontunserialize"): # <- todo: get this value from parsecpp.py
+    if cxxVar.annotation and cxxVar.annotation.spelling.startswith("dontunserialize"): # <- todo: get this value from parsecpp.py
         return output
 
-    if templateValues["variableType"] in CUSTOM_FROMJSON_VARGENERATORS:
-        output = output + CUSTOM_FROMJSON_VARGENERATORS[templateValues["variableType"]](templateValues)
+    if templateValues['variableType'] in CUSTOM_FROMJSON_VARGENERATORS:
+        output = output + CUSTOM_FROMJSON_VARGENERATORS[templateValues['variableType']](templateValues)
     else:
         output.append(f"""if (document.find(\"{templateValues['variableName']}\") != document.end()) 
 \t{{
@@ -131,10 +131,10 @@ def GenerateAttributeDefinitionVariable(cxxVar):
     definition = []
 
     for child in cxxVar.forEachChild(noDepth = True):
-        if 'data' in child:
+        if hasattr(child, 'data'):
             phui, uiType, *data = child.data
             definition.append(f"\"{uiType}\"s")
-            definition.append(f"\"{cxxVar}\"s")
+            definition.append(f"\"{templateValues['variableName']}\"s")
             for element in data:
                 definition.append(GenerateAttributeDefinitionVariableSanitized(element))
 
@@ -175,6 +175,8 @@ def GenerateAttributeGetter(cxxClass):
         body = "\n\t".join(output)
     return f"""entities::attribute_T {templateValues['className']}::getAttributeImpl(const std::string &key) const
 {{
+\tusing namespace std::string_literals;
+
 \t{body}
 }}
 """
@@ -186,9 +188,9 @@ def GenerateAttributeGetterVariable(cxxVar, hasElse):
     for child in cxxVar.forEachChild(noDepth = True):
         phui, uiType, *data = child.data
 
-        output.append(f"""{hasElse}if (key == "{cxxVar}")
+        output.append(f"""{hasElse}if (key == "{templateValues['variableName']}"s)
 	{{
-		return {cxxVar};
+		return {templateValues['variableName']};
 	}}""")
 
     return output
@@ -207,6 +209,8 @@ def GenerateAttributeSetter(cxxClass):
     body = "\n\t".join(output)
     return f"""void {templateValues['className']}::setAttributeImpl(const std::string &key, const entities::attribute_T &value)
 {{
+\tusing namespace std::string_literals;
+
 \tEntityEventAttributeChanged changedEvent(key);
 \t{body}
 }}
@@ -221,15 +225,15 @@ def GenerateAttributeSetterVariable(cxxVar, hasElse):
     for child in cxxVar.forEachChild(noDepth = True):
         phui, uiType, *data = child.data
 
-        output.append(f"""{hasElse}if (key == "{cxxVar}")
+        output.append(f"""{hasElse}if (key == "{templateValues['variableName']}"s)
 	{{
-        if (std::holds_alternative<decltype({cxxVar})>(value))
+        if (std::holds_alternative<{templateValues['variableType']}>(value))
         {{
-		    {cxxVar} = std::get<decltype({cxxVar})>(value);
+		    {templateValues['variableName']} = std::get<{templateValues['variableType']}>(value);
         }}
         else
         {{
-			{cxxVar} = std::visit(AttributeVisitCoercer<decltype({cxxVar})>(), value);
+			{templateValues['variableName']} = std::visit(AttributeVisitCoercer<{templateValues['variableType']}>(), value);
         }}
         onImpl(changedEvent);
 	}}""")

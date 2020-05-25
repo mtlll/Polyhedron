@@ -31,6 +31,7 @@ libclang_paths = [
 EXPORT_ANNOTATION = "scriptexport"
 DONTSERIALIZE_ANNOTATION = "dontserialize"
 DONTUNSERIALIZE_ANNOTATION = "dontunserialize"
+PHUI_ANNOTATION = "phui;"
 PROJECT_ROOT = os.path.dirname(os.getcwd())
 
 class CppParser:
@@ -203,7 +204,11 @@ class CppParser:
                                 if first_child.spelling.startswith(DONTUNSERIALIZE_ANNOTATION):
                                     if hasattr(parent.sourceObject, 'spelling'):
                                         print(">>> class {} DONTUNSERIALIZE field({}) {}".format(parent.sourceObject.spelling, cursor.kind, cursor.spelling), file=sys.stderr)
-                                    annotation = first_child.spelling
+                                    annotation = first_child
+                                if first_child.spelling.startswith(PHUI_ANNOTATION):
+                                    if hasattr(parent.sourceObject, 'spelling'):
+                                        print(">>> class {} PHUI field({}) {}".format(parent.sourceObject.spelling, cursor.kind, cursor.spelling), file=sys.stderr)
+                                    annotation = first_child
                         if hasattr(parent.sourceObject, 'spelling'):
                             print(">>> class {} field({}) {}".format(parent.sourceObject.spelling, cursor.kind, cursor.spelling), file=sys.stderr)
                         if cursor.storage_class == cindex.StorageClass.STATIC:
