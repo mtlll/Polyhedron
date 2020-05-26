@@ -10,15 +10,15 @@
 namespace {
     struct OpenGLContextCreationFlags
     {
-        int major, minor, mask;
+        int m_Major, m_Minor, m_Mask;
         OpenGLContextCreationFlags(int major, int minor, int mask)
-            : major(major), minor(minor), mask(mask)
+            : m_Major(major), m_Minor(minor), m_Mask(mask)
         {}
     };
 
     const std::array<OpenGLContextCreationFlags, 6> ContextConfigsToTry {
         OpenGLContextCreationFlags {4, 0, (int)SDL_GL_CONTEXT_PROFILE_CORE},
-        OpenGLContextCreationFlags {3, 3, (int)SDL_GL_CONTEXT_PROFILE_ES},
+        OpenGLContextCreationFlags {3, 3, (int)SDL_GL_CONTEXT_PROFILE_CORE},
         OpenGLContextCreationFlags {3, 2, (int)SDL_GL_CONTEXT_PROFILE_CORE},
         OpenGLContextCreationFlags {3, 1, 0},
         OpenGLContextCreationFlags {3, 0, 0},
@@ -44,9 +44,9 @@ bool GLContext::CreateContext()
 {
     for (auto &contextConfig : ContextConfigsToTry)
     {
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, contextConfig.major);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, contextConfig.minor);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, contextConfig.mask);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, contextConfig.m_Major);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, contextConfig.m_Minor);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, contextConfig.m_Mask);
 
         m_Context = SDL_GL_CreateContext(m_Window.GetWindowHandle());
         if (m_Context) {
@@ -57,6 +57,7 @@ bool GLContext::CreateContext()
     if (!m_Context)
     {
         Application::Instance().Fatal("Unable to create an Open GL Context: %s\n", SDL_GetError());
+        return false;
     }
 
 #ifdef OPEN_GL_ES
@@ -65,6 +66,7 @@ bool GLContext::CreateContext()
     if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
 #endif
         Application::Instance().Fatal("Unable to load GL through glad!\n");
+        return false;
     }
     conoutf("OpenGL:   %d.%d", GLVersion.major, GLVersion.minor);
     conoutf("Vendor:   %s", glGetString(GL_VENDOR));
@@ -72,6 +74,8 @@ bool GLContext::CreateContext()
     conoutf("Shader:   %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     Resize();
+
+    return true;
 }
 
 void GLContext::ApplyValuesToCubeScript()

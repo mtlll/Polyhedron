@@ -1,5 +1,6 @@
 #include "CommandlineArguments.h"
 #include "engine/console.h"
+#include <cstring>
 
 CommandlineArguments::CommandlineArguments(int argc, char** argv)
 {

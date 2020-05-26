@@ -1,4 +1,4 @@
-#include "fps.h"
+#include "FPS.h"
 #include "shared/loops.h"
 #include "engine/scriptexport.h"
 #include "engine/menus.h"

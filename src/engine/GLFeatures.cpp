@@ -111,7 +111,7 @@ int GLFeatures::ShaderVersion()
         }
     }
 
-    return major*100 + minor * 10;
+    return major*100 + minor;
 }
 
 bool GLFeatures::hasVendor(GLFeatures::Vendor v) {

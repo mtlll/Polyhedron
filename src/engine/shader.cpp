@@ -172,33 +172,37 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
     char *modsource = NULL;
     const char *parts[16];
     int numparts = 0;
+
+    struct  OpenGLShaderVersion {
+        int version;
+        std::string header;
+        OpenGLShaderVersion(int version, const std::string &header)
+            : version(version), header(header) {}
+    };
+
 #ifndef OPEN_GL_ES
-    static const struct { int version; const char * const header; } glslversions[] =
-    {
-        { 400, "#version 400\n" },
-        { 330, "#version 330\n" },
-        { 320, "#version 150\n" },
-        { 150, "#version 150\n" },
-        { 140, "#version 140\n" },
-        { 130, "#version 130\n" },
-        { 120, "#version 120\n" }
+    const std::array<OpenGLShaderVersion, 7> glslVersions {
+        OpenGLShaderVersion { 400, "#version 400\n" },
+        OpenGLShaderVersion { 330, "#version 330\n" },
+        OpenGLShaderVersion { 320, "#version 150\n" },
+        OpenGLShaderVersion { 150, "#version 150\n" },
+        OpenGLShaderVersion { 140, "#version 140\n" },
+        OpenGLShaderVersion { 130, "#version 130\n" },
+        OpenGLShaderVersion { 120, "#version 120\n" }
     };
 #else
-    static const struct { int version; const char * const header; } glslversions[] =
-    {
-        { 400, "#version 400\n" },
-        { 330, "#version 330 es\nprecision mediump float;\nprecision mediump sampler3D;\n" },
-        { 320, "#version 320 es\nprecision mediump float;\nprecision mediump sampler3D;\n" },
-        { 310, "#version 310 es\nprecision mediump float;\nprecision mediump sampler3D;\n" },
-        { 300, "#version 300 es\nprecision mediump float;\nprecision mediump sampler3D;\n" },
-        { 200, "#version 100\nprecision mediump float;\nprecision mediump sampler3D;\n" }
+    const std::array<OpenGLShaderVersion, 6> glslVersions {
+        OpenGLShaderVersion { 400, "#version 400\n" },
+        OpenGLShaderVersion { 330, "#version 330 es\nprecision mediump float;\nprecision mediump sampler3D;\n" },
+        OpenGLShaderVersion { 320, "#version 320 es\nprecision mediump float;\nprecision mediump sampler3D;\n" },
+        OpenGLShaderVersion { 310, "#version 310 es\nprecision mediump float;\nprecision mediump sampler3D;\n" },
+        OpenGLShaderVersion { 300, "#version 300 es\nprecision mediump float;\nprecision mediump sampler3D;\n" },
+        OpenGLShaderVersion { 200, "#version 100\nprecision mediump float;\nprecision mediump sampler3D;\n" }
     };
 #endif
-    loopi(sizeof(glslversions)/sizeof(glslversions[0]))
-    {
-        if(GLFeatures::ShaderVersion() >= glslversions[i].version)
-        {
-            parts[numparts++] = glslversions[i].header;
+    for(auto glslVersion : glslVersions) {
+        if (GLFeatures::ShaderVersion() >= glslVersion.version) {
+            parts[numparts++] = glslVersion.header.c_str();
             break;
         }
     }
