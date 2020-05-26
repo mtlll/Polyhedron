@@ -162,13 +162,16 @@ void Application::ProcessEvents()
             }
         }
 
-        engine::nui::InputEvent(event);
+        if (event.type == SDL_QUIT)
+            Quit();
+
+        if (engine::nui::InputEvent(event) == engine::nui::InputEventProcessState::Handled)
+        {
+            continue;
+        }
 
         switch(event.type)
         {
-            case SDL_QUIT:
-                Quit();
-                return;
 
             case SDL_WINDOWEVENT:
                 switch(event.window.event)

@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <variant>
+#include "engine/nui/nui.h"
 
 extern void boxs3D(const vec &o, vec s, int g);
 extern void boxs(int orient, vec o, const vec &s);
@@ -182,9 +183,11 @@ void entities::classes::CoreEntity::on(const Event& event)
 		break;
 		case EntityEventType::SelectStart:
 			selected = true;
+			engine::nui::StartEntityEditor(this);
 		break;
 		case EntityEventType::SelectStop:
 			selected = false;
+			engine::nui::StopEntityEditor(this);
 		break;
 		case EntityEventType::Tick:
 		break;

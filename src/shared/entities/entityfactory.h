@@ -1,5 +1,6 @@
 #pragma once
 #include "shared/geom/vec4.h"
+#include "shared/geom/vec.h"
 #include <string>
 #include <map>
 #include <functional>
@@ -15,8 +16,9 @@ namespace CommandTypes
 
 namespace entities {
 
-	typedef std::variant<std::string, float, int, bool, vec4> attribute_T;
-	typedef std::vector< std::vector< attribute_T > > attributeList_T;
+	using attribute_T = std::variant<std::string, float, int, bool, vec4, vec>;
+	using attrubuteRow_T = std::vector<attribute_T>;
+	using attributeList_T = std::vector<attrubuteRow_T>;
 
 	template <typename TargetType>
 	struct AttributeVisitCoercer
@@ -26,6 +28,7 @@ namespace entities {
 		TargetType operator()(int value) const;
 		TargetType operator()(bool value) const;
 		TargetType operator()(vec4 value) const;
+		TargetType operator()(vec value) const;
 	};
 
 	namespace classes

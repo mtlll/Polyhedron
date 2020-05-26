@@ -349,7 +349,7 @@ NkPolyhedron::InputEventProcessState NkPolyhedron::InputEvent(const SDL_Event &e
         {
             return InputEventProcessState::NotHandled;
         }
-        return InputEventProcessState::Handled;
+        return nk_item_is_any_active(&m_Context) ? InputEventProcessState::Handled : InputEventProcessState::NotHandled;
     }
     else if (evt.type == SDL_MOUSEBUTTONDOWN || evt.type == SDL_MOUSEBUTTONUP)
     {
@@ -366,8 +366,9 @@ NkPolyhedron::InputEventProcessState NkPolyhedron::InputEvent(const SDL_Event &e
             nk_input_button(&m_Context, NK_BUTTON_MIDDLE, x, y, down);
         else if (evt.button.button == SDL_BUTTON_RIGHT)
             nk_input_button(&m_Context, NK_BUTTON_RIGHT, x, y, down);
-//        else return InputEventProcessState::NotHandled;
-        return InputEventProcessState::Handled;
+        else return InputEventProcessState::NotHandled;
+
+        return nk_window_is_any_hovered(&m_Context) ? InputEventProcessState::Handled : InputEventProcessState::NotHandled;
     }
     else if (evt.type == SDL_MOUSEMOTION)
     {
@@ -381,7 +382,8 @@ NkPolyhedron::InputEventProcessState NkPolyhedron::InputEvent(const SDL_Event &e
         {
             nk_input_motion(&m_Context, evt.motion.x, evt.motion.y);
         }
-        return InputEventProcessState::Handled;
+
+        return nk_window_is_any_hovered(&m_Context) ? InputEventProcessState::Handled : InputEventProcessState::NotHandled;
     }
     else if (evt.type == SDL_TEXTINPUT)
     {
@@ -389,13 +391,13 @@ NkPolyhedron::InputEventProcessState NkPolyhedron::InputEvent(const SDL_Event &e
         nk_glyph glyph;
         memcpy(glyph, evt.text.text, NK_UTF_SIZE);
         nk_input_glyph(&m_Context, glyph);
-        return InputEventProcessState::Handled;
+        return nk_item_is_any_active(&m_Context) ? InputEventProcessState::Handled : InputEventProcessState::NotHandled;;
     }
     else if (evt.type == SDL_MOUSEWHEEL)
     {
         /* mouse wheel */
         nk_input_scroll(&m_Context, nk_vec2((float)evt.wheel.x,(float)evt.wheel.y));
-        return InputEventProcessState::Handled;
+        return nk_item_is_any_active(&m_Context) ? InputEventProcessState::Handled : InputEventProcessState::NotHandled;;
     }
 
     return InputEventProcessState::NotHandled;

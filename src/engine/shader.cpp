@@ -173,11 +173,13 @@ static void compileglslshader(Shader &s, GLenum type, GLuint &obj, const char *d
     const char *parts[16];
     int numparts = 0;
 
-    struct  OpenGLShaderVersion {
+    struct OpenGLShaderVersion {
         int version;
         std::string header;
         OpenGLShaderVersion(int version, const std::string &header)
-            : version(version), header(header) {}
+            : version(version)
+            , header(header)
+        {}
     };
 
 #ifndef OPEN_GL_ES

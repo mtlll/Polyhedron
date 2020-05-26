@@ -35,6 +35,10 @@ template <> std::string entities::AttributeVisitCoercer<std::string>::operator()
 	return std::to_string(value.x) + ", " + std::to_string(value.y) + ", " + std::to_string(value.z) + ", " + std::to_string(value.w);
 }
 
+template <> std::string entities::AttributeVisitCoercer<std::string>::operator()(vec value) const
+{
+	return std::to_string(value.x) + ", " + std::to_string(value.y) + ", " + std::to_string(value.z);
+}
 
 template <> float entities::AttributeVisitCoercer<float>::operator()(const std::string& value) const
 {
@@ -57,6 +61,11 @@ template <> float entities::AttributeVisitCoercer<float>::operator()(const bool 
 }
 
 template <> float entities::AttributeVisitCoercer<float>::operator()(const vec4 value) const
+{
+	return value.x;
+}
+
+template <> float entities::AttributeVisitCoercer<float>::operator()(const vec value) const
 {
 	return value.x;
 }
@@ -88,6 +97,10 @@ template <> int entities::AttributeVisitCoercer<int>::operator()(vec4 value) con
 	return value.x;
 }
 
+template <> int entities::AttributeVisitCoercer<int>::operator()(vec value) const
+{
+	return value.x;
+}
 
 template <> bool entities::AttributeVisitCoercer<bool>::operator()(const std::string& value) const
 {
@@ -113,6 +126,43 @@ template <> bool entities::AttributeVisitCoercer<bool>::operator()(const vec4 va
 {
 	return value.x != 0 ? true : false;
 }
+
+template <> bool entities::AttributeVisitCoercer<bool>::operator()(const vec value) const
+{
+	return value.x != 0 ? true : false;
+}
+
+
+template <> vec4 entities::AttributeVisitCoercer<vec4>::operator()(const std::string& value) const
+{
+	return vec4(0.0f, 0.0f, 0.0f, 0.0f);
+}
+
+template <> vec4 entities::AttributeVisitCoercer<vec4>::operator()(const float value) const
+{
+	return vec4(value, 0.0f, 0.0f, 0.0f);
+}
+
+template <> vec4 entities::AttributeVisitCoercer<vec4>::operator()(const int value) const
+{
+	return vec4(value, 0.0f, 0.0f, 0.0f);
+}
+
+template <> vec4 entities::AttributeVisitCoercer<vec4>::operator()(const bool value) const
+{
+	return value ? vec4(1.0f, 1.0f, 1.0f, 1.0f) : vec4(0.0f, 0.0f, 0.0f, 0.0f);
+}
+
+template <> vec4 entities::AttributeVisitCoercer<vec4>::operator()(const vec4 value) const
+{
+	return value;
+}
+
+template <> vec4 entities::AttributeVisitCoercer<vec4>::operator()(const vec value) const
+{
+	return vec4(value, 0.0f);
+}
+
 
 std::map<std::string, entities::EntityFactory::EntityFactoryConstructor>& entities::EntityFactory::getConstructors()
 {

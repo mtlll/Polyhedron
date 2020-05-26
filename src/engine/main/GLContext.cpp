@@ -11,8 +11,8 @@ namespace {
     struct OpenGLContextCreationFlags
     {
         int m_Major, m_Minor, m_Mask;
-        OpenGLContextCreationFlags(int major, int minor, int mask)
-            : m_Major(major), m_Minor(minor), m_Mask(mask)
+        OpenGLContextCreationFlags(int _major, int _minor, int _mask)
+            : m_Major(_major), m_Minor(_minor), m_Mask(_mask)
         {}
     };
 

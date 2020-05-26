@@ -152,6 +152,8 @@ list(APPEND fileListShared
     shared/command.h
     shared/crypto.cpp
     shared/cube.h
+    shared/Easing.cpp
+    shared/Easing.h
     shared/ents.h
     shared/geom.cpp
     shared/geom.h    
@@ -262,6 +264,8 @@ list(APPEND fileListSharedEntities
     shared/entities/decalentity.cpp
     shared/entities/entityfactory.h
     shared/entities/entityfactory.cpp
+    shared/entities/EntityEditorMenu.cpp
+    shared/entities/EntityEditorMenu.h
 )
 
 list(APPEND extRenderdocFiles

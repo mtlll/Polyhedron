@@ -6,6 +6,7 @@
 #include <nlohmann/json.hpp>
 #include <SDL_events.h>
 #include <list>
+#include <cstring>
 
 class CommandlineArguments;
 class Input;
