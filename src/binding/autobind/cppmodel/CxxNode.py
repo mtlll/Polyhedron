@@ -2,7 +2,6 @@ from clang import cindex
 from enum import Flag, auto
 import sys
 
-PHUI_ANNOTATION = "phui;"
 class Generator(Flag):
     Json = auto()
     Attributes = auto()
@@ -23,13 +22,6 @@ class CxxNode():
 
         if not self.parent is None:
             self.parent.addchild(self)
-
-        if hasattr(self.sourceObject, 'first_child'):
-            first_child = next(self.sourceObject.get_children(), None)
-            if not first_child is None:
-                if first_child.kind == cindex.CursorKind.ANNOTATE_ATTR:
-                    if first_child.spelling.startswith(PHUI_ANNOTATION):
-                        self.handle_phui_field(first_child)
         
     def getQualifiers(self):
         self.isConst = 0
@@ -48,11 +40,11 @@ class CxxNode():
                 except ValueError:
                     pass
 
-    def handle_phui_field(self, annotation_cursor):
+    def handle_phui_field(self, parser, annotation_cursor):
         from .PhuiElement import PhuiElement
 
         annotation_data = annotation_cursor.spelling.split(";")
-        PhuiElement(annotation_cursor, self, annotation_data)
+        PhuiElement(parser, annotation_cursor, self, annotation_data)
 
     def addchild(self, node):
         node.parent = self

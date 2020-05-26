@@ -1,4 +1,5 @@
 #pragma once
+#include "shared/geom/vec4.h"
 #include <string>
 #include <map>
 #include <functional>
@@ -14,7 +15,7 @@ namespace CommandTypes
 
 namespace entities {
 
-	typedef std::variant<std::string, float, int, bool/*, vec4*/> attribute_T;
+	typedef std::variant<std::string, float, int, bool, vec4> attribute_T;
 	typedef std::vector< std::vector< attribute_T > > attributeList_T;
 
 	template <typename TargetType>
@@ -24,7 +25,7 @@ namespace entities {
 		TargetType operator()(float value) const;
 		TargetType operator()(int value) const;
 		TargetType operator()(bool value) const;
-		/*TargetType operator()(vec4 value) const;*/
+		TargetType operator()(vec4 value) const;
 	};
 
 	namespace classes
