@@ -41,22 +41,33 @@ namespace engine { namespace nui {
 
 
     namespace {
-        entities::classes::CoreEntity* ActiveEntityEditorEntity = nullptr;
         std::unique_ptr<EntityEditorMenu> ActiveEntityEditorMenu;
     }
 
     void StartEntityEditor(entities::classes::CoreEntity* entity)
     {
-        ActiveEntityEditorEntity = entity;
-        ActiveEntityEditorMenu = std::make_unique<EntityEditorMenu>(entity);
+        if (!ActiveEntityEditorMenu)
+        {
+            ActiveEntityEditorMenu = std::make_unique<EntityEditorMenu>(entity);
+        }
+        else
+        {
+             if (ActiveEntityEditorMenu->HasEntity(entity))
+             {
+                 ActiveEntityEditorMenu->Show();
+             }
+             else
+             {
+                 ActiveEntityEditorMenu = std::make_unique<EntityEditorMenu>(entity);
+             }
+        }
     }
 
     void StopEntityEditor(entities::classes::CoreEntity* entity)
     {
-        if (ActiveEntityEditorEntity == entity)
+        if (ActiveEntityEditorMenu || ActiveEntityEditorMenu->HasEntity(entity))
         {
-            ActiveEntityEditorEntity = nullptr;
-            ActiveEntityEditorMenu.release();
+            ActiveEntityEditorMenu->Hide();
         }
     }
 

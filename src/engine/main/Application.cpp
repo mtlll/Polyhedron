@@ -184,12 +184,12 @@ void Application::ProcessEvents()
 //                        shouldgrab = true;
                         break;
                     case SDL_WINDOWEVENT_ENTER:
-                        m_Input->Grab(true);
+                        m_Input->WantGrab(true);
                         break;
 
                     case SDL_WINDOWEVENT_LEAVE:
                     case SDL_WINDOWEVENT_FOCUS_LOST:
-                        m_Input->Grab(false);
+                        m_Input->WantGrab(false);
 //                        inputgrab(grabinput = false);
                         break;
 

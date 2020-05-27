@@ -3656,34 +3656,6 @@ namespace UI
 
     FVARP(uisensitivity, 1e-4f, 1, 1e4f);
 
-    bool hascursor()
-    {
-        return world->allowinput();
-    }
-
-    void getcursorpos(float &x, float &y)
-    {
-        if(hascursor())
-        {
-            x = cursorx;
-            y = cursory;
-        }
-        else x = y = 0.5f;
-    }
-
-    void resetcursor()
-    {
-        cursorx = cursory = 0.5f;
-    }
-
-    bool movecursor(int dx, int dy)
-    {
-        if(!hascursor()) return false;
-        cursorx = clamp(cursorx + dx*uisensitivity/hudw, 0.0f, 1.0f);
-        cursory = clamp(cursory + dy*uisensitivity/hudh, 0.0f, 1.0f);
-        return true;
-    }
-
     bool keypress(int code, bool isdown)
     {
         if(world->rawkey(code, isdown)) return true;

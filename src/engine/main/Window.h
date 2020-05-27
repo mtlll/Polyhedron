@@ -22,6 +22,9 @@ public:
     void Swap();
     GLContext& GetContext() const;
     SDL_Window* GetWindowHandle() const;
+
+    int GetWidth() const;
+    int GetHeight() const;
 private:
     std::string m_ConfigFilename;
     AppConfig& m_AppConfig;

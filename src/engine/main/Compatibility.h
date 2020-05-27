@@ -1,5 +1,8 @@
 #pragma once
 
+#include "shared/command.h"
+#include "engine/scriptexport.h"
+
 namespace entities
 {
     namespace classes
@@ -16,3 +19,4 @@ namespace game
 }
 
 extern entities::classes::Player *player;
+

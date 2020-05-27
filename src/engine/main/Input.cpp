@@ -1,9 +1,9 @@
 #include "Input.h"
 #include "Application.h"
+#include "Window.h"
 #include "engine/console.h"
 #include "shared/types.h"
 #include "engine/physics.h"
-#include "engine/ui.h"
 #include <SDL_events.h>
 
 //FIXME: extern
@@ -49,10 +49,15 @@ void Input::HandleEvent(const SDL_Event& event)
 
         case SDL_MOUSEMOTION:
             {
-                int dx = event.motion.xrel, dy = event.motion.yrel;
-                if(!UI::movecursor(dx, dy))
+                if (m_GrabMode)
                 {
-                    mousemove(dx, dy);
+                    mousemove(event.motion.xrel, event.motion.yrel);
+                    SDL_WarpMouseInWindow(m_App.GetWindow().GetWindowHandle(), m_App.GetWindow().GetWidth() / 2, m_App.GetWindow().GetHeight() / 2);
+                }
+                else
+                {
+                    m_PointerPosition.x = event.motion.x;
+                    m_PointerPosition.y = event.motion.y;
                 }
             }
             break;
@@ -86,41 +91,43 @@ void Input::HandleEvent(const SDL_Event& event)
 
 void Input::Grab(bool enable)
 {
-    if(enable)
+    m_GrabMode = enable;
+
+    if (enable)
     {
-//#ifndef NDEBUG
-//		SDL_ShowCursor(SDL_FALSE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
-//#else
-//		SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
-//#endif
-//		if(canrelativemouse && userelativemouse)
-//		{
-//			if(SDL_SetRelativeMouseMode(SDL_TRUE) >= 0)
-//			{
-//				SDL_SetWindowGrab(screen, SDL_TRUE);
-//				relativemouse = true;
-//			}
-//			else
-//			{
-//				SDL_SetWindowGrab(screen, SDL_FALSE);
-//				canrelativemouse = false;
-//				relativemouse = false;
-//			}
-//		}
+        if (SDL_SetRelativeMouseMode(SDL_TRUE) >= 0)
+        {
+            SDL_SetWindowGrab(m_App.GetWindow().GetWindowHandle(), SDL_TRUE);
+        }
+        else
+        {
+            SDL_SetWindowGrab(m_App.GetWindow().GetWindowHandle(), SDL_FALSE);
+            m_GrabMode = false;
+        }
     }
     else
     {
-//#ifndef NDEBUG
-//		SDL_ShowCursor(SDL_FALSE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
-//#else
-//		SDL_ShowCursor(SDL_TRUE); // WatIsDeze: Set to true to hide system cursor. (Otherwise debugging is a bitch on Linux)
-//#endif
-//		if(relativemouse)
-//		{
-//			SDL_SetRelativeMouseMode(SDL_FALSE);
-//			SDL_SetWindowGrab(screen, SDL_FALSE);
-//			relativemouse = false;
-//		}
+        SDL_SetRelativeMouseMode(SDL_FALSE);
+        SDL_SetWindowGrab(m_App.GetWindow().GetWindowHandle(), SDL_FALSE);
+    }
+}
+
+void Input::WantGrab(bool wantGrab)
+{
+    if (wantGrab)
+    {
+        if (m_GrabMode)
+        {
+            Grab(m_GrabMode);
+        }
+    }
+    else
+    {
+        if (m_GrabMode)
+        {
+            Grab(false);
+            m_GrabMode = true;
+        }
     }
 }
 
@@ -155,4 +162,14 @@ bool Input::InterceptKey(SDL_KeyCode key)
     });
 
     return intercepted;
+}
+
+ivec2 Input::GetMousePosition() const
+{
+    return m_PointerPosition;
+}
+
+bool Input::IsMouseGrabbed() const
+{
+    return m_GrabMode;
 }

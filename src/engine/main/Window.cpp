@@ -194,3 +194,11 @@ GLContext& Window::GetContext() const
 SDL_Window *Window::GetWindowHandle() const {
     return m_Window;
 }
+
+int Window::GetWidth() const {
+    return m_State.WindowWidth;
+}
+
+int Window::GetHeight() const {
+    return m_State.WindowHeight;
+}

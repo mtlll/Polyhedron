@@ -1758,6 +1758,14 @@ void resetmap()
 
 void startmap(const char *name)
 {
+    extern void mouselook(CommandTypes::Boolean);
+    int on = 1;
+    if (editmode)
+    {
+        on = 0;
+    }
+    mouselook(&on);
+
     game::startmap(name);
 }
 

@@ -71,3 +71,8 @@ void textinput(bool on, int mask)
 {
     Application::Instance().GetInput().Text(on);
 }
+
+SCRIPTEXPORT void mouselook(CommandTypes::Boolean enable)
+{
+    Application::Instance().GetInput().Grab(*enable == 1);
+}

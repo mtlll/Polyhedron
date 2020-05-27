@@ -10,11 +10,17 @@
 EntityEditorMenu::EntityEditorMenu(entities::classes::CoreEntity* entity)
     : m_Entity(entity)
     , m_AnimSlideInStart(totalmillis)
-{}
+{
+    conoutf("EntityEditorMenu %x", entity);
+}
 
 void EntityEditorMenu::Render()
 {
     using namespace std::string_literals;
+
+    if (m_Closed)
+        return;
+
     auto& attrs = m_Entity->attributes();
 
     int screenw = 0, screenh = 0;
@@ -24,6 +30,17 @@ void EntityEditorMenu::Render()
     {
         float animRatio = Easing::ElasticEaseOut(float(totalmillis - m_AnimSlideInStart) / float(m_AnimSlideInDuration));
 
+        nk_begin(engine::nui::GetNKContext(), "Properties", nk_rect(screenw - m_Width * animRatio, 0, std::max(m_Width, m_Width * animRatio), screenh), 0);
+    }
+    else if(totalmillis < m_AnimSlideOutStart + m_AnimSlideOutDuration)
+    {
+        float animRatio = 1.0f - Easing::ElasticEaseOut(float(totalmillis - m_AnimSlideOutStart) / float(m_AnimSlideOutDuration));
+
+        if (animRatio <= 0.0f)
+        {
+            animRatio = 0.0f;
+            m_Closed = true;
+        }
         nk_begin(engine::nui::GetNKContext(), "Properties", nk_rect(screenw - m_Width * animRatio, 0, std::max(m_Width, m_Width * animRatio), screenh), 0);
     }
     else
@@ -195,5 +212,31 @@ void EntityEditorMenu::RenderCheckbox(const entities::attrubuteRow_T& attrs)
         }
 
         __checkboxStorage[storageKey] = workValue;
+    }
+}
+
+bool EntityEditorMenu::HasEntity(entities::classes::CoreEntity* entity)
+{
+    return entity == m_Entity;
+}
+
+void EntityEditorMenu::Hide()
+{
+    conoutf("EntityEditorMenu::Hide %x", m_Entity);
+    m_AnimSlideOutStart = totalmillis;
+}
+
+void EntityEditorMenu::Show()
+{
+    if (m_AnimSlideOutStart > 0)
+    {
+        conoutf("EntityEditorMenu::Show %x", m_Entity);
+        m_AnimSlideOutStart = 0;
+        m_AnimSlideInStart = totalmillis;
+        m_Closed = false;
+    }
+    else
+    {
+        conoutf("EntityEditorMenu::Show ignored %x (%d)", m_Entity, m_AnimSlideOutStart);
     }
 }

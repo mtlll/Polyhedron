@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include "engine/main/Application.h"
+#include "engine/main/Input.h"
 #include "engine/main/Window.h"
 #include "engine/main/GLContext.h"
 #include "engine/hud.h"
@@ -1614,35 +1615,28 @@ void writecrosshairs(stream *f)
 
 void drawcrosshair(int w, int h)
 {
-    bool windowhit = UI::hascursor();
-    if(!windowhit && (hidehud || mainmenu)) return; //(hidehud || player->state==CS_SPECTATOR || player->state==CS_DEAD)) return;
+    if (!Application::Instance().GetInput().IsMouseGrabbed())
+        return;
+
+    if(hidehud || mainmenu) return; //(hidehud || player->state==CS_SPECTATOR || player->state==CS_DEAD)) return;
 
     vec color(1, 1, 1);
     // TODO: Change crosshair over here?
     float cx = 0.5f, cy = 0.5f, chsize;
     Texture *crosshair;
-    if(windowhit)
+
+    int index = game::selectcrosshair(color);
+    if(index < 0) return;
+    if(!crosshairfx) index = 0;
+    if(!crosshairfx || !crosshaircolors) color = vec(1, 1, 1);
+    crosshair = crosshairs[index];
+    if(!crosshair)
     {
-        static Texture *cursor = NULL;
-        if(!cursor) cursor = textureload("media/interface/cursor.png", 3, true);
-        crosshair = cursor;
-        chsize = cursorsize*w/900.0f;
-        UI::getcursorpos(cx, cy);
-    }
-    else
-    {
-        int index = game::selectcrosshair(color);
-        if(index < 0) return;
-        if(!crosshairfx) index = 0;
-        if(!crosshairfx || !crosshaircolors) color = vec(1, 1, 1);
+        loadcrosshair(NULL, index);
         crosshair = crosshairs[index];
-        if(!crosshair)
-        {
-            loadcrosshair(NULL, index);
-            crosshair = crosshairs[index];
-        }
-        chsize = crosshairsize*w/900.0f;
     }
+    chsize = crosshairsize*w/900.0f;
+
     if(crosshair->type&Texture::ALPHA){
         glCheckError(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     }
@@ -1651,8 +1645,8 @@ void drawcrosshair(int w, int h)
     }
     hudshader->set();
     gle::color(color);
-    float x = cx*w - (windowhit ? 0 : chsize/2.0f);
-    float y = cy*h - (windowhit ? 0 : chsize/2.0f);
+    float x = cx*w - chsize/2.0f;
+    float y = cy*h - chsize/2.0f;
     glCheckError(glBindTexture(GL_TEXTURE_2D, crosshair->id));
 
     hudquad(x, y, chsize, chsize);

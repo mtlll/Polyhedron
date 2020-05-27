@@ -22,12 +22,19 @@ public:
     void RenderSliderInt(const entities::attrubuteRow_T& attrs);
     void RenderCheckbox(const entities::attrubuteRow_T& attrs);
 
+    bool HasEntity(entities::classes::CoreEntity* entity);
+    void Hide();
+    void Show();
+
 private:
     entities::classes::CoreEntity* m_Entity;
+    bool m_Closed = false;
     float m_Width = 400;
     int m_AnimSlideInDuration = 500;
+    int m_AnimSlideOutDuration = 500;
 
     int m_AnimSlideInStart = 0;
+    int m_AnimSlideOutStart = 0;
 
     std::string __lastHeader;
     std::map<std::string, std::string> __inputStorage;
