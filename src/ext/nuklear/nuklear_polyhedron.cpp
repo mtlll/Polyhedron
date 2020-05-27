@@ -13,7 +13,7 @@ NkPolyhedron::NkFont::NkFont(std::string fontName) {
     m_UserFont.userdata = nk_handle_ptr(this);
     font* fontInstance = findfont(m_FontName.c_str());
     auto fontScale = 1.0f;//float(fontInstance->c);
-    m_UserFont.height = 32.0f;//fontInstance->scale;
+    m_UserFont.height = 22.0f;//fontInstance->scale;
     m_UserFont.width = &UserFontGetWidth;
 }
 
@@ -51,7 +51,12 @@ void NkPolyhedron::Render()
             case NK_COMMAND_NOP: break;
             case NK_COMMAND_SCISSOR: {
                 const auto* scissorCmd = reinterpret_cast<const nk_command_scissor*>(cmd);
-                glCheckError(glScissor(scissorCmd->x, scissorCmd->y, scissorCmd->w, scissorCmd->h));
+                int x = scissorCmd->x - 1;
+                int y = (screenh - (scissorCmd->y + scissorCmd->h)) + 1;
+                int w = scissorCmd->w + 1;
+                int h = scissorCmd->h;
+                glCheckError(glEnable(GL_SCISSOR_TEST));
+                glCheckError(glScissor(x, y, w, h));
             } break;
             case NK_COMMAND_LINE: {
                 const auto* lineCmd = reinterpret_cast<const nk_command_line*>(cmd);
@@ -179,19 +184,100 @@ void NkPolyhedron::Render()
                 xtraverts += gle::end();
             } break;
             case NK_COMMAND_TRIANGLE: {
+                const auto* triangleCmd = reinterpret_cast<const nk_command_triangle*>(cmd);
+                gle::defvertex(2);
+                gle::defcolor(4, GL_UNSIGNED_BYTE);
 
+                gle::begin(GL_TRIANGLE_FAN);
+
+                gle::attribf(triangleCmd->a.x, triangleCmd->a.y);
+                gle::attribub(triangleCmd->color.r, triangleCmd->color.g, triangleCmd->color.b, triangleCmd->color.a);
+
+                gle::attribf(triangleCmd->b.x, triangleCmd->b.y);
+                gle::attribub(triangleCmd->color.r, triangleCmd->color.g, triangleCmd->color.b, triangleCmd->color.a);
+
+                gle::attribf(triangleCmd->c.x, triangleCmd->c.y);
+                gle::attribub(triangleCmd->color.r, triangleCmd->color.g, triangleCmd->color.b, triangleCmd->color.a);
+
+                xtraverts += gle::end();
             } break;
             case NK_COMMAND_TRIANGLE_FILLED: {
+                const auto* triangleFilledCmd = reinterpret_cast<const nk_command_triangle_filled*>(cmd);
+                gle::defvertex(2);
+                gle::defcolor(4, GL_UNSIGNED_BYTE);
 
+                gle::begin(GL_LINE_LOOP);
+
+                gle::attribf(triangleFilledCmd->a.x, triangleFilledCmd->a.y);
+                gle::attribub(triangleFilledCmd->color.r, triangleFilledCmd->color.g, triangleFilledCmd->color.b, triangleFilledCmd->color.a);
+
+                gle::attribf(triangleFilledCmd->b.x, triangleFilledCmd->b.y);
+                gle::attribub(triangleFilledCmd->color.r, triangleFilledCmd->color.g, triangleFilledCmd->color.b, triangleFilledCmd->color.a);
+
+                gle::attribf(triangleFilledCmd->c.x, triangleFilledCmd->c.y);
+                gle::attribub(triangleFilledCmd->color.r, triangleFilledCmd->color.g, triangleFilledCmd->color.b, triangleFilledCmd->color.a);
+
+                xtraverts += gle::end();
             } break;
             case NK_COMMAND_POLYGON: {
+                const auto* polygonCmd = reinterpret_cast<const nk_command_polygon*>(cmd);
+                if (polygonCmd->point_count > 0) {
+                    gle::defvertex(2);
+                    gle::defcolor(4, GL_UNSIGNED_BYTE);
+                    glCheckError(glLineWidth(polygonCmd->line_thickness));
 
+                    gle::begin(GL_LINE_LOOP);
+                    const struct nk_vec2i *points = &polygonCmd->points[0];
+                    for (int i = 1; i < polygonCmd->point_count; i++) {
+                        gle::attribf(float(points[i - 1].x), float(points[i - 1].y));
+                        gle::attribub(polygonCmd->color.r, polygonCmd->color.g, polygonCmd->color.b, polygonCmd->color.a);
+
+                        gle::attribf(float(points[i].x), float(points[i].x));
+                        gle::attribub(polygonCmd->color.r, polygonCmd->color.g, polygonCmd->color.b, polygonCmd->color.a);
+                    }
+                    gle::attribf(float(points[polygonCmd->point_count - 1].x), float(points[polygonCmd->point_count - 1].x));
+                    gle::attribub(polygonCmd->color.r, polygonCmd->color.g, polygonCmd->color.b, polygonCmd->color.a);
+                    xtraverts += gle::end();
+                }
             } break;
             case NK_COMMAND_POLYGON_FILLED: {
+                const auto* polygonFilledCmd = reinterpret_cast<const nk_command_polygon_filled*>(cmd);
+                if (polygonFilledCmd->point_count > 0) {
+                    gle::defvertex(2);
+                    gle::defcolor(4, GL_UNSIGNED_BYTE);
 
+
+                    gle::begin(GL_TRIANGLE_FAN);
+                    const struct nk_vec2i *points = &polygonFilledCmd->points[0];
+                    for (int i = 1; i < polygonFilledCmd->point_count; i++) {
+                        gle::attribf(float(points[i - 1].x), float(points[i - 1].y));
+                        gle::attribub(polygonFilledCmd->color.r, polygonFilledCmd->color.g, polygonFilledCmd->color.b, polygonFilledCmd->color.a);
+
+                        gle::attribf(float(points[i].x), float(points[i].x));
+                        gle::attribub(polygonFilledCmd->color.r, polygonFilledCmd->color.g, polygonFilledCmd->color.b, polygonFilledCmd->color.a);
+                    }
+
+                    xtraverts += gle::end();
+                }
             } break;
             case NK_COMMAND_POLYLINE: {
+                const auto* polylineCmd = reinterpret_cast<const nk_command_polyline*>(cmd);
+                if (polylineCmd->point_count > 0) {
+                    gle::defvertex(2);
+                    gle::defcolor(4, GL_UNSIGNED_BYTE);
+                    glCheckError(glLineWidth(polylineCmd->line_thickness));
 
+                    gle::begin(GL_LINE_LOOP);
+                    const struct nk_vec2i *points = &polylineCmd->points[0];
+                    for (int i = 1; i < polylineCmd->point_count; i++) {
+                        gle::attribf(float(points[i - 1].x), float(points[i - 1].y));
+                        gle::attribub(polylineCmd->color.r, polylineCmd->color.g, polylineCmd->color.b, polylineCmd->color.a);
+
+                        gle::attribf(float(points[i].x), float(points[i].x));
+                        gle::attribub(polylineCmd->color.r, polylineCmd->color.g, polylineCmd->color.b, polylineCmd->color.a);
+                    }
+                    xtraverts += gle::end();
+                }
             } break;
             case NK_COMMAND_TEXT: {
                 const auto* textCmd = reinterpret_cast<const nk_command_text*>(cmd);
@@ -223,15 +309,6 @@ void NkPolyhedron::Render()
                 textscale = oldscale;
                 popfont();
             } break;
-            case NK_COMMAND_CURVE: {
-
-            } break;
-            case NK_COMMAND_ARC: {
-
-            } break;
-            case NK_COMMAND_RECT_MULTI_COLOR: {
-
-            } break;
             case NK_COMMAND_IMAGE: {
                 const auto* imageCmd = reinterpret_cast<const nk_command_image*>(cmd);
 
@@ -259,8 +336,67 @@ void NkPolyhedron::Render()
 
                 xtraverts += gle::end();
             } break;
-            case NK_COMMAND_ARC_FILLED: {
+            case NK_COMMAND_CURVE: {
+                // How to draw a spline, since this seems to be used for that. (Check out the node_editor.c)
+                // https://community.khronos.org/t/drawing-a-bezier-spline/73966
+                const auto* curveCmd = reinterpret_cast<const nk_command_curve*>(cmd);
+                int lod = 20;
 
+                gle::defvertex(2);
+                gle::defcolor(4, GL_UNSIGNED_BYTE);
+                glCheckError(glLineWidth(curveCmd->line_thickness));
+
+                gle::begin(GL_LINE_STRIP);
+                for (int i = 0; i < lod; i++) {
+                    float t = (float)i / (lod - 1);
+                    float it = 1.0f - t;
+
+                    float b0 = t * t * t;
+                    float b1 = 3 * t * t * it;
+                    float b2 = 3 * t * it * it;
+                    float b3 = it * it * it;
+
+                    float x = b0 * curveCmd->begin.x +
+                            b1 * curveCmd->ctrl[0].x +
+                            b2 * curveCmd->ctrl[1].x +
+                            b3 * curveCmd->end.x;
+                    float y = b0 * curveCmd->begin.y +
+                            b1 * curveCmd->ctrl[0].y +
+                            b2 * curveCmd->ctrl[1].y +
+                            b3 * curveCmd->end.y;
+
+                    gle::attribf(x, y);
+                    gle::attribub(curveCmd->color.r, curveCmd->color.g, curveCmd->color.b, curveCmd->color.a);
+                }
+                xtraverts += gle::end();
+            } break;
+            case NK_COMMAND_ARC: {
+                conoutf(CON_WARN, "%s", "Unknown NK_COMMAND_ARC draw command detected.");
+            } break;
+            case NK_COMMAND_RECT_MULTI_COLOR: {
+                const auto* rectMultiColorCmd = reinterpret_cast<const nk_command_rect_multi_color*>(cmd);
+
+                gle::defvertex(2);
+                gle::defcolor(4, GL_UNSIGNED_BYTE);
+
+                gle::begin(GL_TRIANGLE_STRIP);
+
+                gle::attribf(rectMultiColorCmd->x + rectMultiColorCmd->w, rectMultiColorCmd->y);
+                gle::attribub(rectMultiColorCmd->left.r, rectMultiColorCmd->left.g, rectMultiColorCmd->left.b, rectMultiColorCmd->left.a);
+
+                gle::attribf(rectMultiColorCmd->x             , rectMultiColorCmd->y);
+                gle::attribub(rectMultiColorCmd->top.r, rectMultiColorCmd->top.g, rectMultiColorCmd->top.b, rectMultiColorCmd->top.a);
+
+                gle::attribf(rectMultiColorCmd->x + rectMultiColorCmd->w, rectMultiColorCmd->y + rectMultiColorCmd->h);
+                gle::attribub(rectMultiColorCmd->right.r, rectMultiColorCmd->right.g, rectMultiColorCmd->right.b, rectMultiColorCmd->right.a);
+
+                gle::attribf(rectMultiColorCmd->x             , rectMultiColorCmd->y + rectMultiColorCmd->h);
+                gle::attribub(rectMultiColorCmd->bottom.r, rectMultiColorCmd->bottom.g, rectMultiColorCmd->bottom.b, rectMultiColorCmd->bottom.a);
+
+                xtraverts += gle::end();
+            } break;
+            case NK_COMMAND_ARC_FILLED: {
+                conoutf(CON_WARN, "%s", "Unknown NK_COMMAND_ARC_FILLED draw command detected.");
             } break;
             default: break;
         }
