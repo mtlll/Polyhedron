@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include "engine/menus.h"
+#include "engine/SoundConfig.h"
 #include "engine/main/Application.h"
 #include "shared/stream.h"
 #include "shared/zip.h"

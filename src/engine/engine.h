@@ -62,7 +62,7 @@ extern vector<int> entgroup;
 //#include "grass.h"
 //#include "blend.h"
 //#include "movie.h"
-#include "SoundConfig.h"
+//#include "SoundConfig.h"
 
 //TODO: Not sure what this is here for or where it's even implemented. Remove it?
 void render3dbox(vec &o, float tofloor, float toceil, float xradius, float yradius = 0);
