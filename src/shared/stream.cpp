@@ -678,7 +678,7 @@ struct filestream : stream
 
     bool end()
     {
-    	return SDL_RWtell(file) < SDL_RWsize(file);
+    	return SDL_RWtell(file) > SDL_RWsize(file);
     }
 
     offset tell()
