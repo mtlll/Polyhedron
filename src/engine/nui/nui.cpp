@@ -1,6 +1,9 @@
 #include "nui.h"
 #include "shared/entities/EntityEditorMenu.h"
 
+//FIXME: use some kind of gamestate/editorstate controller for this
+extern bool editmode;
+
 namespace engine { namespace nui {
 
     std::unique_ptr<NkPolyhedron> NuklearPolyhedronDevice;
@@ -46,26 +49,29 @@ namespace engine { namespace nui {
 
     void StartEntityEditor(entities::classes::CoreEntity* entity)
     {
-        if (!ActiveEntityEditorMenu)
+        if (::editmode)
         {
-            ActiveEntityEditorMenu = std::make_unique<EntityEditorMenu>(entity);
-        }
-        else
-        {
-             if (ActiveEntityEditorMenu->HasEntity(entity))
-             {
-                 ActiveEntityEditorMenu->Show();
-             }
-             else
-             {
-                 ActiveEntityEditorMenu = std::make_unique<EntityEditorMenu>(entity);
-             }
+            if (!ActiveEntityEditorMenu)
+            {
+                ActiveEntityEditorMenu = std::make_unique<EntityEditorMenu>(entity);
+            }
+            else
+            {
+                 if (ActiveEntityEditorMenu->HasEntity(entity))
+                 {
+                     ActiveEntityEditorMenu->Show();
+                 }
+                 else
+                 {
+                     ActiveEntityEditorMenu = std::make_unique<EntityEditorMenu>(entity);
+                 }
+            }
         }
     }
 
     void StopEntityEditor(entities::classes::CoreEntity* entity)
     {
-        if (ActiveEntityEditorMenu || ActiveEntityEditorMenu->HasEntity(entity))
+        if (ActiveEntityEditorMenu && ActiveEntityEditorMenu->HasEntity(entity))
         {
             ActiveEntityEditorMenu->Hide();
         }

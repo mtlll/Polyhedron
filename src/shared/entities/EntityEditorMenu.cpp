@@ -11,7 +11,6 @@ EntityEditorMenu::EntityEditorMenu(entities::classes::CoreEntity* entity)
     : m_Entity(entity)
     , m_AnimSlideInStart(totalmillis)
 {
-    conoutf("EntityEditorMenu %x", entity);
 }
 
 void EntityEditorMenu::Render()
@@ -222,7 +221,6 @@ bool EntityEditorMenu::HasEntity(entities::classes::CoreEntity* entity)
 
 void EntityEditorMenu::Hide()
 {
-    conoutf("EntityEditorMenu::Hide %x", m_Entity);
     m_AnimSlideOutStart = totalmillis;
 }
 
@@ -230,13 +228,8 @@ void EntityEditorMenu::Show()
 {
     if (m_AnimSlideOutStart > 0)
     {
-        conoutf("EntityEditorMenu::Show %x", m_Entity);
         m_AnimSlideOutStart = 0;
         m_AnimSlideInStart = totalmillis;
         m_Closed = false;
-    }
-    else
-    {
-        conoutf("EntityEditorMenu::Show ignored %x (%d)", m_Entity, m_AnimSlideOutStart);
     }
 }
