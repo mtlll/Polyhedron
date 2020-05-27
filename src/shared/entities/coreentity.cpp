@@ -41,14 +41,26 @@ void entities::classes::CoreEntity::saveToJson(nlohmann::json& document)
 
 void entities::classes::CoreEntity::fromJsonImpl(const nlohmann::json& document)
 {
-	document.at(classname).get_to(*this);
+    if (document.find(classname) != document.end())
+    {
+	    document.at(classname).get_to(*this);
+    }
 }
 
 void entities::classes::CoreEntity::loadFromJson(const nlohmann::json& document)
 {
-	document.at("et_type").get_to(et_type);
-	document.at("ent_type").get_to(ent_type);
-	document.at("game_type").get_to(game_type);
+    if (document.find("et_type") != document.end())
+    {
+    	document.at("et_type").get_to(et_type);
+    }
+    if (document.find("ent_type") != document.end())
+    {
+        document.at("ent_type").get_to(ent_type);
+    }
+    if (document.find("game_type") != document.end())
+    {
+        document.at("game_type").get_to(game_type);
+    }
 
 	fromJsonImpl(document);
 	

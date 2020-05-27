@@ -7,6 +7,9 @@
 #include "tools.h"
 #include "texture.h"
 #include "engine/font.h"
+#include "engine/main/Application.h"
+#include "engine/main/Window.h"
+#include "engine/main/GLContext.h"
 
 NkPolyhedron::NkFont::NkFont(std::string fontName) {
     m_FontName = "default";
@@ -45,6 +48,8 @@ NkPolyhedron::NkPolyhedron()
 void NkPolyhedron::Render()
 {
     const nk_command* cmd;
+    int screenh = 0, screenw = 0;
+    Application::Instance().GetWindow().GetContext().GetFramebufferSize(screenh, screenw);
     nk_foreach(cmd, &m_Context)
     {
         switch (cmd->type) {
