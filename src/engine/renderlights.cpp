@@ -1,23 +1,22 @@
-#include "engine.h"
-#include "pvs.h"
-#include "rendergl.h"
-#include "renderlights.h"
-#include "aa.h"
-#include "renderva.h"
-#include "material.h"
-#include "rendermodel.h"
-#include "renderparticles.h"
-#include "stain.h"
-#include "rendersky.h"
+#include "shared/cube.h"
 #include "shared/entities/basephysicalentity.h"
-#include "game/game.h"
+#include "engine/light.h"
+#include "engine/texture.h"
+#include "engine/pvs.h"
+#include "engine/rendergl.h"
+#include "engine/renderlights.h"
+#include "engine/aa.h"
+#include "engine/renderva.h"
+#include "engine/material.h"
+#include "engine/rendermodel.h"
+#include "engine/renderparticles.h"
+#include "engine/octarender.h"
+#include "engine/stain.h"
+#include "engine/rendersky.h"
+#include "engine/menus.h"
 #include "engine/GLFeatures.h"
+#include "game/game.h"
 
-
-//octarender.h externs
-extern ivec worldmin, worldmax, nogimin, nogimax;
-
-extern int amd_pf_bug;
 
 int gw = -1, gh = -1, bloomw = -1, bloomh = -1, lasthdraccum = 0;
 GLuint gfbo = 0, gdepthtex = 0, gcolortex = 0, gnormaltex = 0, gglowtex = 0, gdepthrb = 0, gstencilrb = 0;

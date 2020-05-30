@@ -1,14 +1,12 @@
 // server.cpp: little more than enhanced multicaster
 // runs dedicated or as client coroutine
 
-#include "engine.h"
-#include "serverbrowser.h"
-#include "client.h"
-#include "scriptexport.h"
-#include "log.h"
-
-//extern from menus.h
-extern int mainmenu;
+#include "shared/cube.h"
+#include "engine/serverbrowser.h"
+#include "engine/client.h"
+#include "engine/scriptexport.h"
+#include "engine/log.h"
+#include "engine/menus.h"
 
 #ifdef STANDALONE
 void fatal(const char *fmt, ...)

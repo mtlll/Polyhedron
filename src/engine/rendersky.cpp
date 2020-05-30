@@ -1,16 +1,11 @@
-#include "engine.h"
-#include "renderva.h"
-#include "renderlights.h"
+#include "shared/cube.h"
 #include "shared/stream.h"
 #include "shared/entities/basephysicalentity.h"
-#include "shared/geom/matrix4.h"
-#include "shared/geom/bvec.h"
-
-extern int farplane;
-extern float ldrscale;
-extern bvec fogcolour;
-extern matrix4 cammatrix, invcammatrix, projmatrix, invprojmatrix ;
-
+#include "engine/light.h"
+#include "engine/texture.h"
+#include "engine/rendergl.h"
+#include "engine/renderva.h"
+#include "engine/renderlights.h"
 
 Texture *sky[6] = { 0, 0, 0, 0, 0, 0 }, *clouds[6] = { 0, 0, 0, 0, 0, 0 };
 

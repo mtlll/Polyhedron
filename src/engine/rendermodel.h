@@ -1,5 +1,7 @@
 #pragma once
 
+struct Texture;
+struct occludequery;
 struct mapmodelinfo { cubestr name; model *m = nullptr, *collide = nullptr; };
 
 extern vector<mapmodelinfo> mapmodels;

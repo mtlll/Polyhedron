@@ -1,8 +1,8 @@
-#include "engine.h"
-#include "rendergl.h"
-#include "renderlights.h"
-#include "aa.h"
-#include "GLFeatures.h"
+#include "engine/texture.h"
+#include "engine/rendergl.h"
+#include "engine/renderlights.h"
+#include "engine/aa.h"
+#include "engine/GLFeatures.h"
 
 extern int intel_texalpha_bug;
 

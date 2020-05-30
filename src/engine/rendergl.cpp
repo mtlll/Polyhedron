@@ -1,41 +1,40 @@
 // rendergl.cpp: core opengl rendering stuff
 
-#include "engine.h"
-#include "pvs.h"
-#include "engine/font.h"
-#include "rendergl.h"
-#include "renderlights.h"
-#include "aa.h"
-#include "octaedit.h"
-#include "renderva.h"
-#include "material.h"
-#include "water.h"
-#include "console.h"
-#include "rendermodel.h"
-#include "renderparticles.h"
-#include "rendersky.h"
-#include "ui.h"
-#include "grass.h"
-#include "blend.h"
-#include "../shared/ents.h"
-#include "../game/game.h"
-#include "../game/entities/player.h"
+#include "shared/cube.h"
+#include "shared/ents.h"
+#include "engine/texture.h"
+#include "engine/pvs.h"
+#include "engine/engine/font.h"
+#include "engine/rendergl.h"
+#include "engine/renderlights.h"
+#include "engine/aa.h"
+#include "engine/octaedit.h"
+#include "engine/octarender.h"
+#include "engine/renderva.h"
+#include "engine/material.h"
+#include "engine/water.h"
+#include "engine/console.h"
+#include "engine/rendermodel.h"
+#include "engine/renderparticles.h"
+#include "engine/rendersky.h"
+#include "engine/ui.h"
+#include "engine/menus.h"
+#include "engine/grass.h"
+#include "engine/blend.h"
 #include "engine/main/Application.h"
 #include "engine/main/Input.h"
 #include "engine/main/Window.h"
 #include "engine/main/GLContext.h"
+#include "engine/main/Renderer.h"
+#include "engine/main/FPS.h"
+#include "engine/main/Clock.h"
+#include "engine/main/Compatibility.h"
 #include "engine/hud.h"
 #include "engine/GLFeatures.h"
-#include "shared/ents.h"
 #include "game/game.h"
 #include "game/entities/player.h"
-
-//octarender.h externs
-extern vector<vtxarray *> varoot, valist;
-
-//extern from menus.h
-extern int mainmenu;
-
+#include "game/game.h"
+#include "game/entities/player.h"
 
 int hasstencil = 0;
 

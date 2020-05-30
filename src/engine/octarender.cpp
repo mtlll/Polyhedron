@@ -1,27 +1,25 @@
 // octarender.cpp: fill vertex arrays with different cube surfaces.
 
-#include "engine.h"
-#include "rendergl.h"
-#include "octarender.h"
-#include "renderva.h"
-#include "material.h"
-#include "renderparticles.h"
-#include "grass.h"
-#include "blend.h"
-#include "ents.h"
+#include "shared/cube.h"
+#include "engine/light.h"
+#include "engine/texture.h"
+#include "engine/rendergl.h"
+#include "engine/octarender.h"
+#include "engine/renderva.h"
+#include "engine/renderlights.h"
+#include "engine/rendersky.h"
+#include "engine/material.h"
+#include "engine/renderparticles.h"
+#include "engine/grass.h"
+#include "engine/blend.h"
+#include "engine/menus.h"
+#include "engine/main/Compatibility.h"
+#include "engine/main/Renderer.h"
+#include "shared/ents.h"
 #include "shared/entities/decalentity.h"
-
-//extern from rendersky.h
-extern int explicitsky;
-
-//extern from menus.h
-extern int mainmenu;
 
 using namespace entities;
 using namespace classes;
-
-//REVIEW: only actual import from renderlights.h, just declare instead of including the whole header?
-void clearshadowcache();
 
 struct vboinfo
 {

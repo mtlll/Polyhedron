@@ -1,12 +1,15 @@
-#include "cube.h"
-#include "engine.h"
-#include "physics.h"
-#include "renderlights.h"
-#include "octaedit.h"
-#include "octarender.h"
-#include "blend.h"
+#include "shared/cube.h"
 #include "shared/entities/baseentity.h"
 #include "shared/entities/basephysicalentity.h"
+
+#include "engine/light.h"
+#include "engine/texture.h"
+#include "engine/physics.h"
+#include "engine/renderlights.h"
+#include "engine/octaedit.h"
+#include "engine/octarender.h"
+#include "engine/blend.h"
+#include "engine/main/Compatibility.h"
 
 CVAR1R(ambient, 0x191919);
 FVARR(ambientscale, 0, 1, 16);

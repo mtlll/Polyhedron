@@ -1,13 +1,13 @@
-#include "engine.h"
-#include "rendergl.h"
-#include "rendermodel.h"
-#include "stain.h"
+#include "engine/engine.h"
+#include "engine/texture.h"
+#include "engine/model.h"
+#include "engine/rendergl.h"
+#include "engine/rendermodel.h"
+#include "engine/renderlights.h"
+#include "engine/stain.h"
+#include "engine/menus.h"
+#include "engine/main/Renderer.h"
 #include "shared/entities/basephysicalentity.h"
-
-//REVIEW: only actual imports from renderlights.h, just declare instead of including the whole header?
-extern int ghasstencil;
-void maskgbuffer(const char *mask);
-
 
 struct stainvert
 {

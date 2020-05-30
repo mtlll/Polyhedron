@@ -1,5 +1,6 @@
-#include "engine.h"
-#include "ui.h"
+#include "shared/cube.h"
+#include "engine/scriptexport.h"
+#include "engine/menus.h"
 
 void notifywelcome()
 {

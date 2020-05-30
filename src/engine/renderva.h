@@ -1,5 +1,6 @@
 #pragma once
 
+#include "engine/engine.h"
 #include <shared/types.h>
 #include <shared/geom/ivec.h>
 #include <shared/geom/vec.h>

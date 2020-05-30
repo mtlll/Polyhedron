@@ -1,16 +1,13 @@
-#include "engine.h"
-#include "rendergl.h"
-#include "octarender.h"
-#include "material.h"
-#include "water.h"
 #include "shared/entities/basephysicalentity.h"
+#include "engine/engine.h"
+#include "engine/texture.h"
+#include "engine/rendergl.h"
+#include "engine/renderlights.h"
+#include "engine/octarender.h"
+#include "engine/material.h"
+#include "engine/water.h"
 
 #define NUMCAUSTICS 32
-
-//externs from renderlights.h
-extern matrix4 worldmatrix;
-extern int msaalight;
-extern GLuint msdepthtex, gdepthtex;
 
 static Texture *caustictex[NUMCAUSTICS] = { NULL };
 

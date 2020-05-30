@@ -18,6 +18,8 @@ class SoundConfig;
 #define main SDL_main
 #endif
 
+extern int numcpus;
+
 class Application {
 public:
     Application(const CommandlineArguments& commandlineArguments);

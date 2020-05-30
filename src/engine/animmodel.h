@@ -1,4 +1,6 @@
-#include "renderlights.h"
+#include "engine/model.h"
+#include "engine/texture.h"
+#include "engine/renderlights.h"
 #include "shared/stream.h"
 
 //extern from command.h

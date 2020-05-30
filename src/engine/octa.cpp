@@ -1,7 +1,12 @@
 // core world management routines
 
-#include "engine.h"
-#include "octarender.h"
+#include "shared/cube.h"
+#include "engine/world.h"
+#include "engine/octa.h"
+#include "engine/light.h"
+#include "engine/octarender.h"
+#include "engine/main/Compatibility.h"
+
 static struct emptycube : cube
 {
     emptycube()

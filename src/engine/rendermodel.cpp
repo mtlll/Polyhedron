@@ -1,12 +1,14 @@
-#include "engine.h"
-#include "ents.h"
-#include "pvs.h"
-#include "rendergl.h"
-#include "renderlights.h"
-#include "aa.h"
-#include "renderva.h"
-#include "game/entities/basemapmodel.h"
+#include "shared/cube.h"
+#include "shared/ents.h"
 #include "shared/entities/basedynamicentity.h"
+#include "engine/pvs.h"
+#include "engine/rendergl.h"
+#include "engine/renderlights.h"
+#include "engine/aa.h"
+#include "engine/renderva.h"
+#include "engine/main/Compatibility.h"
+#include "engine/main/Renderer.h"
+#include "game/entities/basemapmodel.h"
 
 //extern from command.h
 extern int identflags;
