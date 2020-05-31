@@ -9,6 +9,15 @@
 
 #define SCRIPTEXPORT __attribute__((annotate("scriptexport"))) VISIBLE_SYMBOL
 #define SCRIPTEXPORT_AS(NAME) __attribute__((annotate("scriptexport" #NAME))) VISIBLE_SYMBOL
+#define SCRIPTBIND_OPT(KEY, OP, VALUE) __attribute__((annotate("bindopt;" #KEY ";" #OP ";" #VALUE))) VISIBLE_SYMBOL
+#define BINDOPT_GENERATORS
+#define BINDOPER_ADD
+#define BINDOPER_DROP
+#define BINDOPER_SET
+#define BINDGENERATOR_PYTHON
+#define BINDGENERATOR_CUBESCRIPT
+#define BINDGENERATOR_JSON
+#define BINDGENERATOR_ATTRIBUTES
 
 #define DONTSERIALIZE __attribute__((annotate("dontserialize")))
 #define DONTUNSERIALIZE __attribute__((annotate("dontunserialize")))

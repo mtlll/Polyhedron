@@ -11,10 +11,12 @@ macro(CopyFileIfDifferent FromFile ToFile)
         ${FromFile} ${ToFile} RESULT_VARIABLE compare_result
     )
     if(compare_result EQUAL 1 OR NOT EXISTS "${ToFile}")
-         execute_process(COMMAND cp ${FromFile} ${ToFile} RESULT_VARIABLE cp_result)
-         message("cp ${FromFile} ${ToFile}: ${cp_result}")
+        get_filename_component(ToFileDir ${ToFile} DIRECTORY)
+        execute_process(COMMAND mkdir -p ${ToFileDir})
+        execute_process(COMMAND cp -r ${FromFile} ${ToFile} RESULT_VARIABLE cp_result)
+        message("cp ${FromFile} ${ToFile}: ${cp_result}")
     else()
-         message("Skip Copy[${compare_result}]: ${FromFile} ${ToFile}")
+        message("Skip Copy[${compare_result}]: ${FromFile} ${ToFile}")
     endif()
 endmacro()
 
@@ -184,49 +186,80 @@ if (NOT sdl2_image_POPULATED)
 
     add_subdirectory(${sdl2_image_SOURCE_DIR} ${sdl2_image_BINARY_DIR})
 endif()
-#
-#message("Fetching libjpeg")
-#FetchContent_Declare(
-#    LIBJPEG
-#    SOURCE_DIR          ${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libjpeg
-#    GIT_REPOSITORY      https://github.com/LuaDist/libjpeg.git
-#    DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
-#    INSTALL_COMMAND     ""
-#)
-#FetchContent_GetProperties(LIBJPEG)
-#if (NOT libjpeg_POPULATED)
-#    source_group(TREE LIBJPEG)
-#    FetchContent_MakeAvailable(LIBJPEG)
-#endif()
-#
-#message("Fetching libpng")
-#FetchContent_Declare(
-#    LIBPNG
-#    SOURCE_DIR          ${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/libpng
-#    URL                 http://prdownloads.sourceforge.net/libpng/libpng-1.6.37.tar.gz?download
-#    DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
-#    INSTALL_COMMAND     ""
-#)
-#FetchContent_GetProperties(LIBPNG)
-#if (NOT libpng_POPULATED)
-#    source_group(TREE LIBPNG)
-#    FetchContent_MakeAvailable(LIBPNG)
-#endif()
 
-#message("Fetching nothings/STB")
-#FetchContent_Declare(
-#    STB
-#    SOURCE_DIR          ${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/STB
-#    GIT_REPOSITORY      https://github.com/nothings/stb.git
-#    DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
-#    INSTALL_COMMAND     ""
-#)
-#FetchContent_GetProperties(STB)
-#if (NOT stb_POPULATED)
-#    FetchContent_Populate(STB)
-#    source_group(TREE BOX2D)
-#    add_definitions(-DSTB_IMAGE_IMPLEMENTATION)
-#endif()
+message("Fetching python")
+FetchContent_Declare(
+    PYTHON
+    SOURCE_DIR          ${CMAKE_CURRENT_BINARY_DIR}/thirdparty_sources/python
+    GIT_REPOSITORY      https://github.com/python-cmake-buildsystem/python-cmake-buildsystem
+    DOWNLOAD_DIR        ${DEPENDENCY_DOWNLOAD_DIR}
+    INSTALL_COMMAND     ""
+)
+FetchContent_GetProperties(PYTHON)
+if (NOT python_POPULATED)
+    source_group(TREE python)
+
+    set(INSTALL_MANUAL OFF)
+    set(USE_SYSTEM_LIBRARIES OFF)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 10.14)
+    list(APPEND THIRDPARTY_INCLUDE_DIRS
+        ${CMAKE_CURRENT_BINARY_DIR}/_deps/Python-3.6.7/include
+        ${CMAKE_CURRENT_BINARY_DIR}/_deps/python-build/bin
+    )
+
+    CopyFileIfDifferent(
+        "${CMAKE_CURRENT_BINARY_DIR}/_deps/Python-3.6.7/Lib/abc.py"
+        "${CMAKE_CURRENT_LIST_DIR}/../config/site-py/abc.py"
+    )
+
+    CopyFileIfDifferent(
+        "${CMAKE_CURRENT_BINARY_DIR}/_deps/Python-3.6.7/Lib/codecs.py"
+        "${CMAKE_CURRENT_LIST_DIR}/../config/site-py/codecs.py"
+    )
+
+    CopyFileIfDifferent(
+        "${CMAKE_CURRENT_BINARY_DIR}/_deps/Python-3.6.7/Lib/encodings/__init__.py"
+        "${CMAKE_CURRENT_LIST_DIR}/../config/site-py/encodings/__init__.py"
+    )
+
+    CopyFileIfDifferent(
+        "${CMAKE_CURRENT_BINARY_DIR}/_deps/Python-3.6.7/Lib/encodings/aliases.py"
+        "${CMAKE_CURRENT_LIST_DIR}/../config/site-py/encodings/aliases.py"
+    )
+
+    CopyFileIfDifferent(
+        "${CMAKE_CURRENT_BINARY_DIR}/_deps/Python-3.6.7/Lib/encodings/ascii.py"
+        "${CMAKE_CURRENT_LIST_DIR}/../config/site-py/encodings/ascii.py"
+    )
+
+    CopyFileIfDifferent(
+        "${CMAKE_CURRENT_BINARY_DIR}/_deps/Python-3.6.7/Lib/encodings/latin_1.py"
+        "${CMAKE_CURRENT_LIST_DIR}/../config/site-py/encodings/latin_1.py"
+    )
+
+    CopyFileIfDifferent(
+        "${CMAKE_CURRENT_BINARY_DIR}/_deps/Python-3.6.7/Lib/encodings/utf_8.py"
+        "${CMAKE_CURRENT_LIST_DIR}/../config/site-py/encodings/utf_8.py"
+    )
+
+    CopyFileIfDifferent(
+        "${CMAKE_CURRENT_BINARY_DIR}/_deps/Python-3.6.7/Lib/io.py"
+        "${CMAKE_CURRENT_LIST_DIR}/../config/site-py/io.py"
+    )
+
+    CopyFileIfDifferent(
+        "${CMAKE_CURRENT_BINARY_DIR}/_deps/Python-3.6.7/Lib/os.py"
+        "${CMAKE_CURRENT_LIST_DIR}/../config/site-py/os.py"
+    )
+
+    CopyFileIfDifferent(
+        "${CMAKE_CURRENT_BINARY_DIR}/_deps/Python-3.6.7/Lib/_weakrefset.py"
+        "${CMAKE_CURRENT_LIST_DIR}/../config/site-py/_weakrefset.py"
+    )
+
+    FetchContent_MakeAvailable(PYTHON)
+endif()
+
 
 list(APPEND THIRDPARTY_INCLUDE_DIRS
 )
@@ -239,6 +272,7 @@ list(APPEND THIRDPARTY_LIBRARIES
 #    SDL2main
     SDL2_image
     SDL2_mixer
+    libpython-static
 #    mpg123
 )
 

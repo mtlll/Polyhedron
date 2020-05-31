@@ -42,6 +42,12 @@ namespace engine { namespace nui {
         return NuklearPolyhedronDevice->GetContext();
     }
 
+    NkPolyhedron& GetDevice()
+    {
+        assert(NuklearPolyhedronDevice && "NuklearPolyhedronDevice destroyed or not initialized!");
+
+        return *NuklearPolyhedronDevice.get();
+    }
 
     namespace {
         std::unique_ptr<EntityEditorMenu> ActiveEntityEditorMenu;

@@ -1,7 +1,7 @@
 from autobind.fileiterator import ForEachTranslationUnitInDirectory
 from autobind.compileflags import CompileFlagsFor
 from autobind.parsecpp import CppParser 
-from autobind.generator import CubeScriptBinding, JsonSerializer, ClassHeaderSourceSplitter
+from autobind.generator import CubeScriptBinding, JsonSerializer, ClassHeaderSourceSplitter, PythonScriptBinding
 import sys
 import os
 import json
@@ -94,9 +94,10 @@ def generate_code(buildFolder, file, outputfile):
 
     generatedCubeScript = CubeScriptBinding.GenerateWithoutMacros(parser.cppmodel())
     generatedJsonSerializer = JsonSerializer.Generate(parser.cppmodel())
+    generatedPythonBinding = PythonScriptBinding.Generate(parser.cppmodel())
 
-    if (generatedCubeScript and generatedCubeScript != "\n") or (generatedJsonSerializer and generatedJsonSerializer != "\n"):
-        file_write_data(outputFileAbs, generatedCubeScript + "\n\n" + generatedJsonSerializer)
+    if (generatedCubeScript and generatedCubeScript != "\n") or (generatedJsonSerializer and generatedJsonSerializer != "\n") or (generatedPythonBinding and generatedPythonBinding != "\n"):
+        file_write_data(outputFileAbs, generatedCubeScript + "\n\n" + generatedJsonSerializer + "\n\n" + generatedPythonBinding)
         print (f"ok {outputFileAbs}")
     else:
         file_write_data(outputFileAbs, "")

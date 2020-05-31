@@ -144,19 +144,31 @@ class CppParser:
 
     def cppmodel_generate(self):
         mayNeedCxxObjects = []
+        needJsonFunctions = []
         def node_factory(cursor, parent, file):
             nonlocal mayNeedCxxObjects
             cursor_usr = cursor.get_usr()
             if not cursor_usr is None:
                 self.record_cursor_by_usr(cursor, cursor_usr)
             if cursor.kind == cindex.CursorKind.FUNCTION_DECL:
-                first_child = next(cursor.get_children(), None)
-                if not first_child is None:
-                    if first_child.kind == cindex.CursorKind.ANNOTATE_ATTR and first_child.spelling.startswith(EXPORT_ANNOTATION):
-                        return CxxFunction(self, cursor, parent)
+                cxxFunc = None
+                for attr_child in cursor.get_children():
+                    if attr_child.kind == cindex.CursorKind.ANNOTATE_ATTR:
+                        if attr_child.spelling.startswith(EXPORT_ANNOTATION):
+                            if cxxFunc is None:
+                                cxxFunc = CxxFunction(self, cursor, parent)
+                        else:
+                            self.configureCxxFunctionByAttribute(cxxFunc, attr_child)
+                    else:
+                        break
+
+                if cxxFunc:
+                    return cxxFunc
+
                 if self.cursor_is_part_of_file_or_header(cursor, file):
                     if cursor.spelling in ["from_json", "to_json"]:
                         mayNeedFunc = CxxFunction(self, cursor, parent, Generator.Json)
+                        needJsonFunctions.append({"name": "", "cxxFunc": mayNeedFunc, "cxxClass": None})
                         funcArgs = []
                         for arg in mayNeedFunc.forEachArgument():
                             funcArgs.append(arg.spelling)
@@ -164,12 +176,34 @@ class CppParser:
                             if funcArgs[0].endswith("nlohmann::json &") and funcArgs[1].endswith(" &"):
                                 print(">>> function {} {} may be a json serialisation function!".format(cursor.spelling, funcArgs), file=sys.stderr)
                                 className = funcArgs[1].replace(" &", "").replace("const ", "")
-                                for classObj in mayNeedCxxObjects:
-                                    if str(classObj) == className:
-                                        mayNeedCxxObjects.remove(classObj)
-                                        classObj.generateFor = Generator.Json
-                                        break;
-                                return mayNeedFunc
+                                serializeName = cursor.spelling + "_" + "_".join(funcArgs)
+                                needJsonFunctions[-1]["name"] = serializeName
+
+                                if cursor.is_definition():
+                                    del needJsonFunctions[-1]
+                                    deletedSomething = True;
+                                    while deletedSomething:
+                                        deletedSomething = False;
+                                        for prevFunc in needJsonFunctions:
+                                            if prevFunc["name"] == serializeName:
+                                                mayNeedCxxObjects.append(prevFunc["cxxClass"])
+                                                needJsonFunctions.remove(prevFunc)
+                                                deletedSomething = True;
+                                                break
+                                    return None
+
+                                else:
+                                    classObj = None
+                                    for classObj in mayNeedCxxObjects:
+                                        if str(classObj) == className:
+                                            mayNeedCxxObjects.remove(classObj)
+                                            classObj.generateFor = Generator.Json
+                                            break;
+                                    needJsonFunctions[-1]["cxxClass"] = classObj
+                                    return mayNeedFunc
+
+                        del needJsonFunctions[-1]
+                        return None
 
             if (cursor.kind in [cindex.CursorKind.CLASS_DECL,
                                 cindex.CursorKind.STRUCT_DECL,
@@ -184,15 +218,16 @@ class CppParser:
                         if "coreentity.cpp" in file or "coreentity.h" in file:
                             print(">>> class {} IS CoreEntity!".format(cursor.spelling), file=sys.stderr)
                             return CxxClass(self, cursor, parent)
-                    else:
+                    elif cursor.spelling != '':
                         mayNeedClass = CxxClass(self, cursor, parent)
                         mayNeedCxxObjects.append(mayNeedClass)
-                        print(">>> saved class {}, we may need it later..".format(cursor.spelling), file=sys.stderr)
+                        # print(">>> saved class {}, we may need it later..".format(cursor.spelling), file=sys.stderr)
                         return mayNeedClass
             if type(parent) == CxxClass:
                 if self.cursor_is_part_of_file_or_header(cursor, file):
-                    if (cursor.kind in [cindex.CursorKind.FIELD_DECL,
-                                        cindex.CursorKind.VAR_DECL]):
+                    if (cursor.kind in [cindex.CursorKind.FIELD_DECL #,
+                                        #cindex.CursorKind.VAR_DECL
+                                        ]):
                         first_child = next(cursor.get_children(), None)
                         annotation = None
                         if not first_child is None:
@@ -228,14 +263,49 @@ class CppParser:
         def iterateClean(treeObject, objectsToClean):
             for t in treeObject.forEachChild():
                 if t in objectsToClean:
-                    print(">>> removed excess class {} from further Generation steps".format(t), file=sys.stderr)
+                    # print(">>> removed excess class {} from further Generation steps".format(t), file=sys.stderr)
                     return treeObject.delchild(t)
+            return False
+
+        def iterateCleanJsonFunc(treeObject, objectsToKeep):
+            for t in treeObject.forEachChild():
+                if t.sourceObject.spelling in ["from_json", "to_json"]:
+                    if not t in objectsToKeep:
+                        print(">>> removed excess json serialisation function {}: already implemented".format(t), file=sys.stderr)
+                        return treeObject.delchild(t)
             return False
 
         iterate(self.model, self.translation_unit.cursor, self.file)
         while iterateClean(self.model, mayNeedCxxObjects):
             pass
+        while iterateCleanJsonFunc(self.model, needJsonFunctions):
+            pass
         mayNeedCxxObjects.clear()
+
+    def stringToGenerateForFlag(self, name):
+        if name == "BINDGENERATOR_CUBESCRIPT":
+            return Generator.CubeScript
+        if name == "BINDGENERATOR_JSON":
+            return Generator.Json
+        if name == "BINDGENERATOR_PYTHON":
+            return Generator.Python
+        if name == "BINDGENERATOR_ATTRIBUTES":
+            return Generator.Attributes
+        if name == "BINDGENERATOR_ALL":
+            return Generator.All
+        return Generator.All
+
+    def configureCxxFunctionByAttribute(self, cxxFunction, attribute):
+        attribData = attribute.spelling.split(";")
+        if len(attribData) > 3:
+            if attribData[1] == "BINDOPT_GENERATORS":
+                generatorFlag = self.stringToGenerateForFlag(attribData[3])
+                if (attribData[2] == "BINDOPER_ADD"):
+                    cxxFunction.generateFor = cxxFunction.generateFor | generatorFlag
+                if (attribData[2] == "BINDOPER_DROP"):
+                    cxxFunction.generateFor = cxxFunction.generateFor ^ generatorFlag
+                if (attribData[2] == "BINDOPER_SET"):
+                    cxxFunction.generateFor = generatorFlag
 
     def cppmodel_refactor_generate(self):
         def node_factory(cursor, parent, file):

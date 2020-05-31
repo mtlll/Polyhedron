@@ -11,10 +11,18 @@
 #include "engine/main/Window.h"
 #include "engine/main/GLContext.h"
 
-NkPolyhedron::NkFont::NkFont(std::string fontName) {
-    m_FontName = "default";
-    m_UserFont.userdata = nk_handle_ptr(this);
+NkPolyhedron::NkFont::NkFont(std::string fontName)
+{
     font* fontInstance = findfont(m_FontName.c_str());
+    if (fontInstance)
+    {
+        m_FontName = fontName;
+    }
+    else
+    {
+        m_FontName = "default";
+    }
+    m_UserFont.userdata = nk_handle_ptr(this);
     auto fontScale = 1.0f;//float(fontInstance->c);
     m_UserFont.height = 22.0f;//fontInstance->scale;
     m_UserFont.width = &UserFontGetWidth;
@@ -48,20 +56,23 @@ NkPolyhedron::NkPolyhedron()
 void NkPolyhedron::Render()
 {
     const nk_command* cmd;
-    int screenh = 0, screenw = 0;
-    Application::Instance().GetWindow().GetContext().GetFramebufferSize(screenh, screenw);
+    int screenw = 0, screenh = 0;
+    Application::Instance().GetWindow().GetContext().GetFramebufferSize(screenw, screenh);
     nk_foreach(cmd, &m_Context)
     {
         switch (cmd->type) {
             case NK_COMMAND_NOP: break;
             case NK_COMMAND_SCISSOR: {
                 const auto* scissorCmd = reinterpret_cast<const nk_command_scissor*>(cmd);
-                int x = scissorCmd->x - 1;
-                int y = (screenh - (scissorCmd->y + scissorCmd->h)) + 1;
-                int w = scissorCmd->w + 1;
-                int h = scissorCmd->h;
                 glCheckError(glEnable(GL_SCISSOR_TEST));
-                glCheckError(glScissor(x, y, w, h));
+                glCheckError(
+                    glScissor(
+                        scissorCmd->x,
+                        screenh + (scissorCmd->y + scissorCmd->h) * -1,
+                        scissorCmd->w,
+                        scissorCmd->h
+                    )
+                );
             } break;
             case NK_COMMAND_LINE: {
                 const auto* lineCmd = reinterpret_cast<const nk_command_line*>(cmd);
@@ -547,4 +558,13 @@ NkPolyhedron::InputEventProcessState NkPolyhedron::InputEvent(const SDL_Event &e
 nk_context* NkPolyhedron::GetContext()
 {
     return &m_Context;
+}
+
+float NkPolyhedron::GetLineHeight()
+{
+    auto userFont = m_DefaultFont->m_UserFont;
+    return userFont.height;
+//    auto fontObject = findfont(m_DefaultFont->m_FontName.c_str());
+//    auto fontScale = float(fontObject->scale);
+//    return float(userFont.height) / fontScale;
 }

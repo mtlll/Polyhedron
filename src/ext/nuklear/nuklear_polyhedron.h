@@ -36,7 +36,8 @@ public:
     void Render();
     void InputProcessBegin();
     void InputProcessEnd();
-    InputEventProcessState InputEvent(const SDL_Event &evt) ;
+    InputEventProcessState InputEvent(const SDL_Event &evt);
 
     nk_context* GetContext();
+    float GetLineHeight();
 };

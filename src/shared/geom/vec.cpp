@@ -4,6 +4,7 @@
 #include "ivec.h"
 #include "usvec.h"
 #include "svec.h"
+#include <nlohmann/json.hpp>
 #include <math.h>
 #include <algorithm>
 
@@ -61,3 +62,14 @@ void vec::orthogonal(const vec &d)
 }
 int vec::tohexcolor() const { return (int(std::clamp(r, 0.0f, 1.0f)*255)<<16)|(int(std::clamp(g, 0.0f, 1.0f)*255)<<8)|int(std::clamp(b, 0.0f, 1.0f)*255); }
 
+
+void to_json(nlohmann::json& document, const vec& v)
+{
+	document = nlohmann::json{{"x", v.x}, {"y", v.y}, {"z", v.z}};
+}
+
+void from_json(const nlohmann::json& document, vec& v) {
+	document.at("x").get_to(v.x);
+	document.at("y").get_to(v.y);
+	document.at("z").get_to(v.z);
+}

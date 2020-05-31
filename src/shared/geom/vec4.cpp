@@ -1,6 +1,7 @@
 #include "vec4.h"
 #include "vec.h"
 #include "vec2.h"
+#include <nlohmann/json.hpp>
 #include <math.h>
 #include <algorithm>
 
@@ -31,4 +32,16 @@ vec4 &vec4::rotate_around_z(const vec2 &sc) { return rotate_around_z(sc.x, sc.y)
 vec4 &vec4::rotate_around_x(const vec2 &sc) { return rotate_around_x(sc.x, sc.y); }
 vec4 &vec4::rotate_around_y(const vec2 &sc) { return rotate_around_y(sc.x, sc.y); }
 
+
+void to_json(nlohmann::json& document, const vec4& v)
+{
+	document = nlohmann::json{{"x", v.x}, {"y", v.y}, {"z", v.z}, {"w", v.w}};
+}
+
+void from_json(const nlohmann::json& document, vec4& v) {
+	document.at("x").get_to(v.x);
+	document.at("y").get_to(v.y);
+	document.at("z").get_to(v.z);
+	document.at("w").get_to(v.w);
+}
 

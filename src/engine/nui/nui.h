@@ -23,7 +23,8 @@ namespace engine {
 
 		void Destroy();
 
-		nk_context *GetNKContext();
+		nk_context* GetNKContext();
+		NkPolyhedron& GetDevice();
 
         void StartEntityEditor(entities::classes::CoreEntity* entity);
         void StopEntityEditor(entities::classes::CoreEntity* entity);

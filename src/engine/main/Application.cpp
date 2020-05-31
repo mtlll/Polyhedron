@@ -6,6 +6,7 @@
 #include "Window.h"
 #include "Renderer.h"
 #include "Input.h"
+#include "Console.h"
 #include "Compatibility.h"
 #include "renderdoc_api.h"
 #include "shared/command.h"
@@ -33,6 +34,8 @@ Application::Application(const CommandlineArguments& commandlineArguments)
 {
     assert(applicationInstance == nullptr && "Application is a singleton, only 1 instance allowed");
     applicationInstance = this;
+
+    m_Console = std::make_unique<Console>();
 
     m_Input = std::make_unique<Input>(*this);
 
@@ -81,6 +84,8 @@ Application::Application(const CommandlineArguments& commandlineArguments)
 
     m_Renderer->Initialize();
 
+    m_Python = std::make_unique<PythonScript>(commandlineArguments.Get(Argument::Any));
+
 //    gl_setupframe(true);
     engine::nui::Initialize();
     UI::setup();
@@ -107,10 +112,25 @@ Application::Application(const CommandlineArguments& commandlineArguments)
 
     initmumble();
 
+    m_Python->RunString("from time import time,ctime\n"
+                       "print('Hello from Python, today is', ctime(time()))\n");
+
+    m_Python->RunString("import sys\n"
+                       "print('sys.path = ', sys.path)\n");
+
+    m_Python->RunString("import sys\n"
+                       "print('sys.path = ', sys.path)\n");
+
+    m_Python->RunString("import sys\n"
+                       "print('sys.path = ', sys.path)\n");
+
+    m_Python->RunString("import sys\n"
+                       "print('error message!', file=sys.stderr)\n");
 }
 
 Application::~Application()
 {
+    m_Python.release();
     m_Renderer.release();
     m_Window.release();
 }
@@ -124,6 +144,8 @@ void Application::RunFrame()
     ClockFrame();
 
     ProcessEvents();
+    m_Python->Update();
+    m_Console->Update();
 
     UI::update();
     engine::nui::DemoUI();
@@ -327,4 +349,9 @@ SoundConfig& Application::GetSoundConfig() const
 const AppState& Application::GetAppState() const
 {
     return m_AppState;
+}
+
+Console& Application::GetConsole() const
+{
+    return *m_Console.get();
 }
