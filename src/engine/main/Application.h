@@ -3,6 +3,7 @@
 #include "engine/console.h"
 #include "shared/tools/stream.h"
 #include "shared/stream.h"
+#include "shared/python/PythonScript.h"
 #include <nlohmann/json.hpp>
 #include <SDL_events.h>
 #include <list>
@@ -13,6 +14,7 @@ class Input;
 class Renderer;
 class Window;
 class SoundConfig;
+class Console;
 
 #ifdef __APPLE__
 #define main SDL_main
@@ -37,6 +39,8 @@ public:
     Input& GetInput() const;
     SoundConfig& GetSoundConfig() const;
     const AppState& GetAppState() const;
+    PythonScript& GetPython() const;
+    Console& GetConsole() const;
 
     void RunFrame();
     void ProcessEvents();
@@ -57,6 +61,8 @@ private:
     std::unique_ptr<Renderer> m_Renderer;
     std::unique_ptr<Input> m_Input;
     std::unique_ptr<SoundConfig> m_SoundConfig;
+    std::unique_ptr<PythonScript> m_Python;
+    std::unique_ptr<Console> m_Console;
 
     std::list<SDL_Event> m_CachedEvents;
 };

@@ -1783,7 +1783,7 @@ void gl_drawhud()
 
     pushhudscale(conscale);
     abovehud -= rendercommand(FONTH/2, abovehud - FONTH/2, conw-FONTH);
-    if(!hidehud && !UI::uivisible("fullconsole")) renderconsole(conw, conh, abovehud - FONTH/2);
+
     pophudmatrix();
 
     drawcrosshair(w, h);

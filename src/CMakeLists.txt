@@ -156,13 +156,68 @@ list(APPEND fileListShared
     shared/Easing.h
     shared/ents.h
     shared/geom.cpp
-    shared/geom.h    
+    shared/geom.h
+    shared/geom/bvec.cpp
+    shared/geom/bvec.h
+    shared/geom/bvec4.cpp
+    shared/geom/bvec4.h
+    shared/geom/constants.h
+    shared/geom/dualquat.cpp
+    shared/geom/dualquat.h
+    shared/geom/dvec4.cpp
+    shared/geom/dvec4.h
+    shared/geom/half.cpp
+    shared/geom/half.h
+    shared/geom/hvec.cpp
+    shared/geom/hvec.h
+    shared/geom/hvec2.cpp
+    shared/geom/hvec2.h
+    shared/geom/hvec4.cpp
+    shared/geom/hvec4.h
+    shared/geom/ivec.cpp
+    shared/geom/ivec.h
+    shared/geom/ivec2.cpp
+    shared/geom/ivec2.h
+    shared/geom/ivec4.cpp
+    shared/geom/ivec4.h
+    shared/geom/matrix.cpp
+    shared/geom/matrix.h
+    shared/geom/matrix2.cpp
+    shared/geom/matrix2.h
+    shared/geom/matrix3.cpp
+    shared/geom/matrix3.h
+    shared/geom/matrix4.cpp
+    shared/geom/matrix4.h
+    shared/geom/matrix4x3.cpp
+    shared/geom/matrix4x3.h
+    shared/geom/plane.cpp
+    shared/geom/plane.h
+    shared/geom/quat.cpp
+    shared/geom/quat.h
+    shared/geom/squat.cpp
+    shared/geom/squat.h
+    shared/geom/svec.cpp
+    shared/geom/svec.h
+    shared/geom/triangle.cpp
+    shared/geom/triangle.h
+    shared/geom/usvec.cpp
+    shared/geom/usvec.h
+    shared/geom/vec.cpp
+    shared/geom/vec.h
+    shared/geom/vec2.cpp
+    shared/geom/vec2.h
+    shared/geom/vec4.cpp
+    shared/geom/vec4.h
     shared/glemu.cpp
     shared/glemu.h
     shared/glexts.h
     shared/iengine.h
     shared/igame.h
     shared/pch.cpp
+    shared/python/PythonScript.cpp
+    shared/python/PythonScript.h
+    shared/python/PythonPipeIO.cpp
+    shared/python/PythonPipeIO.h
     shared/stream.cpp
     # shared/tessfont.c
     shared/tools.cpp

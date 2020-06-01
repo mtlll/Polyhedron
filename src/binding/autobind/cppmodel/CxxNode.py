@@ -6,8 +6,9 @@ class Generator(Flag):
     Json = auto()
     Attributes = auto()
     CubeScript = auto()
+    Python = auto()
 
-    All = Json | Attributes | CubeScript
+    All = Json | Attributes | CubeScript | Python
 
 class CxxNode():
     
